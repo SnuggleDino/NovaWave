@@ -5,6 +5,10 @@ const { execFile } = require('child_process');
 const fs = require('fs').promises;
 const YTDlpWrap = require('yt-dlp-wrap').default;
 
+// --- Cache-Verzeichnis vor der App-Initialisierung setzen ---
+const cachePath = path.join(app.getPath('userData'), 'cache');
+app.setPath('cache', cachePath);
+
 // --- Globale Variablen für dynamisch importierte Module ---
 let Store;
 let mm;
