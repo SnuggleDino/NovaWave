@@ -95,7 +95,6 @@ function playTrack(index) {
     audio.play().catch(e => console.error("Error playing audio:", e));
     isPlaying = true;
     updateUIForCurrentTrack();
-    if (!visualizerRunning) startVisualizer();
 }
 
 function playNext() {
@@ -218,30 +217,56 @@ async function handleDownload() {
 // VISUALIZER
 // =================================================================================
 
+function setupVisualizer() {
+    if (audioContext) return; // Already setup
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        sourceNode = audioContext.createMediaElementSource(audio);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        sourceNode.connect(analyser);
+        analyser.connect(audioContext.destination);
+    } catch (e) {
+        console.error("Failed to initialize visualizer:", e);
+        visualizerEnabled = false; // Disable if setup fails
+    }
+}
+
 function startVisualizer() {
-    if (visualizerRunning || !visualizerEnabled) return;
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    sourceNode = audioContext.createMediaElementSource(audio);
-    analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;
-    sourceNode.connect(analyser);
-    analyser.connect(audioContext.destination);
+    if (!audioContext || visualizerRunning || !visualizerEnabled || !isPlaying) {
+        return;
+    }
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
     visualizerRunning = true;
     drawVisualizer();
 }
 
+function stopVisualizer() {
+    visualizerRunning = false;
+    if (visualizerCanvas) {
+        const ctx = visualizerCanvas.getContext('2d');
+        ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+    }
+}
+
 function drawVisualizer() {
-    if (!visualizerRunning || !isPlaying) {
-        visualizerRunning = false;
+    if (!visualizerRunning || !isPlaying || !visualizerEnabled) {
+        visualizerRunning = false; // Ensure it stops
         return;
     }
+
     requestAnimationFrame(drawVisualizer);
+
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     analyser.getByteFrequencyData(dataArray);
+
     const ctx = visualizerCanvas.getContext('2d');
     const { width, height } = visualizerCanvas;
     ctx.clearRect(0, 0, width, height);
+
     const barWidth = (width / bufferLength) * 1.5;
     let x = 0;
     for (let i = 0; i < bufferLength; i++) {
@@ -251,6 +276,7 @@ function drawVisualizer() {
         x += barWidth + 2;
     }
 }
+
 
 // Attach audio DOM event listeners for playback control and UI updates
 function setupAudioEvents() {
@@ -270,15 +296,17 @@ function setupAudioEvents() {
         isPlaying = true;
         updatePlayPauseUI();
         updateUIForCurrentTrack();
-        if (!visualizerRunning) startVisualizer();
+        startVisualizer();
     });
 
     audio.addEventListener('pause', () => {
         isPlaying = false;
         updatePlayPauseUI();
+        stopVisualizer();
     });
 
     audio.addEventListener('ended', () => {
+        stopVisualizer();
         if (loopMode === 'one') {
             audio.currentTime = 0;
             audio.play();
@@ -433,10 +461,10 @@ function setupEventListeners() {
     bind(visualizerToggle, 'change', (e) => {
         visualizerEnabled = e.target.checked;
         window.api.setSetting('visualizerEnabled', visualizerEnabled);
-        if (!visualizerEnabled) {
-            visualizerRunning = false;
-            const ctx = visualizerCanvas.getContext('2d');
-            if (ctx) ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+        if (visualizerEnabled) {
+            startVisualizer();
+        } else {
+            stopVisualizer();
         }
     });
     bind(animationToggle, 'change', (e) => {
@@ -501,6 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial setup
     setupAudioEvents();
     setupEventListeners();
+    setupVisualizer();
     loadSettings().then(() => {
         // Apply theme from settings
         const theme = settings.theme || 'blue';
