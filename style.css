@@ -168,7 +168,6 @@ input, textarea { user-select: text; }
   display: flex;
   flex-direction: column;
   gap: 20px;
-  overflow: hidden;
 }
 
 .player-column {
@@ -433,7 +432,6 @@ input:checked + .slider:before { transform: translateX(16px); }
 @media (max-width: 1200px) {
   body { font-size: 13px; }
   .main-grid { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
-  .extras-column { max-height: 350px; overflow-y: auto; }
   .cover-art-wrapper { width: 220px; height: 220px; }
   .music-emoji { font-size: 100px; }
 }
