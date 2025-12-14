@@ -319,6 +319,7 @@ function setupAudioEvents() {
         currentVolume = audio.volume;
         volumeSlider.value = currentVolume;
         volumeIcon.innerHTML = getVolumeIcon(currentVolume);
+        window.api.setSetting('volume', currentVolume);
     });
 
     audio.addEventListener('loadedmetadata', () => {
@@ -331,215 +332,461 @@ function setupAudioEvents() {
 // =================================================================================
 
 async function loadSettings() {
+
     settings = await window.api.getSettings();
-    downloadFolderInput.value = settings.downloadFolder;
-    qualitySelect.value = settings.audioQuality;
-    animationToggle.checked = settings.animationsEnabled;
-    themeSelect.value = settings.theme || 'blue';
-    visualizerToggle.checked = settings.visualizerEnabled !== false;
-    visualizerEnabled = settings.visualizerEnabled !== false;
-    applyAnimationSetting(settings.animationsEnabled);
+
+
+
+    // Audio & UI settings
+
+    currentVolume = settings.volume || 0.2;
+
+    audio.volume = currentVolume;
+
+    shuffleOn = settings.shuffle || false;
+
+    loopMode = settings.loop || 'off';
+
+    currentLanguage = settings.language || 'de';
+
+    
+
+    // UI elements
+
+    if (downloadFolderInput) downloadFolderInput.value = settings.downloadFolder;
+
+    if (qualitySelect) qualitySelect.value = settings.audioQuality;
+
+    if (animationToggle) animationToggle.checked = settings.animationsEnabled;
+
+    if (themeSelect) themeSelect.value = settings.theme || 'blue';
+
+    if (visualizerToggle) {
+
+        visualizerToggle.checked = settings.visualizerEnabled !== false;
+
+        visualizerEnabled = settings.visualizerEnabled !== false;
+
+    }
+
+
+
+    // Apply loaded settings to UI
+
+    if (backgroundAnimationEl) applyAnimationSetting(settings.animationsEnabled);
+
+    if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
+
+    if (loopBtn) loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off');
+
+    if (langButtons) langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
+
 }
+
+
 
 function applyAnimationSetting(enabled) {
+
     backgroundAnimationEl.style.display = enabled ? 'block' : 'none';
+
 }
 
+
+
 // =================================================================================
+
 // HELPERS & EVENT LISTENERS
+
 // =================================================================================
+
+
 
 function formatTime(seconds) {
+
     if (isNaN(seconds)) return '0:00';
+
     const min = Math.floor(seconds / 60);
+
     const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
+
     return `${min}:${sec}`;
+
 }
+
+
 
 function getVolumeIcon(volume) {
+
     if (volume === 0) return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
+
     if (volume < 0.5) return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>`;
+
     return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
+
 }
+
+
 
 function filterPlaylist(query) {
+
     playlist = !query ? [...basePlaylist] : basePlaylist.filter(t => t.title.toLowerCase().includes(query.toLowerCase()) || (t.artist && t.artist.toLowerCase().includes(query.toLowerCase())));
+
     const currentTrack = basePlaylist[currentIndex];
+
     currentIndex = currentTrack ? playlist.findIndex(t => t.path === currentTrack.path) : -1;
+
     renderPlaylist();
+
 }
+
+
 
 function sortPlaylist(mode) {
+
     const sorted = [...basePlaylist];
+
     if (mode === 'name') {
+
         sorted.sort((a, b) => a.title.localeCompare(b.title, 'de', { numeric: true }));
+
     } else if (mode === 'nameDesc') {
+
         sorted.sort((a, b) => b.title.localeCompare(a.title, 'de', { numeric: true }));
+
     } else if (mode === 'newest') {
+
         // Sort by modified time (newest first) - requires mtime in track data
+
         sorted.sort((a, b) => (b.mtime || 0) - (a.mtime || 0));
+
     }
+
     basePlaylist = sorted;
+
     playlist = [...basePlaylist];
+
     const currentTrack = currentIndex >= 0 ? playlist[currentIndex] : null;
+
     currentIndex = currentTrack ? playlist.findIndex(t => t.path === currentTrack.path) : -1;
+
     renderPlaylist();
+
 }
+
 function setupEventListeners() {
+
     // Safe bind helper for optional elements
+
     const bind = (el, ev, handler) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, handler); };
 
+
+
     bind(playBtn, 'click', () => {
+
         if (playlist.length === 0) return;
+
         if (isPlaying) audio.pause();
+
         else { (currentIndex === -1) ? playTrack(0) : audio.play(); }
+
         if (audioContext && audioContext.state === 'suspended') audioContext.resume();
+
     });
+
     bind(nextBtn, 'click', playNext);
+
     bind(prevBtn, 'click', playPrev);
+
     bind(shuffleBtn, 'click', () => {
+
         shuffleOn = !shuffleOn;
+
         shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
+
+        window.api.setSetting('shuffle', shuffleOn);
+
     });
+
     bind(loopBtn, 'click', () => {
+
         loopMode = loopMode === 'off' ? 'all' : (loopMode === 'all' ? 'one' : 'off');
+
         loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off');
+
+        window.api.setSetting('loop', loopMode);
+
     });
+
     bind(progressBar, 'click', (e) => {
+
         if (!isNaN(audio.duration)) {
+
             const rect = progressBar.getBoundingClientRect();
+
             audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+
         }
+
     });
+
     bind(volumeSlider, 'input', (e) => { audio.volume = parseFloat(e.target.value); });
+
     bind(loadFolderBtn, 'click', async () => {
+
         const result = await window.api.selectMusicFolder();
+
         if (result && result.tracks) {
+
             basePlaylist = result.tracks;
+
             playlist = [...basePlaylist];
+
             currentIndex = -1;
+
             renderPlaylist();
+
             updateUIForCurrentTrack();
+
         }
+
     });
+
     bind(searchInput, 'input', (e) => filterPlaylist(e.target.value));
+
     bind(downloadBtn, 'click', handleDownload);
+
     window.api.onDownloadProgress((data) => {
+
         if (data && typeof data.percent === 'number') {
+
             downloadProgressFill.style.width = `${data.percent.toFixed(1)}%`;
+
             downloadStatusEl.textContent = tr('statusProgress', data.percent.toFixed(1));
+
         }
+
     });
+
     langButtons.forEach(btn => {
+
         bind(btn, 'click', () => {
+
             currentLanguage = btn.dataset.lang;
+
             langButtons.forEach(b => b.classList.remove('active'));
+
             btn.classList.add('active');
+
             applyTranslations();
+
+            window.api.setSetting('language', currentLanguage);
+
         });
+
     });
+
     bind(themeSelect, 'change', (e) => {
+
         const theme = e.target.value;
+
         document.documentElement.setAttribute('data-theme', theme);
+
         window.api.setSetting('theme', theme);
+
     });
+
     bind(sortSelect, 'change', (e) => {
+
         sortMode = e.target.value;
+
         sortPlaylist(sortMode);
+
     });
+
     bind(settingsBtn, 'click', () => { settingsOverlay.style.display = 'flex'; });
+
     bind(settingsCloseBtn, 'click', () => { settingsOverlay.style.display = 'none'; });
+
     bind(settingsOverlay, 'click', (e) => { if (e.target === settingsOverlay) settingsOverlay.style.display = 'none'; });
+
     bind(changeFolderBtn, 'click', async () => {
+
         const newFolder = await window.api.selectFolder();
+
         if (newFolder) {
+
             downloadFolderInput.value = newFolder;
+
             window.api.setSetting('downloadFolder', newFolder);
+
         }
+
     });
+
     bind(qualitySelect, 'change', (e) => window.api.setSetting('audioQuality', e.target.value));
+
     bind(visualizerToggle, 'change', (e) => {
+
         visualizerEnabled = e.target.checked;
+
         window.api.setSetting('visualizerEnabled', visualizerEnabled);
+
         if (visualizerEnabled) {
+
             startVisualizer();
+
         } else {
+
             stopVisualizer();
+
         }
+
     });
+
     bind(animationToggle, 'change', (e) => {
+
         const enabled = e.target.checked;
+
         window.api.setSetting('animationsEnabled', enabled);
+
         applyAnimationSetting(enabled);
+
     });
+
     new ResizeObserver(() => {
+
         if(visualizerCanvas.width !== visualizerContainer.clientWidth) {
+
             visualizerCanvas.width = visualizerContainer.clientWidth;
+
         }
+
     }).observe(visualizerContainer);
+
 }
 
+
+
 // =================================================================================
+
 // APP INITIALIZATION
+
 // =================================================================================
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
+
     // Assign DOM elements
+
     $ = (selector) => document.querySelector(selector);
+
     trackTitleEl = $('#track-title-large');
+
     trackArtistEl = $('#track-artist-large');
+
     musicEmojiEl = $('#music-emoji');
+
     currentTimeEl = $('#current-time');
+
     durationEl = $('#duration');
+
     progressBar = $('.progress-bar');
+
     progressFill = $('.progress-fill');
+
     playBtn = $('#play-btn');
+
     playIcon = $('#play-icon');
+
     pauseIcon = $('#pause-icon');
+
     prevBtn = $('#prev-btn');
+
     nextBtn = $('#next-btn');
+
     loopBtn = $('#loop-btn');
+
     shuffleBtn = $('#shuffle-btn');
+
     volumeSlider = $('.volume-slider');
+
     volumeIcon = $('.volume-icon');
+
     playlistEl = $('.playlist-scroll-area');
+
     playlistInfoBar = $('.playlist-info-bar');
+
     loadFolderBtn = $('#load-folder-btn');
+
     searchInput = $('.playlist-search-input');
+
     sortSelect = $('#sort-select');
+
     ytUrlInput = $('#yt-url-input');
+
     ytNameInput = $('#yt-name-input');
+
     downloadBtn = $('#download-btn');
+
     downloadStatusEl = $('.status-text');
+
     downloadProgressFill = $('.yt-progress-fill');
+
     visualizerCanvas = $('#visualizer-canvas');
+
     visualizerContainer = $('.visualizer-container');
+
     langButtons = document.querySelectorAll('.lang-btn');
+
     settingsBtn = $('#settings-btn');
+
     settingsOverlay = $('#settings-overlay');
+
     settingsCloseBtn = $('#settings-close-btn');
+
     downloadFolderInput = $('#default-download-folder');
+
     changeFolderBtn = $('#change-download-folder-btn');
+
     qualitySelect = $('#audio-quality-select');
+
     themeSelect = $('#theme-select');
+
     visualizerToggle = $('#toggle-visualizer');
+
     animationToggle = $('#toggle-background-animation');
+
     backgroundAnimationEl = $('.background-animation');
 
+
+
     // Initial setup
+
     setupAudioEvents();
+
     setupEventListeners();
+
     setupVisualizer();
+
     loadSettings().then(() => {
-        // Apply theme from settings
-        const theme = settings.theme || 'blue';
-        document.documentElement.setAttribute('data-theme', theme);
-        if (themeSelect) themeSelect.value = theme;
+
+        // Apply theme and language from settings
+
+        document.documentElement.setAttribute('data-theme', settings.theme || 'blue');
+
         applyTranslations();
+
     });
+
     renderPlaylist();
+
     updatePlayPauseUI();
+
     audio.volume = currentVolume;
+
     volumeSlider.value = currentVolume;
+
     volumeIcon.innerHTML = getVolumeIcon(currentVolume);
+
 });
