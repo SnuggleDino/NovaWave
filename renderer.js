@@ -16,13 +16,18 @@ let currentLanguage = 'de';
 let settings = {};
 let sortMode = 'name'; // 'name', 'newest', 'nameDesc'
 let visualizerEnabled = true;
+let deleteSongsEnabled = false;
+let currentFolderPath = null;
+let contextTrackIndex = null;
 
 // Visualizer State
 let audioContext, analyser, sourceNode;
 let visualizerRunning = false;
 
 // DOM Elements (will be assigned on DOMContentLoaded)
-let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, animationToggle, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDownloaderBtn, downloaderPanel;
+let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, animationToggle, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDownloaderBtn, downloaderPanel, contextMenu, contextMenuEditTitle, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, autoLoadLastFolderToggle;
+
+let trackToDeletePath = null;
 
 // =================================================================================
 // TRANSLATIONS
@@ -36,7 +41,7 @@ const translations = {
 
         nothingPlaying: 'Nichts spielt', unknownArtist: 'Unbekannter Künstler',
 
-        loadFolder: 'Ordner laden', searchPlaceholder: 'Playlist durchsuchen...',
+        loadFolder: 'Ordner laden', refreshFolder: 'Aktualisieren', searchPlaceholder: 'Playlist durchsuchen...',
 
         emptyPlaylist: 'Playlist ist leer. Lade einen Ordner!',
 
@@ -48,8 +53,7 @@ const translations = {
 
         statusFolderAbort: 'Ordnerauswahl abgebrochen.', statusStarting: 'Download startet...',
 
-        statusSuccess: 'Download erfolgreich!', statusError: 'Fehler beim Download',
-
+        statusSuccess: 'Download erfolgreich!', statusError: 'Fehler beim Download', statusTitleMissing: 'Titel fehlt!',
         statusProgress: (p) => `Lade... ${p}%`,
 
         settingsTitle: 'Einstellungen', defaultDownloadFolder: 'Standard-Download-Ordner',
@@ -60,12 +64,16 @@ const translations = {
 
         backgroundAnimation: 'Hintergrundanimation',
 
-        blueTheme: 'Blau', darkTheme: 'Dunkel', lightTheme: 'Hell', blurpleTheme: 'Blurple', greyTheme: 'Grau',
+        blueTheme: 'Blau', darkTheme: 'Dunkel', lightTheme: 'Hell', blurpleTheme: 'Blurple', greyTheme: 'Grau', darkroseTheme: 'Dark Rose',
 
         shuffle: 'Zufallswiedergabe', previous: 'Zurück', playPause: 'Abspielen/Pause',
 
         next: 'Weiter', loop: 'Wiederholen', settings: 'Einstellungen', close: 'Schließen',
-        toggleDownloader: 'Downloader umschalten',
+        toggleDownloader: 'Downloader umschalten', deleteSong: 'Song löschen',
+        confirmDeleteTitle: 'Song löschen bestätigen',
+        confirmDeleteMessage: 'Möchten Sie diesen Song wirklich unwiderruflich löschen?',
+        confirmDeleteButton: 'Ja, löschen',
+        cancelDeleteButton: 'Abbrechen',
 
         theme: 'Design', visualizer: 'Visualizer', sortBy: 'Sortieren nach',
 
@@ -88,12 +96,17 @@ const translations = {
         emojiCustom: 'Benutzerdefiniert',
         customEmoji: 'Benutzerdefiniertes Emoji',
         customEmojiDescription: 'Gib ein einzelnes Emoji ein.',
+        enableDeleteSongs: 'Songs löschen aktivieren',
+        enableDeleteSongsDescription: 'Ermöglicht das Löschen von Songs aus der Playlist und vom Dateisystem.',
 
         sectionDownloads: 'Downloads',
 
         defaultDownloadFolderDescription: 'Lege den Standardordner für alle YouTube-Downloads fest.',
 
         audioQualityDescription: 'Wähle die Audioqualität für neue YouTube-Downloads.',
+
+        autoLoadLastFolder: 'Zuletzt benutzten Ordner automatisch laden',
+        autoLoadLastFolderDescription: 'Wenn aktiviert, wird der zuletzt benutzte Ordner beim Start der App automatisch geladen.',
 
     },
 
@@ -103,7 +116,7 @@ const translations = {
 
         nothingPlaying: 'Nothing Playing', unknownArtist: 'Unknown Artist',
 
-        loadFolder: 'Load Folder', searchPlaceholder: 'Search playlist...',
+        loadFolder: 'Load Folder', refreshFolder: 'Refresh', searchPlaceholder: 'Search playlist...',
 
         emptyPlaylist: 'Playlist is empty. Load a folder!',
 
@@ -115,8 +128,7 @@ const translations = {
 
         statusFolderAbort: 'Folder selection aborted.', statusStarting: 'Starting download...',
 
-        statusSuccess: 'Download successful!', statusError: 'Download error',
-
+        statusSuccess: 'Download successful!', statusError: 'Download error', statusTitleMissing: 'Title missing!',
         statusProgress: (p) => `Downloading... ${p}%`,
 
         settingsTitle: 'Settings', defaultDownloadFolder: 'Default Download Folder',
@@ -127,12 +139,16 @@ const translations = {
 
         backgroundAnimation: 'Background Animation',
 
-        blueTheme: 'Blue', darkTheme: 'Dark', lightTheme: 'Light', blurpleTheme: 'Blurple', greyTheme: 'Grey',
+        blueTheme: 'Blue', darkTheme: 'Dark', lightTheme: 'Light', blurpleTheme: 'Blurple', greyTheme: 'Grey', darkroseTheme: 'Dark Rose',
 
         shuffle: 'Shuffle', previous: 'Previous', playPause: 'Play/Pause',
 
         next: 'Next', loop: 'Loop', settings: 'Settings', close: 'Close',
-        toggleDownloader: 'Toggle Downloader',
+        toggleDownloader: 'Toggle Downloader', deleteSong: 'Delete Song',
+        confirmDeleteTitle: 'Confirm Song Deletion',
+        confirmDeleteMessage: 'Are you sure you want to permanently delete this song?',
+        confirmDeleteButton: 'Yes, Delete',
+        cancelDeleteButton: 'Cancel',
 
         theme: 'Theme', visualizer: 'Visualizer', sortBy: 'Sort By',
 
@@ -155,6 +171,8 @@ const translations = {
         emojiCustom: 'Custom',
         customEmoji: 'Custom Emoji',
         customEmojiDescription: 'Enter a single emoji.',
+        enableDeleteSongs: 'Enable Song Deletion',
+        enableDeleteSongsDescription: 'Allows deletion of songs from playlist and filesystem.',
 
         sectionDownloads: 'Downloads',
 
@@ -162,6 +180,8 @@ const translations = {
 
         audioQualityDescription: 'Choose the audio quality for new YouTube downloads.',
 
+        autoLoadLastFolder: 'Automatically load last used folder',
+        autoLoadLastFolderDescription: 'If enabled, the last used folder will be loaded automatically when the app starts.',
     }
 
 };
@@ -299,61 +319,48 @@ function updatePlayPauseUI() {
 
 
 function renderPlaylist() {
-
     if (!playlistEl) return;
-
     playlistEl.innerHTML = '';
-
     if (playlist.length === 0) {
-
         playlistEl.innerHTML = `<div class="empty-state">${tr('emptyPlaylist')}</div>`;
-
         playlistInfoBar.textContent = `0 ${tr('tracks')}`;
-
         return;
-
     }
 
     const fragment = document.createDocumentFragment();
-
     playlist.forEach((track, index) => {
-
         const row = document.createElement('div');
-
         row.className = 'track-row';
-
         if (index === currentIndex) row.classList.add('active');
 
         const playingIcon = `<svg class="track-playing-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+        const deleteButtonHtml = deleteSongsEnabled ? `
+            <button class="delete-track-btn" data-path="${track.path}" title="${tr('deleteSong')}" data-lang-title="deleteSong">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            </button>` : '';
 
         row.innerHTML = `
-
             <div class="track-index">${isPlaying && index === currentIndex ? playingIcon : index + 1}</div>
-
             <div class="track-info-block">
-
                 <div class="track-title-small">${track.title}</div>
-
                 <div class="track-artist-small">${track.artist || tr('unknownArtist')}</div>
-
             </div>
-
             <div class="track-duration">${formatTime(track.duration)}</div>
-
+            ${deleteButtonHtml}
         `;
 
         row.addEventListener('click', () => playTrack(index));
+        row.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            showContextMenu(e, index);
+        });
 
         fragment.appendChild(row);
-
     });
 
     playlistEl.appendChild(fragment);
-
     const trackCount = playlist.length;
-
     playlistInfoBar.textContent = `${trackCount} ${trackCount === 1 ? tr('track') : tr('tracks')}`;
-
 }
 
 
@@ -419,53 +426,17 @@ function applyTranslations() {
 
 
 function updateEmoji(emojiType, customEmoji) {
-
-
-
     let emoji = '🎵'; // Default
-
-
-
     if (emojiType === 'note') {
-
-
-
         emoji = '🎵';
-
-
-
     } else if (emojiType === 'dino') {
-
-
-
         emoji = '🦖';
-
-
-
     } else if (emojiType === 'custom') {
-
-
-
         if (customEmoji && customEmoji.trim() !== '') {
-
-
-
             emoji = customEmoji.trim();
-
-
-
         }
-
-
-
     }
-
-
-
     musicEmojiEl.textContent = emoji;
-
-
-
 }
 
 
@@ -608,196 +579,51 @@ function stopVisualizer() {
 
 function drawVisualizer() {
 
-
-
     if (!visualizerRunning || !isPlaying || !visualizerEnabled) {
-
-
-
         visualizerRunning = false; // Ensure it stops
-
-
-
         return;
-
-
-
     }
-
-
-
-
-
-
 
     requestAnimationFrame(drawVisualizer);
 
-
-
-
-
-
-
     const bufferLength = analyser.frequencyBinCount;
-
-
-
     const dataArray = new Uint8Array(bufferLength);
-
-
-
     analyser.getByteFrequencyData(dataArray);
 
-
-
-
-
-
-
     const ctx = visualizerCanvas.getContext('2d');
-
-
-
     const { width, height } = visualizerCanvas;
-
-
-
     ctx.clearRect(0, 0, width, height);
 
-
-
-
-
-
-
-    const barWidth = (width / bufferLength) * 1.5;
-
-
-
+    const halfBuffer = bufferLength / 2;
+    const barWidth = (width / halfBuffer) / 2;
     let x = 0;
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent');
 
-
-
-    for (let i = 0; i < bufferLength; i++) {
-
-
-
+    for (let i = 0; i < halfBuffer; i++) {
         const barHeight = (dataArray[i] / 255) * height * 0.9;
-
-
-
-        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-
-
-
-        ctx.fillRect(x, height - barHeight, barWidth, barHeight);
-
-
-
-        x += barWidth + 2;
-
-
-
+        ctx.fillStyle = accentColor;
+        // Draw right bar
+        ctx.fillRect(width / 2 + x, height - barHeight, barWidth, barHeight);
+        // Draw left bar
+        ctx.fillRect(width / 2 - x - barWidth, height - barHeight, barWidth, barHeight);
+        x += barWidth + 1; // +1 for spacing
     }
-
-
-
-
-
-
 
     // Emoji Animation
-
-
-
     if (musicEmojiEl && !isNaN(audio.currentTime)) {
-
-
-
-        // 1. Calculate bass level (e.g., avg of first 2 bins)
-
-
-
         const bassBins = dataArray.slice(0, 2);
-
-
-
         const bassLevel = bassBins.reduce((a, b) => a + b, 0) / bassBins.length;
-
-
-
-
-
-
-
-        // 2. Base floating motion (sine wave on audio time)
-
-
-
-        const floatAmplitude = 10; // pixels
-
-
-
+        const floatAmplitude = 10;
         const floatY = Math.sin(audio.currentTime * 2) * floatAmplitude;
-
-
-
-
-
-
-
-        // 3. Bass jump motion (scaling)
-
-
-
-        const bassThreshold = 180; // 0-255, needs tuning
-
-
-
+        const bassThreshold = 180;
         const bassScaleMultiplier = 0.15;
-
-
-
         let jumpScale = 1;
-
-
-
         if (bassLevel > bassThreshold) {
-
-
-
-            // Map bass level above threshold to a small scale increase
-
-
-
-            const excess = Math.min((bassLevel - bassThreshold) / 50, 1); // Cap the effect
-
-
-
+            const excess = Math.min((bassLevel - bassThreshold) / 50, 1);
             jumpScale = 1 + excess * bassScaleMultiplier;
-
-
-
         }
-
-
-
-
-
-
-
-        // 4. Apply transforms
-
-
-
         musicEmojiEl.style.transform = `translateY(${floatY}px) scale(${jumpScale})`;
-
-
-
     }
-
-
-
 }
 
 
@@ -841,6 +667,7 @@ function setupAudioEvents() {
         updateUIForCurrentTrack();
 
         startVisualizer();
+        window.api.sendPlaybackState(true);
 
     });
 
@@ -853,6 +680,7 @@ function setupAudioEvents() {
         updatePlayPauseUI();
 
         stopVisualizer();
+        window.api.sendPlaybackState(false);
 
     });
 
@@ -911,181 +739,70 @@ function setupAudioEvents() {
 
 
 async function loadSettings() {
-
-
-
     settings = await window.api.getSettings();
 
-
-
-
-
-
-
     // Audio & UI settings
-
-
-
     currentVolume = settings.volume || 0.2;
-
-
-
     audio.volume = currentVolume;
-
-
-
     shuffleOn = settings.shuffle || false;
-
-
-
     loopMode = settings.loop || 'off';
-
-
-
     currentLanguage = settings.language || 'de';
-
-
-
     
-
-
-
     // UI elements
-
-
-
-    if (downloadFolderInput) downloadFolderInput.value = settings.downloadFolder;
-
-
-
-    if (qualitySelect) qualitySelect.value = settings.audioQuality;
-
-
-
-    if (animationToggle) animationToggle.checked = settings.animationsEnabled;
-
-
-
-    if (themeSelect) themeSelect.value = settings.theme || 'blue';
-
-
-
+    if (downloadFolderInput) { downloadFolderInput.value = settings.downloadFolder; }
+    if (qualitySelect) { qualitySelect.value = settings.audioQuality; }
+    if (animationToggle) { animationToggle.checked = settings.animationsEnabled; }
+    if (themeSelect) { themeSelect.value = settings.theme || 'blue'; }
     if (visualizerToggle) {
-
-
-
         visualizerToggle.checked = settings.visualizerEnabled !== false;
-
-
-
         visualizerEnabled = settings.visualizerEnabled !== false;
-
-
-
     }
-
-
-
+    if (toggleDeleteSongs) {
+        toggleDeleteSongs.checked = settings.deleteSongsEnabled || false;
+        deleteSongsEnabled = settings.deleteSongsEnabled || false;
+    }
+    if (autoLoadLastFolderToggle) {
+        autoLoadLastFolderToggle.checked = settings.autoLoadLastFolder !== false;
+    }
+    if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
+        currentFolderPath = settings.currentFolderPath;
+        if (refreshFolderBtn) { refreshFolderBtn.disabled = false; }
+        const result = await window.api.refreshMusicFolder(currentFolderPath);
+        if (result && result.tracks) {
+            basePlaylist = result.tracks;
+            playlist = [...basePlaylist];
+            currentIndex = -1;
+            renderPlaylist();
+            updateUIForCurrentTrack();
+        }
+    } else {
+        if (refreshFolderBtn) { refreshFolderBtn.disabled = true; }
+    }
     
-
-
-
     // Emoji Settings
-
-
-
     const coverEmoji = settings.coverEmoji || 'note';
-
-
-
     const customCoverEmoji = settings.customCoverEmoji || '🎵';
-
-
-
-    if (emojiSelect) emojiSelect.value = coverEmoji;
-
-
-
-    if (customEmojiInput) customEmojiInput.value = customCoverEmoji;
-
-
-
+    if (emojiSelect) { emojiSelect.value = coverEmoji; }
+    if (customEmojiInput) { customEmojiInput.value = customCoverEmoji; }
     updateEmoji(coverEmoji, customCoverEmoji);
-
-
-
     if (customEmojiContainer) {
-
-
-
         customEmojiContainer.style.display = coverEmoji === 'custom' ? 'grid' : 'none';
-
-
-
     }
-
-
-
-
-
-
 
     // Downloader visibility
-
-
-
     const downloaderVisible = settings.downloaderVisible !== false;
-
-
-
     if (downloaderPanel) {
-
-
-
         downloaderPanel.style.display = downloaderVisible ? 'flex' : 'none';
-
-
-
     }
-
-
-
     if (toggleDownloaderBtn) {
-
-
-
         toggleDownloaderBtn.classList.toggle('mode-btn--active', downloaderVisible);
-
-
-
     }
-
-
-
-
-
-
 
     // Apply loaded settings to UI
-
-
-
-    if (backgroundAnimationEl) applyAnimationSetting(settings.animationsEnabled);
-
-
-
-    if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
-
-
-
-    if (loopBtn) loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off');
-
-
-
-    if (langButtons) langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
-
-
-
+    if (backgroundAnimationEl) { applyAnimationSetting(settings.animationsEnabled); }
+    if (shuffleBtn) { shuffleBtn.classList.toggle('mode-btn--active', shuffleOn); }
+    if (loopBtn) { loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); }
+    if (langButtons) { langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage)); }
 }
 
 
@@ -1148,34 +865,142 @@ function filterPlaylist(query) {
 
 function sortPlaylist(mode) {
 
+
+
     const sorted = [...basePlaylist];
+
+
 
     if (mode === 'name') {
 
+
+
         sorted.sort((a, b) => a.title.localeCompare(b.title, 'de', { numeric: true }));
+
+
 
     } else if (mode === 'nameDesc') {
 
+
+
         sorted.sort((a, b) => b.title.localeCompare(a.title, 'de', { numeric: true }));
+
+
 
     } else if (mode === 'newest') {
 
+
+
         // Sort by modified time (newest first) - requires mtime in track data
+
+
 
         sorted.sort((a, b) => (b.mtime || 0) - (a.mtime || 0));
 
+
+
     }
+
+
 
     basePlaylist = sorted;
 
+
+
     playlist = [...basePlaylist];
+
+
 
     const currentTrack = currentIndex >= 0 ? playlist[currentIndex] : null;
 
+
+
     currentIndex = currentTrack ? playlist.findIndex(t => t.path === currentTrack.path) : -1;
+
+
 
     renderPlaylist();
 
+
+
+}
+
+
+
+
+
+
+
+function showContextMenu(e, index) {
+
+
+
+    contextTrackIndex = index;
+
+
+
+    contextMenu.style.top = `${e.clientY}px`;
+
+
+
+    contextMenu.style.left = `${e.clientX}px`;
+
+
+
+    contextMenu.style.display = 'block';
+
+
+
+
+
+
+
+    const hideContextMenu = () => {
+
+
+
+        contextMenu.style.display = 'none';
+
+
+
+        window.removeEventListener('click', hideContextMenu);
+
+
+
+    };
+
+
+
+    window.addEventListener('click', hideContextMenu);
+
+
+
+}
+
+
+
+
+
+
+
+function handleDeleteTrack(filePath) {
+    trackToDeletePath = filePath;
+    confirmDeleteOverlay.classList.add('visible');
+
+    let countdown = 5;
+    confirmDeleteBtn.disabled = true;
+    confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${countdown})`;
+
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+            confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${countdown})`;
+        } else {
+            clearInterval(countdownInterval);
+            confirmDeleteBtn.textContent = tr('confirmDeleteButton');
+            confirmDeleteBtn.disabled = false;
+        }
+    }, 1000);
 }
 
 function setupEventListeners() {
@@ -1236,29 +1061,87 @@ function setupEventListeners() {
 
     bind(volumeSlider, 'input', (e) => { audio.volume = parseFloat(e.target.value); });
 
-    bind(loadFolderBtn, 'click', async () => {
+            bind(loadFolderBtn, 'click', async () => {
 
-        const result = await window.api.selectMusicFolder();
+                const result = await window.api.selectMusicFolder();
 
-        if (result && result.tracks) {
+                if (result && result.tracks) {
 
-            basePlaylist = result.tracks;
+                    basePlaylist = result.tracks;
 
-            playlist = [...basePlaylist];
+                    playlist = [...basePlaylist];
 
-            currentIndex = -1;
+                    currentIndex = -1;
 
-            renderPlaylist();
+                    renderPlaylist();
 
-            updateUIForCurrentTrack();
+                    updateUIForCurrentTrack();
 
-        }
+                    currentFolderPath = result.folderPath; // Save current folder path
 
-    });
+                    window.api.setSetting('currentFolderPath', currentFolderPath);
+
+                    refreshFolderBtn.disabled = false; // Enable refresh button
+
+                }
+
+            });
+
+        
+
+            bind(refreshFolderBtn, 'click', async () => {
+
+                if (!currentFolderPath) return;
+
+        
+
+                const result = await window.api.refreshMusicFolder(currentFolderPath);
+
+                if (result && result.tracks) {
+
+                    basePlaylist = result.tracks;
+
+                    playlist = [...basePlaylist];
+
+                    currentIndex = -1; // Reset current index as tracks might have changed
+
+                    renderPlaylist();
+
+                    updateUIForCurrentTrack();
+
+                } else if (result && result.error) {
+
+                    alert(`${tr('statusError')}: ${result.error}`);
+
+                }
+
+            });
 
     bind(searchInput, 'input', (e) => filterPlaylist(e.target.value));
 
     bind(downloadBtn, 'click', handleDownload);
+
+    window.api.onMediaControl((action) => {
+        switch (action) {
+            case 'play-pause':
+                if (isPlaying) {
+                    audio.pause();
+                } else {
+                    if (currentIndex === -1) {
+                        playTrack(0);
+                    } else {
+                        audio.play();
+                    }
+                }
+                break;
+            case 'next':
+                playNext();
+                break;
+            case 'previous':
+                playPrev();
+                break;
+        }
+    });
 
     window.api.onDownloadProgress((data) => {
 
@@ -1358,306 +1241,290 @@ function setupEventListeners() {
 
     });
 
+    
 
+    bind(autoLoadLastFolderToggle, 'change', (e) => {
 
-    bind(emojiSelect, 'change', (e) => {
+        const enabled = e.target.checked;
 
-        const selected = e.target.value;
-
-        customEmojiContainer.style.display = selected === 'custom' ? 'grid' : 'none';
-
-        window.api.setSetting('coverEmoji', selected);
-
-        updateEmoji(selected, customEmojiInput.value);
+        window.api.setSetting('autoLoadLastFolder', enabled);
 
     });
 
 
 
-    bind(customEmojiInput, 'input', (e) => {
+                bind(emojiSelect, 'change', (e) => {
 
-        const customEmoji = e.target.value;
 
-        window.api.setSetting('customCoverEmoji', customEmoji);
 
-        updateEmoji('custom', customEmoji);
+                    const selected = e.target.value;
 
+
+
+                    customEmojiContainer.style.display = selected === 'custom' ? 'grid' : 'none';
+
+
+
+                    window.api.setSetting('coverEmoji', selected);
+
+
+
+                    updateEmoji(selected, customEmojiInput.value);
+
+
+
+                });
+
+
+
+    
+
+
+
+            bind(customEmojiInput, 'input', (e) => {
+
+
+
+    
+
+
+
+                const customEmoji = e.target.value;
+
+
+
+    
+
+
+
+                window.api.setSetting('customCoverEmoji', customEmoji);
+
+
+
+    
+
+
+
+                updateEmoji('custom', customEmoji);
+
+
+
+    
+
+
+
+            });
+
+    bind(toggleDeleteSongs, 'change', (e) => {
+        deleteSongsEnabled = e.target.checked;
+        window.api.setSetting('deleteSongsEnabled', deleteSongsEnabled);
+        renderPlaylist(); // Re-render to show/hide delete icons
+    });
+
+    bind(playlistEl, 'click', (e) => {
+        const deleteButton = e.target.closest('.delete-track-btn');
+        if (deleteButton) {
+            e.stopPropagation(); // Prevent click from bubbling up to the track row
+            const filePath = deleteButton.dataset.path;
+            handleDeleteTrack(filePath);
+        }
     });
 
     bind(toggleDownloaderBtn, 'click', () => {
-
         const isVisible = downloaderPanel.style.display !== 'none';
-
         downloaderPanel.style.display = isVisible ? 'none' : 'flex';
-
         toggleDownloaderBtn.classList.toggle('mode-btn--active', !isVisible);
-
         window.api.setSetting('downloaderVisible', !isVisible);
-
     });
 
     new ResizeObserver(() => {
-
         if(visualizerCanvas.width !== visualizerContainer.clientWidth) {
-
             visualizerCanvas.width = visualizerContainer.clientWidth;
-
         }
-
     }).observe(visualizerContainer);
-
-}
-
-
-
-// =================================================================================
-
-// APP INITIALIZATION
-
-// =================================================================================
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
-
-
-
-    $ = (selector) => document.querySelector(selector);
-
-
-
-    trackTitleEl = $('#track-title-large');
-
-
-
-    trackArtistEl = $('#track-artist-large');
-
-
-
-    musicEmojiEl = $('#music-emoji');
-
-
-
-    currentTimeEl = $('#current-time');
-
-
-
-    durationEl = $('#duration');
-
-
-
-    progressBar = $('.progress-bar');
-
-
-
-    progressFill = $('.progress-fill');
-
-
-
-    playBtn = $('#play-btn');
-
-
-
-    playIcon = $('#play-icon');
-
-
-
-    pauseIcon = $('#pause-icon');
-
-
-
-    prevBtn = $('#prev-btn');
-
-
-
-    nextBtn = $('#next-btn');
-
-
-
-    loopBtn = $('#loop-btn');
-
-
-
-    shuffleBtn = $('#shuffle-btn');
-
-
-
-    volumeSlider = $('.volume-slider');
-
-
-
-    volumeIcon = $('.volume-icon');
-
-
-
-    playlistEl = $('.playlist-scroll-area');
-
-
-
-    playlistInfoBar = $('.playlist-info-bar');
-
-
-
-    loadFolderBtn = $('#load-folder-btn');
-
-
-
-    searchInput = $('.playlist-search-input');
-
-
-
-    sortSelect = $('#sort-select');
-
-
-
-    ytUrlInput = $('#yt-url-input');
-
-
-
-    ytNameInput = $('#yt-name-input');
-
-
-
-    downloadBtn = $('#download-btn');
-
-
-
-    downloadStatusEl = $('.status-text');
-
-
-
-    downloadProgressFill = $('.yt-progress-fill');
-
-
-
-    visualizerCanvas = $('#visualizer-canvas');
-
-
-
-    visualizerContainer = $('.visualizer-container');
-
-
-
-    langButtons = document.querySelectorAll('.lang-btn');
-
-
-
-    settingsBtn = $('#settings-btn');
-
-
-
-    settingsOverlay = $('#settings-overlay');
-
-
-
-    settingsCloseBtn = $('#settings-close-btn');
-
-
-
-    downloadFolderInput = $('#default-download-folder');
-
-
-
-    changeFolderBtn = $('#change-download-folder-btn');
-
-
-
-    qualitySelect = $('#audio-quality-select');
-
-
-
-    themeSelect = $('#theme-select');
-
-
-
-    visualizerToggle = $('#toggle-visualizer');
-
-
-
-    animationToggle = $('#toggle-background-animation');
-
-
-
-    backgroundAnimationEl = $('.background-animation');
-
-
-
-    emojiSelect = $('#emoji-select');
-
-
-
-    customEmojiContainer = $('#custom-emoji-container');
-
-
-
-    customEmojiInput = $('#custom-emoji-input');
-
-
-
-    toggleDownloaderBtn = $('#toggle-downloader-btn');
-
-
-
-    downloaderPanel = $('.extras-panel');
-
-
-
-
-
-
-
-    // Initial setup
-
-
-
-    setupAudioEvents();
-
-
-
-    setupEventListeners();
-
-
-
-    setupVisualizer();
-
-
-
-    loadSettings().then(() => {
-
-
-
-        document.documentElement.setAttribute('data-theme', settings.theme || 'blue');
-
-
-
-        applyTranslations();
-
-
-
+    
+    // Context Menu and Edit Modal Listeners
+    bind(contextMenuEditTitle, 'click', () => {
+        if (contextTrackIndex === null) return;
+        const track = playlist[contextTrackIndex];
+        originalTitlePreview.textContent = track.title;
+        newTitlePreview.textContent = track.title;
+        editTitleInput.value = track.title;
+        editTitleOverlay.classList.add('visible');
     });
 
+    bind(editTitleCancelBtn, 'click', () => {
+        editTitleOverlay.classList.remove('visible');
+    });
 
+    bind(editTitleOverlay, 'click', (e) => {
+        if (e.target === editTitleOverlay) {
+            editTitleOverlay.classList.remove('visible');
+        }
+    });
 
+    bind(editTitleInput, 'input', () => {
+        newTitlePreview.textContent = editTitleInput.value;
+    });
+
+    bind(editTitleSaveBtn, 'click', async () => {
+        if (contextTrackIndex === null || !playlist[contextTrackIndex]) return;
+        
+        const track = playlist[contextTrackIndex];
+        const newTitle = editTitleInput.value.trim();
+        
+        if (!newTitle) {
+            alert(tr('statusTitleMissing')); // Need to add this translation
+            return;
+        }
+        
+        const result = await window.api.updateTitle(track.path, newTitle);
+        
+        if (result.success) {
+            // Update the title in the local playlist data
+            track.title = newTitle;
+            
+            // Find and update in basePlaylist too, to ensure consistency for sorting/filtering
+            const baseTrack = basePlaylist.find(t => t.path === track.path);
+            if (baseTrack) {
+                baseTrack.title = newTitle;
+            }
+            
+            renderPlaylist();
+            updateUIForCurrentTrack(); // Update player display if this track is playing
+            editTitleOverlay.classList.remove('visible');
+        } else {
+            alert(`${tr('statusError')}: ${result.error}`); // Use existing statusError translation
+        }
+    });
+        
+    // Delete Confirmation Modal Listeners
+    bind(confirmDeleteCancelBtn, 'click', () => {
+        confirmDeleteOverlay.classList.remove('visible');
+        trackToDeletePath = null;
+    });
+        
+    bind(confirmDeleteBtn, 'click', async () => {
+        if (!trackToDeletePath) return;
+        
+        const result = await window.api.deleteTrack(trackToDeletePath);
+        
+        if (result.success) {
+            // Remove track from playlist and basePlaylist
+            basePlaylist = basePlaylist.filter(t => t.path !== trackToDeletePath);
+            playlist = playlist.filter(t => t.path !== trackToDeletePath);
+            
+            // Adjust currentIndex if the deleted track was before the current one
+            if (currentIndex !== -1 && playlist[currentIndex] && playlist[currentIndex].path === trackToDeletePath) {
+                // If the currently playing track was deleted, stop playback
+                audio.pause();
+                currentIndex = -1; // Reset current index
+            } else if (currentIndex !== -1 && basePlaylist.length > 0) {
+                // Adjust index for remaining tracks
+                currentIndex = playlist.findIndex(t => t.path === audio.src.replace('file:///', ''));
+                if (currentIndex === -1) { // If currently playing track is no longer in the playlist
+                    audio.pause();
+                }
+            } else {
+                audio.pause();
+                currentIndex = -1;
+            }
+            
+            renderPlaylist();
+            updateUIForCurrentTrack();
+            confirmDeleteOverlay.classList.remove('visible');
+            trackToDeletePath = null;
+        } else {
+            alert(`${tr('statusError')}: ${result.error}`);
+        }
+    });
+        
+    bind(confirmDeleteOverlay, 'click', (e) => {
+        if (e.target === confirmDeleteOverlay) {
+            confirmDeleteOverlay.classList.remove('visible');
+            trackToDeletePath = null;
+        }
+    });
+}
+
+// =================================================================================
+// APP INITIALIZATION
+// =================================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    $ = (selector) => document.querySelector(selector);
+    trackTitleEl = $('#track-title-large');
+    trackArtistEl = $('#track-artist-large');
+    musicEmojiEl = $('#music-emoji');
+    currentTimeEl = $('#current-time');
+    durationEl = $('#duration');
+    progressBar = $('.progress-bar');
+    progressFill = $('.progress-fill');
+    playBtn = $('#play-btn');
+    playIcon = $('#play-icon');
+    pauseIcon = $('#pause-icon');
+    prevBtn = $('#prev-btn');
+    nextBtn = $('#next-btn');
+    loopBtn = $('#loop-btn');
+    shuffleBtn = $('#shuffle-btn');
+    volumeSlider = $('.volume-slider');
+    volumeIcon = $('.volume-icon');
+    playlistEl = $('.playlist-scroll-area');
+    playlistInfoBar = $('.playlist-info-bar');
+    loadFolderBtn = $('#load-folder-btn');
+    refreshFolderBtn = $('#refresh-folder-btn');
+    searchInput = $('.playlist-search-input');
+    sortSelect = $('#sort-select');
+    ytUrlInput = $('#yt-url-input');
+    ytNameInput = $('#yt-name-input');
+    downloadBtn = $('#download-btn');
+    downloadStatusEl = $('.status-text');
+    downloadProgressFill = $('.yt-progress-fill');
+    visualizerCanvas = $('#visualizer-canvas');
+    visualizerContainer = $('.visualizer-container');
+    langButtons = document.querySelectorAll('.lang-btn');
+    settingsBtn = $('#settings-btn');
+    settingsOverlay = $('#settings-overlay');
+    settingsCloseBtn = $('#settings-close-btn');
+    downloadFolderInput = $('#default-download-folder');
+    changeFolderBtn = $('#change-download-folder-btn');
+    qualitySelect = $('#audio-quality-select');
+    themeSelect = $('#theme-select');
+    visualizerToggle = $('#toggle-visualizer');
+    animationToggle = $('#toggle-background-animation');
+    backgroundAnimationEl = $('.background-animation');
+    emojiSelect = $('#emoji-select');
+    customEmojiContainer = $('#custom-emoji-container');
+    customEmojiInput = $('#custom-emoji-input');
+    toggleDeleteSongs = $('#toggle-delete-songs');
+    toggleDownloaderBtn = $('#toggle-downloader-btn');
+    downloaderPanel = $('.extras-panel');
+    contextMenu = $('#context-menu');
+    contextMenuEditTitle = $('#context-menu-edit-title');
+    editTitleOverlay = $('#edit-title-overlay');
+    editTitleInput = $('#edit-title-input');
+    originalTitlePreview = $('#original-title-preview');
+    newTitlePreview = $('#new-title-preview');
+    editTitleCancelBtn = $('#edit-title-cancel-btn');
+    editTitleSaveBtn = $('#edit-title-save-btn');
+    confirmDeleteOverlay = $('#confirm-delete-overlay');
+    confirmDeleteBtn = $('#confirm-delete-btn');
+    confirmDeleteCancelBtn = $('#confirm-delete-cancel-btn');
+    autoLoadLastFolderToggle = $('#toggle-auto-load-last-folder');
+
+    // Initial setup
+    setupAudioEvents();
+    setupEventListeners();
+    setupVisualizer();
+    loadSettings().then(() => {
+        document.documentElement.setAttribute('data-theme', settings.theme || 'blue');
+        applyTranslations();
+    });
     renderPlaylist();
-
-
-
     updatePlayPauseUI();
-
-
-
     audio.volume = currentVolume;
-
-
-
     volumeSlider.value = currentVolume;
-
-
-
     volumeIcon.innerHTML = getVolumeIcon(currentVolume);
-
-
-
 });
 let trackRowElements = [];
 

@@ -38,6 +38,7 @@
   "dependencies": {
     "electron-store": "^11.0.2",
     "music-metadata": "^11.10.3",
+    "node-id3": "^0.2.9",
     "yt-dlp-wrap": "^2.3.12"
   }
 }

@@ -99,6 +99,7 @@
                         <div class="playlist-top-row">
                             <h2 class="panel-title" style="margin:0; border:none;" data-lang-key="playlistTitle"></h2>
                             <button id="load-folder-btn" class="load-btn" data-lang-key="loadFolder"></button>
+                            <button id="refresh-folder-btn" class="load-btn" data-lang-key="refreshFolder"></button>
                         </div>
                     <div class="playlist-toolbar">
                         <input type="text" class="playlist-search-input" data-lang-placeholder="searchPlaceholder">
@@ -144,6 +145,7 @@
                                 <option value="light" data-lang-key="lightTheme"></option>
                                 <option value="blurple" data-lang-key="blurpleTheme"></option>
                                 <option value="grey" data-lang-key="greyTheme"></option>
+                                <option value="darkrose" data-lang-key="darkroseTheme"></option>
                             </select>
                         </div>
                     </div>
@@ -189,13 +191,25 @@
                             </select>
                         </div>
                     </div>
-                    <div class="setting-item" id="custom-emoji-container" style="display: none;">
+                    <div class="setting-item" id="custom-emoji-container">
                         <div class="setting-label">
                             <strong data-lang-key="customEmoji"></strong>
                             <p data-lang-key="customEmojiDescription"></p>
                         </div>
                         <div class="setting-control">
                             <input type="text" id="custom-emoji-input" class="settings-input" placeholder="🎵">
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong data-lang-key="enableDeleteSongs"></strong>
+                            <p data-lang-key="enableDeleteSongsDescription"></p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-delete-songs">
+                                <span class="slider"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -227,6 +241,75 @@
                                 <option value="standard" data-lang-key="qualityStandard"></option>
                             </select>
                         </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong data-lang-key="autoLoadLastFolder"></strong>
+                            <p data-lang-key="autoLoadLastFolderDescription"></p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-auto-load-last-folder">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="context-menu" class="context-menu">
+        <ul>
+            <li id="context-menu-edit-title">Titel bearbeiten</li>
+        </ul>
+    </div>
+    <div id="edit-title-overlay" class="overlay-container">
+        <div class="glass-panel settings-modal">
+            <div class="settings-header">
+                <h3>Titel bearbeiten</h3>
+            </div>
+            <div class="settings-content">
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Neuer Titel</strong>
+                        <p>Geben Sie den neuen Titel für den Song ein.</p>
+                    </div>
+                    <div class="setting-control">
+                        <input type="text" id="edit-title-input" class="settings-input">
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <strong>Vorschau</strong>
+                        <p>So wird der Titel angezeigt.</p>
+                    </div>
+                    <div class="setting-control" style="flex-direction: column; align-items: flex-start;">
+                        <p><strong>Original:</strong> <span id="original-title-preview"></span></p>
+                        <p><strong>Neu:</strong> <span id="new-title-preview"></span></p>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label"></div>
+                    <div class="setting-control" style="gap: 10px;">
+                        <button id="edit-title-cancel-btn" class="settings-button">Abbrechen</button>
+                        <button id="edit-title-save-btn" class="settings-button primary-btn">Speichern</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="confirm-delete-overlay" class="overlay-container">
+        <div class="glass-panel settings-modal">
+            <div class="settings-header">
+                <h3 data-lang-key="confirmDeleteTitle"></h3>
+            </div>
+            <div class="settings-content">
+                <p class="confirm-message" data-lang-key="confirmDeleteMessage"></p>
+                <div class="setting-item">
+                    <div class="setting-label"></div>
+                    <div class="setting-control" style="gap: 10px;">
+                        <button id="confirm-delete-cancel-btn" class="settings-button" data-lang-key="cancelDeleteButton"></button>
+                        <button id="confirm-delete-btn" class="settings-button primary-btn" data-lang-key="confirmDeleteButton" disabled></button>
                     </div>
                 </div>
             </div>

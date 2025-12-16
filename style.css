@@ -66,6 +66,18 @@
     --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
+:root[data-theme="darkrose"] {
+    --bg-main: #100f10;
+    --bg-card: #1c1b1c;
+    --bg-card-light: #282728;
+    --accent: #e04f99;
+    --accent-soft: rgba(224, 79, 153, 0.15);
+    --text-main: #f2f2f2;
+    --text-muted: #a3a3a3;
+    --border-soft: rgba(224, 79, 153, 0.2);
+    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
 /* =========================================
    RESET & GRUNDLAGEN
    ========================================= */
@@ -494,6 +506,11 @@ input[type=range].volume-slider::-moz-range-thumb {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.settings-select option {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+}
+
 .settings-select:hover, .settings-input-readonly:hover, .settings-input:hover {
     border-color: var(--accent);
 }
@@ -718,3 +735,97 @@ input:checked + .slider:before { transform: translateX(16px); }
   .glass-panel { padding: 8px; }
   .panel-title { font-size: 0.75rem; margin-bottom: 6px; }
 }
+/* =========================================
+   CONTEXT MENU
+   ========================================= */
+
+.context-menu {
+    position: fixed;
+    z-index: 1000;
+    width: 200px;
+    background: var(--bg-card);
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: none;
+    padding: 5px;
+}
+
+.context-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.context-menu ul li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.context-menu ul li:hover {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+
+.delete-track-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.delete-track-btn:hover {
+    color: var(--accent); /* Maybe a red accent later */
+}
+
+.delete-track-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+/* Specific styling for the delete icon to be red */
+.delete-track-btn svg.feather-x-circle {
+    color: #ef4444; /* A shade of red for delete actions */
+}
+
+.delete-track-btn:hover svg.feather-x-circle {
+    color: #dc2626; /* Darker red on hover */
+}
+
+
+.confirm-message {
+    font-size: 1rem;
+    color: var(--text-main);
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* =========================================
+   LIGHT THEME READABILITY FIX
+   ========================================= */
+
+:root[data-theme="light"] .setting-label strong {
+    color: #111827; /* Zwingt den Titel des Einstellungselements zu dunklem Text */
+}
+
+:root[data-theme="light"] .setting-label p {
+    color: #4b5563; /* Zwingt den Beschreibungstext des Einstellungselements zu ged�mpftem dunklem Text */
+}
+
+:root[data-theme="light"] .settings-select {
+    color: #111827;
+    background-color: #e5e7eb; /* Macht den Hintergrund des Auswahlfeldes etwas dunkler f�r besseren Kontrast */
+}
+
