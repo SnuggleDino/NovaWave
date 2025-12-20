@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
-    // --- Musik & Player ---
+    // --- Music & Player ---
     selectMusicFolder: () => ipcRenderer.invoke('select-music-folder'),
     refreshMusicFolder: (folderPath) => ipcRenderer.invoke('refresh-music-folder', folderPath),
     updateTitle: (filePath, newTitle) => ipcRenderer.invoke('update-title', filePath, newTitle),
@@ -21,7 +21,7 @@ contextBridge.exposeInMainWorld('api', {
         ipcRenderer.send('playback-state', isPlaying);
     },
 
-    // --- Einstellungen ---
+    // --- Settings ---
     getSettings: () => ipcRenderer.invoke('get-settings'),
     setSetting: (key, value) => ipcRenderer.invoke('set-setting', key, value),
     selectFolder: () => ipcRenderer.invoke('select-folder'),

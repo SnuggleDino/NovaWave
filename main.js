@@ -6,7 +6,7 @@ const fs = require('fs').promises;
 const YTDlpWrap = require('yt-dlp-wrap').default;
 const NodeID3 = require('node-id3');
 
-// --- Electron-Konfiguration ---
+// --- Electron-Config ---
 app.commandLine.appendSwitch('--disk-cache-size', '0');
 app.commandLine.appendSwitch('--disable-gpu-shader-disk-cache');
 

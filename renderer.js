@@ -1,4 +1,3 @@
-// renderer.js - v2.4 (Christmas Edition)
 // =================================================================================
 // STATE & GLOBALS
 // =================================================================================
@@ -518,14 +517,14 @@ function setupEventListeners() {
         bind(emojiSelect, 'change', (e) => {
             const v = e.target.value;
             if (customEmojiContainer) customEmojiContainer.style.display = v === 'custom' ? 'flex' : 'none';
-            settings.coverEmoji = v; // Lokalen State sofort aktualisieren
+            settings.coverEmoji = v;
             window.api.setSetting('coverEmoji', v);
             updateEmoji(v, customEmojiInput ? customEmojiInput.value : '');
         });
         
         bind(customEmojiInput, 'input', (e) => {
             const v = e.target.value;
-            settings.customCoverEmoji = v; // Lokalen State sofort aktualisieren
+            settings.customCoverEmoji = v;
             window.api.setSetting('customCoverEmoji', v);
             updateEmoji('custom', v);
         });

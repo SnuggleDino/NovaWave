@@ -1,6 +1,4 @@
-﻿/* style.css - v2.4 */
-
-/* =========================================
+﻿/* =========================================
    THEME & FARBEN
    ========================================= */
 
@@ -42,7 +40,6 @@
     --shadow-soft: 0 20px 50px rgba(0, 15, 5, 0.8);
 }
 
-/* Dinolove Background Gradient Override - Much Darker */
 :root[data-theme="dinolove"] body {
     background: linear-gradient(160deg, #061f10 0%, #000000 50%);
     background-attachment: fixed;
@@ -100,16 +97,16 @@
     --bg-main: #05110a;
     --bg-card: rgba(20, 45, 30, 0.9);
     --bg-card-light: rgba(30, 70, 45, 0.6);
-    --accent: #ef4444; /* Weihnachtliches Rot */
+    --accent: #ef4444; 
     --accent-soft: rgba(239, 68, 68, 0.2);
-    --text-main: #fefce8; /* Creme-Weiß */
-    --text-muted: #86efac; /* Helles Grün */
-    --border-soft: rgba(234, 179, 8, 0.3); /* Goldene Ränder */
+    --text-main: #fefce8;
+    --text-muted: #86efac; 
+    --border-soft: rgba(234, 179, 8, 0.3);
     --shadow-soft: 0 20px 50px rgba(0, 30, 10, 0.6);
 }
 
 /* =========================================
-   RESET & GRUNDLAGEN
+   RESET & BASE
    ========================================= */
 
 * {
@@ -139,7 +136,7 @@ input, textarea { user-select: text; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* =========================================
-   HINTERGRUND ANIMATION
+   BACKGROUND ANIMATION
    ========================================= */
 
 .background-animation {
@@ -226,7 +223,7 @@ input, textarea { user-select: text; }
 .background-animation.type-xmas::before {
     content: '';
     position: absolute;
-    width: 100%; height: 200%; /* Doppelte Höhe für nahtloses Scrollen */
+    width: 100%; height: 200%;
     top: -100%;
     background-image: 
         radial-gradient(4px 4px at 100px 50px, #fff, transparent),
@@ -243,7 +240,7 @@ input, textarea { user-select: text; }
 
 @keyframes snow-fall {
     from { transform: translateY(0); }
-    to { transform: translateY(50%); } /* Bewegt sich um die Hälfte der 200% Höhe */
+    to { transform: translateY(50%); }
 }
 
 .setting-item.hidden {
@@ -279,7 +276,6 @@ input, textarea { user-select: text; }
     50% { background-position: 0% 100%; transform: skewY(10deg); }
 }
 
-/* DINOLOVE Specific Fixes */
 :root[data-theme="dinolove"] .lang-btn.active {
     color: #ffffff !important;
     text-shadow: 0 0 10px var(--accent);
@@ -318,7 +314,7 @@ input, textarea { user-select: text; }
     font-size: 1.1rem; 
     font-weight: 600; 
     letter-spacing: 0.5px; 
-    color: var(--text-main); /* Sicherstellen, dass der Titel weiÃŸ/hell ist */
+    color: var(--text-main);
 }
 .app-title-text p { font-size: 0.75rem; color: var(--text-muted); }
 
@@ -353,14 +349,14 @@ input, textarea { user-select: text; }
   gap: 24px;
   padding: 24px;
   overflow: hidden;
-  min-height: 0; /* Verhindert, dass das Grid Ã¼berlÃ¤uft */
+  min-height: 0;
 }
 
 .player-column, .extras-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  overflow: hidden; /* Verhindert, dass die Spalten ihren Inhalt Ã¼berlaufen lassen */
+  overflow: hidden;
 }
 
 .player-column {
@@ -411,7 +407,7 @@ input, textarea { user-select: text; }
 .track-info-area { 
     display: flex;
     flex-direction: column;
-    align-items: center; /* Standard: Zentriert */
+    align-items: center;
     width: 100%;
     overflow: hidden;
     margin-top: 20px;
@@ -423,14 +419,14 @@ input, textarea { user-select: text; }
     margin-bottom: 4px;
     white-space: nowrap; 
     display: block;
-    width: max-content; /* Nimmt die tatsÃ¤chliche Textbreite an */
+    width: max-content;
     padding: 0 20px;
     will-change: transform;
     text-align: center;
 }
 
 .track-title-large.animating {
-    align-self: flex-start; /* Springt an den linken Rand fÃ¼r den Scroll-Start */
+    align-self: flex-start;
     text-align: left;
     animation: title-scroll 12s ease-in-out infinite alternate;
 }
@@ -500,7 +496,7 @@ input[type=range].volume-slider::-moz-range-thumb {
 }
 
 /* =========================================
-   EXTRAS SPALTE
+   EXTRAS PANEL
    ========================================= */
 
 .panel-title {
@@ -589,7 +585,7 @@ input[type=range].volume-slider::-moz-range-thumb {
 
 
 /* =========================================
-   SETTINGS MODAL (NEW)
+   SETTINGS MODAL
    ========================================= */
 
 .overlay-container {
@@ -720,7 +716,6 @@ input[type=range].volume-slider::-moz-range-thumb {
     justify-content: flex-end;
 }
 
-/* Specific button style for settings */
 .settings-button {
     padding: 8px 16px;
     font-weight: 600;
@@ -728,7 +723,6 @@ input[type=range].volume-slider::-moz-range-thumb {
     font-size: 0.8rem;
 }
 
-/* New Input Styles */
 .settings-select, .settings-input-readonly, .settings-input, .settings-range, .settings-color-picker {
     width: 100%;
     background: rgba(0,0,0,0.2);
@@ -804,7 +798,7 @@ input[type=range].volume-slider::-moz-range-thumb {
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     z-index: 100;
-    opacity: 0.4; /* Immer leicht sichtbar */
+    opacity: 0.4;
     transition: all 0.3s ease;
 }
 
@@ -851,7 +845,7 @@ body.focus-active .visualizer-container {
 
 body.focus-active #visualizer-canvas {
     width: 100vw;
-    height: 60vh; /* Visualizer schön groß in der Mitte */
+    height: 60vh;
 }
 
 body.focus-active .focus-mode-btn {
@@ -887,7 +881,7 @@ body.focus-active .focus-mode-btn:hover {
 
 .input-group input {
     flex-grow: 1;
-    min-width: 0; /* Prevents overflow in flex */
+    min-width: 0;
 }
 
 .settings-button {
@@ -1142,7 +1136,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 .delete-track-btn:hover {
-    color: var(--accent); /* Maybe a red accent later */
+    color: var(--accent);
 }
 
 .delete-track-btn svg {
@@ -1152,13 +1146,12 @@ input:checked + .slider:before { transform: translateX(16px); }
     stroke-width: 2;
 }
 
-/* Specific styling for the delete icon to be red */
 .delete-track-btn svg.feather-x-circle {
-    color: #ef4444; /* A shade of red for delete actions */
+    color: #ef4444;
 }
 
 .delete-track-btn:hover svg.feather-x-circle {
-    color: #dc2626; /* Darker red on hover */
+    color: #dc2626;
 }
 
 
@@ -1175,7 +1168,7 @@ input:checked + .slider:before { transform: translateX(16px); }
    ========================================= */
 
 #edit-title-overlay .settings-modal {
-    max-width: 800px; /* Noch breiter fÃ¼r optimale Lesbarkeit */
+    max-width: 800px;
 }
 
 .edit-preview-box {
@@ -1206,7 +1199,7 @@ input:checked + .slider:before { transform: translateX(16px); }
     font-size: 1rem;
     font-weight: 600;
     color: var(--text-main);
-    word-break: break-all; /* Erlaubt UmbrÃ¼che bei extrem langen WÃ¶rtern */
+    word-break: break-all;
     display: block;
 }
 
@@ -1222,16 +1215,16 @@ input:checked + .slider:before { transform: translateX(16px); }
    ========================================= */
 
 :root[data-theme="light"] .setting-label strong {
-    color: #111827; /* Zwingt den Titel des Einstellungselements zu dunklem Text */
+    color: #111827;
 }
 
 :root[data-theme="light"] .setting-label p {
-    color: #4b5563; /* Zwingt den Beschreibungstext des Einstellungselements zu gedmpftem dunklem Text */
+    color: #4b5563;
 }
 
 :root[data-theme="light"] .settings-select {
     color: #111827;
-    background-color: #e5e7eb; /* Macht den Hintergrund des Auswahlfeldes etwas dunkler fr besseren Kontrast */
+    background-color: #e5e7eb;
 }
 
 /* =========================================
@@ -1249,7 +1242,7 @@ input:checked + .slider:before { transform: translateX(16px); }
       justify-content: center; 
       height: 32px; 
       padding: 0 4px;
-      -webkit-app-region: drag; /* Make whole header draggable */
+      -webkit-app-region: drag;
   }
   .header-right { 
       gap: 0; 
@@ -1257,10 +1250,8 @@ input:checked + .slider:before { transform: translateX(16px); }
       width: 100%;
   }
   
-  /* Hide everything except the first item (Mini Player Toggle) */
   .header-right .header-item:not(:first-child) { display: none !important; }
   
-  /* Remove borders and margins from the remaining item to center it perfectly */
   .header-right .header-item {
       border-right: none;
       margin-right: 0;
@@ -1275,7 +1266,6 @@ input:checked + .slider:before { transform: translateX(16px); }
       padding-right: 0;
   }
   
-  /* Optimize Player Layout */
   .main-grid { 
       padding: 10px; 
       grid-template-columns: 1fr;
@@ -1325,16 +1315,16 @@ input:checked + .slider:before { transform: translateX(16px); }
     position: fixed;
     top: 20px;
     left: 50%;
-    transform: translate(-50%, calc(-100% - 40px)); /* Zentriert und oben aus dem Bild */
+    transform: translate(-50%, calc(-100% - 40px)); 
     opacity: 0;
     background: var(--bg-card);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border-soft);
-    border-radius: 30px; /* Abgerundeter Look (Pille) */
+    border-radius: 30px; 
     padding: 10px 24px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    z-index: 30000; /* Ganz oben */
+    z-index: 30000; /* Positioning of the Notification Bar after */
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     display: flex;
     align-items: center;
@@ -1375,7 +1365,7 @@ input:checked + .slider:before { transform: translateX(16px); }
     stroke: var(--accent);
     stroke-width: 3;
     stroke-linecap: round;
-    stroke-dasharray: 62.83; /* 2 * PI * r (r=10) */
+    stroke-dasharray: 62.83;
     stroke-dashoffset: 62.83;
 }
 
