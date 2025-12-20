@@ -96,6 +96,18 @@
     --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
+:root[data-theme="xmas"] {
+    --bg-main: #05110a;
+    --bg-card: rgba(20, 45, 30, 0.9);
+    --bg-card-light: rgba(30, 70, 45, 0.6);
+    --accent: #ef4444; /* Weihnachtliches Rot */
+    --accent-soft: rgba(239, 68, 68, 0.2);
+    --text-main: #fefce8; /* Creme-Weiß */
+    --text-muted: #86efac; /* Helles Grün */
+    --border-soft: rgba(234, 179, 8, 0.3); /* Goldene Ränder */
+    --shadow-soft: 0 20px 50px rgba(0, 30, 10, 0.6);
+}
+
 /* =========================================
    RESET & GRUNDLAGEN
    ========================================= */
@@ -182,6 +194,62 @@ input, textarea { user-select: text; }
     mix-blend-mode: screen;
 }
 
+/* --- Animation 4: Stellar (Sparkling Stars) --- */
+.background-animation.type-stellar::before {
+    content: '';
+    position: absolute;
+    width: 100%; height: 100%;
+    background-image: 
+        radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 50px 160px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0));
+    background-size: 200px 200px;
+    animation: stellar-twinkle 10s linear infinite;
+    opacity: 0.3;
+}
+
+/* --- Animation 5: Aurora (Wave Lights) --- */
+.background-animation.type-aurora::before {
+    content: '';
+    position: absolute;
+    width: 100%; height: 100%;
+    background: linear-gradient(0deg, transparent, var(--accent-soft), transparent);
+    background-size: 100% 300%;
+    animation: aurora-move 20s ease-in-out infinite;
+    opacity: 0.4;
+    filter: blur(60px);
+}
+
+/* --- Animation 6: Snowfall (Christmas Special) --- */
+.background-animation.type-xmas::before {
+    content: '';
+    position: absolute;
+    width: 100%; height: 200%; /* Doppelte Höhe für nahtloses Scrollen */
+    top: -100%;
+    background-image: 
+        radial-gradient(4px 4px at 100px 50px, #fff, transparent),
+        radial-gradient(6px 6px at 200px 150px, #fff, transparent),
+        radial-gradient(3px 3px at 300px 250px, #fff, transparent),
+        radial-gradient(4px 4px at 400px 350px, #fff, transparent),
+        radial-gradient(5px 5px at 500px 100px, #fff, transparent),
+        radial-gradient(6px 6px at 600px 450px, #fff, transparent),
+        radial-gradient(3px 3px at 700px 50px, #fff, transparent);
+    background-size: 800px 800px;
+    animation: snow-fall 20s linear infinite;
+    opacity: 0.4;
+}
+
+@keyframes snow-fall {
+    from { transform: translateY(0); }
+    to { transform: translateY(50%); } /* Bewegt sich um die Hälfte der 200% Höhe */
+}
+
+.setting-item.hidden {
+    display: none !important;
+}
+
 @keyframes background-flow {
     0%   { background-position: 0% 0%; }
     25%  { background-position: 100% 25%; }
@@ -198,6 +266,17 @@ input, textarea { user-select: text; }
 @keyframes rainbow-flow {
     0% { background-position: 0% 100%; }
     100% { background-position: 100% 0%; }
+}
+
+@keyframes stellar-twinkle {
+    0% { transform: scale(1); opacity: 0.2; }
+    50% { transform: scale(1.1); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 0.2; }
+}
+
+@keyframes aurora-move {
+    0%, 100% { background-position: 0% 0%; transform: skewY(0deg); }
+    50% { background-position: 0% 100%; transform: skewY(10deg); }
 }
 
 /* DINOLOVE Specific Fixes */
