@@ -1122,7 +1122,9 @@ input:checked + .slider:before { transform: translateX(16px); }
 .notification-bar {
     position: fixed;
     bottom: 30px;
-    left: -400px; /* Hidden off-screen left */
+    left: 30px;
+    transform: translateX(calc(-100% - 40px)); /* Sicher aus dem Bild geschoben */
+    opacity: 0;
     background: var(--bg-card);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
@@ -1131,14 +1133,18 @@ input:checked + .slider:before { transform: translateX(16px); }
     padding: 12px 20px;
     box-shadow: var(--shadow-soft);
     z-index: 10000;
-    transition: left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     display: flex;
     align-items: center;
     min-width: 250px;
+    max-width: 350px; /* Breite begrenzen */
+    pointer-events: none; /* Klicks blockieren, wenn versteckt */
 }
 
 .notification-bar.visible {
-    left: 30px;
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .notification-content {

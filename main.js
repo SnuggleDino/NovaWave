@@ -62,6 +62,7 @@ async function main() {
             theme: 'blue',
             visualizerEnabled: true,
             visualizerStyle: 'bars',
+            visSensitivity: 1.5,
             coverEmoji: 'note',
             customCoverEmoji: '🎵',
             autoLoadLastFolder: true,

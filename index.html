@@ -229,6 +229,20 @@
                     <h4 class="settings-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> <span data-lang-key="sectionPlayer"></span></h4>
                     <div class="setting-item">
                         <div class="setting-label">
+                            <strong data-lang-key="sleepTimer"></strong>
+                            <p data-lang-key="sleepTimerDesc"></p>
+                        </div>
+                        <div class="setting-control">
+                            <select id="sleep-timer-select" class="settings-select">
+                                <option value="0" data-lang-key="timerOff"></option>
+                                <option value="15">15 Min</option>
+                                <option value="30">30 Min</option>
+                                <option value="60">60 Min</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
                             <strong data-lang-key="visualizer"></strong>
                             <p data-lang-key="visualizerDescription"></p>
                         </div>
@@ -252,6 +266,15 @@
                                 <option value="dinopulse" data-lang-key="visDino"></option>
                                 <option value="retro" data-lang-key="visRetro"></option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong data-lang-key="visSensitivity"></strong>
+                            <p data-lang-key="visSensitivityDesc"></p>
+                        </div>
+                        <div class="setting-control">
+                            <input type="range" id="visualizer-sensitivity" class="settings-range" min="0.5" max="4" step="0.1" value="1.5">
                         </div>
                     </div>
                     <div class="setting-item">

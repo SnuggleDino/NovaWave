@@ -19,6 +19,9 @@ let deleteSongsEnabled = false;
 let currentFolderPath = null;
 let contextTrackIndex = null;
 let currentVisualizerStyle = 'bars';
+let visSensitivity = 1.5;
+let sleepTimerId = null;
+let lastNotifiedPath = null;
 
 // Visualizer State
 let audioContext, analyser, sourceNode;
@@ -26,7 +29,7 @@ let visualizerDataArray;
 let visualizerRunning = false;
 
 // DOM Elements
-let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout;
+let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout;
 
 let trackToDeletePath = null;
 let renderPlaylistRequestId = null;
@@ -66,6 +69,12 @@ const translations = {
         visPrism: 'Prisma-Wellen',
         visDino: 'Dino-Retro-Jump',
         visRetro: 'Retro-Pixel',
+        visSensitivity: 'Visualizer Empfindlichkeit',
+        visSensitivityDesc: 'Stelle ein, wie stark der Visualizer auf Musik reagiert.',
+        sleepTimer: 'Sleep Timer',
+        sleepTimerDesc: 'Stoppt die Musik automatisch nach der gewählten Zeit.',
+        timerOff: 'Aus',
+        nowPlaying: 'Jetzt läuft',
         sortNewest: 'Zuletzt geändert', sortNameAZ: 'Name A-Z', sortNameZA: 'Name Z-A',
         sectionAppearance: 'Erscheinungsbild',
         themeDescription: 'Passe das Aussehen und die Farbgebung der App an.',
@@ -129,6 +138,12 @@ const translations = {
         visPrism: 'Prism Waves',
         visDino: 'Dino-Retro-Jump',
         visRetro: 'Retro Pixels',
+        visSensitivity: 'Visualizer Sensitivity',
+        visSensitivityDesc: 'Adjust how much the visualizer reacts to the music.',
+        sleepTimer: 'Sleep Timer',
+        sleepTimerDesc: 'Automatically stops the music after the selected time.',
+        timerOff: 'Off',
+        nowPlaying: 'Now Playing',
         sortNewest: 'Recently Modified', sortNameAZ: 'Name A-Z', sortNameZA: 'Name Z-A',
         sectionAppearance: 'Appearance',
         themeDescription: 'Customize the look and feel of the application.',
@@ -206,7 +221,7 @@ function playPrev() {
 // UI & DOM MANIPULATION
 // =================================================================================
 
-function updateUIForCurrentTrack() {
+async function updateUIForCurrentTrack() {
     if (currentIndex === -1 || !playlist[currentIndex]) {
         if (trackTitleEl) trackTitleEl.textContent = tr('nothingPlaying');
         if (trackArtistEl) trackArtistEl.textContent = '...';
@@ -224,6 +239,12 @@ function updateUIForCurrentTrack() {
 
     updateActiveTrackInPlaylist();
     updateTrackTitleScroll();
+
+    // Now Playing Notification - nur bei neuem Track
+    if (isPlaying && lastNotifiedPath !== track.path) {
+        showNotification(`${tr('nowPlaying')}: ${track.title}`);
+        lastNotifiedPath = track.path;
+    }
 }
 
 function updatePlayPauseUI() {
@@ -381,6 +402,7 @@ function setupVisualizer() {
         sourceNode = audioContext.createMediaElementSource(audio);
         analyser = audioContext.createAnalyser();
         analyser.fftSize = 256;
+        updateAnalyserSettings(); // Direkt beim Setup anwenden
         sourceNode.connect(analyser);
         analyser.connect(audioContext.destination);
         visualizerDataArray = new Uint8Array(analyser.frequencyBinCount);
@@ -405,6 +427,15 @@ function stopVisualizer() {
     }
 }
 
+function updateAnalyserSettings() {
+    if (!analyser) return;
+    analyser.smoothingTimeConstant = 0.6; // Etwas weicher für bessere Optik
+    
+    // maxDecibels: Bereich etwas nach oben verschoben (weniger aggressiv)
+    const dbValue = -20 - (visSensitivity * 12);
+    analyser.maxDecibels = dbValue;
+}
+
 function drawVisualizer() {
     if (!visualizerRunning || !isPlaying || !visualizerEnabled || !analyser || !visualizerDataArray) { 
         visualizerRunning = false; 
@@ -419,11 +450,14 @@ function drawVisualizer() {
     const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#38bdf8';
     analyser.getByteFrequencyData(visualizerDataArray);
 
+    // Boost-Faktor für harmonischere Ausschläge angepasst
+    const boost = 1 + (visSensitivity * 0.12);
+
     if (currentVisualizerStyle === 'bars') {
         const bl = analyser.frequencyBinCount, hb = bl / 2, bw = (width / hb) / 2;
         let x = 0;
         for (let i = 0; i < hb; i++) {
-            const bh = (visualizerDataArray[i] / 255) * height * 0.9;
+            const bh = (visualizerDataArray[i] / 255) * height * 0.95 * boost;
             ctx.fillStyle = ac;
             ctx.fillRect(width / 2 + x, height - bh, bw, bh);
             ctx.fillRect(width / 2 - x - bw, height - bh, bw, bh);
@@ -439,7 +473,7 @@ function drawVisualizer() {
         ctx.stroke();
 
         for (let i = 0; i < visualizerDataArray.length; i += 4) {
-            const bh = (visualizerDataArray[i] / 255) * radius * 0.6;
+            const bh = (visualizerDataArray[i] / 255) * radius * 0.7 * boost;
             const angle = (i / visualizerDataArray.length) * (Math.PI * 2);
             const x1 = centerX + Math.cos(angle) * radius;
             const y1 = centerY + Math.sin(angle) * radius;
@@ -455,7 +489,7 @@ function drawVisualizer() {
         }
     } else if (currentVisualizerStyle === 'prism') {
         const blv = (visualizerDataArray[0] + visualizerDataArray[4]) / 2;
-        const amplitude = (blv / 255) * (height / 2.2);
+        const amplitude = (blv / 255) * (height / 2.1) * boost;
         ctx.strokeStyle = ac;
         ctx.lineWidth = 4;
         ctx.lineCap = 'round';
@@ -472,8 +506,10 @@ function drawVisualizer() {
             for (let i = 0; i <= width; i += 20) {
                 const fadeArea = width * 0.2;
                 const edgeFade = Math.min(i / fadeArea, (width - i) / fadeArea, 1);
+                
                 const x = i;
                 const y = startY + Math.sin((i * 0.005) + time + (j * 0.8)) * (amplitude + (j * 15)) * edgeFade;
+                
                 const cp1x = x - 10;
                 const cp1y = y;
                 ctx.quadraticCurveTo(cp1x, cp1y, x, y);
@@ -483,7 +519,7 @@ function drawVisualizer() {
         ctx.globalAlpha = 1.0;
     } else if (currentVisualizerStyle === 'dinopulse') {
         const blv = (visualizerDataArray[0] + visualizerDataArray[1] + visualizerDataArray[2]) / 3;
-        const bass = blv / 255;
+        const bass = (blv / 255) * boost;
         const centerX = width / 2;
         
         // Bodenlinie & Balken
@@ -492,7 +528,7 @@ function drawVisualizer() {
         ctx.fillRect(0, height - 20, width, 2); 
 
         for(let i=0; i<bars; i++) {
-            const h = (visualizerDataArray[i*4] / 255) * (height * 0.4);
+            const h = (visualizerDataArray[i*4] / 255) * (height * 0.45) * boost;
             ctx.fillStyle = `${ac}33`;
             ctx.fillRect(i*bw, height - h, bw-2, h);
         }
@@ -520,7 +556,7 @@ function drawVisualizer() {
 
         // Dino
         const dx = centerX - 40;
-        const jumpHeight = Math.max(0, (bass > 0.6 ? (bass - 0.6) * 200 : 0));
+        const jumpHeight = Math.max(0, (bass > 0.5 ? (bass - 0.5) * 250 : 0));
         const dy = height - 55 - jumpHeight;
         
         ctx.fillStyle = ac;
@@ -538,12 +574,28 @@ function drawVisualizer() {
         ctx.fillRect(dx + 15, dy + 15, 4, leg2H);
         ctx.fillRect(dx + 30, dy - 5, 6, 5);
     } else if (currentVisualizerStyle === 'retro') {
-        const bars = 20, bw = width / bars;
-        const blocks = 10, bh = height / blocks;
+        const bars = 32; 
+        const bw = width / bars;
+        const blocks = 10; 
+        const bh = height / blocks;
+        const binCount = analyser.frequencyBinCount;
+        
         for (let i = 0; i < bars; i++) {
-            const val = Math.floor((visualizerDataArray[i * 4] / 255) * blocks);
-            for (let j = 0; j < val; j++) {
-                ctx.fillStyle = (j > blocks * 0.7) ? '#ff4444' : ac;
+            const startBin = Math.floor(Math.pow(i / bars, 1.8) * binCount * 0.8);
+            const endBin = Math.floor(Math.pow((i + 1) / bars, 1.8) * binCount * 0.8) + 1;
+            
+            let maxVal = 0;
+            for (let b = startBin; b < endBin && b < binCount; b++) {
+                if (visualizerDataArray[b] > maxVal) maxVal = visualizerDataArray[b];
+            }
+
+            const compensation = 1 + (i / bars) * 2.5; 
+            const val = Math.floor((maxVal / 255) * blocks * boost * compensation);
+            
+            for (let j = 0; j < Math.min(val, blocks); j++) {
+                if (j > blocks * 0.8) ctx.fillStyle = '#ef4444';      
+                else if (j > blocks * 0.6) ctx.fillStyle = '#fbbf24'; 
+                else ctx.fillStyle = ac;                             
                 ctx.fillRect(i * bw + 2, height - (j * bh) - bh + 2, bw - 4, bh - 4);
             }
         }
@@ -619,6 +671,10 @@ async function loadSettings() {
     if (visualizerStyleSelect) {
         currentVisualizerStyle = settings.visualizerStyle || 'bars';
         visualizerStyleSelect.value = currentVisualizerStyle;
+    }
+    if (visualizerSensitivity) {
+        visSensitivity = settings.visSensitivity || 1.5;
+        visualizerSensitivity.value = visSensitivity;
     }
     if (toggleDeleteSongs) {
         toggleDeleteSongs.checked = settings.deleteSongsEnabled || false;
@@ -849,6 +905,27 @@ function setupEventListeners() {
         currentVisualizerStyle = e.target.value;
         window.api.setSetting('visualizerStyle', currentVisualizerStyle);
     });
+
+    bind(visualizerSensitivity, 'input', (e) => {
+        visSensitivity = parseFloat(e.target.value);
+        updateAnalyserSettings();
+        window.api.setSetting('visSensitivity', visSensitivity);
+    });
+
+    bind(sleepTimerSelect, 'change', (e) => {
+        const mins = parseInt(e.target.value);
+        if (sleepTimerId) clearTimeout(sleepTimerId);
+        if (mins > 0) {
+            sleepTimerId = setTimeout(() => {
+                audio.pause();
+                isPlaying = false;
+                updatePlayPauseUI();
+                showNotification("Sleep Timer: Musik gestoppt.");
+                sleepTimerSelect.value = "0";
+            }, mins * 60000);
+            showNotification(`Sleep Timer aktiviert: ${mins} Minuten`);
+        }
+    });
     
     bind(animationSelect, 'change', (e) => {
         const m = e.target.value;
@@ -984,6 +1061,8 @@ document.addEventListener('DOMContentLoaded', () => {
     settingsCloseBtn = $('#settings-close-btn'); downloadFolderInput = $('#default-download-folder'); changeFolderBtn = $('#change-download-folder-btn');
     qualitySelect = $('#audio-quality-select'); themeSelect = $('#theme-select'); visualizerToggle = $('#toggle-visualizer');
     visualizerStyleSelect = $('#visualizer-style-select');
+    visualizerSensitivity = $('#visualizer-sensitivity');
+    sleepTimerSelect = $('#sleep-timer-select');
     animationSelect = $('#animation-select'); backgroundAnimationEl = $('.background-animation'); emojiSelect = $('#emoji-select');
     customEmojiContainer = $('#custom-emoji-container'); customEmojiInput = $('#custom-emoji-input'); toggleDeleteSongs = $('#toggle-delete-songs');
     toggleDownloaderBtn = $('#toggle-downloader-btn'); contextMenu = $('#context-menu'); contextMenuEditTitle = $('#context-menu-edit-title');
