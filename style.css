@@ -46,15 +46,15 @@
 }
   
 :root[data-theme="light"] {
-    --bg-main: #f0f2f5;
+    --bg-main: #f5f5f7;
     --bg-card: #ffffff;
-    --bg-card-light: #f9fafb;
-    --accent: #2563eb;
-    --accent-soft: rgba(37, 99, 235, 0.1);
-    --text-main: #111827;
-    --text-muted: #4b5563;
-    --border-soft: #e5e7eb;
-    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --bg-card-light: #e8e8ed;
+    --accent: #0071e3;
+    --accent-soft: rgba(0, 113, 227, 0.1);
+    --text-main: #1d1d1f;
+    --text-muted: #86868b;
+    --border-soft: #d2d2d7;
+    --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 :root[data-theme="blurple"] {
@@ -928,11 +928,16 @@ input:checked + .slider:before { transform: translateX(16px); }
 :root[data-theme="light"] .playlist-search-input,
 :root[data-theme="light"] .playlist-sort-select,
 :root[data-theme="light"] .setting-item select {
-  background: #f9fafb; color: #111827; border-color: #d1d5db;
+  background: #ffffff; color: #1d1d1f; border-color: #d2d2d7;
 }
 
-:root[data-theme="light"] .control-btn { border-color: #d1d5db; color: #4b5563; }
-:root[data-theme="light"] .track-row:hover { background: #f3f4f6; }
+:root[data-theme="light"] .playlist-sort-select option {
+  background-color: #ffffff;
+  color: #1d1d1f;
+}
+
+:root[data-theme="light"] .control-btn { border-color: #d2d2d7; color: #86868b; }
+:root[data-theme="light"] .track-row:hover { background: #f5f5f7; }
 
 /* =========================================
    RESPONSIVE DESIGN
