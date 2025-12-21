@@ -487,7 +487,15 @@ function setupEventListeners() {
     bind(toggleMiniMode, 'change', (e) => { if (e.target.checked) window.api.setWindowSize(340, 520); else window.api.setWindowSize(1300, 900); });
     bind(downloadBtn, 'click', handleDownload);
     window.api.onMediaControl((a) => { if (a === 'play-pause') { if (isPlaying) audio.pause(); else audio.play(); } else if (a === 'next') playNext(); else if (a === 'previous') playPrev(); });
-    window.api.onDownloadProgress((d) => { if (d && typeof d.percent === 'number' && downloadProgressFill) { downloadProgressFill.style.width = `${d.percent}%`; downloadStatusEl.textContent = tr('statusProgress', d.percent.toFixed(1)); } });
+    window.api.onDownloadProgress((d) => { 
+        if (d && (typeof d.percent === 'number' || typeof d.percent === 'string') && downloadProgressFill) { 
+            const p = parseFloat(d.percent);
+            if (!isNaN(p)) {
+                downloadProgressFill.style.width = `${p}%`; 
+                downloadStatusEl.textContent = tr('statusProgress', p.toFixed(1)); 
+            }
+        } 
+    });
     if (langButtons) langButtons.forEach(btn => { bind(btn, 'click', () => { currentLanguage = btn.dataset.lang; langButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyTranslations(); window.api.setSetting('language', currentLanguage); }); });
     bind(themeSelect, 'change', (e) => { const th = e.target.value; document.documentElement.setAttribute('data-theme', th); window.api.setSetting('theme', th); });
     bind(accentColorPicker, 'input', (e) => { const color = e.target.value; document.documentElement.style.setProperty('--accent', color); window.api.setSetting('customAccentColor', color); });

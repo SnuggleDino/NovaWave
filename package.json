@@ -24,7 +24,9 @@
       "style.css",
       "package.json",
       "downloads/**/*",
-      "assets/**/*",
+      "assets/**/*"
+    ],
+    "extraResources": [
       "yt-dlp.exe"
     ],
     "directories": {

@@ -152,20 +152,23 @@ function registerIpcHandlers(store) {
     ipcMain.handle('download-from-youtube', async (event, { url, customName, quality }) => {
         try {
             let downloadFolder = store.get('downloadFolder');
-            const ytDlpPath = path.join(__dirname, 'yt-dlp.exe');
+            const ytDlpPath = app.isPackaged 
+                ? path.join(process.resourcesPath, 'yt-dlp.exe')
+                : path.join(__dirname, 'yt-dlp.exe');
+
             const ytDlpWrap = new YTDlpWrap(ytDlpPath);
             const qualityMap = { best: '0', high: '5', standard: '9' };
             const fileNameTemplate = customName ? `${customName}.%(ext)s` : '%(title)s.%(ext)s';
 
-            const process = ytDlpWrap.exec([
+            const ytDlpProcess = ytDlpWrap.exec([
                 url, '-x', '--audio-format', 'mp3', '--audio-quality', qualityMap[quality] || '0',
                 '--embed-thumbnail', '--add-metadata', '-P', downloadFolder, '-o', fileNameTemplate,
             ]);
             
-            process.on('progress', (progress) => { event.sender.send('download-progress', { percent: progress.percent }); });
+            ytDlpProcess.on('progress', (progress) => { event.sender.send('download-progress', { percent: progress.percent }); });
             await new Promise((resolve, reject) => {
-                process.on('close', (code) => code === 0 ? resolve() : reject(new Error(`yt-dlp exited with code ${code}`)));
-                process.on('error', reject);
+                ytDlpProcess.on('close', (code) => code === 0 ? resolve() : reject(new Error(`yt-dlp exited with code ${code}`)));
+                ytDlpProcess.on('error', reject);
             });
             return { success: true };
         } catch (error) { return { success: false, error: error.message }; }
