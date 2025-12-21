@@ -28,7 +28,7 @@ let visualizerDataArray;
 let visualizerRunning = false;
 
 // DOM Elements
-let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer;
+let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval;
 
 let trackToDeletePath = null;
 let renderPlaylistRequestId = null;
@@ -52,7 +52,7 @@ const translations = {
         changeButton: 'Ändern', audioQuality: 'Audioqualität (Download)', qualityBest: 'Beste',
         qualityHigh: 'Hoch (192k)', qualityStandard: 'Standard (128k)',
         backgroundAnimation: 'Hintergrundanimation',
-        blueTheme: 'Ocean Blue', darkTheme: 'Midnight', lightTheme: 'Daylight', blurpleTheme: 'Nebula', greyTheme: 'Graphite', darkroseTheme: 'Crimson', dinoloveTheme: 'Dinolove', xmasTheme: 'Christmas Spirit',
+        blueTheme: 'Blue', darkTheme: 'Dark', lightTheme: 'Light', blurpleTheme: 'Purple', greyTheme: 'Grey', darkroseTheme: 'Rose', dinoloveTheme: 'Dino', xmasTheme: 'Christmas',
         shuffle: 'Zufallswiedergabe', previous: 'Zurück', playPause: 'Abspielen/Pause',
         next: 'Weiter', loop: 'Wiederholen', settings: 'Einstellungen', close: 'Schließen',
         toggleDownloader: 'Downloader umschalten', deleteSong: 'Song löschen',
@@ -116,10 +116,14 @@ const translations = {
         titleUpdated: 'Titel erfolgreich geändert!',
         songDeleted: 'Song erfolgreich gelöscht!',
         downloaderSectionTitle: 'YouTube Video zu MP3',
+        tracksAdded: (count) => `${count} Titel hinzugefügt`,
         editTitleInputPlaceholder: 'Titel eingeben...',
         miniLabel: 'MINI',
         miniModeTitle: 'Mini-Player Modus',
         dropZoneText: 'Musik hierher ziehen...',
+        playbackSpeed: 'Abspielgeschwindigkeit',
+        playbackSpeedDesc: 'Passe die Geschwindigkeit an (0.5x - 2.0x).',
+        focusActiveNotify: 'Fokus-Modus aktiv (Klicke oben rechts zum Verlassen)',
     },
     en: {
         appTitle: 'NovaWave - Music Player', appSubtitle: 'Local & YouTube',
@@ -135,7 +139,7 @@ const translations = {
         changeButton: 'Change', audioQuality: 'Audio Quality (Download)', qualityBest: 'Best',
         qualityHigh: 'High (192k)', qualityStandard: 'Standard (128k)',
         backgroundAnimation: 'Background Animation',
-        blueTheme: 'Ocean Blue', darkTheme: 'Midnight', lightTheme: 'Daylight', blurpleTheme: 'Nebula', greyTheme: 'Graphite', darkroseTheme: 'Crimson', dinoloveTheme: 'Dinolove', xmasTheme: 'Christmas Spirit',
+        blueTheme: 'Blue', darkTheme: 'Dark', lightTheme: 'Light', blurpleTheme: 'Purple', greyTheme: 'Grey', darkroseTheme: 'Rose', dinoloveTheme: 'Dino', xmasTheme: 'Christmas',
         shuffle: 'Shuffle', previous: 'Previous', playPause: 'Play/Pause',
         next: 'Next', loop: 'Loop', settings: 'Settings', close: 'Close',
         toggleDownloader: 'Toggle Downloader', deleteSong: 'Delete Song',
@@ -199,16 +203,21 @@ const translations = {
         titleUpdated: 'Title successfully changed!',
         songDeleted: 'Song successfully deleted!',
         downloaderSectionTitle: 'YouTube Video to MP3',
+        tracksAdded: (count) => `${count} tracks added`,
         editTitleInputPlaceholder: 'Enter title...',
         miniLabel: 'MINI',
         miniModeTitle: 'Mini Player Mode',
         dropZoneText: 'Drop music here...',
+        playbackSpeed: 'Playback Speed',
+        playbackSpeedDesc: 'Adjust the playback rate (0.5x - 2.0x).',
+        focusActiveNotify: 'Focus Mode active (Click top right to exit)',
     }
 };
 
 function tr(key, ...args) {
-    const lang = translations[currentLanguage] || translations.de;
-    const text = (lang && lang[key]) || key;
+    const langCode = currentLanguage || (settings && settings.language) || 'de';
+    const lang = translations[langCode] || translations.de;
+    const text = (lang && lang[key]) || (translations.de[key]) || key;
     return typeof text === 'function' ? text(...args) : text;
 }
 
@@ -442,6 +451,7 @@ async function loadSettings() {
     if (emojiSelect) emojiSelect.value = et; if (customEmojiInput) customEmojiInput.value = ce;
     if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';
     updateEmoji(et, ce);
+    if (speedSlider) { const sp = settings.playbackSpeed || 1.0; speedSlider.value = sp; audio.playbackRate = sp; if(speedValue) speedValue.textContent = sp.toFixed(1) + 'x'; }
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) { currentFolderPath = settings.currentFolderPath; try { const result = await window.api.refreshMusicFolder(currentFolderPath); if (result && result.tracks) { basePlaylist = result.tracks; sortPlaylist(sortMode); updateUIForCurrentTrack(); } } catch (e) { console.error(e); } }
     if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
     if (loopBtn) { loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); }
@@ -454,7 +464,43 @@ function updateLoopIcon() {
     else loopBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>`;
 }
 
-function applyAnimationSetting(mode) { if (!backgroundAnimationEl) return; backgroundAnimationEl.className = 'background-animation'; if (mode && mode !== 'off') { backgroundAnimationEl.style.display = 'block'; backgroundAnimationEl.classList.add(`type-${mode}`); } else { backgroundAnimationEl.style.display = 'none'; } }
+function applyAnimationSetting(mode) { 
+    if (!backgroundAnimationEl) return; 
+    backgroundAnimationEl.className = 'background-animation'; 
+    backgroundAnimationEl.innerHTML = '';
+    if (snowInterval) clearInterval(snowInterval);
+    
+    if (mode && mode !== 'off') { 
+        backgroundAnimationEl.style.display = 'block'; 
+        backgroundAnimationEl.classList.add(`type-${mode}`); 
+        if (mode === 'xmas') startSnowfall();
+    } else { 
+        backgroundAnimationEl.style.display = 'none'; 
+    } 
+}
+
+function startSnowfall() {
+    const createSnowflake = () => {
+        if (!backgroundAnimationEl) return;
+        const flake = document.createElement('span');
+        flake.style.left = Math.random() * 100 + 'vw';
+        flake.style.animationDuration = Math.random() * 5 + 5 + 's';
+        flake.style.opacity = Math.random() * 0.7 + 0.3;
+        flake.style.fontSize = (Math.random() * 10 + 12) + 'px';
+        flake.innerHTML = '❄';
+        flake.style.position = 'absolute';
+        flake.style.top = '-20px';
+        flake.style.color = 'white';
+        flake.style.pointerEvents = 'none';
+        flake.style.animationName = 'snowfall';
+        flake.style.animationTimingFunction = 'linear';
+        flake.style.animationIterationCount = 'infinite';
+        flake.style.filter = 'blur(1px)';
+        backgroundAnimationEl.appendChild(flake);
+        setTimeout(() => { flake.remove(); }, 10000);
+    };
+    snowInterval = setInterval(createSnowflake, 400);
+}
 function formatTime(s) { if (isNaN(s)) return '0:00'; const m = Math.floor(s / 60), sc = Math.floor(s % 60).toString().padStart(2, '0'); return `${m}:${sc}`; }
 function getVolumeIcon(v) {
     if (v === 0) return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>`;
@@ -502,7 +548,38 @@ function setupEventListeners() {
     bind(toggleFocusModeBtn, 'click', () => { const isActive = document.body.classList.toggle('focus-active'); if (isActive) showNotification("Fokus-Modus aktiv (Klicke oben rechts zum Verlassen)"); if (visualizerCanvas && visualizerContainer) { visualizerCanvas.width = visualizerContainer.clientWidth; visualizerCanvas.height = visualizerContainer.clientHeight; } });
     window.addEventListener('dragover', (e) => { if (settings.enableDragAndDrop === false) return; e.preventDefault(); if (dropZone) dropZone.classList.add('active'); });
     window.addEventListener('dragleave', (e) => { if (settings.enableDragAndDrop === false) return; if (e.relatedTarget === null) { if (dropZone) dropZone.classList.remove('active'); } });
-    window.addEventListener('drop', async (e) => { if (settings.enableDragAndDrop === false) return; e.preventDefault(); if (dropZone) dropZone.classList.remove('active'); const files = Array.from(e.dataTransfer.files); if (files.length > 0) { const firstPath = files[0].path; const r = await window.api.refreshMusicFolder(firstPath); if (r && r.tracks && r.tracks.length > 0) { basePlaylist = r.tracks; playlist = [...basePlaylist]; currentIndex = -1; renderPlaylist(); updateUIForCurrentTrack(); currentFolderPath = r.folderPath; window.api.setSetting('currentFolderPath', currentFolderPath); showNotification(tr('loadFolder')); } } });
+    window.addEventListener('drop', async (e) => {
+        if (settings.enableDragAndDrop === false) return;
+        e.preventDefault();
+        if (dropZone) dropZone.classList.remove('active');
+        const files = Array.from(e.dataTransfer.files);
+        if (files.length === 0) return;
+
+        if (currentFolderPath) {
+            let movedCount = 0;
+            for (const file of files) {
+                const res = await window.api.moveFile(file.path, currentFolderPath);
+                if (res.success) movedCount++;
+            }
+            if (movedCount > 0) {
+                const r = await window.api.refreshMusicFolder(currentFolderPath);
+                if (r && r.tracks) {
+                    basePlaylist = r.tracks;
+                    sortPlaylist(sortMode);
+                    showNotification(tr('tracksAdded', movedCount));
+                }
+            }
+        } else {
+            const firstPath = files[0].path;
+            const r = await window.api.refreshMusicFolder(firstPath);
+            if (r && r.tracks && r.tracks.length > 0) {
+                basePlaylist = r.tracks; playlist = [...basePlaylist]; currentIndex = -1;
+                renderPlaylist(); updateUIForCurrentTrack(); currentFolderPath = r.folderPath;
+                window.api.setSetting('currentFolderPath', currentFolderPath);
+                showNotification(tr('loadFolder'));
+            }
+        }
+    });
     bind(sortSelect, 'change', (e) => { sortMode = e.target.value; window.api.setSetting('sortMode', sortMode); sortPlaylist(sortMode); });
     bind(settingsBtn, 'click', () => { settingsOverlay.classList.add('visible'); });
     bind(settingsCloseBtn, 'click', () => { settingsOverlay.classList.remove('visible'); });
@@ -516,6 +593,14 @@ function setupEventListeners() {
     bind(autoLoadLastFolderToggle, 'change', (e) => { window.api.setSetting('autoLoadLastFolder', e.target.checked); if (e.target.checked && currentFolderPath) window.api.setSetting('currentFolderPath', currentFolderPath); });
     bind(toggleEnableFocus, 'change', (e) => { window.api.setSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });
     bind(toggleEnableDrag, 'change', (e) => { window.api.setSetting('enableDragAndDrop', e.target.checked); });
+    bind(speedSlider, 'input', (e) => { const v = parseFloat(e.target.value); audio.playbackRate = v; if(speedValue) speedValue.textContent = v.toFixed(1) + 'x'; window.api.setSetting('playbackSpeed', v); });
+    bind($('#speed-reset-btn'), 'click', () => {
+        const def = 1.0;
+        if (speedSlider) speedSlider.value = def;
+        audio.playbackRate = def;
+        if (speedValue) speedValue.textContent = def.toFixed(1) + 'x';
+        window.api.setSetting('playbackSpeed', def);
+    });
     bind(toggleUseCustomColor, 'change', (e) => {
         window.api.setSetting('useCustomColor', e.target.checked);
         if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !e.target.checked);
@@ -543,8 +628,10 @@ function setupEventListeners() {
     bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
     bind(contextMenuEditTitle, 'click', () => { if (contextTrackIndex === null) return; const t = playlist[contextTrackIndex]; if (originalTitlePreview) originalTitlePreview.textContent = t.title; if (newTitlePreview) newTitlePreview.textContent = t.title; if (editTitleInput) editTitleInput.value = t.title; editTitleOverlay.classList.add('visible'); });
     bind(editTitleCancelBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
+    bind(editTitleCloseBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleSaveBtn, 'click', async () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; const t = playlist[contextTrackIndex]; const nt = editTitleInput.value.trim(); if (!nt) return; const r = await window.api.updateTitle(t.path, nt); if (r.success) { t.title = nt; const bt = basePlaylist.find(x => x.path === t.path); if (bt) bt.title = nt; renderPlaylist(); updateUIForCurrentTrack(); editTitleOverlay.classList.remove('visible'); showNotification(tr('titleUpdated')); } });
     bind(confirmDeleteCancelBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
+    bind(confirmDeleteCloseBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
     bind(confirmDeleteBtn, 'click', async () => { if (!trackToDeletePath) return; const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null; const r = await window.api.deleteTrack(trackToDeletePath); if (r.success) { basePlaylist = basePlaylist.filter(x => x.path !== trackToDeletePath); playlist = playlist.filter(x => x.path !== trackToDeletePath); if (ctp) { if (trackToDeletePath === ctp) { audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI(); } else { currentIndex = playlist.findIndex(x => x.path === ctp); } } renderPlaylist(); updateUIForCurrentTrack(); confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; showNotification(tr('songDeleted')); } });
     let resTimeout; new ResizeObserver(() => { if (visualizerCanvas && visualizerContainer) { visualizerCanvas.width = visualizerContainer.clientWidth; } }).observe(visualizerContainer);
     window.addEventListener('resize', () => { clearTimeout(resTimeout); resTimeout = setTimeout(updateTrackTitleScroll, 100); });
@@ -577,12 +664,15 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleDownloaderBtn = $('#toggle-downloader-btn'); contextMenu = $('#context-menu'); contextMenuEditTitle = $('#context-menu-edit-title');
     editTitleOverlay = $('#edit-title-overlay'); editTitleInput = $('#edit-title-input'); originalTitlePreview = $('#original-title-preview');
     newTitlePreview = $('#new-title-preview'); editTitleCancelBtn = $('#edit-title-cancel-btn'); editTitleSaveBtn = $('#edit-title-save-btn');
+    editTitleCloseBtn = $('#edit-title-close-btn');
     confirmDeleteOverlay = $('#confirm-delete-overlay'); confirmDeleteBtn = $('#confirm-delete-btn'); confirmDeleteCancelBtn = $('#confirm-delete-cancel-btn');
+    confirmDeleteCloseBtn = $('#confirm-delete-close-btn');
     autoLoadLastFolderToggle = $('#toggle-auto-load-last-folder'); toggleMiniMode = $('#toggle-mini-mode');
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
     accentColorPicker = $('#accent-color-picker'); toggleFocusModeBtn = $('#toggle-focus-mode');
     dropZone = $('#drop-zone'); toggleEnableFocus = $('#toggle-enable-focus'); toggleEnableDrag = $('#toggle-enable-drag'); toggleUseCustomColor = $('#toggle-use-custom-color');
     accentColorContainer = $('#accent-color-container');
+    speedSlider = $('#speed-slider'); speedValue = $('#speed-value');
 
     const overlays = [settingsOverlay, libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay];
     overlays.forEach(ov => { if (ov) ov.addEventListener('click', (e) => { if (e.target === ov) ov.classList.remove('visible'); }); });

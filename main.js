@@ -144,6 +144,27 @@ function registerIpcHandlers(store) {
         catch (error) { return { success: false, error: error.message }; }
     });
 
+    ipcMain.handle('move-file', async (event, { sourcePath, destFolder }) => {
+        try {
+            const fileName = path.basename(sourcePath);
+            const destPath = path.join(destFolder, fileName);
+            if (sourcePath === destPath) return { success: true };
+            await fs.rename(sourcePath, destPath);
+            return { success: true, newPath: destPath };
+        } catch (error) {
+            try {
+                // Fallback for cross-device move
+                const fileName = path.basename(sourcePath);
+                const destPath = path.join(destFolder, fileName);
+                await fs.copyFile(sourcePath, destPath);
+                await fs.unlink(sourcePath);
+                return { success: true, newPath: destPath };
+            } catch (copyError) {
+                return { success: false, error: copyError.message };
+            }
+        }
+    });
+
     ipcMain.on('set-window-size', (event, { width, height }) => {
         const win = BrowserWindow.fromWebContents(event.sender);
         if (win) win.setSize(width, height, true);
