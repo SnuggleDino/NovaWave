@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('api', {
     updateTitle: (filePath, newTitle) => ipcRenderer.invoke('update-title', filePath, newTitle),
     deleteTrack: (filePath) => ipcRenderer.invoke('delete-track', filePath),
     moveFile: (sourcePath, destFolder) => ipcRenderer.invoke('move-file', { sourcePath, destFolder }),
+    showInFolder: (filePath) => ipcRenderer.invoke('show-in-folder', filePath),
 
     // --- Downloader ---
     downloadFromYouTube: (options) => ipcRenderer.invoke('download-from-youtube', options),

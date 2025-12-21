@@ -124,6 +124,9 @@ const translations = {
         playbackSpeed: 'Abspielgeschwindigkeit',
         playbackSpeedDesc: 'Passe die Geschwindigkeit an (0.5x - 2.0x).',
         focusActiveNotify: 'Fokus-Modus aktiv (Klicke oben rechts zum Verlassen)',
+        showInFolder: 'Im Ordner anzeigen',
+        sleepTimerNotify: (m) => `Sleep Timer aktiviert: ${m} Minuten`,
+        sleepTimerStopped: 'Sleep Timer: Musik gestoppt.',
     },
     en: {
         appTitle: 'NovaWave - Music Player', appSubtitle: 'Local & YouTube',
@@ -211,6 +214,9 @@ const translations = {
         playbackSpeed: 'Playback Speed',
         playbackSpeedDesc: 'Adjust the playback rate (0.5x - 2.0x).',
         focusActiveNotify: 'Focus Mode active (Click top right to exit)',
+        showInFolder: 'Show in Folder',
+        sleepTimerNotify: (m) => `Sleep Timer enabled: ${m} minutes`,
+        sleepTimerStopped: 'Sleep Timer: Music stopped.',
     }
 };
 
@@ -293,7 +299,7 @@ function renderPlaylist() {
         for (let i = renderIndex; i < limit; i++) {
             const track = playlist[i], row = document.createElement('div');
             row.className = 'track-row'; row.dataset.index = i; if (i === currentIndex) row.classList.add('active');
-            const pi = `<svg class="track-playing-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+            const pi = `<div class="playing-bars"><span></span><span></span><span></span></div>`;
             const db = deleteSongsEnabled ? `<button class="delete-track-btn" data-path="${track.path}" title="${tr('deleteSong')}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>` : '';
             row.innerHTML = `<div class="track-index">${(isPlaying && i === currentIndex) ? pi : (i + 1)}</div><div class="track-info-block"><div class="track-title-small">${track.title}</div><div class="track-artist-small">${track.artist || tr('unknownArtist')}</div></div><div class="track-duration">${formatTime(track.duration)}</div>${db}`;
             fragment.appendChild(row);
@@ -592,7 +598,7 @@ function setupEventListeners() {
     bind(visualizerToggle, 'change', (e) => { visualizerEnabled = e.target.checked; window.api.setSetting('visualizerEnabled', visualizerEnabled); if (visualizerEnabled) startVisualizer(); else stopVisualizer(); });
     bind(visualizerStyleSelect, 'change', (e) => { currentVisualizerStyle = e.target.value; window.api.setSetting('visualizerStyle', currentVisualizerStyle); });
     bind(visualizerSensitivity, 'input', (e) => { visSensitivity = parseFloat(e.target.value); updateAnalyserSettings(); window.api.setSetting('visSensitivity', visSensitivity); });
-    bind(sleepTimerSelect, 'change', (e) => { const mins = parseInt(e.target.value); if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; } if (mins > 0) { sleepTimerId = setTimeout(() => { audio.pause(); isPlaying = false; updatePlayPauseUI(); showNotification("Sleep Timer: Musik gestoppt."); sleepTimerSelect.value = "0"; sleepTimerId = null; }, mins * 60000); showNotification(`Sleep Timer aktiviert: ${mins} Minuten`); } });
+    bind(sleepTimerSelect, 'change', (e) => { const mins = parseInt(e.target.value); if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; } if (mins > 0) { sleepTimerId = setTimeout(() => { audio.pause(); isPlaying = false; updatePlayPauseUI(); showNotification(tr('sleepTimerStopped')); sleepTimerSelect.value = "0"; sleepTimerId = null; }, mins * 60000); showNotification(tr('sleepTimerNotify', mins)); } });
     bind(animationSelect, 'change', (e) => { const m = e.target.value; window.api.setSetting('animationMode', m).catch(console.error); applyAnimationSetting(m); });
     bind(autoLoadLastFolderToggle, 'change', (e) => { window.api.setSetting('autoLoadLastFolder', e.target.checked); if (e.target.checked && currentFolderPath) window.api.setSetting('currentFolderPath', currentFolderPath); });
     bind(toggleEnableFocus, 'change', (e) => { window.api.setSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });
@@ -628,6 +634,7 @@ function setupEventListeners() {
     bind(toggleDeleteSongs, 'change', (e) => { deleteSongsEnabled = e.target.checked; window.api.setSetting('deleteSongsEnabled', deleteSongsEnabled); renderPlaylist(); });
     bind(playlistEl, 'click', (e) => { const db = e.target.closest('.delete-track-btn'); if (db) { e.stopPropagation(); handleDeleteTrack(db.dataset.path); return; } const row = e.target.closest('.track-row'); if (row) playTrack(parseInt(row.dataset.index, 10)); });
     bind(playlistEl, 'contextmenu', (e) => { const r = e.target.closest('.track-row'); if (r) { e.preventDefault(); showContextMenu(e, parseInt(r.dataset.index, 10)); } });
+    bind($('#context-menu-show-folder'), 'click', () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; window.api.showInFolder(playlist[contextTrackIndex].path); });
     bind(toggleDownloaderBtn, 'click', () => { downloaderOverlay.classList.add('visible'); });
     bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
     bind(contextMenuEditTitle, 'click', () => { if (contextTrackIndex === null) return; const t = playlist[contextTrackIndex]; if (originalTitlePreview) originalTitlePreview.textContent = t.title; if (newTitlePreview) newTitlePreview.textContent = t.title; if (editTitleInput) editTitleInput.value = t.title; editTitleOverlay.classList.add('visible'); });

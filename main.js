@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, nativeImage, shell } = require('electron');
 const path = require('path');
 const util = require('util');
 const { execFile } = require('child_process');
@@ -103,6 +103,11 @@ async function main() {
 function registerIpcHandlers(store) {
     ipcMain.handle('get-settings', () => { return store.store; });
     ipcMain.handle('set-setting', async (event, key, value) => { await store.set(key, value); });
+    
+    ipcMain.handle('show-in-folder', async (event, filePath) => {
+        shell.showItemInFolder(filePath);
+    });
+
     ipcMain.handle('select-folder', async () => {
         const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
         return (!result.canceled && result.filePaths.length > 0) ? result.filePaths[0] : null;
@@ -153,7 +158,6 @@ function registerIpcHandlers(store) {
             return { success: true, newPath: destPath };
         } catch (error) {
             try {
-                // Fallback for cross-device move
                 const fileName = path.basename(sourcePath);
                 const destPath = path.join(destFolder, fileName);
                 await fs.copyFile(sourcePath, destPath);
