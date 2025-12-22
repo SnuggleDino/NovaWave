@@ -236,6 +236,9 @@ function playTrack(index) {
     currentIndex = index;
     const track = playlist[index];
     audio.src = `file://${track.path}`;
+    const speed = speedSlider ? parseFloat(speedSlider.value) : 1.0;
+    audio.defaultPlaybackRate = speed;
+    audio.playbackRate = speed;
     audio.play().catch(e => console.error("Error playing audio:", e));
     isPlaying = true;
     updateUIForCurrentTrack();
@@ -603,10 +606,17 @@ function setupEventListeners() {
     bind(autoLoadLastFolderToggle, 'change', (e) => { window.api.setSetting('autoLoadLastFolder', e.target.checked); if (e.target.checked && currentFolderPath) window.api.setSetting('currentFolderPath', currentFolderPath); });
     bind(toggleEnableFocus, 'change', (e) => { window.api.setSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });
     bind(toggleEnableDrag, 'change', (e) => { window.api.setSetting('enableDragAndDrop', e.target.checked); });
-    bind(speedSlider, 'input', (e) => { const v = parseFloat(e.target.value); audio.playbackRate = v; if(speedValue) speedValue.textContent = v.toFixed(1) + 'x'; window.api.setSetting('playbackSpeed', v); });
+    bind(speedSlider, 'input', (e) => { 
+        const v = parseFloat(e.target.value); 
+        audio.defaultPlaybackRate = v;
+        audio.playbackRate = v; 
+        if(speedValue) speedValue.textContent = v.toFixed(1) + 'x'; 
+        window.api.setSetting('playbackSpeed', v); 
+    });
     bind($('#speed-reset-btn'), 'click', () => {
         const def = 1.0;
         if (speedSlider) speedSlider.value = def;
+        audio.defaultPlaybackRate = def;
         audio.playbackRate = def;
         if (speedValue) speedValue.textContent = def.toFixed(1) + 'x';
         window.api.setSetting('playbackSpeed', def);

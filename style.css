@@ -1000,25 +1000,6 @@ body.focus-active .visualizer-container {
 }
 
 body.focus-active .progress-area {
-    width: 100%;
-    max-width: 400px;
-    margin-top: 10px;
-}
-    font-size: clamp(0.9rem, 3vw, 1.1rem);
-    text-align: center;
-    opacity: 0.7;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-body.focus-active .visualizer-container {
-    height: 120px;
-    opacity: 0.8;
-}
-
-body.focus-active .progress-area {
     margin-top: 20px;
 }
 
