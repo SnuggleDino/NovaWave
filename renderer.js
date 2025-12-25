@@ -423,12 +423,17 @@ function drawVisualizer() {
         ctx.fillStyle = ac; const isJumping = (height - 55 - dy) > 5, legPhase = isJumping ? 0 : (Date.now() * 0.015) % (Math.PI * 2);
         ctx.fillRect(dx + 5, dy + 15, 4, 8 + Math.sin(legPhase) * 6); ctx.fillRect(dx + 15, dy + 15, 4, 8 + Math.cos(legPhase) * 6); ctx.fillRect(dx + 30, dy - 5, 6, 5);
     } else if (currentVisualizerStyle === 'retro') {
-        const bars = 32, bw = width / bars, blocks = 10, bh = height / blocks, binCount = analyser.frequencyBinCount;
-        for (let i = 0; i < bars; i++) {
-            const startBin = Math.floor(Math.pow(i / bars, 1.8) * binCount * 0.8), endBin = Math.floor(Math.pow((i + 1) / bars, 1.8) * binCount * 0.8) + 1;
+        const totalBars = 60, halfBars = totalBars / 2, bw = width / totalBars, blocks = 10, bh = height / blocks, binCount = analyser.frequencyBinCount, center = width / 2;
+        for (let i = 0; i < halfBars; i++) {
+            const percent = i / halfBars;
+            const startBin = Math.floor(Math.pow(percent, 1.5) * binCount * 0.8), endBin = Math.floor(Math.pow((i + 1) / halfBars, 1.5) * binCount * 0.8) + 1;
             let maxVal = 0; for (let b = startBin; b < endBin && b < binCount; b++) { if (visualizerDataArray[b] > maxVal) maxVal = visualizerDataArray[b]; }
-            const val = Math.floor((maxVal / 255) * blocks * boost * (1 + (i / bars) * 2.5));
-            for (let j = 0; j < Math.min(val, blocks); j++) { if (j > blocks * 0.8) ctx.fillStyle = '#ef4444'; else if (j > blocks * 0.6) ctx.fillStyle = '#fbbf24'; else ctx.fillStyle = ac; ctx.fillRect(i * bw + 2, height - (j * bh) - bh + 2, bw - 4, bh - 4); }
+            const val = Math.floor((maxVal / 255) * blocks * boost * (1 + percent * 1.5));
+            for (let j = 0; j < Math.min(val, blocks); j++) {
+                if (j > blocks * 0.8) ctx.fillStyle = '#ef4444'; else if (j > blocks * 0.6) ctx.fillStyle = '#fbbf24'; else ctx.fillStyle = ac;
+                ctx.fillRect(center + i * bw + 2, height - (j * bh) - bh + 2, bw - 4, bh - 4);
+                ctx.fillRect(center - (i + 1) * bw + 2, height - (j * bh) - bh + 2, bw - 4, bh - 4);
+            }
         }
     }
     if (musicEmojiEl && !isNaN(audio.currentTime)) {
@@ -654,7 +659,7 @@ function setupEventListeners() {
     bind(confirmDeleteCancelBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
     bind(confirmDeleteCloseBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
     bind(confirmDeleteBtn, 'click', async () => { if (!trackToDeletePath) return; const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null; const r = await window.api.deleteTrack(trackToDeletePath); if (r.success) { basePlaylist = basePlaylist.filter(x => x.path !== trackToDeletePath); playlist = playlist.filter(x => x.path !== trackToDeletePath); if (ctp) { if (trackToDeletePath === ctp) { audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI(); } else { currentIndex = playlist.findIndex(x => x.path === ctp); } } renderPlaylist(); updateUIForCurrentTrack(); confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; showNotification(tr('songDeleted')); } });
-    let resTimeout; new ResizeObserver(() => { if (visualizerCanvas && visualizerContainer) { visualizerCanvas.width = visualizerContainer.clientWidth; } }).observe(visualizerContainer);
+    let resTimeout; new ResizeObserver(() => { if (visualizerCanvas && visualizerContainer) { visualizerCanvas.width = visualizerContainer.clientWidth; visualizerCanvas.height = visualizerContainer.clientHeight; } }).observe(visualizerContainer);
     window.addEventListener('resize', () => { clearTimeout(resTimeout); resTimeout = setTimeout(updateTrackTitleScroll, 100); });
 }
 
