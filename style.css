@@ -1,7 +1,4 @@
-﻿/* =========================================
-   THEME & FARBEN
-   ========================================= */
-
+﻿/* --- THEME & COLORS --- */
 :root {
   --bg-main: #0a0e1b;
   --bg-card: rgba(20, 26, 47, 0.8);
@@ -142,63 +139,190 @@
 
 .features-minimal-modal {
     position: absolute;
-    top: 45px;
-    right: 0;
-    width: 160px;
+    top: 0;
+    right: 45px; /* Opens to the left of the badge */
+    transform: translateX(10px) scale(0.9);
+    width: 180px;
     background: var(--bg-card);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border: 1px solid var(--border-soft);
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
     opacity: 0;
-    transform: translateY(-10px) scale(0.9);
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 1000;
 }
 
 .active-features-container:hover .features-minimal-modal {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0) scale(1);
     pointer-events: auto;
 }
 
 .modal-header {
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.65rem;
+    font-weight: 800;
     text-transform: uppercase;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border-soft);
-    padding-bottom: 8px;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--accent-soft), transparent);
+}
+
+.modal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .modal-item {
-    display: none; /* Hidden by default */
+    display: none;
     align-items: center;
-    gap: 10px;
-    padding: 6px 0;
-    font-size: 0.85rem;
+    gap: 12px;
+    padding: 8px 10px;
+    font-size: 0.8rem;
     color: var(--text-main);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: background 0.2s;
 }
 
 .modal-item.active {
     display: flex;
 }
 
+.modal-item:hover {
+    background: var(--accent-soft);
+}
+
 .modal-item svg {
     color: var(--accent);
+    flex-shrink: 0;
 }
 
 #modal-feat-crystal svg {
-    color: #fbbf24; /* Golden */
+    color: #fbbf24;
+}
+
+/* Status Glow Dot */
+.modal-item::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-left: auto;
+    box-shadow: 0 0 8px var(--accent);
+}
+
+#modal-feat-crystal::after {
+    background: #fbbf24;
+    box-shadow: 0 0 8px #fbbf24;
+}
+
+@keyframes status-pulse {
+    0% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.4; transform: scale(0.8); }
 }
 
 /* =========================================
    RESET & BASE
    ========================================= */
 
+/* =========================================
+   DYNAMIC ISLAND PERFORMANCE HINT
+   ========================================= */
+
+.dynamic-island-hint {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #7f1d1d; /* Deep red */
+    color: #fca5a5;
+    padding: 8px 20px;
+    border-radius: 30px;
+    z-index: 100000;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    border: 1px solid #991b1b;
+}
+
+.dynamic-island-hint.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+.hint-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+#enable-perf-mode-btn {
+    background: #fca5a5;
+    color: #7f1d1d;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 800;
+    transition: opacity 0.2s;
+}
+
+#enable-perf-mode-btn:hover {
+    opacity: 0.8;
+}
+
+/* =========================================
+   STATS OVERLAY
+   ========================================= */
+
+.stats-overlay {
+    position: fixed;
+    bottom: 40px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--border-soft);
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 9999;
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: #4ade80; /* Matrix Green */
+}
+
+.stats-item {
+    margin-bottom: 4px;
+    color: #ffffff; /* Default white */
+}
+
+.stat-label {
+    color: #4ade80; /* Matrix Green for all labels */
+    font-weight: bold;
+}
+
+.stat-value {
+    color: #ffffff; /* Pure white for values */
+}
+
+/* --- RESET & BASE --- */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -229,10 +353,7 @@ input, textarea { user-select: text; }
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-/* =========================================
-   BACKGROUND ANIMATION
-   ========================================= */
-
+/* --- BACKGROUND ANIMATION --- */
 .background-animation {
     position: fixed;
     top: 0; left: 0;
@@ -347,10 +468,7 @@ input, textarea { user-select: text; }
     opacity: 0.6;
 }
 
-/* =========================================
-   MODERN INTRO (NovaWave 2.4.7)
-   ========================================= */
-
+/* --- MODERN INTRO (NovaWave 2.4.7) --- */
 .splash-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -557,10 +675,7 @@ body.ready .app-shell {
   flex-shrink: 0;
 }
 
-/* =========================================
-   PLAYER DETAILS
-   ========================================= */
-
+/* --- PLAYER DETAILS --- */
 .cover-art-container { display: flex; justify-content: center; }
 .cover-art-wrapper {
   width: 260px; height: 260px; position: relative; border-radius: 16px;
@@ -664,10 +779,7 @@ input[type=range].volume-slider::-moz-range-thumb {
     width: 16px; height: 16px; background: var(--text-main); cursor: pointer; border-radius: 50%;
 }
 
-/* =========================================
-   EXTRAS PANEL
-   ========================================= */
-
+/* --- EXTRAS PANEL --- */
 .panel-title {
   font-size: 1rem; margin-bottom: 15px; border-bottom: 1px solid var(--border-soft);
   padding-bottom: 10px; color: var(--text-main); font-weight: 600;
@@ -689,10 +801,7 @@ input[type=range].volume-slider::-moz-range-thumb {
 .yt-progress-fill { height: 100%; background: #10b981; width: 0%; transition: width 0.3s; }
 .status-text { font-size: 0.7rem; color: var(--text-muted); height: 12px; }
 
-/* =========================================
-   PLAYLIST
-   ========================================= */
-
+/* --- PLAYLIST --- */
 .playlist-panel { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .playlist-header-area { flex-shrink: 0; margin-bottom: 10px; }
 .playlist-top-row { display: flex; justify-content: space-between; align-items: center; }
@@ -768,10 +877,7 @@ input[type=range].volume-slider::-moz-range-thumb {
 .track-artist-small { font-size: 0.7rem; color: var(--text-muted); }
 .track-duration { font-size: 0.75rem; color: var(--text-muted); padding-left: 10px; }
 
-/* =========================================
-   HEADER CONTROLS
-   ========================================= */
-
+/* --- HEADER CONTROLS --- */
 .mini-mode-label {
     font-size: 0.7rem;
     font-weight: 700;
@@ -787,10 +893,7 @@ input[type=range].volume-slider::-moz-range-thumb {
 .theme-panel { display: flex; align-items: center; background: var(--bg-card-light); padding: 4px; border-radius: 20px; }
 
 
-/* =========================================
-   SETTINGS MODAL
-   ========================================= */
-
+/* --- SETTINGS MODAL --- */
 .overlay-container {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
@@ -1350,10 +1453,7 @@ input:checked + .slider:before { transform: translateX(16px); }
   .glass-panel { padding: 8px; }
   .panel-title { font-size: 0.75rem; margin-bottom: 6px; }
 }
-/* =========================================
-   CONTEXT MENU
-   ========================================= */
-
+/* --- CONTEXT MENU --- */
 .context-menu {
     position: fixed;
     z-index: 1000;
@@ -1572,6 +1672,37 @@ input:checked + .slider:before { transform: translateX(16px); }
   
   /* Allow clicking buttons in draggable header */
   .app-header button { -webkit-app-region: no-drag; }
+
+  /* Hide Stats in Mini Mode */
+  .stats-overlay { display: none !important; }
+
+  /* Reposition Dynamic Island in Mini Mode */
+  .dynamic-island-hint {
+      top: 5px;
+      padding: 4px 12px;
+      max-width: 90%;
+  }
+  .dynamic-island-hint .hint-content {
+      font-size: 0.75rem;
+      gap: 8px;
+  }
+  #enable-perf-mode-btn {
+      padding: 2px 8px;
+      font-size: 0.65rem;
+  }
+
+  /* Adjust Audio Features Badge for Mini Mode */
+  .active-features-container {
+      top: -10px;
+      right: -10px;
+      transform: scale(0.8);
+  }
+  .active-features-container.active {
+      transform: scale(0.8);
+  }
+  .active-features-container:hover .features-minimal-modal {
+      right: 35px;
+  }
 }
 /* ================= NOTIFICATION BAR ================= */
 .notification-bar {
@@ -1642,9 +1773,20 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 
-/* =========================================
-   CINEMA MODE
-   ========================================= */
+/* --- CINEMA MODE --- */
+.fps-control-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+}
+
+.fps-number-input {
+    width: 85px !important;
+    text-align: center;
+    padding: 10px 5px !important;
+    flex-shrink: 0;
+}
 
 body.cinema-mode .app-header,
 body.cinema-mode .playlist-panel,

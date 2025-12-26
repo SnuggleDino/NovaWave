@@ -1,7 +1,4 @@
-// =================================================================================
-// STATE & GLOBALS
-// =================================================================================
-
+// --- STATE & GLOBALS ---
 let playlist = [];
 let basePlaylist = [];
 let currentIndex = -1;
@@ -37,10 +34,144 @@ let reverbToggle, reverbSlider, reverbValueEl, reverbContainer;
 let toggleCinemaMode, btnExportPlaylist;
 let renderPlaylistRequestId = null;
 
-// =================================================================================
-// TRANSLATIONS
-// =================================================================================
+// Performance Monitoring State
+let lastFrameTime = performance.now();
+let frameCount = 0;
+let fps = 0;
+let avgFps = 60;
+let perfHintShown = false;
+let performanceMode = false;
+let showStatsOverlay = false;
+let targetFps = 60;
+let lastRenderTime = 0;
+let lastStatsTime = performance.now();
+let cachedAccentColor = '#38bdf8';
+let isStatsLoopRunning = false;
 
+function updateCachedColor() {
+    cachedAccentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38bdf8';
+}
+
+function updatePerformanceStats() {
+    if (!isStatsLoopRunning) isStatsLoopRunning = true;
+    const now = performance.now();
+    const interval = 1000 / targetFps;
+    const delta = now - lastStatsTime;
+
+    // Throttle the stats loop to targetFps so the counter reflects the limit
+    if (delta < interval) {
+        requestAnimationFrame(updatePerformanceStats);
+        return;
+    }
+
+    lastStatsTime = now - (delta % interval);
+    const timeSinceLastLog = now - lastFrameTime;
+    frameCount++;
+
+    if (timeSinceLastLog >= 1000) {
+        fps = Math.round((frameCount * 1000) / timeSinceLastLog);
+        avgFps = (avgFps * 0.8) + (fps * 0.2); 
+        const currentFrameTime = Math.round(timeSinceLastLog / frameCount);
+        frameCount = 0;
+        lastFrameTime = now;
+
+        // Update Stats UI
+        const fpsEl = document.getElementById('stat-fps');
+        const timeEl = document.getElementById('stat-time');
+        const lagEl = document.getElementById('stat-lag');
+        const perfInfoEl = document.getElementById('stat-perf-info');
+
+        if (fpsEl) {
+            fpsEl.textContent = fps;
+            // Adjust coloring based on relative performance to target
+            if (fps >= targetFps * 0.9) fpsEl.style.color = '#4ade80';
+            else if (fps >= targetFps * 0.6) fpsEl.style.color = '#fbbf24';
+            else fpsEl.style.color = '#ef4444';
+        }
+
+        if (timeEl) {
+            timeEl.textContent = currentFrameTime + 'ms';
+            timeEl.style.color = '#ffffff';
+        }
+        
+        if (lagEl) {
+            lagEl.style.color = '#ffffff';
+            if (avgFps < targetFps * 0.5) {
+                lagEl.textContent = 'LAG';
+                triggerPerformanceHint();
+            } else if (avgFps < targetFps * 0.8) {
+                lagEl.textContent = tr('statUnstable');
+            } else {
+                lagEl.textContent = tr('statStable');
+            }
+        }
+
+        if (perfInfoEl) {
+            perfInfoEl.style.color = '#ffffff';
+            if (performanceMode) {
+                perfInfoEl.textContent = tr('statPowerSave');
+            } else {
+                // Stability relative to targetFps
+                const stability = Math.min(100, Math.round((avgFps / targetFps) * 100));
+                perfInfoEl.textContent = `${stability}% ${tr('statStability')}`;
+            }
+        }
+    }
+    requestAnimationFrame(updatePerformanceStats);
+}
+
+function triggerPerformanceHint(force = false) {
+    if (!force && (perfHintShown || performanceMode)) return;
+    const hint = document.getElementById('performance-hint');
+    const hintText = document.getElementById('hint-text');
+    if (hint) {
+        if (hintText) hintText.textContent = tr('perfLagMsg');
+        hint.classList.add('visible');
+        if (!force) perfHintShown = true;
+        
+        // Auto-hide after 10s
+        setTimeout(() => { hint.classList.remove('visible'); }, 10000);
+    }
+}
+
+// Hotkey Tracking for CTRL + 1 + X
+const pressedKeys = new Set();
+window.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+    pressedKeys.add(key);
+
+    // Check for CTRL + 1 + X
+    if (pressedKeys.has('control') && pressedKeys.has('1') && pressedKeys.has('x')) {
+        e.preventDefault();
+        triggerPerformanceHint(true);
+    }
+});
+
+window.addEventListener('keyup', (e) => {
+    pressedKeys.delete(e.key.toLowerCase());
+});
+
+function setPerformanceMode(enabled) {
+    performanceMode = enabled;
+    settings.performanceMode = enabled;
+    window.api.setSetting('performanceMode', enabled);
+    
+    const toggle = document.getElementById('toggle-performance-mode');
+    if (toggle) toggle.checked = enabled;
+
+    if (enabled) {
+        stopVisualizer();
+        applyAnimationSetting('off');
+        document.body.classList.add('perf-mode-active');
+        showNotification(tr('perfModeOn'));
+    } else {
+        if (isPlaying) startVisualizer();
+        applyAnimationSetting(settings.animationMode || 'flow');
+        document.body.classList.remove('perf-mode-active');
+    }
+}
+
+// --- TRANSLATIONS ---
 const translations = {
     de: {
         appTitle: 'NovaWave - Musik Player', appSubtitle: 'Lokal & YouTube',
@@ -134,9 +265,20 @@ const translations = {
         bassBoost: 'Bass Boost', bassBoostDesc: 'Verstärke die tiefen Frequenzen.', bassBoostLevel: 'Intensität',
         trebleBoost: 'Crystalizer', trebleBoostDesc: 'Verstärke die Höhen für mehr Klarheit.', trebleBoostLevel: 'Intensität',
         reverb: 'Reverb', reverbDesc: 'Räumlicher Hall-Effekt.', reverbLevel: 'Mix',
+        activeFeatures: 'Aktive Effekte',
         sectionAudioExtras: 'Audio-Extras', sectionExtras: 'Extras & Tools',
         cinemaMode: 'Kino-Modus', cinemaModeDesc: 'Dimmt die Benutzeroberfläche für mehr Fokus.',
         exportPlaylist: 'Playlist exportieren', exportPlaylistDesc: 'Speichere die aktuelle Liste als Textdatei.',
+        perfLagMsg: 'System-Lag erkannt. Performance-Mode aktivieren?',
+        perfModeOn: 'Performance-Mode: Ein (Animationen & Vis aus)',
+        perfModeLabel: 'Performance Mode',
+        perfModeDesc: 'Deaktiviert Visualizer und Animationen für maximale CPU-Schonung.',
+        showStatsLabel: 'System-Stats anzeigen',
+        showStatsDesc: 'Zeigt FPS und Performance-Daten im Hauptfenster an.',
+        fpsLimitLabel: 'FPS Limit',
+        fpsLimitDesc: 'Begrenze die Bildrate für Visualizer und Animationen (15 - 120).',
+        statStatus: 'Status', statStable: 'Stabil', statUnstable: 'Instabil', statFrame: 'Frame',
+        statStability: 'Stabilität', statPowerSave: 'Energiesparen',
     },
     en: {
         appTitle: 'NovaWave - Music Player', appSubtitle: 'Local & YouTube',
@@ -187,9 +329,20 @@ const translations = {
         bassBoost: 'Bass Boost', bassBoostDesc: 'Enhance low frequencies.', bassBoostLevel: 'Intensity',
         trebleBoost: 'Crystalizer', trebleBoostDesc: 'Enhance highs for clarity.', trebleBoostLevel: 'Intensity',
         reverb: 'Reverb', reverbDesc: 'Spatial reverb effect.', reverbLevel: 'Mix',
+        activeFeatures: 'Active Effects',
         sectionAudioExtras: 'Audio Extras', sectionExtras: 'Extras & Tools',
         cinemaMode: 'Cinema Mode', cinemaModeDesc: 'Dims the UI for better focus.',
         exportPlaylist: 'Export Playlist', exportPlaylistDesc: 'Save current list as a text file.',
+        perfLagMsg: 'System lag detected. Enable Performance Mode?',
+        perfModeOn: 'Performance Mode: On (Animations & Vis off)',
+        perfModeLabel: 'Performance Mode',
+        perfModeDesc: 'Disables visualizer and animations for maximum CPU saving.',
+        showStatsLabel: 'Show System Stats',
+        showStatsDesc: 'Displays FPS and performance data in the main window.',
+        fpsLimitLabel: 'FPS Limit',
+        fpsLimitDesc: 'Limit the frame rate for visualizer and animations (15 - 120).',
+        statStatus: 'Status', statStable: 'Stable', statUnstable: 'Unstable', statFrame: 'Frame',
+        statStability: 'Stability', statPowerSave: 'Power Save',
         useCustomColorOption: 'Use Custom Accent Color',
         useCustomColorOptionDesc: 'Apply your selected color or use theme defaults.',
         coverEmoji: 'Cover Emoji',
@@ -243,10 +396,7 @@ function tr(key, ...args) {
     return typeof text === 'function' ? text(...args) : text;
 }
 
-// =================================================================================
-// CORE PLAYER LOGIC
-// =================================================================================
-
+// --- CORE PLAYER LOGIC ---
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
     currentIndex = index;
@@ -268,10 +418,7 @@ function playNext() {
 
 function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else playTrack(currentIndex - 1 < 0 ? playlist.length - 1 : currentIndex - 1); }
 
-// =================================================================================
-// UI & DOM MANIPULATION
-// =================================================================================
-
+// --- UI & DOM MANIPULATION ---
 async function updateUIForCurrentTrack() {
     if (currentIndex === -1 || !playlist[currentIndex]) {
         if (trackTitleEl) trackTitleEl.textContent = tr('nothingPlaying');
@@ -409,8 +556,30 @@ function setupVisualizer() {
         analyser.connect(audioContext.destination);
         
         visualizerDataArray = new Uint8Array(analyser.frequencyBinCount);
-        updateAudioEffects();
-    } catch (e) { console.error("Visualizer error:", e); visualizerEnabled = false; }
+                // Load FPS Limit
+                targetFps = settings.targetFps || 60;
+                const fpsInput = document.getElementById('fps-input');
+                const fpsSlider = document.getElementById('fps-slider');
+                if (fpsInput) fpsInput.value = targetFps;
+                if (fpsSlider) fpsSlider.value = targetFps;
+            
+                // Load Performance Mode
+                performanceMode = settings.performanceMode || false;
+                const pmToggle = document.getElementById('toggle-performance-mode');
+                if (pmToggle) pmToggle.checked = performanceMode;
+                if (performanceMode) setPerformanceMode(true);
+            
+                // Load Stats Overlay
+                showStatsOverlay = settings.showStatsOverlay || false;
+                const statsToggle = document.getElementById('toggle-show-stats');
+                const statsOverlay = document.getElementById('stats-overlay');
+                if (statsToggle) statsToggle.checked = showStatsOverlay;
+                if (statsOverlay) statsOverlay.classList.toggle('hidden', !showStatsOverlay);
+            
+                // Start Stats Loop
+                requestAnimationFrame(updatePerformanceStats);
+            
+                updateAudioEffects();        } catch (e) { console.error("Visualizer error:", e); visualizerEnabled = false; }
 }
 
 function createReverbBuffer(duration) {
@@ -480,17 +649,27 @@ function updateAnalyserSettings() {
 }
 
 function drawVisualizer() {
-    if (!visualizerRunning || !isPlaying || !visualizerEnabled || !analyser || !visualizerDataArray || document.hidden) { 
-        if (visualizerRunning && !document.hidden) {
-            // Only stop if explicitly disabled or paused
+    if (performanceMode || !visualizerRunning || !isPlaying || !visualizerEnabled || !analyser || !visualizerDataArray || document.hidden) { 
+        if (!performanceMode && visualizerRunning && !document.hidden) {
             if (!visualizerEnabled || !isPlaying) visualizerRunning = false;
         }
-        if (visualizerRunning) requestAnimationFrame(drawVisualizer); // Keep loop alive but idle if just hidden
+        if (visualizerRunning) requestAnimationFrame(drawVisualizer);
         return; 
     }
+
+    const now = performance.now();
+    const interval = 1000 / targetFps;
+    const delta = now - lastRenderTime;
+
+    if (delta < interval) {
+        requestAnimationFrame(drawVisualizer);
+        return;
+    }
+
+    lastRenderTime = now - (delta % interval);
     requestAnimationFrame(drawVisualizer);
     const ctx = visualizerCanvas.getContext('2d'); const { width, height } = visualizerCanvas; ctx.clearRect(0, 0, width, height);
-    const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#38bdf8';
+    const ac = cachedAccentColor;
     analyser.getByteFrequencyData(visualizerDataArray); const boost = 1 + (visSensitivity * 0.12);
 
     if (currentVisualizerStyle === 'bars') {
@@ -637,6 +816,25 @@ async function loadSettings() {
         document.body.classList.toggle('cinema-mode', settings.cinemaMode || false);
     }
 
+    // Load Performance Mode
+    performanceMode = settings.performanceMode || false;
+    const pmToggle = document.getElementById('toggle-performance-mode');
+    if (pmToggle) pmToggle.checked = performanceMode;
+    if (performanceMode) setPerformanceMode(true);
+
+    // Load Stats Overlay
+    showStatsOverlay = settings.showStatsOverlay || false;
+    const statsToggle = document.getElementById('toggle-show-stats');
+    const statsOverlay = document.getElementById('stats-overlay');
+    if (statsToggle) statsToggle.checked = showStatsOverlay;
+    if (statsOverlay) statsOverlay.classList.toggle('hidden', !showStatsOverlay);
+
+    // Start Stats Loop
+    if (!isStatsLoopRunning) {
+        updateCachedColor();
+        requestAnimationFrame(updatePerformanceStats);
+    }
+
     updateAudioEffects();
 
     if (speedSlider) { const sp = settings.playbackSpeed || 1.0; speedSlider.value = sp; audio.playbackRate = sp; if(speedValue) speedValue.textContent = sp.toFixed(1) + 'x'; }
@@ -718,7 +916,15 @@ function setupEventListeners() {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         switch (e.code) { case 'Space': e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break; case 'ArrowRight': playNext(); break; case 'ArrowLeft': playPrev(); break; case 'ArrowUp': e.preventDefault(); audio.volume = Math.min(1, audio.volume + 0.05); break; case 'ArrowDown': e.preventDefault(); audio.volume = Math.max(0, audio.volume - 0.05); break; }
     });
-    bind(toggleMiniMode, 'change', (e) => { if (e.target.checked) window.api.setWindowSize(340, 520); else window.api.setWindowSize(1300, 900); });
+    bind(toggleMiniMode, 'change', (e) => { 
+        if (e.target.checked) {
+            document.body.classList.add('is-mini');
+            window.api.setWindowSize(340, 520); 
+        } else {
+            document.body.classList.remove('is-mini');
+            window.api.setWindowSize(1300, 900); 
+        }
+    });
     bind(downloadBtn, 'click', handleDownload);
     window.api.onMediaControl((a) => { if (a === 'play-pause') { if (isPlaying) audio.pause(); else audio.play(); } else if (a === 'next') playNext(); else if (a === 'previous') playPrev(); });
     window.api.onDownloadProgress((d) => { 
@@ -731,8 +937,18 @@ function setupEventListeners() {
         } 
     });
     if (langButtons) langButtons.forEach(btn => { bind(btn, 'click', () => { currentLanguage = btn.dataset.lang; langButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyTranslations(); window.api.setSetting('language', currentLanguage); }); });
-    bind(themeSelect, 'change', (e) => { const th = e.target.value; document.documentElement.setAttribute('data-theme', th); window.api.setSetting('theme', th); });
-    bind(accentColorPicker, 'input', (e) => { const color = e.target.value; document.documentElement.style.setProperty('--accent', color); window.api.setSetting('customAccentColor', color); });
+    bind(themeSelect, 'change', (e) => { 
+        const th = e.target.value; 
+        document.documentElement.setAttribute('data-theme', th); 
+        window.api.setSetting('theme', th);
+        setTimeout(updateCachedColor, 50); // Small delay for CSS variables to apply
+    });
+    bind(accentColorPicker, 'input', (e) => { 
+        const color = e.target.value; 
+        document.documentElement.style.setProperty('--accent', color); 
+        window.api.setSetting('customAccentColor', color);
+        updateCachedColor();
+    });
     window.addEventListener('dragover', (e) => { if (settings.enableDragAndDrop === false) return; e.preventDefault(); if (dropZone) dropZone.classList.add('active'); });
     window.addEventListener('dragleave', (e) => { if (settings.enableDragAndDrop === false) return; if (e.relatedTarget === null) { if (dropZone) dropZone.classList.remove('active'); } });
     window.addEventListener('drop', async (e) => {
@@ -891,6 +1107,54 @@ function setupEventListeners() {
         settings.cinemaMode = enabled;
         window.api.setSetting('cinemaMode', enabled);
         document.body.classList.toggle('cinema-mode', enabled);
+    });
+
+    // Performance Mode Toggle
+    bind(document.getElementById('toggle-performance-mode'), 'change', (e) => {
+        setPerformanceMode(e.target.checked);
+    });
+
+    // Stats Overlay Toggle
+    bind(document.getElementById('toggle-show-stats'), 'change', (e) => {
+        showStatsOverlay = e.target.checked;
+        settings.showStatsOverlay = showStatsOverlay;
+        window.api.setSetting('showStatsOverlay', showStatsOverlay);
+        const overlay = document.getElementById('stats-overlay');
+        if (overlay) overlay.classList.toggle('hidden', !showStatsOverlay);
+    });
+
+    // FPS Limit Handlers
+    const fpsIn = document.getElementById('fps-input');
+    const fpsSl = document.getElementById('fps-slider');
+    
+    const updateFps = (val, isFinal = false) => {
+        let v = parseInt(val);
+        if (isNaN(v)) return;
+
+        // While typing, we allow values outside the range briefly, but clamp for the actual engine
+        let clamped = Math.max(15, Math.min(120, v));
+        
+        targetFps = clamped;
+        settings.targetFps = clamped;
+        window.api.setSetting('targetFps', clamped);
+
+        if (fpsSl) fpsSl.value = clamped;
+        
+        // Only force the input field value on blur or slider move to not disrupt typing
+        if (isFinal && fpsIn) fpsIn.value = clamped;
+    };
+
+    bind(fpsIn, 'input', (e) => updateFps(e.target.value));
+    bind(fpsIn, 'blur', (e) => updateFps(e.target.value, true));
+    bind(fpsSl, 'input', (e) => {
+        updateFps(e.target.value);
+        if (fpsIn) fpsIn.value = e.target.value;
+    });
+
+    // Performance Hint OK Button
+    bind(document.getElementById('enable-perf-mode-btn'), 'click', () => {
+        setPerformanceMode(true);
+        document.getElementById('performance-hint').classList.remove('visible');
     });
 
     // Export Playlist

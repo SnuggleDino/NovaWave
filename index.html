@@ -26,6 +26,23 @@
     </div>
     <div class="background-animation"></div>
 
+    <!-- Performance Hint (Dynamic Island Style) -->
+    <div id="performance-hint" class="dynamic-island-hint">
+        <div class="hint-content">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <span id="hint-text" data-lang-key="perfLagMsg">System-Lag erkannt. Performance-Mode aktivieren?</span>
+            <button id="enable-perf-mode-btn">OK</button>
+        </div>
+    </div>
+
+    <!-- Stats Overlay -->
+    <div id="stats-overlay" class="stats-overlay hidden">
+        <div class="stats-item"><span class="stat-label">FPS</span>: <span id="stat-fps" class="stat-value">60</span></div>
+        <div class="stats-item"><span class="stat-label" data-lang-key="statFrame">Frame</span>: <span id="stat-time" class="stat-value">16ms</span></div>
+        <div class="stats-item"><span class="stat-label" data-lang-key="statStatus">Status</span>: <span id="stat-lag" class="stat-value">Stabil</span></div>
+        <div class="stats-item"><span class="stat-label" data-lang-key="perfModeLabel">Performance</span>: <span id="stat-perf-info" class="stat-value">-</span></div>
+    </div>
+
     <div class="app-shell">
         <!-- ================= HEADER ================= -->
         <header class="app-header">
@@ -72,19 +89,19 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
                         </div>
                         <div class="features-minimal-modal">
-                            <div class="modal-header" data-lang-key="sectionAudioExtras">Audio Extras</div>
+                            <div class="modal-header" data-lang-key="activeFeatures">Aktive Effekte</div>
                             <div class="modal-list">
                                 <div id="modal-feat-bass" class="modal-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2"/><circle cx="12" cy="14" r="4"/></svg>
-                                    <span>Bass Boost</span>
+                                    <span data-lang-key="bassBoost">Bass Boost</span>
                                 </div>
                                 <div id="modal-feat-crystal" class="modal-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 9-10 10L2 12l4-9z"/></svg>
-                                    <span>Crystalizer</span>
+                                    <span data-lang-key="trebleBoost">Crystalizer</span>
                                 </div>
                                 <div id="modal-feat-reverb" class="modal-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                                    <span>Reverb</span>
+                                    <span data-lang-key="reverb">Reverb</span>
                                 </div>
                             </div>
                         </div>
@@ -540,6 +557,45 @@
                         <div class="setting-control">
                             <label class="toggle-switch">
                                 <input type="checkbox" id="toggle-cinema-mode">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong data-lang-key="perfModeLabel">Performance Mode</strong>
+                            <p data-lang-key="perfModeDesc">Deaktiviert Visualizer und Animationen für maximale CPU-Schonung.</p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-performance-mode">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong data-lang-key="fpsLimitLabel">FPS Limit</strong>
+                            <p data-lang-key="fpsLimitDesc">Begrenze die Bildrate für Visualizer und Animationen (15 - 120).</p>
+                        </div>
+                        <div class="setting-control">
+                             <div class="input-group fps-control-group">
+                                <input type="number" id="fps-input" class="settings-input fps-number-input" min="15" max="120" placeholder="60">
+                                <input type="range" id="fps-slider" class="settings-range" min="15" max="120" step="1" value="60">
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong data-lang-key="showStatsLabel">System-Stats anzeigen</strong>
+                            <p data-lang-key="showStatsDesc">Zeigt FPS und Performance-Daten im Hauptfenster an.</p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-show-stats">
                                 <span class="slider"></span>
                             </label>
                         </div>
