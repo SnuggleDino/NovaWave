@@ -961,25 +961,39 @@ function setupEventListeners() {
         if (currentFolderPath) {
             let movedCount = 0;
             for (const file of files) {
-                const res = await window.api.moveFile(file.path, currentFolderPath);
-                if (res.success) movedCount++;
+                try {
+                    const res = await window.api.moveFile(file.path, currentFolderPath);
+                    if (res.success) movedCount++;
+                } catch (e) {
+                    console.error(`Failed to move file: ${file.path}`, e);
+                }
             }
             if (movedCount > 0) {
-                const r = await window.api.refreshMusicFolder(currentFolderPath);
-                if (r && r.tracks) {
-                    basePlaylist = r.tracks;
-                    sortPlaylist(sortMode);
-                    showNotification(tr('tracksAdded', movedCount));
+                try {
+                    const r = await window.api.refreshMusicFolder(currentFolderPath);
+                    if (r && r.tracks) {
+                        basePlaylist = r.tracks;
+                        sortPlaylist(sortMode);
+                        showNotification(tr('tracksAdded', movedCount));
+                    }
+                } catch (e) {
+                    console.error("Failed to refresh folder after drop", e);
+                    showNotification(tr('statusError'));
                 }
             }
         } else {
             const firstPath = files[0].path;
-            const r = await window.api.refreshMusicFolder(firstPath);
-            if (r && r.tracks && r.tracks.length > 0) {
-                basePlaylist = r.tracks; playlist = [...basePlaylist]; currentIndex = -1;
-                renderPlaylist(); updateUIForCurrentTrack(); currentFolderPath = r.folderPath;
-                window.api.setSetting('currentFolderPath', currentFolderPath);
-                showNotification(tr('loadFolder'));
+            try {
+                const r = await window.api.refreshMusicFolder(firstPath);
+                if (r && r.tracks && r.tracks.length > 0) {
+                    basePlaylist = r.tracks; playlist = [...basePlaylist]; currentIndex = -1;
+                    renderPlaylist(); updateUIForCurrentTrack(); currentFolderPath = r.folderPath;
+                    window.api.setSetting('currentFolderPath', currentFolderPath);
+                    showNotification(tr('loadFolder'));
+                }
+            } catch (e) {
+                console.error("Failed to load folder via drop", e);
+                showNotification(tr('statusError'));
             }
         }
     });
