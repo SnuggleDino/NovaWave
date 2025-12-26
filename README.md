@@ -66,7 +66,7 @@ NovaWave is a professional, high-performance music player built with Electron. I
 
 **1. Clone the Repository**
 ```bash
-gh repo clone Refreryo/Musik-Player_v2
+git clone https://github.com/Refreryo/Musik-Player_v2
 ```
 
 **2. Navigate to Workspace**
