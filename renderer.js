@@ -554,32 +554,9 @@ function setupVisualizer() {
         reverbGain.connect(analyser);
 
         analyser.connect(audioContext.destination);
-        
         visualizerDataArray = new Uint8Array(analyser.frequencyBinCount);
-                // Load FPS Limit
-                targetFps = settings.targetFps || 60;
-                const fpsInput = document.getElementById('fps-input');
-                const fpsSlider = document.getElementById('fps-slider');
-                if (fpsInput) fpsInput.value = targetFps;
-                if (fpsSlider) fpsSlider.value = targetFps;
-            
-                // Load Performance Mode
-                performanceMode = settings.performanceMode || false;
-                const pmToggle = document.getElementById('toggle-performance-mode');
-                if (pmToggle) pmToggle.checked = performanceMode;
-                if (performanceMode) setPerformanceMode(true);
-            
-                // Load Stats Overlay
-                showStatsOverlay = settings.showStatsOverlay || false;
-                const statsToggle = document.getElementById('toggle-show-stats');
-                const statsOverlay = document.getElementById('stats-overlay');
-                if (statsToggle) statsToggle.checked = showStatsOverlay;
-                if (statsOverlay) statsOverlay.classList.toggle('hidden', !showStatsOverlay);
-            
-                // Start Stats Loop
-                requestAnimationFrame(updatePerformanceStats);
-            
-                updateAudioEffects();        } catch (e) { console.error("Visualizer error:", e); visualizerEnabled = false; }
+        updateAudioEffects();
+    } catch (e) { console.error("Visualizer error:", e); visualizerEnabled = false; }
 }
 
 function createReverbBuffer(duration) {
@@ -816,6 +793,13 @@ async function loadSettings() {
         document.body.classList.toggle('cinema-mode', settings.cinemaMode || false);
     }
 
+    // Load FPS Limit
+    targetFps = settings.targetFps || 60;
+    const fpsIn = document.getElementById('fps-input');
+    const fpsSl = document.getElementById('fps-slider');
+    if (fpsIn) fpsIn.value = targetFps;
+    if (fpsSl) fpsSl.value = targetFps;
+
     // Load Performance Mode
     performanceMode = settings.performanceMode || false;
     const pmToggle = document.getElementById('toggle-performance-mode');
@@ -941,13 +925,15 @@ function setupEventListeners() {
         const th = e.target.value; 
         document.documentElement.setAttribute('data-theme', th); 
         window.api.setSetting('theme', th);
-        setTimeout(updateCachedColor, 50); // Small delay for CSS variables to apply
+        setTimeout(updateCachedColor, 100); 
     });
     bind(accentColorPicker, 'input', (e) => { 
         const color = e.target.value; 
         document.documentElement.style.setProperty('--accent', color); 
-        window.api.setSetting('customAccentColor', color);
         updateCachedColor();
+    });
+    bind(accentColorPicker, 'change', (e) => {
+        window.api.setSetting('customAccentColor', e.target.value);
     });
     window.addEventListener('dragover', (e) => { if (settings.enableDragAndDrop === false) return; e.preventDefault(); if (dropZone) dropZone.classList.add('active'); });
     window.addEventListener('dragleave', (e) => { if (settings.enableDragAndDrop === false) return; if (e.relatedTarget === null) { if (dropZone) dropZone.classList.remove('active'); } });
@@ -1187,8 +1173,13 @@ function setupEventListeners() {
     bind(toggleUseCustomColor, 'change', (e) => {
         window.api.setSetting('useCustomColor', e.target.checked);
         if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !e.target.checked);
-        if (e.target.checked) { const color = accentColorPicker ? accentColorPicker.value : '#38bdf8'; document.documentElement.style.setProperty('--accent', color); }
-        else { document.documentElement.style.removeProperty('--accent'); }
+        if (e.target.checked) { 
+            const color = accentColorPicker ? accentColorPicker.value : '#38bdf8'; 
+            document.documentElement.style.setProperty('--accent', color); 
+        } else { 
+            document.documentElement.style.removeProperty('--accent'); 
+        }
+        setTimeout(updateCachedColor, 50);
     });
         bind(emojiSelect, 'change', (e) => {
             const v = e.target.value;
@@ -1312,6 +1303,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.documentElement.style.setProperty('--accent', settings.customAccentColor); 
                 if (accentColorPicker) accentColorPicker.value = settings.customAccentColor; 
             }
+            updateCachedColor(); // Update color cache after applying theme/custom settings
             applyTranslations(); 
             audio.volume = currentVolume; 
             if (volumeSlider) volumeSlider.value = currentVolume; 

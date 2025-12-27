@@ -339,6 +339,10 @@ body {
   position: relative;
   transition: background-color 0.4s ease, color 0.4s ease;
   font-size: 14px;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  transform: translateZ(0); /* Force clean layer */
 }
 
 input, textarea { user-select: text; }
@@ -360,7 +364,6 @@ input, textarea { user-select: text; }
     width: 100%; height: 100%;
     z-index: -1;
     pointer-events: none;
-    will-change: transform;
     backface-visibility: hidden;
 }
 
@@ -376,7 +379,6 @@ input, textarea { user-select: text; }
         radial-gradient(at 15% 80%, hsla(40, 90%, 55%, 0.3) 0px, transparent 40%);
     background-size: 200% 200%;
     animation: background-flow 40s ease-in-out infinite;
-    will-change: transform;
     opacity: 0.6;
 }
 
@@ -390,7 +392,6 @@ input, textarea { user-select: text; }
     background-size: 100% 100%;
     animation: nebula-pulse 15s ease-in-out infinite alternate;
     opacity: 0.8;
-    will-change: transform, opacity;
 }
 
 /* --- Animation 3: Rainbow (Seamless Flow) --- */
@@ -404,7 +405,6 @@ input, textarea { user-select: text; }
     animation: rainbow-ultra-smooth 15s linear infinite;
     opacity: 0.2;
     filter: blur(60px);
-    will-change: background-position, transform;
 }
 
 /* --- Animation 5: Aurora (Better Fluid Motion) --- */
@@ -417,7 +417,6 @@ input, textarea { user-select: text; }
     filter: blur(80px);
     animation: aurora-move 15s ease-in-out infinite alternate;
     opacity: 0.3;
-    will-change: transform, opacity;
 }
 
 /* --- Animation 6: Snowfall (Christmas Special) --- */
@@ -468,7 +467,7 @@ input, textarea { user-select: text; }
     opacity: 0.6;
 }
 
-/* --- MODERN INTRO (NovaWave 2.4.7) --- */
+/* --- MODERN INTRO (NovaWave 2.4.8) --- */
 .splash-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -574,14 +573,14 @@ input, textarea { user-select: text; }
   position: relative;
   z-index: 1;
   transition: opacity 1s ease, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, opacity;
+  will-change: opacity;
   opacity: 0;
   transform: translateY(20px);
 }
 
 body.ready .app-shell {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
 }
 
 .app-header {
@@ -697,7 +696,7 @@ body.ready .app-shell {
     margin-top: 20px;
 }
 .track-title-large { 
-    font-size: 1.6rem; 
+    font-size: 22px; 
     font-weight: 700; 
     color: var(--text-main); 
     margin-bottom: 4px;
@@ -705,7 +704,6 @@ body.ready .app-shell {
     display: block;
     width: max-content;
     padding: 0 20px;
-    will-change: transform;
     text-align: center;
 }
 
@@ -720,7 +718,7 @@ body.ready .app-shell {
     80%, 100% { transform: translateX(var(--scroll-dist)); }
 }
 
-.track-artist-large { font-size: 1rem; color: var(--text-muted); font-weight: 400; text-align: center; width: 100%; }
+.track-artist-large { font-size: 14px; color: var(--text-muted); font-weight: 400; text-align: center; width: 100%; }
 
 .visualizer-container {
   height: 80px; width: 100%;
@@ -729,7 +727,7 @@ body.ready .app-shell {
 #visualizer-canvas { width: 100%; height: 100%; display: block; border-radius: 8px; }
 
 .progress-area { width: 100%; }
-.time-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
+.time-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
 .progress-bar { height: 6px; background: var(--bg-card-light); border-radius: 3px; cursor: pointer; }
 .progress-fill { height: 100%; background: var(--accent); width: 0%; border-radius: 3px; }
 
@@ -1640,6 +1638,7 @@ input:checked + .slider:before { transform: translateX(16px); }
       padding: 0; 
       justify-content: center;
       gap: 10px;
+      overflow: visible !important;
   }
   
   .glass-panel {
@@ -1650,6 +1649,10 @@ input:checked + .slider:before { transform: translateX(16px); }
   }
   
   /* Resize Cover Art */
+  .cover-art-container {
+      width: 140px !important;
+      height: 140px !important;
+  }
   .cover-art-wrapper { 
       width: 140px; height: 140px; 
       box-shadow: 0 8px 20px rgba(0,0,0,0.4);
@@ -1657,9 +1660,25 @@ input:checked + .slider:before { transform: translateX(16px); }
   .music-emoji { font-size: 60px; }
   
   /* Compact Text */
-  .track-info-area { margin-top: 10px; display: flex; }
-  .track-title-large { font-size: 1.1rem; margin-bottom: 2px; display: block; }
-  .track-artist-large { font-size: 0.8rem; display: block; }
+  .track-info-area { 
+      margin-top: 10px; 
+      display: flex; 
+      transform: none !important;
+      filter: none !important;
+  }
+  .track-title-large { 
+      font-size: 15px; 
+      margin-bottom: 2px; 
+      display: block; 
+      -webkit-font-smoothing: subpixel-antialiased !important;
+      transform: none !important;
+  }
+  .track-artist-large { 
+      font-size: 11px; 
+      display: block; 
+      -webkit-font-smoothing: subpixel-antialiased !important;
+      transform: none !important;
+  }
   
   /* Compact Controls */
   .visualizer-container { height: 30px; margin: 10px 0; }
@@ -1693,23 +1712,47 @@ input:checked + .slider:before { transform: translateX(16px); }
 
   /* Adjust Audio Features Badge for Mini Mode */
   .active-features-container {
-      top: -10px;
-      right: -10px;
-      transform: scale(0.8);
+      top: 5px;
+      right: 5px;
+      transform: none !important; /* Remove scale to prevent blur */
   }
   .active-features-container.active {
-      transform: scale(0.8);
+      transform: none !important;
+  }
+  .features-badge-icon {
+      width: 28px !important;
+      height: 28px !important;
+      border-width: 1.5px !important;
+  }
+  .features-badge-icon svg {
+      width: 16px !important;
+      height: 16px !important;
   }
   .active-features-container:hover .features-minimal-modal {
       right: 35px;
+      transform: none !important; /* Remove scale animation */
+      opacity: 1;
+  }
+  .features-minimal-modal {
+      backdrop-filter: none !important; /* Disable blur to fix global unsharpness */
+      -webkit-backdrop-filter: none !important;
+      background: var(--bg-card) !important; /* Solid background */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      transform: none !important;
+      border-radius: 12px;
+      padding: 12px;
+      width: 160px;
   }
 }
 /* ================= NOTIFICATION BAR ================= */
 .notification-bar {
     position: fixed;
     top: 20px;
-    left: 50%;
-    transform: translate(-50%, calc(-100% - 40px)); 
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
+    transform: translateY(calc(-100% - 40px)); 
     opacity: 0;
     background: var(--bg-card);
     backdrop-filter: blur(20px);
@@ -1728,7 +1771,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 }
 
 .notification-bar.visible {
-    transform: translate(-50%, 0);
+    transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
 }

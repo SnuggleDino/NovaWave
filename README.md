@@ -1,6 +1,6 @@
 # 🌊 NovaWave Music Player
 
-![Version](https://img.shields.io/badge/Version-2.4.7-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.4.8-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Author](https://img.shields.io/badge/Author-SnuggleDino-fbbf24?style=for-the-badge)
 
@@ -66,7 +66,7 @@ NovaWave is a professional, high-performance music player built with Electron. I
 
 **1. Clone the Repository**
 ```bash
-gh repo clone Refreryo/Musik-Player_v2
+git clone https://github.com/Refreryo/Musik-Player_v2
 ```
 
 **2. Navigate to Workspace**
@@ -87,6 +87,6 @@ npm start
 ***
 
 **🛠 Technical Stack:** Electron, music-metadata, node-id3, yt-dlp-wrap, electron-store.  
-**📦 Version:** 2.4.7  
+**📦 Version:** 2.4.8  
 **👤 Author:** SnuggleDino  
 **🕒 Last Modified:** Friday, December 26, 2025

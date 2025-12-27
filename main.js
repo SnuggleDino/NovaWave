@@ -69,9 +69,21 @@ async function main() {
             enableFocusMode: true,
             enableDragAndDrop: true,
             useCustomColor: false,
+            customAccentColor: '#38bdf8',
             language: 'de',
             volume: 0.2,
-            sortMode: 'name'
+            sortMode: 'name',
+            targetFps: 60,
+            performanceMode: false,
+            showStatsOverlay: false,
+            cinemaMode: false,
+            playbackSpeed: 1.0,
+            bassBoostEnabled: false,
+            bassBoostValue: 6,
+            trebleBoostEnabled: false,
+            trebleBoostValue: 6,
+            reverbEnabled: false,
+            reverbValue: 30
         }
     });
 
