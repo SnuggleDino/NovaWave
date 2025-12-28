@@ -1,6 +1,6 @@
 # 🌊 NovaWave Music Player
 
-![Version](https://img.shields.io/badge/Version-2.4.8-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.4.9-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Author](https://img.shields.io/badge/Author-SnuggleDino-fbbf24?style=for-the-badge)
 
@@ -13,7 +13,7 @@ NovaWave is a professional, high-performance music player built with Electron. I
 ### 🚀 <span style="color: #38bdf8;">Key Features</span>
 *   🔵 **Local Playback:** High-fidelity playback for MP3, M4A, FLAC, WAV, and OGG.
 *   🔴 **YouTube Downloader:** Built-in downloader via `yt-dlp` including thumbnails and metadata.
-*   🟣 **Modern UI:** Sleek glassmorphism interface with multiple themes (Dark, Light, Dino, Xmas, Blurple).
+*   🟣 **Modern UI:** Sleek glassmorphism interface with multiple themes (Blue, Dark, Dino, Xmas, Blurple, Rose).
 *   ⚪ **Mini-Player:** Compact mode for minimalistic control.
 *   ⚫ **Cinema Mode:** Dims the UI to maximize focus on the visual experience.
 *   🟢 **Drag & Drop:** Easily add music by dragging files into the player.
@@ -38,7 +38,7 @@ NovaWave is a professional, high-performance music player built with Electron. I
 ### 🚀 <span style="color: #38bdf8;">Hauptfunktionen</span>
 *   🔵 **Lokale Wiedergabe:** Kristallklarer Sound für MP3, M4A, FLAC, WAV und OGG.
 *   🔴 **YouTube Downloader:** Integrierter Download via `yt-dlp` mit Thumbnails und Metadaten.
-*   🟣 **Modernes UI:** Glassmorphism-Design mit verschiedenen Themes (Dark, Light, Dino, Xmas, Blurple).
+*   🟣 **Modernes UI:** Glassmorphism-Design mit verschiedenen Themes (Blau, Dark, Dino, Xmas, Blurple, Rose).
 *   ⚪ **Mini-Player:** Kompakter Modus für platzsparende Musiksteuerung.
 *   ⚫ **Kino-Modus:** Dimmt das Interface für vollen Fokus auf das Artwork.
 *   🟢 **Drag & Drop:** Einfaches Hinzufügen von Dateien durch Ziehen ins Fenster.
@@ -87,6 +87,6 @@ npm start
 ***
 
 **🛠 Technical Stack:** Electron, music-metadata, node-id3, yt-dlp-wrap, electron-store.  
-**📦 Version:** 2.4.8  
+**📦 Version:** 2.4.9  
 **👤 Author:** SnuggleDino  
-**🕒 Last Modified:** Friday, December 26, 2025
+**🕒 Last Modified:** Sunday, December 28, 2025

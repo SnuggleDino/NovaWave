@@ -42,17 +42,7 @@
     background-attachment: fixed;
 }
   
-:root[data-theme="light"] {
-    --bg-main: #f5f5f7;
-    --bg-card: #ffffff;
-    --bg-card-light: #e8e8ed;
-    --accent: #0071e3;
-    --accent-soft: rgba(0, 113, 227, 0.1);
-    --text-main: #1d1d1f;
-    --text-muted: #86868b;
-    --border-soft: #d2d2d7;
-    --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.04);
-}
+
 
 :root[data-theme="blurple"] {
     --bg-main: #1e1f2e;
@@ -66,17 +56,7 @@
     --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
-:root[data-theme="grey"] {
-    --bg-main: #1a1a1a;
-    --bg-card: #2d2d2d;
-    --bg-card-light: #3f3f3f;
-    --accent: #8190a3;
-    --accent-soft: rgba(129, 144, 163, 0.15);
-    --text-main: #e0e0e0;
-    --text-muted: #999999;
-    --border-soft: #444444;
-    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.3);
-}
+
 
 :root[data-theme="darkrose"] {
     --bg-main: #100f10;
@@ -394,18 +374,7 @@ input, textarea { user-select: text; }
     opacity: 0.8;
 }
 
-/* --- Animation 3: Rainbow (Seamless Flow) --- */
-.background-animation.type-rainbow::before {
-    content: '';
-    position: absolute;
-    width: 150%; height: 150%;
-    top: -25%; left: -25%;
-    background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
-    background-size: 300% 300%;
-    animation: rainbow-ultra-smooth 15s linear infinite;
-    opacity: 0.2;
-    filter: blur(60px);
-}
+
 
 /* --- Animation 5: Aurora (Better Fluid Motion) --- */
 .background-animation.type-aurora::before {
@@ -429,11 +398,7 @@ input, textarea { user-select: text; }
     100% { transform: translateY(110vh) rotate(360deg); }
 }
 
-@keyframes rainbow-ultra-smooth {
-    0% { background-position: 0% 50%; transform: rotate(0deg); }
-    50% { background-position: 100% 50%; transform: rotate(5deg); }
-    100% { background-position: 0% 50%; transform: rotate(0deg); }
-}
+
 
 @keyframes aurora-move {
     0% { transform: scale(1) translate(0, 0); opacity: 0.2; }
@@ -467,7 +432,7 @@ input, textarea { user-select: text; }
     opacity: 0.6;
 }
 
-/* --- MODERN INTRO (NovaWave 2.4.8) --- */
+/* --- MODERN INTRO (NovaWave 2.4.9) --- */
 .splash-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -1259,10 +1224,7 @@ body.focus-active .focus-mode-btn {
     color: var(--accent);
 }
 
-:root[data-theme="light"] .settings-select,
-:root[data-theme="light"] .settings-input-readonly {
-  background: #f9fafb; color: #111827; border-color: #d1d5db;
-}
+
 
 .toggle-switch { position: relative; display: inline-block; width: 40px; height: 24px; }
 .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -1271,24 +1233,7 @@ body.focus-active .focus-mode-btn {
 input:checked + .slider { background-color: var(--accent); }
 input:checked + .slider:before { transform: translateX(16px); }
 
-/* =========================================
-   LIGHT THEME Overrides
-   ========================================= */
 
-:root[data-theme="light"] .extras-input,
-:root[data-theme="light"] .playlist-search-input,
-:root[data-theme="light"] .playlist-sort-select,
-:root[data-theme="light"] .setting-item select {
-  background: #ffffff; color: #1d1d1f; border-color: #d2d2d7;
-}
-
-:root[data-theme="light"] .playlist-sort-select option {
-  background-color: #ffffff;
-  color: #1d1d1f;
-}
-
-:root[data-theme="light"] .control-btn { border-color: #d2d2d7; color: #86868b; }
-:root[data-theme="light"] .track-row:hover { background: #f5f5f7; }
 
 /* =========================================
    RESPONSIVE DESIGN
@@ -1571,22 +1516,7 @@ input:checked + .slider:before { transform: translateX(16px); }
     background: rgba(0, 0, 0, 0.3);
 }
 
-/* =========================================
-   LIGHT THEME READABILITY FIX
-   ========================================= */
 
-:root[data-theme="light"] .setting-label strong {
-    color: #111827;
-}
-
-:root[data-theme="light"] .setting-label p {
-    color: #4b5563;
-}
-
-:root[data-theme="light"] .settings-select {
-    color: #111827;
-    background-color: #e5e7eb;
-}
 
 /* =========================================
    MINI PLAYER MODE (< 450px width)

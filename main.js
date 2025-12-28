@@ -195,7 +195,10 @@ function registerIpcHandlers(store) {
 
             const ytDlpWrap = new YTDlpWrap(ytDlpPath);
             const qualityMap = { best: '0', high: '5', standard: '9' };
-            const fileNameTemplate = customName ? `${customName}.%(ext)s` : '%(title)s.%(ext)s';
+            
+            const sanitize = (name) => name.replace(/[<>:"/\\|?*]/g, '_').trim();
+            const safeName = customName ? sanitize(customName) : null;
+            const fileNameTemplate = safeName ? `${safeName}.%(ext)s` : '%(title)s.%(ext)s';
 
             const ytDlpProcess = ytDlpWrap.exec([
                 url, '-x', '--audio-format', 'mp3', '--audio-quality', qualityMap[quality] || '0',
@@ -207,6 +210,16 @@ function registerIpcHandlers(store) {
                 ytDlpProcess.on('close', (code) => code === 0 ? resolve() : reject(new Error(`yt-dlp exited with code ${code}`)));
                 ytDlpProcess.on('error', reject);
             });
+
+            if (safeName) {
+                try {
+                    const filePath = path.join(downloadFolder, `${safeName}.mp3`);
+                    NodeID3.update({ title: customName }, filePath);
+                } catch (err) {
+                    console.error('Failed to update metadata title:', err);
+                }
+            }
+
             return { success: true };
         } catch (error) { return { success: false, error: error.message }; }
     });

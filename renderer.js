@@ -187,7 +187,7 @@ const translations = {
         changeButton: 'Ändern', audioQuality: 'Audioqualität (Download)', qualityBest: 'Beste',
         qualityHigh: 'Hoch (192k)', qualityStandard: 'Standard (128k)',
         backgroundAnimation: 'Hintergrundanimation',
-        themeBlue: 'Standard Blau', themeDark: 'Mitternachts-Lila', themeLight: 'Hellblau', themePurple: 'Blurple', themeGrey: 'Schiefergrau', themeRose: 'Tiefrot', themeDino: 'Dino Grün', themeXmas: 'Weihnachten',
+        themeBlue: 'Standard Blau', themeDark: 'Mitternachts-Lila', themePurple: 'Blurple', themeRose: 'Tiefrot', themeDino: 'Dino Grün', themeXmas: 'Weihnachten',
         shuffle: 'Zufallswiedergabe', previous: 'Zurück', playPause: 'Abspielen/Pause',
         next: 'Weiter', loop: 'Wiederholen', settings: 'Einstellungen', close: 'Schließen',
         toggleDownloader: 'Downloader umschalten', deleteSong: 'Song löschen',
@@ -243,7 +243,7 @@ const translations = {
         audioQualityDescription: 'Wähle die Audioqualität für neue YouTube-Downloads.',
         refreshFolder: 'Ordner aktualisieren',
         refreshFolderDesc: 'Sucht nach neuen Dateien im aktuell geladenen Ordner.',
-        animOff: 'Aus', animFlow: 'Flow', animNebula: 'Nebula', animRainbow: 'Regenbogen', animStellar: 'Stellar', animAurora: 'Aurora', animXmas: 'Schneefall',
+        animOff: 'Aus', animFlow: 'Flow', animNebula: 'Nebula', animStellar: 'Stellar', animAurora: 'Aurora', animXmas: 'Schneefall',
         editTitle: 'Titel bearbeiten', editTitleDesc: 'Ändern Sie den Anzeigenamen in der Playlist.',
         currentTitle: 'Aktuell gespeichert', previewTitle: 'Vorschau (Neu)',
         saveBtn: 'Speichern', cancelBtn: 'Abbrechen',
@@ -294,7 +294,7 @@ const translations = {
         changeButton: 'Change', audioQuality: 'Audio Quality (Download)', qualityBest: 'Best',
         qualityHigh: 'High (192k)', qualityStandard: 'Standard (128k)',
         backgroundAnimation: 'Background Animation',
-        themeBlue: 'Standard Blue', themeDark: 'Midnight Purple', themeLight: 'Light Blue', themePurple: 'Blurple', themeGrey: 'Slate Grey', themeRose: 'Deep Rose', themeDino: 'Dino Green', themeXmas: 'Christmas',
+        themeBlue: 'Standard Blue', themeDark: 'Midnight Purple', themePurple: 'Blurple', themeRose: 'Deep Rose', themeDino: 'Dino Green', themeXmas: 'Christmas',
         shuffle: 'Shuffle', previous: 'Previous', playPause: 'Play/Pause',
         next: 'Next', loop: 'Loop', settings: 'Settings', close: 'Close',
         toggleDownloader: 'Toggle Downloader', deleteSong: 'Delete Song',
@@ -367,7 +367,7 @@ const translations = {
         audioQualityDescription: 'Choose the audio quality for YouTube downloads.',
         refreshFolder: 'Refresh Folder',
         refreshFolderDesc: 'Scan the current folder for new music files.',
-        animOff: 'Off', animFlow: 'Flow', animNebula: 'Nebula', animRainbow: 'Rainbow', animStellar: 'Stellar', animAurora: 'Aurora', animXmas: 'Snowfall',
+        animOff: 'Off', animFlow: 'Flow', animNebula: 'Nebula', animStellar: 'Stellar', animAurora: 'Aurora', animXmas: 'Snowfall',
         editTitle: 'Edit Title', editTitleDesc: 'Change the display name in the playlist.',
         currentTitle: 'Currently Saved', previewTitle: 'Preview (New)',
         saveBtn: 'Save', cancelBtn: 'Cancel',
@@ -1202,6 +1202,7 @@ function setupEventListeners() {
     bind(toggleDownloaderBtn, 'click', () => { downloaderOverlay.classList.add('visible'); });
     bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
     bind(contextMenuEditTitle, 'click', () => { if (contextTrackIndex === null) return; const t = playlist[contextTrackIndex]; if (originalTitlePreview) originalTitlePreview.textContent = t.title; if (newTitlePreview) newTitlePreview.textContent = t.title; if (editTitleInput) editTitleInput.value = t.title; editTitleOverlay.classList.add('visible'); });
+    bind(editTitleInput, 'input', () => { if (newTitlePreview) newTitlePreview.textContent = editTitleInput.value; });
     bind(editTitleCancelBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleCloseBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleSaveBtn, 'click', async () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; const t = playlist[contextTrackIndex]; const nt = editTitleInput.value.trim(); if (!nt) return; const r = await window.api.updateTitle(t.path, nt); if (r.success) { t.title = nt; const bt = basePlaylist.find(x => x.path === t.path); if (bt) bt.title = nt; renderPlaylist(); updateUIForCurrentTrack(); editTitleOverlay.classList.remove('visible'); showNotification(tr('titleUpdated')); } });
