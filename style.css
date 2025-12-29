@@ -670,6 +670,9 @@ body.ready .app-shell {
     display: flex; 
     justify-content: center;
     max-height: 40vh;
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
 }
 .cover-art-wrapper {
   width: clamp(150px, 30vh, 260px); 
@@ -715,7 +718,8 @@ body.ready .app-shell {
     margin-bottom: 4px;
     white-space: nowrap; 
     display: block;
-    width: max-content;
+    max-width: calc(100% - 45px);
+    overflow: hidden;
     padding: 0 10px 0 20px;
     text-align: center;
 }
@@ -1909,7 +1913,7 @@ body.is-mini .mini-mode-switch-container {
 }
 
 body.is-mini .main-grid { 
-    padding: 10px !important; 
+    padding: 18px 10px !important; 
     display: grid !important;
     grid-template-columns: 1fr !important;
     flex-direction: unset !important;
@@ -1920,7 +1924,7 @@ body.is-mini .main-grid {
 
 body.is-mini .player-column { 
     padding: 0 !important; 
-    justify-content: center !important;
+    justify-content: flex-start !important;
     gap: 8px !important;
     width: 100% !important;
     max-width: none !important;
@@ -1930,6 +1934,7 @@ body.is-mini .cover-art-container {
     width: 140px !important;
     height: 140px !important;
     margin: 0 auto !important;
+    position: relative !important;
 }
 
 body.is-mini .cover-art-wrapper { 
@@ -1944,9 +1949,15 @@ body.is-mini .track-info-area {
     margin-top: 5px !important;
 }
 
+body.is-mini .track-info-area > div {
+    gap: 8px !important;
+    padding: 0 5px;
+}
+
 body.is-mini .track-title-large { 
     font-size: 15px !important; 
-    padding: 0 5px 0 15px !important;
+    padding: 0 5px 0 10px !important;
+    max-width: calc(100% - 35px) !important;
 }
 
 @media (max-width: 450px) {
@@ -2003,8 +2014,8 @@ body.is-mini .track-title-large {
 
   /* Adjust Audio Features Badge for Mini Mode */
   .active-features-container {
-      top: 5px;
-      right: 5px;
+      top: 2px;
+      right: 2px;
       transform: none !important; /* Remove scale to prevent blur */
   }
   .active-features-container.active {

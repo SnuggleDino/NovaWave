@@ -292,7 +292,7 @@ const translations = {
         newBadge: 'NEU',
         devTitle: 'Entwickler & Hotkey-Info',
         devStandardHotkeys: 'Standard Hotkeys',
-        devDebugHotkeys: 'Debug & Entwickler (v2.5.1)',
+        devDebugHotkeys: 'Debug & Entwickler (v2.5.2)',
         devPlayPause: 'Abspielen / Pause',
         devNextSong: 'Nächster Song',
         devPrevSong: 'Vorheriger Song',
@@ -301,7 +301,7 @@ const translations = {
         devOpenMenu: 'Dieses Menü öffnen',
         devPerfHint: 'Performance-Hinweis (Island)',
         devWinSize: 'Fenstergröße Debug (Size)',
-        devFooter: 'NovaWave Entwicklerkonsole v2.5.1',
+        devFooter: 'NovaWave Entwicklerkonsole v2.5.2',
     },
     en: {
         appTitle: 'NovaWave - Music Player', appSubtitle: 'Local & YouTube',
@@ -386,7 +386,7 @@ const translations = {
         newBadge: 'NEW',
         devTitle: 'Developer & Hotkey Info',
         devStandardHotkeys: 'Standard Hotkeys',
-        devDebugHotkeys: 'Debug & Dev (v2.5.1)',
+        devDebugHotkeys: 'Debug & Dev (v2.5.2)',
         devPlayPause: 'Play / Pause',
         devNextSong: 'Next Track',
         devPrevSong: 'Previous Track',
@@ -395,7 +395,7 @@ const translations = {
         devOpenMenu: 'Open this menu',
         devPerfHint: 'Performance Hint (Island)',
         devWinSize: 'Window Size Debug (Size)',
-        devFooter: 'NovaWave Dev Console v2.5.1',
+        devFooter: 'NovaWave Dev Console v2.5.2',
         useCustomColorOption: 'Use Custom Accent Color',
         useCustomColorOptionDesc: 'Apply your selected color or use theme defaults.',
         coverEmoji: 'Cover Emoji',
@@ -495,7 +495,9 @@ async function updateUIForCurrentTrack() {
         if (svg) svg.setAttribute('fill', isFav ? 'currentColor' : 'none');
     }
 
-    if (settings.snuggleTimeEnabled) {
+    const isSnuggle = settings.snuggleTimeEnabled || document.body.classList.contains('snuggle-time-active');
+
+    if (isSnuggle) {
         updateEmoji('loving_dinos');
     } else {
         updateEmoji(settings.coverEmoji || 'note', settings.customCoverEmoji);
@@ -566,7 +568,14 @@ function applyTranslations() {
     document.querySelectorAll('[data-lang-placeholder]').forEach(el => { el.placeholder = tr(el.dataset.langPlaceholder); });
     document.querySelectorAll('[data-lang-title]').forEach(el => { el.title = tr(el.dataset.langTitle); });
     const dropZoneTextEl = $('#drop-zone p'); if (dropZoneTextEl) dropZoneTextEl.textContent = tr('dropZoneText');
-    document.title = tr('appTitle'); updateUIForCurrentTrack(); renderPlaylist();
+    document.title = tr('appTitle'); 
+    updateUIForCurrentTrack(); 
+    renderPlaylist();
+    
+    // Final override for Snuggle Time during language changes
+    if (settings.snuggleTimeEnabled || document.body.classList.contains('snuggle-time-active')) {
+        updateEmoji('loving_dinos');
+    }
 }
 
 function updateTrackTitleScroll() {
@@ -585,6 +594,14 @@ function updateTrackTitleScroll() {
 
 function updateEmoji(emojiType, customEmoji) {
     if (!musicEmojiEl) return; 
+
+    const isSnuggle = settings.snuggleTimeEnabled || document.body.classList.contains('snuggle-time-active');
+
+    // FORCE Snuggle Time Emoji if active
+    if (isSnuggle) {
+        emojiType = 'loving_dinos';
+    }
+
     let emoji = '🎵';
     let isImage = false;
 
@@ -715,8 +732,30 @@ function updateAudioEffects() {
     if (mr) mr.classList.toggle('active', reverbOn);
 }
 
-function startVisualizer() { if (!audioContext || visualizerRunning || !visualizerEnabled || !isPlaying) return; if (audioContext.state === 'suspended') audioContext.resume(); visualizerRunning = true; drawVisualizer(); }
-function stopVisualizer() { visualizerRunning = false; if (visualizerCanvas) { const ctx = visualizerCanvas.getContext('2d'); ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height); } }
+function startVisualizer() { 
+    if (!audioContext || !visualizerEnabled || !isPlaying) return; 
+    if (visualizerRunning) return;
+
+    if (audioContext.state === 'suspended') {
+        audioContext.resume().finally(() => {
+            if (!visualizerRunning && isPlaying) {
+                visualizerRunning = true;
+                drawVisualizer();
+            }
+        });
+    } else {
+        visualizerRunning = true;
+        drawVisualizer();
+    }
+}
+
+function stopVisualizer() { 
+    visualizerRunning = false; 
+    if (visualizerCanvas) { 
+        const ctx = visualizerCanvas.getContext('2d'); 
+        if (ctx) ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height); 
+    } 
+}
 
 function updateAnalyserSettings() {
     if (!analyser) return;
@@ -726,12 +765,19 @@ function updateAnalyserSettings() {
 }
 
 function drawVisualizer() {
-    if (!visualizerRunning || performanceMode || !isPlaying || !visualizerEnabled || !analyser) { 
+    if (!visualizerRunning || performanceMode || !visualizerEnabled || !analyser) { 
         visualizerRunning = false;
         return; 
     }
 
+    // If not playing, we stop the loop. It will be restarted by the 'play' event.
+    if (!isPlaying) {
+        visualizerRunning = false;
+        return;
+    }
+
     if (document.hidden) {
+        // In background, keep the loop alive but don't draw
         requestAnimationFrame(drawVisualizer);
         return;
     }
@@ -1636,6 +1682,13 @@ function setupEventListeners() {
             updateTrackTitleScroll();
             updateDebugSize();
         }, 100); 
+    });
+
+    // Fix Visualizer not reappearing when returning from background
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && isPlaying && visualizerEnabled && !visualizerRunning) {
+            startVisualizer();
+        }
     });
 }
 
