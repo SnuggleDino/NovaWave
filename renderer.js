@@ -292,7 +292,7 @@ const translations = {
         newBadge: 'NEU',
         devTitle: 'Entwickler & Hotkey-Info',
         devStandardHotkeys: 'Standard Hotkeys',
-        devDebugHotkeys: 'Debug & Entwickler (v2.5.2)',
+        devDebugHotkeys: 'Debug & Entwickler (v2.5.3)',
         devPlayPause: 'Abspielen / Pause',
         devNextSong: 'Nächster Song',
         devPrevSong: 'Vorheriger Song',
@@ -301,7 +301,7 @@ const translations = {
         devOpenMenu: 'Dieses Menü öffnen',
         devPerfHint: 'Performance-Hinweis (Island)',
         devWinSize: 'Fenstergröße Debug (Size)',
-        devFooter: 'NovaWave Entwicklerkonsole v2.5.2',
+        devFooter: 'NovaWave Entwicklerkonsole v2.5.3',
     },
     en: {
         appTitle: 'NovaWave - Music Player', appSubtitle: 'Local & YouTube',
@@ -386,7 +386,7 @@ const translations = {
         newBadge: 'NEW',
         devTitle: 'Developer & Hotkey Info',
         devStandardHotkeys: 'Standard Hotkeys',
-        devDebugHotkeys: 'Debug & Dev (v2.5.2)',
+        devDebugHotkeys: 'Debug & Dev (v2.5.3)',
         devPlayPause: 'Play / Pause',
         devNextSong: 'Next Track',
         devPrevSong: 'Previous Track',
@@ -395,7 +395,7 @@ const translations = {
         devOpenMenu: 'Open this menu',
         devPerfHint: 'Performance Hint (Island)',
         devWinSize: 'Window Size Debug (Size)',
-        devFooter: 'NovaWave Dev Console v2.5.2',
+        devFooter: 'NovaWave Dev Console v2.5.3',
         useCustomColorOption: 'Use Custom Accent Color',
         useCustomColorOptionDesc: 'Apply your selected color or use theme defaults.',
         coverEmoji: 'Cover Emoji',
@@ -580,14 +580,25 @@ function applyTranslations() {
 
 function updateTrackTitleScroll() {
     if (!trackTitleEl) return;
-    trackTitleEl.classList.remove('animating'); trackTitleEl.style.setProperty('--scroll-dist', '0px');
+    trackTitleEl.classList.remove('animating'); 
+    trackTitleEl.style.setProperty('--scroll-dist', '0px');
+    
+    const wrapper = trackTitleEl.parentElement;
+    if (wrapper) wrapper.classList.remove('scroll-active');
+
     setTimeout(() => {
-        const container = trackTitleEl.parentElement; if (!container) return;
-        const favBtnWidth = (mainFavoriteBtn && mainFavoriteBtn.style.display !== 'none') ? mainFavoriteBtn.offsetWidth + 12 : 0;
-        const containerWidth = container.offsetWidth - favBtnWidth, textWidth = trackTitleEl.scrollWidth, titleText = trackTitleEl.textContent || "", isMiniMode = window.innerWidth < 450;
+        if (!wrapper) return;
+        
+        const containerWidth = wrapper.offsetWidth;
+        const textWidth = trackTitleEl.scrollWidth;
+        const titleText = trackTitleEl.textContent || "";
+        const isMiniMode = window.innerWidth < 450;
+
         if (textWidth > containerWidth || (isMiniMode && titleText.length > 20)) {
             const scrollDist = (textWidth - containerWidth + 20) * -1;
-            trackTitleEl.style.setProperty('--scroll-dist', `${scrollDist}px`); trackTitleEl.classList.add('animating');
+            trackTitleEl.style.setProperty('--scroll-dist', `${scrollDist}px`); 
+            trackTitleEl.classList.add('animating');
+            wrapper.classList.add('scroll-active');
         }
     }, 350);
 }

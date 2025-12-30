@@ -1,6 +1,6 @@
 # 🌊 NovaWave Music Player
 
-![Version](https://img.shields.io/badge/Version-2.5.2-c1d37f?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.5.3-c1d37f?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Author](https://img.shields.io/badge/Author-SnuggleDino-fbbf24?style=for-the-badge)
 
@@ -8,7 +8,7 @@ NovaWave is a professional, high-performance music player built with Electron. I
 
 ***
 
-## 🌟 What's New in v2.5.2?
+## 🌟 What's New in v2.5.3?
 
 *   ✨ **Snuggle Time (Theme-Pack):** Finalized exclusive experience with forced Snowfall animation, Retro-Pixel visualizer, and "Loving Dinos" image-based cover art with perfect transparency.
 *   💾 **Persistence Fix:** Rock-solid startup logic ensuring your theme pack and settings load correctly every time.
@@ -72,6 +72,6 @@ NovaWave is a professional, high-performance music player built with Electron. I
 ***
 
 **🛠 Technical Stack:** Electron, music-metadata, node-id3, yt-dlp-wrap, electron-store.  
-**📦 Version:** 2.5.2  
+**📦 Version:** 2.5.3  
 **👤 Author:** SnuggleDino  
 **🕒 Last Updated:** Monday, December 29, 2025

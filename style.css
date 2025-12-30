@@ -711,6 +711,27 @@ body.ready .app-shell {
     overflow: hidden;
     margin-top: 20px;
 }
+.track-title-flex-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+}
+
+.title-scroll-wrapper {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.title-scroll-wrapper.scroll-active {
+    justify-content: flex-start;
+}
+
 .track-title-large { 
     font-size: 22px; 
     font-weight: 700; 
@@ -718,15 +739,12 @@ body.ready .app-shell {
     margin-bottom: 4px;
     white-space: nowrap; 
     display: block;
-    max-width: calc(100% - 45px);
-    overflow: hidden;
-    padding: 0 10px 0 20px;
+    padding: 0 5px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .track-title-large.animating {
-    align-self: flex-start;
-    text-align: left;
     animation: title-scroll 12s ease-in-out infinite alternate;
 }
 
