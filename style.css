@@ -1039,8 +1039,8 @@ input[type=range].volume-slider::-moz-range-thumb {
 
 .settings-modal {
     width: 90%;
-    max-width: 800px;
-    max-height: 90vh;
+    max-width: 900px;
+    max-height: 85vh;
     background: var(--bg-card);
     border: 1px solid var(--border-soft);
     border-radius: var(--radius-lg);
@@ -1049,6 +1049,7 @@ input[type=range].volume-slider::-moz-range-thumb {
     flex-direction: column;
     transform: scale(0.95);
     transition: transform 0.3s ease;
+    overflow: hidden; /* Prevent dragging issue */
 }
 
 .overlay-container.visible .settings-modal {
@@ -1059,10 +1060,11 @@ input[type=range].volume-slider::-moz-range-thumb {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 22px 30px;
+    padding: 18px 24px;
     border-bottom: 1px solid var(--border-soft);
     flex-shrink: 0;
     cursor: grab;
+    background: rgba(0,0,0,0.1);
 }
 
 .settings-header:active {
@@ -1097,15 +1099,86 @@ input[type=range].volume-slider::-moz-range-thumb {
     transform: rotate(90deg);
 }
 
-.settings-content {
-    padding: 25px;
-    overflow-y: auto;
+/* --- SIDEBAR LAYOUT FOR SETTINGS --- */
+.settings-body {
     display: flex;
-    flex-direction: column;
-    gap: 30px;
-    background: rgba(255, 255, 255, 0.05);
+    flex: 1;
+    overflow: hidden;
+    height: 100%;
 }
 
+.settings-sidebar {
+    width: 220px;
+    background: rgba(0, 0, 0, 0.15);
+    border-right: 1px solid var(--border-soft);
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.settings-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.settings-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+}
+
+.settings-nav-btn.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.settings-nav-btn svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.8;
+}
+
+.settings-nav-btn.active svg {
+    opacity: 1;
+}
+
+.settings-content-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.02);
+    position: relative;
+}
+
+.settings-tab-content {
+    display: none;
+    animation: fadeInTab 0.3s ease-out;
+}
+
+.settings-tab-content.active {
+    display: block;
+}
+
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- OLD STYLES ADAPTED --- */
 .settings-section {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 14px;
@@ -1465,6 +1538,13 @@ input:checked + .slider:before { transform: translateX(16px); }
   .cover-art-wrapper { width: 190px; height: 190px; }
   .music-emoji { font-size: 85px; }
   .visualizer-container { height: 65px; margin: 15px 0; }
+  
+  /* Responsive Settings */
+  .settings-modal { flex-direction: column; }
+  .settings-body { flex-direction: column; }
+  .settings-sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 10px; border-right: none; border-bottom: 1px solid var(--border-soft); }
+  .settings-nav-btn { flex: 0 0 auto; white-space: nowrap; font-size: 0.8rem; padding: 8px 12px; }
+  .settings-nav-btn svg { width: 16px; height: 16px; }
 }
 
 @media (max-width: 800px) {
@@ -1497,7 +1577,7 @@ input:checked + .slider:before { transform: translateX(16px); }
   .playlist-search-input { font-size: 0.75rem; padding: 5px 8px; }
   .playlist-sort-select { font-size: 0.75rem; padding: 5px 8px; }
   
-  .settings-modal { max-width: 90%; max-height: 80vh; overflow-y: auto; }
+  .settings-modal { max-width: 90%; max-height: 80vh; overflow-y: hidden; }
   .setting-item { padding: 12px 3px; }
   .setting-item label { font-size: 0.85rem; }
   .setting-item .input-group, .setting-item select { width: 50%; font-size: 0.75rem; }
@@ -1997,274 +2077,4 @@ body.is-mini .music-emoji { font-size: 60px !important; }
 
 body.is-mini .track-info-area { 
     margin-top: 5px !important;
-}
-
-body.is-mini .track-info-area > div {
-    gap: 8px !important;
-    padding: 0 5px;
-}
-
-body.is-mini .track-title-large { 
-    font-size: 15px !important; 
-    padding: 0 5px 0 10px !important;
-    max-width: calc(100% - 35px) !important;
-}
-
-@media (max-width: 450px) {
-  /* Legacy support for narrow window without is-mini class */
-  .extras-column { display: none !important; }
-  .app-header .app-title-text, .app-header .logo-icon { display: none; }
-  .app-footer { display: none; }
-  
-  #main-favorite-btn {
-      width: 24px;
-      height: 24px;
-  }
-  
-  #main-favorite-btn svg {
-      width: 18px;
-      height: 18px;
-  }
-  .track-artist-large { 
-      font-size: 11px; 
-      display: block; 
-      -webkit-font-smoothing: subpixel-antialiased !important;
-      transform: none !important;
-  }
-  
-  /* Compact Controls */
-  .visualizer-container { height: 30px; margin: 10px 0; }
-  .controls-area { gap: 15px; }
-  .control-main { width: 50px; height: 50px; }
-  .control-main svg { width: 24px; height: 24px; }
-  .control-btn { width: 36px; height: 36px; }
-  
-  .volume-control-area { margin-top: 10px; }
-  
-  /* Allow clicking buttons in draggable header */
-  .app-header button { -webkit-app-region: no-drag; }
-
-  /* Hide Stats in Mini Mode */
-  .stats-overlay { display: none !important; }
-
-  /* Reposition Dynamic Island in Mini Mode */
-  .dynamic-island-hint {
-      top: 5px;
-      padding: 4px 12px;
-      max-width: 90%;
-  }
-  .dynamic-island-hint .hint-content {
-      font-size: 0.75rem;
-      gap: 8px;
-  }
-  #enable-perf-mode-btn {
-      padding: 2px 8px;
-      font-size: 0.65rem;
-  }
-
-  /* Adjust Audio Features Badge for Mini Mode */
-  .active-features-container {
-      top: 2px;
-      right: 2px;
-      transform: none !important; /* Remove scale to prevent blur */
-  }
-  .active-features-container.active {
-      transform: none !important;
-  }
-  .features-badge-icon {
-      width: 28px !important;
-      height: 28px !important;
-      border-width: 1.5px !important;
-  }
-  .features-badge-icon svg {
-      width: 16px !important;
-      height: 16px !important;
-  }
-  .active-features-container:hover .features-minimal-modal {
-      right: 35px;
-      transform: none !important; /* Remove scale animation */
-      opacity: 1;
-  }
-  .features-minimal-modal {
-      backdrop-filter: none !important; /* Disable blur to fix global unsharpness */
-      -webkit-backdrop-filter: none !important;
-      background: var(--bg-card) !important; /* Solid background */
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      transform: none !important;
-      border-radius: 12px;
-      padding: 12px;
-      width: 160px;
-  }
-}
-/* ================= NOTIFICATION BAR ================= */
-.notification-bar {
-    position: fixed;
-    top: 20px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    width: fit-content;
-    transform: translateY(calc(-100% - 40px)); 
-    opacity: 0;
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border-soft);
-    border-radius: 30px; 
-    padding: 10px 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    z-index: 30000; /* Positioning of the Notification Bar after */
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-    display: flex;
-    align-items: center;
-    min-width: 200px;
-    max-width: 90vw;
-    pointer-events: none;
-}
-
-.notification-bar.visible {
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.notification-content {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    color: var(--text-main);
-    font-weight: 500;
-}
-
-.notification-timer {
-    position: relative;
-    width: 24px;
-    height: 24px;
-    transform: rotate(-90deg);
-}
-
-.timer-bg {
-    fill: none;
-    stroke: var(--accent-soft);
-    stroke-width: 3;
-}
-
-.timer-progress {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-dasharray: 62.83;
-    stroke-dashoffset: 62.83;
-}
-
-.notification-bar.visible .timer-progress {
-    animation: notification-progress 5s linear forwards;
-}
-
-@keyframes notification-progress {
-    from { stroke-dashoffset: 62.83; }
-    to { stroke-dashoffset: 0; }
-}
-
-
-/* --- CINEMA MODE --- */
-.fps-control-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 220px;
-}
-
-.fps-number-input {
-    width: 85px !important;
-    text-align: center;
-    padding: 10px 5px !important;
-    flex-shrink: 0;
-}
-
-body.cinema-mode .app-header,
-body.cinema-mode .playlist-panel,
-body.cinema-mode .controls-area,
-body.cinema-mode .volume-control-area,
-body.cinema-mode .extras-column,
-body.cinema-mode .app-footer,
-body.cinema-mode .track-info-area {
-    opacity: 0.1;
-    filter: blur(2px);
-    transition: opacity 0.5s ease, filter 0.5s ease;
-}
-
-body.cinema-mode .app-header:hover,
-body.cinema-mode .playlist-panel:hover,
-body.cinema-mode .controls-area:hover,
-body.cinema-mode .volume-control-area:hover,
-body.cinema-mode .extras-column:hover,
-body.cinema-mode .app-footer:hover,
-body.cinema-mode .track-info-area:hover {
-    opacity: 1;
-    filter: none;
-}
-
-body.cinema-mode .visualizer-container,
-body.cinema-mode .cover-art-container {
-    opacity: 1;
-    filter: none;
-    z-index: 10;
-}
-
-.fav-track-btn:active {
-    transform: scale(0.9);
-}
-
-.dev-hotkey-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.dev-hotkey-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    border: 1px solid var(--border-soft);
-}
-
-.dev-hotkey-item span:first-child {
-    font-family: monospace;
-    color: var(--accent);
-    font-weight: bold;
-    background: var(--accent-soft);
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
-.dev-hotkey-item span:last-child {
-    font-size: 0.85rem;
-    color: var(--text-main);
-}
-
-@media (max-height: 650px) {
-  .main-grid { padding: 10px; gap: 10px; }
-  .app-header { height: 45px; }
-  .player-column { gap: 10px; }
-  .cover-art-wrapper { width: clamp(100px, 20vh, 180px); height: clamp(100px, 20vh, 180px); }
-  .music-emoji { font-size: 60px; }
-  .track-info-area { margin-top: 5px; }
-  .track-title-large { font-size: 1.2rem; }
-  .visualizer-container { height: 40px; margin: 5px 0; }
-  .controls-area { gap: 10px; }
-  .control-main { width: 48px; height: 48px; }
-  .control-main svg { width: 20px; height: 20px; }
-  .control-btn { width: 34px; height: 34px; }
-  .volume-control-area { margin-top: 5px; }
-}
-
-@media (max-height: 500px) {
-    .app-header { display: none; }
-    .main-grid { height: 100vh; padding: 5px; }
-    .app-footer { display: none; }
 }

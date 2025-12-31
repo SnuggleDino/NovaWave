@@ -1243,6 +1243,23 @@ function showContextMenu(e, idx) {
 function handleDeleteTrack(fp) { trackToDeletePath = fp; confirmDeleteOverlay.classList.add('visible'); let c = 5; confirmDeleteBtn.disabled = true; confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; const ci = setInterval(() => { c--; if (c > 0) confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; else { clearInterval(ci); confirmDeleteBtn.textContent = tr('confirmDeleteButton'); confirmDeleteBtn.disabled = false; } }, 1000); }
 
 function setupEventListeners() {
+    // Settings Sidebar Tabs
+    const settingTabs = document.querySelectorAll('.settings-nav-btn');
+    const settingContents = document.querySelectorAll('.settings-tab-content');
+
+    settingTabs.forEach(tab => {
+        // Use standard addEventListener if bind is not suitable for NodeList elements directly without wrapper
+        tab.addEventListener('click', () => {
+            settingTabs.forEach(t => t.classList.remove('active'));
+            settingContents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            const targetId = tab.dataset.target;
+            const targetContent = document.getElementById(targetId);
+            if (targetContent) targetContent.classList.add('active');
+        });
+    });
+
     const bind = (el, ev, h) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, h); };
     bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) audio.pause(); else (currentIndex === -1) ? playTrack(0) : audio.play(); });
     bind(nextBtn, 'click', playNext); bind(prevBtn, 'click', playPrev);
