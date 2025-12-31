@@ -192,9 +192,23 @@ function registerIpcHandlers(store) {
     ipcMain.handle('download-from-youtube', async (event, { url, customName, quality }) => {
         try {
             let downloadFolder = store.get('downloadFolder');
+            // Validate Download Folder
+            try {
+                await fs.access(downloadFolder);
+            } catch {
+                return { success: false, error: "Download folder does not exist." };
+            }
+
             const ytDlpPath = app.isPackaged 
                 ? path.join(process.resourcesPath, 'yt-dlp.exe')
                 : path.join(__dirname, 'yt-dlp.exe');
+
+            // Validate Binary Existence
+            try {
+                await fs.access(ytDlpPath);
+            } catch {
+                return { success: false, error: "yt-dlp.exe not found. Please reinstall." };
+            }
 
             const ytDlpWrap = new YTDlpWrap(ytDlpPath);
             const qualityMap = { best: '0', high: '5', standard: '9' };
@@ -208,18 +222,29 @@ function registerIpcHandlers(store) {
                 '--embed-thumbnail', '--add-metadata', '-P', downloadFolder, '-o', fileNameTemplate,
             ]);
             
-            ytDlpProcess.on('progress', (progress) => { event.sender.send('download-progress', { percent: progress.percent }); });
+            ytDlpProcess.on('progress', (progress) => { 
+                // Throttle progress updates to save IPC overhead
+                if (!ytDlpProcess.lastUpdate || Date.now() - ytDlpProcess.lastUpdate > 100) {
+                    event.sender.send('download-progress', { percent: progress.percent }); 
+                    ytDlpProcess.lastUpdate = Date.now();
+                }
+            });
+
             await new Promise((resolve, reject) => {
                 ytDlpProcess.on('close', (code) => code === 0 ? resolve() : reject(new Error(`yt-dlp exited with code ${code}`)));
                 ytDlpProcess.on('error', reject);
             });
 
             if (safeName) {
+                const filePath = path.join(downloadFolder, `${safeName}.mp3`);
                 try {
-                    const filePath = path.join(downloadFolder, `${safeName}.mp3`);
-                    NodeID3.update({ title: customName }, filePath);
+                    // Check if file actually exists before tagging (ffmpeg might have failed)
+                    await fs.access(filePath);
+                    const success = NodeID3.update({ title: customName }, filePath);
+                    if (!success) console.warn("NodeID3: Could not write tags.");
                 } catch (err) {
-                    console.error('Failed to update metadata title:', err);
+                    console.error('Metadata update failed or file missing:', err);
+                    // We don't fail the whole download if just retagging fails, but we log it.
                 }
             }
 

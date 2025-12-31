@@ -641,12 +641,36 @@ function updateEmoji(emojiType, customEmoji) {
 
 async function handleDownload() {
     const url = ytUrlInput.value.trim(); if (!url) { downloadStatusEl.textContent = tr('statusUrlMissing'); return; }
-    downloadStatusEl.textContent = tr('statusStarting'); if (downloadProgressFill) downloadProgressFill.style.width = '0%';
+    
+    // Disable UI to prevent double-clicks
+    downloadBtn.disabled = true;
+    downloadBtn.style.opacity = '0.5';
+    downloadStatusEl.textContent = tr('statusStarting'); 
+    
+    if (downloadProgressFill) downloadProgressFill.style.width = '0%';
+    
     try {
         const result = await window.api.downloadFromYouTube({ url, customName: ytNameInput.value.trim(), quality: qualitySelect.value });
-        if (result.success) { downloadStatusEl.textContent = tr('statusSuccess'); ytUrlInput.value = ''; ytNameInput.value = ''; }
-        else { downloadStatusEl.textContent = `${tr('statusError')}: ${result.error}`; }
-    } catch (err) { downloadStatusEl.textContent = `${tr('statusError')}: ${err.message}`; }
+        if (result.success) { 
+            downloadStatusEl.textContent = tr('statusSuccess'); 
+            ytUrlInput.value = ''; 
+            ytNameInput.value = ''; 
+            // Optional: Refresh folder if download was to current folder
+            if (currentFolderPath && settings.downloadFolder && currentFolderPath === settings.downloadFolder) {
+                refreshFolderBtn.click();
+            }
+        } else { 
+            downloadStatusEl.textContent = `${tr('statusError')}: ${result.error}`; 
+            if (downloadProgressFill) downloadProgressFill.style.width = '0%';
+        }
+    } catch (err) { 
+        downloadStatusEl.textContent = `${tr('statusError')}: ${err.message}`; 
+        if (downloadProgressFill) downloadProgressFill.style.width = '0%';
+    } finally {
+        // Re-enable UI
+        downloadBtn.disabled = false;
+        downloadBtn.style.opacity = '1';
+    }
 }
 
 function setupVisualizer() {
@@ -1643,7 +1667,21 @@ function setupEventListeners() {
     });
     bind(playlistEl, 'contextmenu', (e) => { const r = e.target.closest('.track-row'); if (r) { e.preventDefault(); showContextMenu(e, parseInt(r.dataset.index, 10)); } });
     bind($('#context-menu-show-folder'), 'click', () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; window.api.showInFolder(playlist[contextTrackIndex].path); });
-    bind(toggleDownloaderBtn, 'click', () => { downloaderOverlay.classList.add('visible'); });
+    bind(toggleDownloaderBtn, 'click', () => { 
+        resetDownloaderUI();
+        downloaderOverlay.classList.add('visible'); 
+    });
+
+    function resetDownloaderUI() {
+        if (ytUrlInput) ytUrlInput.value = '';
+        if (ytNameInput) ytNameInput.value = '';
+        if (downloadStatusEl) downloadStatusEl.textContent = tr('statusReady');
+        if (downloadProgressFill) downloadProgressFill.style.width = '0%';
+        if (downloadBtn) {
+            downloadBtn.disabled = false;
+            downloadBtn.style.opacity = '1';
+        }
+    }
     
     bind(toggleFavoritesBtn, 'click', () => {
         showingFavoritesOnly = !showingFavoritesOnly;

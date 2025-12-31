@@ -830,9 +830,41 @@ input[type=range].volume-slider::-moz-range-thumb {
   padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; cursor: pointer;
 }
 .primary-btn { background: var(--accent); color: #000; border: none; font-weight: 600; }
-.yt-progress-bar { height: 4px; background: var(--bg-card-light); border-radius: 2px; margin-top: 5px; overflow: hidden; }
-.yt-progress-fill { height: 100%; background: #10b981; width: 0%; transition: width 0.3s; }
-.status-text { font-size: 0.7rem; color: var(--text-muted); height: 12px; }
+.yt-progress-bar { 
+    height: 6px; 
+    background: var(--bg-card-light); 
+    border-radius: 3px; 
+    margin-top: 8px; 
+    overflow: hidden; 
+    width: 100%; /* Force full width */
+    position: relative;
+}
+
+.yt-progress-fill { 
+    height: 100%; 
+    background: linear-gradient(45deg, var(--accent) 25%, var(--accent-soft) 25%, var(--accent-soft) 50%, var(--accent) 50%, var(--accent) 75%, var(--accent-soft) 75%, var(--accent-soft) 100%);
+    background-size: 20px 20px;
+    width: 0%; 
+    border-radius: 3px;
+    transition: width 0.3s ease-out; 
+    animation: progress-stripes 1s linear infinite;
+    box-shadow: 0 0 10px var(--accent-soft);
+}
+
+@keyframes progress-stripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 20px; }
+}
+
+.status-text { 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+    height: 18px; /* Fixed height to prevent jumps */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
 
 /* --- PLAYLIST --- */
 .playlist-panel { flex: 1; display: flex; flex-direction: column; min-height: 0; }
