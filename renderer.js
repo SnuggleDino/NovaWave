@@ -456,7 +456,9 @@ function playTrack(index) {
     currentIndex = index;
     const track = playlist[index];
     currentTrackPath = track.path;
-    audio.src = `file://${track.path}`;
+    // FIX: Encode the path to handle special characters like '#' or '?' safely
+    const encodedPath = track.path.split('\\').map(encodeURIComponent).join('\\').split('/').map(encodeURIComponent).join('/');
+    audio.src = `file://${encodedPath}`;
     const speed = speedSlider ? parseFloat(speedSlider.value) : 1.0;
     audio.defaultPlaybackRate = speed;
     audio.playbackRate = speed;
@@ -520,10 +522,10 @@ function updateActiveTrackInPlaylist() {
             const indexEl = newActive.querySelector('.track-index');
             if (indexEl) { if (isPlaying) { indexEl.innerHTML = `<svg class="track-playing-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`; } else { indexEl.textContent = currentIndex + 1; } }
             
-            // Auto-Scroll to active track
-            setTimeout(() => {
+            // Auto-Scroll to active track (Eco-Friendly Frame Sync)
+            requestAnimationFrame(() => {
                 newActive.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
+            });
         }
     }
 }
