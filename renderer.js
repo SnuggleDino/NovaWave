@@ -174,7 +174,7 @@ const translations = {
         downloaderTitle: 'Downloader', downloadButton: 'Download', urlPlaceholder: 'YouTube URL...',
         renamePlaceholder: 'Optionaler Name...', statusReady: 'Bereit.', statusUrlMissing: 'URL fehlt!',
         statusFolderAbort: 'Ordnerauswahl abgebrochen.', statusStarting: 'Download startet...',
-        statusSuccess: 'Download erfolgreich!', statusError: 'Fehler beim Download', statusTitleMissing: 'Titel fehlt!',
+        statusSuccess: 'Download erfolgreich!', statusError: 'Fehler beim Download', statusPlaybackError: 'Fehler bei der Wiedergabe', statusTitleMissing: 'Titel fehlt!',
         statusProgress: (p) => `Lade... ${p}%`,
         settingsTitle: 'Einstellungen', defaultDownloadFolder: 'Standard-Download-Ordner',
         changeButton: 'Ändern', audioQuality: 'Audioqualität (Download)', qualityBest: 'Beste',
@@ -312,7 +312,7 @@ const translations = {
         downloaderTitle: 'Downloader', downloadButton: 'Download', urlPlaceholder: 'YouTube URL...',
         renamePlaceholder: 'Optional name...', statusReady: 'Ready.', statusUrlMissing: 'URL is missing!',
         statusFolderAbort: 'Folder selection aborted.', statusStarting: 'Starting download...',
-        statusSuccess: 'Download successful!', statusError: 'Download error', statusTitleMissing: 'Title missing!',
+        statusSuccess: 'Download successful!', statusError: 'Download error', statusPlaybackError: 'Playback Error', statusTitleMissing: 'Title missing!',
         statusProgress: (p) => `Downloading... ${p}%`,
         settingsTitle: 'Settings', defaultDownloadFolder: 'Default Download Folder',
         changeButton: 'Change', audioQuality: 'Audio Quality (Download)', qualityBest: 'Best',
@@ -457,8 +457,9 @@ function playTrack(index) {
     const track = playlist[index];
     currentTrackPath = track.path;
     // FIX: Encode the path to handle special characters like '#' or '?' safely
-    const encodedPath = track.path.split('\\').map(encodeURIComponent).join('\\').split('/').map(encodeURIComponent).join('/');
-    audio.src = `file://${encodedPath}`;
+    // Unified approach: split by backslash or forward slash, encode parts, join with forward slash
+    const encodedPath = track.path.split(/[\\/]/).map(encodeURIComponent).join('/');
+    audio.src = `file:///${encodedPath}`;
     const speed = speedSlider ? parseFloat(speedSlider.value) : 1.0;
     audio.defaultPlaybackRate = speed;
     audio.playbackRate = speed;
@@ -962,7 +963,7 @@ function setupAudioEvents() {
         if (window.api.sendPlaybackState) window.api.sendPlaybackState(false); 
     });
     audio.addEventListener('ended', () => { stopVisualizer(); if (loopMode === 'one') { audio.currentTime = 0; audio.play(); } else playNext(); });
-    audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusError')); isPlaying = false; updatePlayPauseUI(); });
+    audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); });
     audio.addEventListener('volumechange', () => { currentVolume = audio.volume; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { window.api.setSetting('volume', currentVolume); }, 500); });
 }
 
