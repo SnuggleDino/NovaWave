@@ -1,0 +1,534 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"syscall"
+	"unsafe"
+
+	"github.com/dhowden/tag"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
+)
+
+type App struct {
+	ctx context.Context
+}
+
+// Config speichert alle Einstellungen
+type Config struct {
+	Theme                   string   `json:"theme"`
+	Volume                  float64  `json:"volume"`
+	DownloadFolder          string   `json:"downloadFolder"`
+	Language                string   `json:"language"`
+	CoverMode               string   `json:"coverMode"`
+	CustomCoverEmoji        string   `json:"customCoverEmoji"`
+	BassGain                float64  `json:"bassGain"` // Legacy naming
+	BassBoostEnabled        bool     `json:"bassBoostEnabled"`
+	BassBoostValue          float64  `json:"bassBoostValue"`
+	TrebleBoostEnabled      bool     `json:"trebleBoostEnabled"`
+	TrebleBoostValue        float64  `json:"trebleBoostValue"`
+	ReverbEnabled           bool     `json:"reverbEnabled"`
+	ReverbValue             float64  `json:"reverbValue"`
+	AnimationMode           string   `json:"animationMode"`
+	VisualizerEnabled       bool     `json:"visualizerEnabled"`
+	VisualizerStyle         string   `json:"visualizerStyle"`
+	VisSensitivity          float64  `json:"visSensitivity"`
+	AutoLoadLastFolder      bool     `json:"autoLoadLastFolder"`
+	CurrentFolderPath       string   `json:"currentFolderPath"`
+	EnableFocusMode         bool     `json:"enableFocusMode"`
+	EnableDragAndDrop       bool     `json:"enableDragAndDrop"`
+	UseCustomColor          bool     `json:"useCustomColor"`
+	CustomAccentColor       string   `json:"customAccentColor"`
+	SortMode                string   `json:"sortMode"`
+	TargetFps               int      `json:"targetFps"`
+	PerformanceMode         bool     `json:"performanceMode"`
+	ShowStatsOverlay        bool     `json:"showStatsOverlay"`
+	CinemaMode              bool     `json:"cinemaMode"`
+	PlaybackSpeed           float64  `json:"playbackSpeed"`
+	Favorites               []string `json:"favorites"`
+	EnableFavoritesPlaylist bool     `json:"enableFavoritesPlaylist"`
+	MiniMode                bool     `json:"miniMode"`
+	AudioQuality            string   `json:"audioQuality"`
+	DeleteSongsEnabled      bool     `json:"deleteSongsEnabled"`
+	Loop                    string   `json:"loop"`
+	Shuffle                 bool     `json:"shuffle"`
+	SnuggleTimeEnabled      bool     `json:"snuggleTimeEnabled"`
+}
+
+// Track definiert einen Song für das Frontend
+type Track struct {
+	Path     string  `json:"path"`
+	Title    string  `json:"title"`
+	Artist   string  `json:"artist"`
+	Duration int     `json:"duration"`
+	Mtime    float64 `json:"mtime"` // Modification time in ms
+}
+
+type DownloadOptions struct {
+	Url        string `json:"url"`
+	CustomName string `json:"customName"`
+	Quality    string `json:"quality"`
+}
+
+type SimpleResult struct {
+	Success bool   `json:"success"`
+	Error   string `json:"error,omitempty"`
+	NewPath string `json:"newPath,omitempty"`
+}
+
+type FolderResult struct {
+	Tracks     []Track `json:"tracks"`
+	FolderPath string  `json:"folderPath"`
+	Error      string  `json:"error,omitempty"`
+}
+
+func NewApp() *App {
+	return &App{}
+}
+
+func (a *App) startup(ctx context.Context) {
+	a.ctx = ctx
+	a.setupMediaKeys()
+}
+
+func (a *App) setupMediaKeys() {
+	go func() {
+		user32 := syscall.NewLazyDLL("user32.dll")
+		procRegisterHotKey := user32.NewProc("RegisterHotKey")
+		procGetMessage := user32.NewProc("GetMessageW")
+
+		// 1 = Play/Pause (0xB3)
+		// 2 = Next (0xB0)
+		// 3 = Prev (0xB1)
+
+		procRegisterHotKey.Call(0, 1, 0, 0xB3)
+		procRegisterHotKey.Call(0, 2, 0, 0xB0)
+		procRegisterHotKey.Call(0, 3, 0, 0xB1)
+
+		for {
+			var msg struct {
+				Hwnd    uintptr
+				Message uint32
+				WParam  uintptr
+				LParam  uintptr
+				Time    uint32
+				Pt      struct{ X, Y int32 }
+			}
+			ret, _, _ := procGetMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0)
+			if ret == 0 {
+				return
+			}
+
+			if msg.Message == 0x0312 { // WM_HOTKEY
+				switch msg.WParam {
+				case 1:
+					runtime.EventsEmit(a.ctx, "media-key", "playpause")
+				case 2:
+					runtime.EventsEmit(a.ctx, "media-key", "next")
+				case 3:
+					runtime.EventsEmit(a.ctx, "media-key", "prev")
+				}
+			}
+		}
+	}()
+}
+
+// Config speichert alle Einstellungen
+func (a *App) SetWindowSize(width int, height int) {
+	runtime.WindowSetSize(a.ctx, width, height)
+}
+
+// --- EINSTELLUNGEN (CONFIG) ---
+func getConfigPath() string {
+	configDir, _ := os.UserConfigDir()
+	path := filepath.Join(configDir, "NovaWave", "settings.json")
+	return path
+}
+
+func (a *App) LoadConfig() Config {
+	path := getConfigPath()
+	data, err := os.ReadFile(path)
+
+	defaultConf := Config{
+		Theme:                   "blue",
+		Volume:                  0.2,
+		Language:                "de",
+		CoverMode:               "note",
+		CustomCoverEmoji:        "🎵",
+		AnimationMode:           "flow",
+		VisualizerEnabled:       true,
+		VisualizerStyle:         "bars",
+		VisSensitivity:          1.5,
+		AutoLoadLastFolder:      true,
+		EnableFocusMode:         true,
+		EnableDragAndDrop:       true,
+		CustomAccentColor:       "#38bdf8",
+		TargetFps:               60,
+		BassBoostValue:          6,
+		TrebleBoostValue:        6,
+		ReverbValue:             30,
+		PlaybackSpeed:           1.0,
+		EnableFavoritesPlaylist: true,
+		AudioQuality:            "best",
+	}
+
+	if err != nil {
+		return defaultConf
+	}
+
+	var loadedConf Config
+	err = json.Unmarshal(data, &loadedConf)
+	if err != nil {
+		return defaultConf
+	}
+
+	// Simple merge/fallback
+	if loadedConf.Language == "" {
+		loadedConf.Language = defaultConf.Language
+	}
+	if loadedConf.CoverMode == "" {
+		loadedConf.CoverMode = defaultConf.CoverMode
+	}
+	if loadedConf.TargetFps == 0 {
+		loadedConf.TargetFps = 60
+	}
+
+	return loadedConf
+}
+
+func (a *App) SaveConfig(config Config) string {
+	path := getConfigPath()
+	os.MkdirAll(filepath.Dir(path), 0755)
+
+	data, err := json.MarshalIndent(config, "", "  ")
+	if err != nil {
+		return "Fehler beim Erstellen der Config"
+	}
+
+	err = os.WriteFile(path, data, 0644)
+	if err != nil {
+		return "Fehler beim Speichern: " + err.Error()
+	}
+	return "Gespeichert"
+}
+
+// Helper to get current config, update one field, and save
+func (a *App) SetSetting(key string, value interface{}) {
+	cfg := a.LoadConfig()
+	
+	// Quick & dirty reflection-less update via JSON roundtrip for simplicity in this context,
+	// or manual switch. Given the dynamic nature of JS calls, map[string]interface{} might be better
+	// but we are using a struct.
+	// We will convert struct to map, update, then back to struct.
+	
+	data, _ := json.Marshal(cfg)
+	var configMap map[string]interface{}
+	json.Unmarshal(data, &configMap)
+	
+	configMap[key] = value
+	
+	newData, _ := json.MarshalIndent(configMap, "", "  ")
+	_ = os.WriteFile(getConfigPath(), newData, 0644)
+}
+
+func (a *App) GetSettings() Config {
+	return a.LoadConfig()
+}
+
+// --- DATEISYSTEM & DIALOGE ---
+func (a *App) SelectFolderDialog() string {
+	selection, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Ordner wählen",
+	})
+	if err != nil {
+		return ""
+	}
+	return selection
+}
+
+func (a *App) SelectFolder() string {
+	return a.SelectFolderDialog()
+}
+
+func (a *App) SelectMusicFolder() FolderResult {
+	path := a.SelectFolderDialog()
+	if path == "" {
+		return FolderResult{Tracks: nil, FolderPath: ""}
+	}
+	return a.RefreshMusicFolder(path)
+}
+
+func (a *App) RefreshMusicFolder(path string) FolderResult {
+	info, err := os.Stat(path)
+	if err != nil {
+		return FolderResult{FolderPath: path, Error: err.Error()}
+	}
+
+	if !info.IsDir() {
+		// Single file handling
+		name := strings.ToLower(info.Name())
+		if !strings.HasSuffix(name, ".mp3") && !strings.HasSuffix(name, ".flac") && !strings.HasSuffix(name, ".wav") && !strings.HasSuffix(name, ".m4a") && !strings.HasSuffix(name, ".ogg") {
+			return FolderResult{Error: "Keine unterstützte Musikdatei"}
+		}
+
+		mtime := float64(info.ModTime().UnixMilli())
+		currentTrack := Track{Path: path, Title: info.Name(), Artist: "Unbekannter Künstler", Mtime: mtime}
+
+		f, err := os.Open(path)
+		if err == nil {
+			m, err := tag.ReadFrom(f)
+			if err == nil {
+				if m.Title() != "" {
+					currentTrack.Title = m.Title()
+				}
+				if m.Artist() != "" {
+					currentTrack.Artist = m.Artist()
+				}
+			}
+			f.Close()
+		}
+
+		cwd, _ := os.Getwd()
+		ffprobePath := filepath.Join(cwd, "ffprobe.exe")
+		if _, err := os.Stat(ffprobePath); err == nil {
+			cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path)
+			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+			out, err := cmd.Output()
+			if err == nil {
+				var dur float64
+				if _, err := fmt.Sscanf(strings.TrimSpace(string(out)), "%f", &dur); err == nil {
+					currentTrack.Duration = int(dur)
+				}
+			}
+		}
+
+		return FolderResult{
+			Tracks:     []Track{currentTrack},
+			FolderPath: filepath.Dir(path),
+		}
+	}
+
+	// Directory handling
+	tracks, err := a.GetTracks(path)
+	if err != nil {
+		return FolderResult{Tracks: nil, FolderPath: path, Error: err.Error()}
+	}
+	return FolderResult{Tracks: tracks, FolderPath: path}
+}
+
+func (a *App) GetTracks(folderPath string) ([]Track, error) {
+	var tracks []Track
+	files, err := os.ReadDir(folderPath)
+	if err != nil {
+		return nil, err
+	}
+
+	cwd, _ := os.Getwd()
+	ffprobePath := filepath.Join(cwd, "ffprobe.exe")
+	hasFFprobe := false
+	if _, err := os.Stat(ffprobePath); err == nil {
+		hasFFprobe = true
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		name := strings.ToLower(file.Name())
+		if !strings.HasSuffix(name, ".mp3") && !strings.HasSuffix(name, ".flac") && !strings.HasSuffix(name, ".wav") && !strings.HasSuffix(name, ".m4a") && !strings.HasSuffix(name, ".ogg") {
+			continue
+		}
+
+		fullPath := filepath.Join(folderPath, file.Name())
+		info, _ := file.Info()
+		mtime := float64(info.ModTime().UnixMilli())
+
+		currentTrack := Track{Path: fullPath, Title: file.Name(), Artist: "Unbekannter Künstler", Mtime: mtime}
+
+		f, err := os.Open(fullPath)
+		if err == nil {
+			m, err := tag.ReadFrom(f)
+			if err == nil {
+				if m.Title() != "" {
+					currentTrack.Title = m.Title()
+				}
+				if m.Artist() != "" {
+					currentTrack.Artist = m.Artist()
+				}
+			}
+			f.Close()
+		}
+
+		if hasFFprobe {
+			// Try to get duration using ffprobe
+			// ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "file.mp3"
+			cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPath)
+			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+			out, err := cmd.Output()
+			if err == nil {
+				// Output should be like "123.456"
+				var dur float64
+				if _, err := fmt.Sscanf(strings.TrimSpace(string(out)), "%f", &dur); err == nil {
+					currentTrack.Duration = int(dur)
+				}
+			}
+		}
+
+		tracks = append(tracks, currentTrack)
+	}
+	return tracks, nil
+}
+
+func (a *App) ShowInFolder(path string) {
+	// Windows specific
+	exec.Command("explorer", "/select,", strings.ReplaceAll(path, "/", "\\")).Start()
+}
+
+func (a *App) DeleteTrack(path string) SimpleResult {
+	err := os.Remove(path)
+	if err != nil {
+		return SimpleResult{Success: false, Error: err.Error()}
+	}
+	return SimpleResult{Success: true}
+}
+
+func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
+	fileName := filepath.Base(sourcePath)
+	destPath := filepath.Join(destFolder, fileName)
+	
+	if sourcePath == destPath {
+		return SimpleResult{Success: true}
+	}
+
+	err := os.Rename(sourcePath, destPath)
+	if err != nil {
+		// Try copy and delete if rename fails (diff partitions)
+		input, err := os.ReadFile(sourcePath)
+		if err != nil {
+			return SimpleResult{Success: false, Error: err.Error()}
+		}
+		err = os.WriteFile(destPath, input, 0644)
+		if err != nil {
+			return SimpleResult{Success: false, Error: err.Error()}
+		}
+		os.Remove(sourcePath)
+	}
+	return SimpleResult{Success: true, NewPath: destPath}
+}
+
+func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
+	cwd, _ := os.Getwd()
+	ffmpegPath := filepath.Join(cwd, "ffmpeg.exe")
+	if _, err := os.Stat(ffmpegPath); os.IsNotExist(err) {
+		return SimpleResult{Success: false, Error: "ffmpeg.exe not found"}
+	}
+
+	ext := filepath.Ext(pathStr)
+	tempPath := strings.TrimSuffix(pathStr, ext) + "_temp" + ext
+
+	cmd := exec.Command(ffmpegPath, "-i", pathStr, "-metadata", "title="+newTitle, "-c", "copy", "-y", tempPath)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	
+	err := cmd.Run()
+	if err != nil {
+		return SimpleResult{Success: false, Error: "FFmpeg error: " + err.Error()}
+	}
+
+	// Swap files
+	err = os.Remove(pathStr)
+	if err != nil {
+		os.Remove(tempPath) // Clean up
+		return SimpleResult{Success: false, Error: "Could not remove original file"}
+	}
+	err = os.Rename(tempPath, pathStr)
+	if err != nil {
+		return SimpleResult{Success: false, Error: "Could not rename temp file"}
+	}
+
+	return SimpleResult{Success: true}
+}
+
+// --- DOWNLOADER ---
+func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
+	cfg := a.LoadConfig()
+	folderPath := cfg.DownloadFolder
+	if folderPath == "" {
+		cwd, _ := os.Getwd()
+		folderPath = cwd
+	}
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		return SimpleResult{Success: false, Error: err.Error()}, nil
+	}
+
+	ytPath := filepath.Join(cwd, "yt-dlp.exe")
+	ffmpegPath := filepath.Join(cwd, "ffmpeg.exe")
+
+	if _, err := os.Stat(ytPath); os.IsNotExist(err) {
+		return SimpleResult{Success: false, Error: "yt-dlp.exe not found!"}, nil
+	}
+	if _, err := os.Stat(ffmpegPath); os.IsNotExist(err) {
+		return SimpleResult{Success: false, Error: "ffmpeg.exe not found!"}, nil
+	}
+
+	qualityMap := map[string]string{"best": "0", "high": "5", "standard": "9"}
+	qVal := "0"
+	if v, ok := qualityMap[opts.Quality]; ok {
+		qVal = v
+	}
+
+	outputTemplate := "%(title)s.%(ext)s"
+	if opts.CustomName != "" {
+		// Simple sanitize
+		safeName := strings.Map(func(r rune) rune {
+			if strings.ContainsRune("< > : \" / \\ | ? *", r) {
+				return '_'
+			}
+			return r
+		}, opts.CustomName)
+		outputTemplate = safeName + ".%(ext)s"
+	}
+
+	args := []string{
+		opts.Url, "-x", "--audio-format", "mp3", "--audio-quality", qVal,
+		"--embed-thumbnail", "--add-metadata",
+		"--ffmpeg-location", cwd,
+		"-P", folderPath, "-o", outputTemplate,
+	}
+
+	cmd := exec.Command(ytPath, args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	// We could parse stdout for progress here if we wanted to be fancy,
+	// but for now we just wait.
+	// To send progress we'd need to read stdout pipe and emit Wails events.
+	
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		outStr := string(output)
+		if len(outStr) > 200 {
+			outStr = outStr[len(outStr)-200:]
+		}
+		return SimpleResult{Success: false, Error: outStr}, nil
+	}
+	
+	// If custom name was provided, we might want to ensure ID3 title matches using ffmpeg or NodeID3 equivalent?
+	// yt-dlp --add-metadata sets title to video title usually.
+	// If the user provided a custom name, they might expect the metadata Title to match.
+	// We can optionally fix it here if needed, similar to the legacy app.
+	
+	return SimpleResult{Success: true}, nil
+}
+
+
+
+func (a *App) SendPlaybackState(isPlaying bool) {
+	// Placeholder: In Wails, we might emit an event if backend needs to know, 
+	// or we just use this to trigger system media controls if implemented.
+}
