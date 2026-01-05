@@ -968,11 +968,22 @@ function applySnuggleTime(enabled) {
         if (isPlaying) startVisualizer();
 
         currentVisualizerStyle = 'retro';
-        if (visualizerStyleSelect) visualizerStyleSelect.value = 'retro';
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = 'retro';
+            visualizerStyleSelect.disabled = true;
+        }
         applyAnimationSetting('xmas');
-        if (animationSelect) animationSelect.value = 'xmas';
+        if (animationSelect) {
+            animationSelect.value = 'xmas';
+            animationSelect.disabled = true;
+        }
         updateEmoji('loving_dinos');
-        if (emojiSelect) emojiSelect.value = 'loving_dinos';
+        if (emojiSelect) {
+            emojiSelect.value = 'loving_dinos';
+            emojiSelect.disabled = true;
+        }
+        if (themeSelect) themeSelect.disabled = true;
+        
         if (customEmojiContainer) customEmojiContainer.style.display = 'none';
 
         if (accentToggle) {
@@ -985,13 +996,27 @@ function applySnuggleTime(enabled) {
     } else {
         const th = settings.theme || 'blue';
         document.documentElement.setAttribute('data-theme', th);
+        if (themeSelect) {
+            themeSelect.value = th;
+            themeSelect.disabled = false;
+        }
+
         currentVisualizerStyle = settings.visualizerStyle || 'bars';
-        if (visualizerStyleSelect) visualizerStyleSelect.value = currentVisualizerStyle;
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = currentVisualizerStyle;
+            visualizerStyleSelect.disabled = false;
+        }
         applyAnimationSetting(settings.animationMode || 'flow');
-        if (animationSelect) animationSelect.value = settings.animationMode || 'flow';
+        if (animationSelect) {
+            animationSelect.value = settings.animationMode || 'flow';
+            animationSelect.disabled = false;
+        }
         const et = settings.coverMode || 'note';
         updateEmoji(et, settings.customCoverEmoji);
-        if (emojiSelect) emojiSelect.value = et;
+        if (emojiSelect) {
+            emojiSelect.value = et;
+            emojiSelect.disabled = false;
+        }
         if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none'; 
 
         if (accentToggle) {
