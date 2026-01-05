@@ -787,14 +787,15 @@ body.ready .app-shell {
     width: 100%;
     overflow: hidden;
     margin-top: 20px;
+    position: relative;
 }
 .track-title-flex-box {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     width: 100%;
     min-width: 0;
+    position: relative;
 }
 
 .title-scroll-wrapper {
@@ -803,10 +804,18 @@ body.ready .app-shell {
     overflow: hidden;
     display: flex;
     justify-content: center;
+    padding: 0 40px; /* Space for absolute favorite btn */
 }
 
 .title-scroll-wrapper.scroll-active {
     justify-content: flex-start;
+}
+
+#main-favorite-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .track-title-large {
@@ -819,6 +828,39 @@ body.ready .app-shell {
     padding: 0 5px;
     text-align: center;
     flex-shrink: 0;
+}
+
+/* Sidebar Badge Styling */
+.settings-nav-btn {
+    position: relative;
+}
+
+.settings-nav-btn .new-badge-dancing {
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 0.55rem;
+    padding: 2px 6px;
+    transform: rotate(10deg);
+    pointer-events: none;
+}
+
+/* Snuggle Intro Image */
+.snuggle-intro-img {
+    width: 250px;
+    height: auto;
+    margin-bottom: 30px;
+    filter: drop-shadow(0 0 30px rgba(193, 211, 127, 0.4));
+    animation: snuggle-intro-float 3s ease-in-out infinite alternate;
+}
+
+@keyframes snuggle-intro-float {
+    from { transform: translateY(0) scale(1); }
+    to { transform: translateY(-15px) scale(1.05); }
+}
+
+.snuggle-intro-overlay {
+    background: radial-gradient(circle at center, #2d4a22 0%, #1a2e1d 100%);
 }
 
 .track-title-large.animating {
@@ -2233,19 +2275,29 @@ body.is-mini .volume-row {
     overflow: visible !important;
     border: 2px solid transparent !important;
     background-image: linear-gradient(var(--bg-card), var(--bg-card)), 
-                      linear-gradient(135deg, #fcd34d, #f87171, #f472b6); /* Warm Gold -> Soft Red -> Rose */
+                      linear-gradient(135deg, #1a2e1d, #c1d37f, #f472b6); /* Dino Green -> Rose */
     background-origin: border-box;
     background-clip: padding-box, border-box;
-    box-shadow: 0 4px 20px rgba(251, 191, 36, 0.15);
+    box-shadow: 0 4px 20px rgba(193, 211, 127, 0.15);
     border-radius: 14px !important;
     transition: all 0.3s ease;
-    padding: 14px 20px !important; /* Added horizontal padding */
-    margin: 5px -5px; /* Pull slightly outwards */
+    padding: 14px 20px !important;
+    margin: 5px -5px;
 }
 
-.snuggle-pack-container:hover {
-    box-shadow: 0 6px 25px rgba(244, 114, 182, 0.3); /* Rose glow on hover */
-    transform: translateY(-1px);
+.sleeptime-pack-container {
+    position: relative;
+    overflow: visible !important;
+    border: 2px solid transparent !important;
+    background-image: linear-gradient(var(--bg-card), var(--bg-card)), 
+                      linear-gradient(135deg, #020617, #0f172a, #fde68a); /* Midnight -> Moon Yellow */
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border-radius: 14px !important;
+    transition: all 0.3s ease;
+    padding: 14px 20px !important;
+    margin: 5px -5px;
 }
 
 .new-badge-dancing {
@@ -2373,6 +2425,200 @@ body.is-mini .volume-row {
     text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 1px;
+}
+
+:root[data-theme="sleeptime"] {
+    --bg-main: #05070a; /* Deep midnight blue-black */
+    --bg-card: rgba(10, 15, 25, 0.8);
+    --bg-card-light: rgba(20, 30, 45, 0.5);
+    --accent: #fde68a; /* Soft Moon Yellow */
+    --accent-soft: rgba(253, 230, 138, 0.15);
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border-soft: rgba(253, 230, 138, 0.1);
+    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+:root[data-theme="sleeptime"] body {
+    background: radial-gradient(circle at bottom left, #0f172a 0%, #05070a 100%);
+    background-attachment: fixed;
+}
+
+/* Sleep Time Pack Container in Settings */
+.sleeptime-pack-container {
+    position: relative;
+    overflow: visible !important;
+    border: 2px solid transparent !important;
+    background-image: linear-gradient(var(--bg-card), var(--bg-card)), 
+                      linear-gradient(135deg, #1e293b, #334155, #fde68a); 
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border-radius: 14px !important;
+    transition: all 0.3s ease;
+    padding: 14px 20px !important;
+    margin: 5px -5px;
+}
+
+.sleeptime-pack-container:hover {
+    box-shadow: 0 6px 25px rgba(253, 230, 138, 0.2);
+    transform: translateY(-1px);
+}
+
+.sleeptime-title {
+    background: linear-gradient(to right, #94a3b8, #fde68a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+/* Sleep Time Intro Styles */
+.sleep-intro-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #05070a;
+    z-index: 200000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+}
+
+.sleep-intro-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.moon-glow {
+    width: 120px;
+    height: 120px;
+    background: #fde68a;
+    border-radius: 50%;
+    box-shadow: 0 0 60px #fde68a;
+    margin-bottom: 30px;
+    animation: moon-pulse-intro 3s ease-in-out infinite alternate;
+}
+
+@keyframes moon-pulse-intro {
+    from { transform: scale(1); box-shadow: 0 0 40px #fde68a; }
+    to { transform: scale(1.1); box-shadow: 0 0 80px #fde68a; }
+}
+
+.sleep-intro-text {
+    font-size: 1.5rem;
+    color: #fde68a;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    font-weight: 300;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.sleep-intro-overlay.visible .sleep-intro-text {
+    animation: sleep-text-reveal 2s forwards 0.5s;
+}
+
+@keyframes sleep-text-reveal {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+:root[data-theme="sleeptime"] {
+    --bg-main: #020617; /* Even deeper indigo-black */
+    --bg-card: rgba(15, 23, 42, 0.7);
+    --bg-card-light: rgba(30, 41, 59, 0.4);
+    --accent: #fde68a; 
+    --accent-soft: rgba(253, 230, 138, 0.2);
+    --text-main: #f8fafc;
+    --text-muted: #64748b;
+    --border-soft: rgba(253, 230, 138, 0.15);
+    --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.9);
+}
+
+:root[data-theme="sleeptime"] body {
+    background: linear-gradient(to bottom, #020617 0%, #0f172a 100%);
+    background-attachment: fixed;
+}
+
+/* Starry Night Animation for Sleep Time */
+.background-animation.type-starry::before {
+    content: '';
+    position: absolute;
+    width: 100%; height: 100%;
+    background-image: 
+        radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 50px 160px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0));
+    background-size: 200px 200px;
+    animation: stars-twinkle 4s ease-in-out infinite alternate;
+    opacity: 0.3;
+}
+
+@keyframes stars-twinkle {
+    from { opacity: 0.2; transform: scale(1); }
+    to { opacity: 0.5; transform: scale(1.05); }
+}
+
+/* Snuggle Intro Styles */
+.snuggle-intro-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #1a2e1d; /* Matches dinolove bg */
+    z-index: 200000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+.snuggle-intro-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.heart-pulse-intro {
+    font-size: 80px;
+    margin-bottom: 20px;
+    animation: heart-beat 1.2s infinite;
+}
+
+@keyframes heart-beat {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.3); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.15); }
+    60% { transform: scale(1); }
+}
+
+.snuggle-intro-text {
+    font-size: 2.2rem;
+    color: #c1d37f;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(193, 211, 127, 0.5);
+    opacity: 0;
+}
+
+.snuggle-intro-overlay.visible .snuggle-intro-text {
+    animation: snuggle-text-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.3s;
+}
+
+@keyframes snuggle-text-pop {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Refined Sleep Intro */
+.sleep-intro-overlay {
+    background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
 }
 
 .help-settings-link:hover {

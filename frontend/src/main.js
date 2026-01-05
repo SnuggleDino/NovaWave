@@ -255,9 +255,10 @@ const translations = {
         visualizerStyle: 'Visualizer-Stil',
         visualizerStyleDescription: 'W\u00E4hle einen visuellen Effekt f\u00FCr den Player.',
         visBars: 'Balken (Classic)',
-        visCircle: 'Energie-Ring',
-        visPrism: 'Prisma-Wellen',
-        visDino: 'Dino-Retro-Jump',
+        visWaveform: 'Ocean Waves',
+        visOrbit: 'Stellar Orbit',
+        visGlitch: 'Cyber Pulse',
+        visZen: 'Zen Harmony',
         visRetro: 'Retro-Pixel',
         visSensitivity: 'Visualizer-Empfindlichkeit',
         visSensitivityDesc: 'Stelle ein, wie stark der Visualizer auf Musik reagiert.',
@@ -354,6 +355,7 @@ const translations = {
         helpFavDesc: 'Deine Lieblingssongs findest du schneller, wenn du sie mit dem Stern markierst.',   
         helpOpenSettings: '\u00D6ffne die Einstellungen hier f\u00FCr mehr Details',
         snuggleTimeDesc: 'Aktiviere das exklusive SnuggleDino Erlebnis mit festen Effekten.',
+        sleepTimeDesc: 'Sanfte Nacht-Atmosph\u00E4re mit Mondschein und Sternen.',
         newBadge: 'NEU',
         devTitle: 'Entwickler & Hotkey-Info',
         devStandardHotkeys: 'Standard Hotkeys',
@@ -396,9 +398,10 @@ const translations = {
         visualizerStyle: 'Visualizer Style',
         visualizerStyleDescription: 'Choose a visual effect for the player.',
         visBars: 'Bars (Classic)',
-        visCircle: 'Energy Ring',
-        visPrism: 'Prism Waves',
-        visDino: 'Dino-Retro-Jump',
+        visWaveform: 'Ocean Waves',
+        visOrbit: 'Stellar Orbit',
+        visGlitch: 'Cyber Pulse',
+        visZen: 'Zen Harmony',
         visRetro: 'Retro Pixels',
         visSensitivity: 'Visualizer Sensitivity',
         visSensitivityDesc: 'Adjust how much the visualizer reacts to the music.',
@@ -451,6 +454,7 @@ const translations = {
         helpFavDesc: 'Keep your favorites close! Use the star icon to highlight songs you love.',
         helpOpenSettings: 'Open the settings here for more details',
         snuggleTimeDesc: 'Activate the exclusive SnuggleDino experience with fixed effects.',
+        sleepTimeDesc: 'Gentle night atmosphere with moonlight and stars.',
         newBadge: 'NEW',
         devTitle: 'Developer & Hotkey Info',
         devStandardHotkeys: 'Standard Hotkeys',
@@ -553,7 +557,103 @@ function playNext() {
 function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else playTrack(currentIndex - 1 < 0 ? playlist.length - 1 : currentIndex - 1); }
 
 // --- UI & DOM MANIPULATION ---
-async function updateUIForCurrentTrack() {
+async function applySleepTime(enabled, showIntro = false) {
+    document.body.classList.toggle('sleeptime-active', enabled);
+    const accentToggle = document.getElementById('toggle-use-custom-color');
+    
+    if (enabled) {
+        // Exclusive with Snuggle Time
+        if (settings.snuggleTimeEnabled) {
+            settings.snuggleTimeEnabled = false;
+            windowApi.setSetting('snuggleTimeEnabled', false);
+            const stToggle = document.getElementById('toggle-snuggle-time');
+            if (stToggle) stToggle.checked = false;
+            applySnuggleTime(false);
+        }
+        
+        // Exclusive with Performance Mode
+        if (performanceMode) {
+            setPerformanceMode(false, true);
+        }
+
+        if (showIntro) {
+            const intro = document.getElementById('sleep-intro');
+            if (intro) {
+                intro.classList.add('visible');
+                setTimeout(() => intro.classList.remove('visible'), 3500);
+            }
+        }
+
+        document.documentElement.setAttribute('data-theme', 'sleeptime');
+        visualizerEnabled = true;
+        if (visualizerToggle) visualizerToggle.checked = true;
+        saveSetting('visualizerEnabled', true);
+        if (isPlaying) startVisualizer();
+
+        currentVisualizerStyle = 'moonlight';
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = 'moonlight';
+            visualizerStyleSelect.disabled = true;
+        }
+        applyAnimationSetting('starry');
+        if (animationSelect) {
+            animationSelect.value = 'starry';
+            animationSelect.disabled = true;
+        }
+        updateEmoji('moon'); 
+        if (emojiSelect) {
+            emojiSelect.value = 'moon';
+            emojiSelect.disabled = true;
+        }
+        if (themeSelect) themeSelect.disabled = true;
+        
+        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
+
+        if (accentToggle) {
+            accentToggle.checked = false;
+            accentToggle.disabled = true;
+            if (accentColorContainer) accentColorContainer.classList.add('hidden');
+            document.documentElement.style.removeProperty('--accent');
+        }
+        updateCachedColor();
+    } else {
+        const th = settings.theme || 'blue';
+        document.documentElement.setAttribute('data-theme', th);
+        if (themeSelect) {
+            themeSelect.value = th;
+            themeSelect.disabled = false;
+        }
+
+        currentVisualizerStyle = settings.visualizerStyle || 'bars';
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = currentVisualizerStyle;
+            visualizerStyleSelect.disabled = false;
+        }
+        applyAnimationSetting(settings.animationMode || 'flow');
+        if (animationSelect) {
+            animationSelect.value = settings.animationMode || 'flow';
+            animationSelect.disabled = false;
+        }
+        const et = settings.coverMode || 'note';
+        updateEmoji(et, settings.customCoverEmoji);
+        if (emojiSelect) {
+            emojiSelect.value = et;
+            emojiSelect.disabled = false;
+        }
+        
+        if (accentToggle) {
+            accentToggle.disabled = false;
+            accentToggle.checked = !!settings.useCustomColor;
+            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
+            if (accentToggle.checked) {
+                document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
+            }
+        }
+        updateCachedColor();
+    }
+}
+
+function updateUIForCurrentTrack() {
     if (currentIndex === -1 || !playlist[currentIndex]) {
         if (trackTitleEl) trackTitleEl.textContent = tr('nothingPlaying');
         if (trackArtistEl) trackArtistEl.textContent = '...';
@@ -661,7 +761,7 @@ function applyTranslations() {
 function updateTrackTitleScroll() {
     if (!trackTitleEl) return;
     trackTitleEl.classList.remove('animating');
-    trackTitleEl.style.setProperty('--scroll-dist', '0px');
+    trackTitleEl.style.transform = 'translateX(0)';
 
     const wrapper = trackTitleEl.parentElement;
     if (wrapper) wrapper.classList.remove('scroll-active');
@@ -671,32 +771,34 @@ function updateTrackTitleScroll() {
 
         const containerWidth = wrapper.offsetWidth;
         const textWidth = trackTitleEl.scrollWidth;
-        const titleText = trackTitleEl.textContent || "";
-        const isMiniMode = window.innerWidth < 450;
 
-        if (textWidth > containerWidth || (isMiniMode && titleText.length > 20)) {
-            const scrollDist = (textWidth - containerWidth + 20) * -1;
+        if (textWidth > containerWidth) {
+            const scrollDist = (textWidth - containerWidth + 40) * -1;
             trackTitleEl.style.setProperty('--scroll-dist', `${scrollDist}px`);
             trackTitleEl.classList.add('animating');
             wrapper.classList.add('scroll-active');
         }
-    }, 350);
+    }, 400);
 }
 
 function updateEmoji(emojiType, customEmoji) {
     if (!musicEmojiEl) return;
 
     const isSnuggle = settings.snuggleTimeEnabled || document.body.classList.contains('snuggle-time-active');
+    const isSleep = settings.sleepTimeEnabled || document.body.classList.contains('sleeptime-active');
 
     if (isSnuggle) {
         emojiType = 'loving_dinos';
+    } else if (isSleep) {
+        emojiType = 'moon';
     }
 
     let emoji = '\uD83C\uDFB5'; // Note
     let isImage = false;
 
     if (emojiType === 'note') emoji = '\uD83C\uDFB5';
-    else if (emojiType === 'dino') emoji = '\uD83E\u9996';
+    else if (emojiType === 'dino') emoji = '\uD83E\uDD95'; // Brachiosaurus/Dino
+    else if (emojiType === 'moon') emoji = '\uD83C\uDF19';
     else if (emojiType === 'loving_dinos') {
         emoji = lovingDinosImg;
         isImage = true;
@@ -942,51 +1044,95 @@ function drawVisualizer() {
     if (currentVisualizerStyle === 'bars') {
         const bl = analyser.frequencyBinCount, hb = bl / 2, bw = (width / hb) / 2; let x = 0;
         for (let i = 0; i < hb; i++) { const bh = (visualizerDataArray[i] / 255) * height * 0.95 * boost; ctx.fillStyle = ac; ctx.fillRect(width / 2 + x, height - bh, bw, bh); ctx.fillRect(width / 2 - x - bw, height - bh, bw, bh); x += bw + 1; }
-    } else if (currentVisualizerStyle === 'circle') {
-        const centerX = width / 2, centerY = height / 2, radius = Math.min(width, height) / 3;
-        ctx.beginPath(); ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI); ctx.strokeStyle = `${ac}44`; ctx.lineWidth = 2; ctx.stroke();
-        for (let i = 0; i < visualizerDataArray.length; i += 4) {
-            const bh = (visualizerDataArray[i] / 255) * radius * 0.7 * boost, angle = (i / visualizerDataArray.length) * (Math.PI * 2);
-            const x1 = centerX + Math.cos(angle) * radius, y1 = centerY + Math.sin(angle) * radius, x2 = centerX + Math.cos(angle) * (radius + bh), y2 = centerY + Math.sin(angle) * (radius + bh);
-            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.strokeStyle = ac; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
+    } else if (currentVisualizerStyle === 'waveform') {
+        ctx.beginPath();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = ac;
+        const sliceWidth = width / visualizerDataArray.length;
+        let x = 0;
+        for (let i = 0; i < visualizerDataArray.length; i++) {
+            const v = visualizerDataArray[i] / 128.0;
+            const y = (v * height) / 2;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+            x += sliceWidth;
         }
-    } else if (currentVisualizerStyle === 'prism') {
-        const blv = (visualizerDataArray[0] + visualizerDataArray[4]) / 2, amplitude = (blv / 255) * (height / 2.1) * boost;
-        ctx.strokeStyle = ac; ctx.lineWidth = 4; ctx.lineCap = 'round'; const time = Date.now() * 0.0015; 
-        for (let j = 0; j < 3; j++) {
-            ctx.beginPath(); ctx.globalAlpha = 0.5 - (j * 0.15); const startY = height / 2; ctx.moveTo(0, startY);
-            for (let i = 0; i <= width; i += 20) {
-                const fadeArea = width * 0.2, edgeFade = Math.min(i / fadeArea, (width - i) / fadeArea, 1), x = i, y = startY + Math.sin((i * 0.005) + time + (j * 0.8)) * (amplitude + (j * 15)) * edgeFade;       
-                ctx.quadraticCurveTo(x - 10, y, x, y);
-            }
+        ctx.lineTo(width, height / 2);
+        ctx.stroke();
+    } else if (currentVisualizerStyle === 'orbit') {
+        const centerX = width / 2, centerY = height / 2;
+        for (let i = 0; i < 3; i++) {
+            const radius = (height / 4) + (visualizerDataArray[i * 10] / 255) * (height / 4);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = i === 0 ? ac : `${ac}66`;
+            ctx.lineWidth = 2;
             ctx.stroke();
+            const angle = Date.now() * 0.001 * (i + 1);
+            ctx.beginPath();
+            ctx.arc(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius, 5, 0, Math.PI * 2);
+            ctx.fillStyle = "white";
+            ctx.fill();
         }
-        ctx.globalAlpha = 1.0;
-    } else if (currentVisualizerStyle === 'dinopulse') {
-        const blv = (visualizerDataArray[0] + visualizerDataArray[1] + visualizerDataArray[2]) / 3, bass = (blv / 255) * boost, centerX = width / 2;
-        ctx.fillStyle = `${ac}22`; ctx.fillRect(0, height - 20, width, 2); const bars = 32, bw = width / bars;
-        for(let i=0; i<bars; i++) { const h = (visualizerDataArray[i*4] / 255) * (height * 0.45) * boost; ctx.fillStyle = `${ac}33`; ctx.fillRect(i*bw, height - h, bw-2, h); }
-        const speedTime = (Date.now() * 0.005) % 1; for(let i=0; i<5; i++) { const px = ((i * 0.2 + speedTime) % 1) * width; ctx.fillStyle = ac; ctx.globalAlpha = 0.3; ctx.fillRect(px, height - 15, 10, 2); }     
-        const obstacleTime = (Date.now() * 0.0004) % 1, ox = width - (obstacleTime * (width + 100)), oy = height - 45;
-        ctx.globalAlpha = 1.0; ctx.fillStyle = ac;
-        ctx.fillRect(ox, oy, 6, 25); ctx.fillRect(ox - 6, oy + 8, 6, 4); ctx.fillRect(ox - 6, oy + 4, 3, 4);
-        ctx.fillRect(ox + 6, oy + 5, 6, 4); ctx.fillRect(ox + 9, oy + 1, 3, 4);
-        const dx = centerX - 40, dy = height - 55 - Math.max(0, (bass > 0.5 ? (bass - 0.5) * 250 : 0));   
-        ctx.fillStyle = ac; ctx.fillRect(dx, dy, 25, 15); ctx.fillRect(dx + 18, dy - 12, 15, 12); ctx.fillRect(dx - 8, dy, 8, 8); ctx.fillStyle = 'black'; ctx.fillRect(dx + 28, dy - 9, 3, 3);
-        if (settings.theme === 'xmas') { ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.moveTo(dx + 18, dy - 12); ctx.lineTo(dx + 25, dy - 22); ctx.lineTo(dx + 33, dy - 12); ctx.fill(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(dx + 25, dy - 22, 3, 0, Math.PI * 2); ctx.fill(); }
-        ctx.fillStyle = ac; const isJumping = (height - 55 - dy) > 5, legPhase = isJumping ? 0 : (Date.now() * 0.015) % (Math.PI * 2);
-        ctx.fillRect(dx + 5, dy + 15, 4, 8 + Math.sin(legPhase) * 6); ctx.fillRect(dx + 15, dy + 15, 4, 8 + Math.cos(legPhase) * 6); ctx.fillRect(dx + 30, dy - 5, 6, 5);
-    } else if (currentVisualizerStyle === 'retro') {
-        const totalBars = 60, halfBars = totalBars / 2, bw = width / totalBars, blocks = 10, bh = height / blocks, binCount = analyser.frequencyBinCount, center = width / 2;
-        for (let i = 0; i < halfBars; i++) {
-            const percent = i / halfBars;
-            const startBin = Math.floor(Math.pow(percent, 1.5) * binCount * 0.8), endBin = Math.floor(Math.pow((i + 1) / halfBars, 1.5) * binCount * 0.8) + 1;
-            let maxVal = 0; for (let b = startBin; b < endBin && b < binCount; b++) { if (visualizerDataArray[b] > maxVal) maxVal = visualizerDataArray[b]; }
-            const val = Math.floor((maxVal / 255) * blocks * boost * (1 + percent * 1.5));
-            for (let j = 0; j < Math.min(val, blocks); j++) {
-                if (j > blocks * 0.8) ctx.fillStyle = '#ef4444'; else if (j > blocks * 0.6) ctx.fillStyle = '#fbbf24'; else ctx.fillStyle = ac;
-                ctx.fillRect(center + i * bw + 2, height - (j * bh) - bh + 2, bw - 4, bh - 4);
-                ctx.fillRect(center - (i + 1) * bw + 2, height - (j * bh) - bh + 2, bw - 4, bh - 4);      
+    } else if (currentVisualizerStyle === 'glitch') {
+        const bars = 20, bw = width / bars;
+        for (let i = 0; i < bars; i++) {
+            const val = visualizerDataArray[i * 5];
+            const bh = (val / 255) * height;
+            ctx.fillStyle = Math.random() > 0.9 ? "#fff" : ac;
+            ctx.fillRect(i * bw, height - bh, bw - 2, bh);
+            if (val > 200 && Math.random() > 0.8) {
+                ctx.fillStyle = "#ef4444";
+                ctx.fillRect(i * bw - 10, height - bh - 20, bw + 20, 2);
+            }
+        }
+    } else if (currentVisualizerStyle === 'zen') {
+        const centerX = width / 2, centerY = height / 2;
+        const blv = visualizerDataArray[0];
+        const count = 12;
+        for (let i = 0; i < count; i++) {
+            const angle = (i / count) * Math.PI * 2;
+            const dist = (blv / 255) * (height / 2);
+            ctx.beginPath();
+            ctx.arc(centerX + Math.cos(angle) * dist, centerY + Math.sin(angle) * dist, 3, 0, Math.PI * 2);
+            ctx.fillStyle = ac;
+            ctx.fill();
+        }
+    } else if (currentVisualizerStyle === 'moonlight') {
+        const centerX = width / 2, centerY = height / 2, moonRadius = Math.min(width, height) / 4.5;
+        const blv = (visualizerDataArray[0] + visualizerDataArray[1] + visualizerDataArray[2]) / 3;
+        const pulse = (blv / 255) * 25 * boost;
+        
+        // Soft Glow
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, moonRadius + pulse + 20, 0, Math.PI * 2);
+        ctx.fillStyle = `${ac}11`;
+        ctx.fill();
+
+        // The Moon
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, moonRadius + (pulse * 0.5), 0, Math.PI * 2);
+        ctx.fillStyle = ac;
+        ctx.shadowBlur = 40 + pulse;
+        ctx.shadowColor = ac;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Visualizer Waves (Orbiting stars)
+        for (let i = 0; i < visualizerDataArray.length; i += 4) {
+            const val = visualizerDataArray[i];
+            if (val > 80) {
+                const angle = (i / visualizerDataArray.length) * Math.PI * 2 + (Date.now() * 0.0003);
+                const orbitDist = moonRadius + 30 + (val / 255) * (width / 4);
+                const x = centerX + Math.cos(angle) * orbitDist;
+                const y = centerY + Math.sin(angle) * orbitDist;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, (val / 255) * 4, 0, Math.PI * 2);
+                ctx.fillStyle = i % 8 === 0 ? "#fff" : ac;
+                ctx.globalAlpha = val / 255;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
             }
         }
     }
@@ -996,14 +1142,31 @@ function drawVisualizer() {
     }
 }
 
-function applySnuggleTime(enabled) {
+function applySnuggleTime(enabled, showIntro = false) {
     document.body.classList.toggle('snuggle-time-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
     
     if (enabled) {
+        // Exclusive with Sleep Time
+        if (settings.sleepTimeEnabled) {
+            settings.sleepTimeEnabled = false;
+            windowApi.setSetting('sleepTimeEnabled', false);
+            const slToggle = document.getElementById('toggle-sleeptime');
+            if (slToggle) slToggle.checked = false;
+            applySleepTime(false);
+        }
+
         // Automatically disable Performance Mode if Snuggle Pack is turned on
         if (performanceMode) {
             setPerformanceMode(false, true);
+        }
+
+        if (showIntro) {
+            const intro = document.getElementById('snuggle-intro');
+            if (intro) {
+                intro.classList.add('visible');
+                setTimeout(() => intro.classList.remove('visible'), 3000);
+            }
         }
 
         document.documentElement.setAttribute('data-theme', 'dinolove');
@@ -1100,115 +1263,61 @@ function setupAudioEvents() {
 async function loadSettings() {
     const s = await windowApi.getSettings();
     if (s) settings = s;
+    
+    // Restore Language
+    if (settings.language) {
+        currentLanguage = settings.language;
+    } else {
+        currentLanguage = 'de';
+    }
+
+    // Restore Favorites
     if (settings.favorites) {
         favorites = settings.favorites;
         favoritesSet = new Set(favorites);
+    } else {
+        favorites = [];
+        favoritesSet = new Set();
     }
 
-    if (toggleFavoritesOption) {
-        toggleFavoritesOption.checked = settings.enableFavoritesPlaylist || false;
-        if (toggleFavoritesBtn) toggleFavoritesBtn.style.display = settings.enableFavoritesPlaylist ? 'flex' : 'none';
-    }
+    // Restore Volume
+    currentVolume = settings.volume !== undefined ? settings.volume : 0.2;
+    audio.volume = currentVolume;
+    if (volumeSlider) volumeSlider.value = currentVolume;
+    if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
 
-    if (toggleMiniMode) {
-        toggleMiniMode.checked = false;
-        document.body.classList.remove('is-mini');
-        windowApi.setWindowSize(1300, 900);
-    }
-    currentVolume = settings.volume !== undefined ? settings.volume : 0.2; audio.volume = currentVolume; shuffleOn = settings.shuffle || false; loopMode = settings.loop || 'off'; currentLanguage = settings.language || 'de'; sortMode = settings.sortMode || 'name';
+    shuffleOn = settings.shuffle || false; 
+    loopMode = settings.loop || 'off'; 
+    sortMode = settings.sortMode || 'name';
+
+    if (langButtons) langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
+    
+    // Apply Translations immediately
+    applyTranslations();
+
     if (downloadFolderInput) downloadFolderInput.value = settings.downloadFolder || '';
     if (qualitySelect) qualitySelect.value = settings.audioQuality || 'best';
-    if (animationSelect) { let mode = settings.animationMode || 'flow'; animationSelect.value = mode; applyAnimationSetting(mode); }
+    
+    if (animationSelect) { 
+        let mode = settings.animationMode || 'flow'; 
+        animationSelect.value = mode; 
+        applyAnimationSetting(mode); 
+    }
+
     if (themeSelect) themeSelect.value = settings.theme || 'blue';
     if (visualizerToggle) { visualizerToggle.checked = settings.visualizerEnabled !== false; visualizerEnabled = settings.visualizerEnabled !== false; }
     if (visualizerStyleSelect) { currentVisualizerStyle = settings.visualizerStyle || 'bars'; visualizerStyleSelect.value = currentVisualizerStyle; }
     if (visualizerSensitivity) { visSensitivity = settings.visSensitivity || 1.5; visualizerSensitivity.value = visSensitivity; }
-    if (toggleDeleteSongs) { toggleDeleteSongs.checked = settings.deleteSongsEnabled || false; deleteSongsEnabled = settings.deleteSongsEnabled || false; }
+    
     if (autoLoadLastFolderToggle) autoLoadLastFolderToggle.checked = settings.autoLoadLastFolder !== false;
-    if (toggleEnableFocus) toggleEnableFocus.checked = settings.enableFocusMode !== false;
-    if (toggleEnableDrag) toggleEnableDrag.checked = settings.enableDragAndDrop !== false;
-    if (toggleUseCustomColor) { toggleUseCustomColor.checked = settings.useCustomColor || false; if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !toggleUseCustomColor.checked); }        
-    const et = settings.coverMode || 'note', ce = settings.customCoverEmoji || '\uD83C\uDFB5';
-    if (emojiSelect) emojiSelect.value = et; if (customEmojiInput) customEmojiInput.value = ce;
-    if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';     
-    updateEmoji(et, ce);
-
-    if (bassBoostToggle) {
-        bassBoostToggle.checked = settings.bassBoostEnabled || false;
-        if (bassBoostContainer) bassBoostContainer.style.display = settings.bassBoostEnabled ? 'flex' : 'none';
-    }
-    if (bassBoostSlider) {
-        const boostVal = settings.bassBoostValue !== undefined ? settings.bassBoostValue : 6;
-        bassBoostSlider.value = boostVal;
-        if (bassBoostValueEl) bassBoostValueEl.textContent = boostVal + 'dB';
+    
+    // Ensure mini mode is reset or handled
+    if (toggleMiniMode) {
+        toggleMiniMode.checked = false;
+        document.body.classList.remove('is-mini');
     }
 
-    if (trebleBoostToggle) {
-        trebleBoostToggle.checked = settings.trebleBoostEnabled || false;
-        if (trebleBoostContainer) trebleBoostContainer.style.display = settings.trebleBoostEnabled ? 'flex' : 'none';
-    }
-    if (trebleBoostSlider) {
-        const tVal = settings.trebleBoostValue !== undefined ? settings.trebleBoostValue : 6;
-        trebleBoostSlider.value = tVal;
-        if (trebleBoostValueEl) trebleBoostValueEl.textContent = tVal + 'dB';
-    }
-
-    if (reverbToggle) {
-        reverbToggle.checked = settings.reverbEnabled || false;
-        if (reverbContainer) reverbContainer.style.display = settings.reverbEnabled ? 'flex' : 'none';    
-    }
-    if (reverbSlider) {
-        const rVal = settings.reverbValue !== undefined ? settings.reverbValue : 30;
-        reverbSlider.value = rVal;
-        if (reverbValueEl) reverbValueEl.textContent = rVal + '%';
-    }
-
-    if (toggleCinemaMode) {
-        toggleCinemaMode.checked = settings.cinemaMode || false;
-        document.body.classList.toggle('cinema-mode', settings.cinemaMode || false);
-    }
-
-    if (playlistPositionSelect) {
-        playlistPositionSelect.value = settings.playlistPosition || 'right';
-        if (settings.playlistPosition === 'left') {
-            document.body.classList.add('playlist-left');
-        } else {
-            document.body.classList.remove('playlist-left');
-        }
-    }
-
-    if (settings.playlistHidden) {
-        document.body.classList.add('playlist-hidden');
-    } else {
-        document.body.classList.remove('playlist-hidden');
-    }
-
-    targetFps = settings.targetFps || 60;
-    const fpsIn = document.getElementById('fps-input');
-    const fpsSl = document.getElementById('fps-slider');
-    if (fpsIn) fpsIn.value = targetFps;
-    if (fpsSl) fpsSl.value = targetFps;
-
-    performanceMode = settings.performanceMode || false;
-    const pmToggle = document.getElementById('toggle-performance-mode');
-    if (pmToggle) pmToggle.checked = performanceMode;
-    if (performanceMode) setPerformanceMode(true, true);
-
-    showStatsOverlay = settings.showStatsOverlay || false;
-    const statsToggle = document.getElementById('toggle-show-stats');
-    const statsOverlay = document.getElementById('stats-overlay');
-    if (statsToggle) statsToggle.checked = showStatsOverlay;
-    if (statsOverlay) statsOverlay.classList.toggle('hidden', !showStatsOverlay);
-
-    if (!isStatsLoopRunning) {
-        updateCachedColor();
-        requestAnimationFrame(updatePerformanceStats);
-    }
-
-    updateAudioEffects();
-
-    if (speedSlider) { const sp = settings.playbackSpeed || 1.0; speedSlider.value = sp; audio.playbackRate = sp; if(speedValue) speedValue.textContent = sp.toFixed(1) + 'x'; }
-
+    // Auto-load last used folder
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
         currentFolderPath = settings.currentFolderPath;
         try {
@@ -1220,12 +1329,12 @@ async function loadSettings() {
                 updateUIForCurrentTrack();
             }
         } catch (e) {
-            console.error("Auto-load folder failed:", e);
+            console.error("Auto-load failed:", e);
         }
     }
+
     if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
     if (loopBtn) { loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); }  
-    if (langButtons) langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
 }
 
 function updateLoopIcon() {
@@ -1244,6 +1353,9 @@ function applyAnimationSetting(mode) {
         backgroundAnimationEl.style.display = 'block';
         backgroundAnimationEl.classList.add(`type-${mode}`);
         if (mode === 'xmas') startSnowfall();
+        if (mode === 'starry') {
+            // Optional: JS logic for more dynamic stars if needed
+        }
     } else {
         backgroundAnimationEl.style.display = 'none';
     }
@@ -1641,10 +1753,17 @@ function setupEventListeners() {
     const toggleSnuggleTime = document.getElementById('toggle-snuggle-time');
     bind(toggleSnuggleTime, 'change', (e) => {
         const enabled = e.target.checked;
-        settings.snuggleTimeEnabled = enabled;
-        windowApi.setSetting('snuggleTimeEnabled', enabled);
-        applySnuggleTime(enabled);
-        showNotification(enabled ? '\u2728 Snuggle Time Active' : 'Snuggle Time Deactivated');
+        saveSetting('snuggleTimeEnabled', enabled);
+        applySnuggleTime(enabled, true);
+        // showNotification removed to suppress Island during intro
+    });
+
+    const toggleSleepTime = document.getElementById('toggle-sleeptime');
+    bind(toggleSleepTime, 'change', (e) => {
+        const enabled = e.target.checked;
+        saveSetting('sleepTimeEnabled', enabled);
+        applySleepTime(enabled, true);
+        // showNotification removed to suppress Island during intro
     });
 
     const fpsIn = document.getElementById('fps-input');
@@ -2046,7 +2165,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 applySnuggleTime(false);
             }
 
-            if (settings.theme && !settings.snuggleTimeEnabled) {
+            const slToggle = document.getElementById('toggle-sleeptime');
+            if (settings.sleepTimeEnabled) {
+                if (slToggle) slToggle.checked = true;
+                applySleepTime(true);
+            } else {
+                if (slToggle) slToggle.checked = false;
+                applySleepTime(false);
+            }
+
+            if (settings.theme && !settings.snuggleTimeEnabled && !settings.sleepTimeEnabled) {
                 document.documentElement.setAttribute('data-theme', settings.theme);
             }
 
