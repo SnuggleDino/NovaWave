@@ -68,6 +68,7 @@ let renderPlaylistRequestId = null;
 // Performance
 let lastFrameTime = performance.now();
 let frameCount = 0;
+let appFrameCount = 0;
 let fps = 0;
 let avgFps = 60;
 let perfHintShown = false;
@@ -80,6 +81,11 @@ let cachedAccentColor = '#38bdf8';
 let isStatsLoopRunning = false;
 let warmupFrames = 0;
 
+function saveSetting(key, value) {
+    if (settings) settings[key] = value;
+    windowApi.setSetting(key, value);
+}
+
 function updateCachedColor() {
     cachedAccentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38bdf8';
 }
@@ -89,24 +95,35 @@ function updatePerformanceStats() {
         requestAnimationFrame(updatePerformanceStats);
         return;
     }
-    if (!isStatsLoopRunning) isStatsLoopRunning = true;
+    
     const now = performance.now();
     const interval = 1000 / targetFps;
-    const delta = now - lastStatsTime;
+    const statsInterval = 1000; // Recalculate stats every 1s
 
+    // Throttle App Update Loop to targetFps
+    const delta = now - lastStatsTime;
     if (delta < interval) {
         requestAnimationFrame(updatePerformanceStats);
         return;
     }
-
     lastStatsTime = now - (delta % interval);
-    const timeSinceLastLog = now - lastFrameTime;
-    frameCount++;
+    appFrameCount++;
 
-    if (timeSinceLastLog >= 1000) {
+    const timeSinceLastLog = now - lastFrameTime;
+    if (timeSinceLastLog >= statsInterval) {
+        const appFps = Math.round((appFrameCount * 1000) / timeSinceLastLog);
         fps = Math.round((frameCount * 1000) / timeSinceLastLog);
-        avgFps = (avgFps * 0.8) + (fps * 0.2);
-        const currentFrameTime = Math.round(timeSinceLastLog / frameCount);
+        
+        // Rolling average for stability check
+        if (isPlaying && !performanceMode && visualizerEnabled) {
+            avgFps = (avgFps * 0.7) + (fps * 0.3);
+        } else {
+            avgFps = appFps; 
+        }
+        
+        const currentFrameTime = appFps > 0 ? Math.round(1000 / appFps) : 0;
+        
+        appFrameCount = 0;
         frameCount = 0;
         lastFrameTime = now;
 
@@ -117,39 +134,50 @@ function updatePerformanceStats() {
             const perfInfoEl = document.getElementById('stat-perf-info');
 
             if (fpsEl) {
-                fpsEl.textContent = fps;
-                if (fps >= targetFps * 0.9) fpsEl.style.color = '#4ade80';
-                else if (fps >= targetFps * 0.6) fpsEl.style.color = '#fbbf24';
+                const visStatus = (isPlaying && !performanceMode) ? fps : '-';
+                fpsEl.textContent = `${appFps} (${visStatus})`;
+                
+                if (appFps >= targetFps * 0.9) fpsEl.style.color = '#4ade80';
+                else if (appFps >= targetFps * 0.6) fpsEl.style.color = '#fbbf24';
                 else fpsEl.style.color = '#ef4444';
             }
 
             if (timeEl) timeEl.textContent = currentFrameTime + 'ms';
 
             if (lagEl) {
-                if (avgFps < targetFps * 0.5) {
+                if (performanceMode) {
+                     lagEl.textContent = tr('statPowerSave');
+                     lagEl.style.color = '#38bdf8';
+                } else if (avgFps < targetFps * 0.5) {
                     lagEl.textContent = 'LAG';
                     lagEl.style.color = '#ef4444';
-                    if (warmupFrames > 600) triggerPerformanceHint();
+                    if (warmupFrames > 5) triggerPerformanceHint(); 
                 } else if (avgFps < targetFps * 0.8) {
                     lagEl.textContent = tr('statUnstable');
                     lagEl.style.color = '#fbbf24';
                 } else {
-                    lagEl.textContent = tr('statStable');
-                    lagEl.style.color = '#4ade80';
+                    lagEl.textContent = isPlaying ? tr('statStable') : 'Standby';
+                    lagEl.style.color = isPlaying ? '#4ade80' : '#8a93a2';
                 }
             }
 
             if (perfInfoEl) {
                 if (performanceMode) {
-                    perfInfoEl.textContent = tr('statPowerSave');
+                    perfInfoEl.textContent = 'Active';
                 } else {
-                    const stability = Math.min(100, Math.round((avgFps / targetFps) * 100));
-                    perfInfoEl.textContent = `${stability}% ${tr('statStability')}`;
+                    const stability = targetFps > 0 ? Math.min(100, Math.round((avgFps / targetFps) * 100)) : 0;
+                    perfInfoEl.textContent = `${stability}%`;
                 }
             }
         }
     }
-    if (warmupFrames <= 600) warmupFrames++;
+    
+    if (isPlaying && !performanceMode && visualizerEnabled) {
+        warmupFrames++;
+    } else {
+        warmupFrames = 0;
+    }
+    
     requestAnimationFrame(updatePerformanceStats);
 }
 
@@ -177,6 +205,15 @@ function setPerformanceMode(enabled, silent = false) {
     if (toggle) toggle.checked = enabled;
 
     if (enabled) {
+        // If Snuggle Time was active, turn it off because they conflict
+        if (settings.snuggleTimeEnabled) {
+            settings.snuggleTimeEnabled = false;
+            windowApi.setSetting('snuggleTimeEnabled', false);
+            const stToggle = document.getElementById('toggle-snuggle-time');
+            if (stToggle) stToggle.checked = false;
+            applySnuggleTime(false);
+        }
+
         stopVisualizer();
         applyAnimationSetting('off');
         document.body.classList.add('perf-mode-active');
@@ -286,6 +323,7 @@ const translations = {
         reverb: 'Reverb', reverbDesc: 'R\u00E4umlicher Hall-Effekt.', reverbLevel: 'Mix',
         activeFeatures: 'Aktive Effekte',
         sectionAudioExtras: 'Audio-Extras', sectionExtras: 'Extras & Tools',
+        sectionThemePacks: 'Theme Packs',
         cinemaMode: 'Kino-Modus', cinemaModeDesc: 'Dimmt die Benutzeroberfl\u00E4che f\u00FCr mehr Fokus.',       
         exportPlaylist: 'Playlist exportieren', exportPlaylistDesc: 'Speichere die aktuelle Liste als Textdatei.',
         exportSuccess: 'Playlist erfolgreich exportiert!',
@@ -319,7 +357,7 @@ const translations = {
         newBadge: 'NEU',
         devTitle: 'Entwickler & Hotkey-Info',
         devStandardHotkeys: 'Standard Hotkeys',
-        devDebugHotkeys: 'Debug & Entwickler (v2.5.4)',
+        devDebugHotkeys: 'Debug & Dev',
         devPlayPause: 'Abspielen / Pause',
         devNextSong: 'N\u00E4chster Song',
         devPrevSong: 'Vorheriger Song',
@@ -328,7 +366,7 @@ const translations = {
         devOpenMenu: 'Dieses Men\u00FC \u00F6ffnen',
         devPerfHint: 'Performance-Hinweis (Island)',
         devWinSize: 'Fenstergr\u00F6\u00DFe Debug (Size)',
-        devFooter: 'NovaWave Entwicklerkonsole v2.5.4',
+        devFooter: 'NovaWave Entwicklerkonsole',
     },
     en: {
         appTitle: 'NovaWave - Music Player', appSubtitle: 'Local & YouTube',
@@ -382,6 +420,7 @@ const translations = {
         reverb: 'Reverb', reverbDesc: 'Spatial reverb effect.', reverbLevel: 'Mix',
         activeFeatures: 'Active Effects',
         sectionAudioExtras: 'Audio Extras', sectionExtras: 'Extras & Tools',
+        sectionThemePacks: 'Theme Packs',
         cinemaMode: 'Cinema Mode', cinemaModeDesc: 'Dims the UI for better focus.',
         enableFavoritesOption: 'Favorites Playlist', enableFavoritesOptionDesc: 'Show a button to filter the playlist for favorites.',
         playlistPosition: 'Playlist Position', playlistPositionDesc: 'Choose whether the playlist should be displayed on the left or right.',
@@ -415,7 +454,7 @@ const translations = {
         newBadge: 'NEW',
         devTitle: 'Developer & Hotkey Info',
         devStandardHotkeys: 'Standard Hotkeys',
-        devDebugHotkeys: 'Debug & Dev (v2.5.4)',
+        devDebugHotkeys: 'Debug & Dev',
         devPlayPause: 'Play / Pause',
         devNextSong: 'Next Track',
         devPrevSong: 'Previous Track',
@@ -424,7 +463,7 @@ const translations = {
         devOpenMenu: 'Open this menu',
         devPerfHint: 'Performance Hint (Island)',
         devWinSize: 'Window Size Debug (Size)',
-        devFooter: 'NovaWave Dev Console v2.5.4',
+        devFooter: 'NovaWave Dev Console',
         useCustomColorOption: 'Use Custom Accent Color',
         useCustomColorOptionDesc: 'Apply your selected color or use theme defaults.',
         coverEmoji: 'Cover Emoji',
@@ -890,6 +929,7 @@ function drawVisualizer() {
     }
 
     lastRenderTime = now - (delta % interval);
+    frameCount++; // Track real rendered frames
     requestAnimationFrame(drawVisualizer);
 
     const ctx = visualizerCanvas.getContext('2d');
@@ -961,6 +1001,11 @@ function applySnuggleTime(enabled) {
     const accentToggle = document.getElementById('toggle-use-custom-color');
     
     if (enabled) {
+        // Automatically disable Performance Mode if Snuggle Pack is turned on
+        if (performanceMode) {
+            setPerformanceMode(false, true);
+        }
+
         document.documentElement.setAttribute('data-theme', 'dinolove');
         visualizerEnabled = true;
         if (visualizerToggle) visualizerToggle.checked = true;
@@ -1170,11 +1215,12 @@ async function loadSettings() {
             const result = await windowApi.refreshMusicFolder(currentFolderPath);
             if (result && result.tracks) {
                 basePlaylist = result.tracks;
+                playlist = [...basePlaylist];
                 sortPlaylist(sortMode);
                 updateUIForCurrentTrack();
             }
         } catch (e) {
-            console.error(e);
+            console.error("Auto-load folder failed:", e);
         }
     }
     if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
@@ -1389,6 +1435,13 @@ function setupEventListeners() {
             case 'ArrowLeft': if (e.shiftKey) audio.currentTime = Math.max(0, audio.currentTime - 5); else playPrev(); break;
             case 'ArrowUp': e.preventDefault(); audio.volume = Math.min(1, audio.volume + 0.05); break;   
             case 'ArrowDown': e.preventDefault(); audio.volume = Math.max(0, audio.volume - 0.05); break; 
+            case 'MediaPlayPause':
+            case 'MediaPlay':
+            case 'MediaPause':
+                e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break;
+            case 'MediaTrackNext': e.preventDefault(); playNext(); break;
+            case 'MediaTrackPrevious': e.preventDefault(); playPrev(); break;
+            case 'MediaStop': e.preventDefault(); audio.pause(); audio.currentTime = 0; break;
         }
     });
 
@@ -1436,6 +1489,13 @@ function setupEventListeners() {
                  playNext();
              } else if (key === 'prev') {
                  playPrev();
+             } else if (key === 'stop') {
+                 audio.pause();
+                 audio.currentTime = 0;
+             } else if (key === 'play') {
+                 audio.play();
+             } else if (key === 'pause') {
+                 audio.pause();
              }
         });
     }
@@ -1445,7 +1505,7 @@ function setupEventListeners() {
     bind(sortSelect, 'change', (e) => { sortMode = e.target.value; windowApi.setSetting('sortMode', sortMode); sortPlaylist(sortMode); });
     bind(settingsBtn, 'click', () => { settingsOverlay.classList.add('visible'); });
     bind(settingsCloseBtn, 'click', () => { settingsOverlay.classList.remove('visible'); });
-    bind(changeFolderBtn, 'click', async () => { const nf = await windowApi.selectFolder(); if (nf) { if (downloadFolderInput) downloadFolderInput.value = nf; windowApi.setSetting('downloadFolder', nf); } });  
+    bind(changeFolderBtn, 'click', async () => { const nf = await windowApi.selectFolder(); if (nf) { if (downloadFolderInput) downloadFolderInput.value = nf; settings.downloadFolder = nf; windowApi.setSetting('downloadFolder', nf); } });  
     bind(qualitySelect, 'change', (e) => windowApi.setSetting('audioQuality', e.target.value));
     bind(visualizerToggle, 'change', (e) => {
         visualizerEnabled = e.target.checked;

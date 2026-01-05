@@ -8,11 +8,13 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"syscall"
 	"unsafe"
+	"runtime"
 
 	"github.com/dhowden/tag"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type App struct {
@@ -58,6 +60,8 @@ type Config struct {
 	Loop                    string   `json:"loop"`
 	Shuffle                 bool     `json:"shuffle"`
 	SnuggleTimeEnabled      bool     `json:"snuggleTimeEnabled"`
+	PlaylistPosition        string   `json:"playlistPosition"`
+	PlaylistHidden          bool     `json:"playlistHidden"`
 }
 
 // Track definiert einen Song für das Frontend
@@ -98,49 +102,57 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) setupMediaKeys() {
 	go func() {
+		runtime.LockOSThread()
 		user32 := syscall.NewLazyDLL("user32.dll")
 		procRegisterHotKey := user32.NewProc("RegisterHotKey")
 		procGetMessage := user32.NewProc("GetMessageW")
 
-		// 1 = Play/Pause (0xB3)
-		// 2 = Next (0xB0)
-		// 3 = Prev (0xB1)
-
-		procRegisterHotKey.Call(0, 1, 0, 0xB3)
-		procRegisterHotKey.Call(0, 2, 0, 0xB0)
-		procRegisterHotKey.Call(0, 3, 0, 0xB1)
-
-		for {
-			var msg struct {
-				Hwnd    uintptr
-				Message uint32
-				WParam  uintptr
-				LParam  uintptr
-				Time    uint32
-				Pt      struct{ X, Y int32 }
-			}
-			ret, _, _ := procGetMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0)
-			if ret == 0 {
-				return
-			}
-
-			if msg.Message == 0x0312 { // WM_HOTKEY
-				switch msg.WParam {
-				case 1:
-					runtime.EventsEmit(a.ctx, "media-key", "playpause")
-				case 2:
-					runtime.EventsEmit(a.ctx, "media-key", "next")
-				case 3:
-					runtime.EventsEmit(a.ctx, "media-key", "prev")
-				}
-			}
-		}
-	}()
+				// IDs: 1001, 1002, 1003, 1004, 1005, 1006
+				// VK codes: Play/Pause (0xB3), Next (0xB0), Prev (0xB1), Stop (0xB2), Play (0xFA), Pause (0xFB)
+				
+				procRegisterHotKey.Call(0, 1001, 0, 0xB3)
+				procRegisterHotKey.Call(0, 1002, 0, 0xB0)
+				procRegisterHotKey.Call(0, 1003, 0, 0xB1)
+				procRegisterHotKey.Call(0, 1004, 0, 0xB2)
+				procRegisterHotKey.Call(0, 1005, 0, 0xFA)
+				procRegisterHotKey.Call(0, 1006, 0, 0xFB)
+		
+				for {
+					var msg struct {
+						Hwnd    uintptr
+						Message uint32
+						WParam  uintptr
+						LParam  uintptr
+						Time    uint32
+						Pt      struct{ X, Y int32 }
+					}
+					ret, _, _ := procGetMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0)
+					if ret == 0 {
+						return
+					}
+		
+					if msg.Message == 0x0312 { // WM_HOTKEY
+						switch msg.WParam {
+						case 1001:
+							wailsRuntime.EventsEmit(a.ctx, "media-key", "playpause")
+						case 1002:
+							wailsRuntime.EventsEmit(a.ctx, "media-key", "next")
+						case 1003:
+							wailsRuntime.EventsEmit(a.ctx, "media-key", "prev")
+						case 1004:
+							wailsRuntime.EventsEmit(a.ctx, "media-key", "stop")
+						case 1005:
+							wailsRuntime.EventsEmit(a.ctx, "media-key", "play")
+						case 1006:
+							wailsRuntime.EventsEmit(a.ctx, "media-key", "pause")
+						}
+					}
+				}	}()
 }
 
 // Config speichert alle Einstellungen
 func (a *App) SetWindowSize(width int, height int) {
-	runtime.WindowSetSize(a.ctx, width, height)
+	wailsRuntime.WindowSetSize(a.ctx, width, height)
 }
 
 // --- EINSTELLUNGEN (CONFIG) ---
@@ -242,7 +254,7 @@ func (a *App) GetSettings() Config {
 
 // --- DATEISYSTEM & DIALOGE ---
 func (a *App) SelectFolderDialog() string {
-	selection, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+	selection, err := wailsRuntime.OpenDirectoryDialog(a.ctx, wailsRuntime.OpenDialogOptions{
 		Title: "Ordner wählen",
 	})
 	if err != nil {
@@ -309,7 +321,7 @@ func (a *App) RefreshMusicFolder(path string) FolderResult {
 
 		return FolderResult{
 			Tracks:     []Track{currentTrack},
-			FolderPath: filepath.Dir(path),
+				FolderPath: filepath.Dir(path),
 		}
 	}
 
@@ -322,7 +334,6 @@ func (a *App) RefreshMusicFolder(path string) FolderResult {
 }
 
 func (a *App) GetTracks(folderPath string) ([]Track, error) {
-	var tracks []Track
 	files, err := os.ReadDir(folderPath)
 	if err != nil {
 		return nil, err
@@ -335,52 +346,74 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 		hasFFprobe = true
 	}
 
+	// Safe Slice for Concurrent Access
+	var tracks []Track
+	var mutex sync.Mutex
+
+	// Worker Pool Settings
+	// Limit concurrency to avoid too many open files or CPU choke
+	maxConcurrency := 10 
+	sem := make(chan struct{}, maxConcurrency)
+	var wg sync.WaitGroup
+
 	for _, file := range files {
 		if file.IsDir() {
 			continue
 		}
+		
 		name := strings.ToLower(file.Name())
 		if !strings.HasSuffix(name, ".mp3") && !strings.HasSuffix(name, ".flac") && !strings.HasSuffix(name, ".wav") && !strings.HasSuffix(name, ".m4a") && !strings.HasSuffix(name, ".ogg") {
 			continue
 		}
 
-		fullPath := filepath.Join(folderPath, file.Name())
-		info, _ := file.Info()
-		mtime := float64(info.ModTime().UnixMilli())
+		wg.Add(1)
+		go func(f os.DirEntry) {
+			defer wg.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
 
-		currentTrack := Track{Path: fullPath, Title: file.Name(), Artist: "Unbekannter Künstler", Mtime: mtime}
+			fullPath := filepath.Join(folderPath, f.Name())
+			info, _ := f.Info()
+			var mtime float64
+			if info != nil {
+				mtime = float64(info.ModTime().UnixMilli())
+			}
 
-		f, err := os.Open(fullPath)
-		if err == nil {
-			m, err := tag.ReadFrom(f)
+			currentTrack := Track{Path: fullPath, Title: f.Name(), Artist: "Unbekannter Künstler", Mtime: mtime}
+
+			fileHandle, err := os.Open(fullPath)
 			if err == nil {
-				if m.Title() != "" {
-					currentTrack.Title = m.Title()
+				m, err := tag.ReadFrom(fileHandle)
+				if err == nil {
+					if m.Title() != "" {
+						currentTrack.Title = m.Title()
+					}
+					if m.Artist() != "" {
+						currentTrack.Artist = m.Artist()
+					}
 				}
-				if m.Artist() != "" {
-					currentTrack.Artist = m.Artist()
+				fileHandle.Close()
+			}
+
+			if hasFFprobe {
+				cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPath)
+				cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+				out, err := cmd.Output()
+				if err == nil {
+					var dur float64
+					if _, err := fmt.Sscanf(strings.TrimSpace(string(out)), "%f", &dur); err == nil {
+						currentTrack.Duration = int(dur)
+					}
 				}
 			}
-			f.Close()
-		}
 
-		if hasFFprobe {
-			// Try to get duration using ffprobe
-			// ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "file.mp3"
-			cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPath)
-			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-			out, err := cmd.Output()
-			if err == nil {
-				// Output should be like "123.456"
-				var dur float64
-				if _, err := fmt.Sscanf(strings.TrimSpace(string(out)), "%f", &dur); err == nil {
-					currentTrack.Duration = int(dur)
-				}
-			}
-		}
-
-		tracks = append(tracks, currentTrack)
+			mutex.Lock()
+			tracks = append(tracks, currentTrack)
+			mutex.Unlock()
+		}(file)
 	}
+
+	wg.Wait()
 	return tracks, nil
 }
 

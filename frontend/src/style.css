@@ -18,6 +18,10 @@
     overflow: hidden; /* Fix overlap/spill during animation */
 }
 
+body.is-mini .stats-overlay {
+    display: none !important;
+}
+
 /* --- Position: Left --- */
 body.playlist-left .main-grid {
     grid-template-columns: minmax(300px, 480px) 1fr;
@@ -2132,11 +2136,22 @@ body.is-mini .track-info-area {
     margin-top: 10px;
     margin-bottom: 5px;
     flex-shrink: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+body.is-mini .track-title-flex-box {
+    justify-content: center;
+    width: 100%;
 }
 
 body.is-mini .track-title-large {
     font-size: 1.1rem;
     margin-bottom: 2px;
+    text-align: center;
 }
 
 body.is-mini .track-artist-large {
@@ -2363,4 +2378,79 @@ body.is-mini .volume-row {
 .help-settings-link:hover {
     background: var(--accent);
     color: var(--bg-main);
+}
+
+/* =========================================
+   DEV & HOTKEY MODAL STYLING
+   ========================================= */
+
+#dev-modal-overlay .settings-modal {
+    max-width: 800px !important;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#dev-modal-overlay .settings-content {
+    overflow-y: auto;
+    flex: 1;
+    padding: 20px;
+}
+
+.dev-hotkey-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dev-hotkey-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.dev-hotkey-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--accent);
+    transform: translateX(5px);
+}
+
+.kbd-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+kbd {
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+    color: var(--text-main);
+    display: inline-block;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1;
+    padding: 6px 10px;
+    white-space: nowrap;
+    min-width: 30px;
+    text-align: center;
+    transition: transform 0.1s;
+}
+
+.dev-hotkey-item:active kbd {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+}
+
+.hotkey-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }

@@ -38,6 +38,8 @@ export namespace main {
 	    loop: string;
 	    shuffle: boolean;
 	    snuggleTimeEnabled: boolean;
+	    playlistPosition: string;
+	    playlistHidden: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -82,6 +84,8 @@ export namespace main {
 	        this.loop = source["loop"];
 	        this.shuffle = source["shuffle"];
 	        this.snuggleTimeEnabled = source["snuggleTimeEnabled"];
+	        this.playlistPosition = source["playlistPosition"];
+	        this.playlistHidden = source["playlistHidden"];
 	    }
 	}
 	export class DownloadOptions {
