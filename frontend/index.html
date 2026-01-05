@@ -41,6 +41,12 @@
         <h2 class="snuggle-intro-text">Snuggle Up!</h2>
     </div>
 
+    <!-- Cyberpunk Intro -->
+    <div id="cyberpunk-intro" class="cyber-intro-overlay">
+        <div class="cyber-glitch-text" data-text="NIGHT CITY">NIGHT CITY</div>
+        <div class="cyber-sub-text">Welcome to the future</div>
+    </div>
+
     <div class="background-animation"></div>
 
     <!-- Performance Hint (Dynamic Island Style) -->
@@ -323,249 +329,274 @@
 
                     <!-- TAB 1: APPEARANCE -->
                     <div id="tab-appearance" class="settings-tab-content active">
-                        <div class="settings-section">
-                            <h4 class="settings-section-title"><span data-lang-key="sectionAppearance"></span></h4>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="theme"></strong>
-                                    <p data-lang-key="themeDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="theme-select" class="settings-select">
-                                        <option value="blue" data-lang-key="themeBlue">Blue</option>      
-                                        <option value="dark" data-lang-key="themeDark">Dark</option>      
-                                        <option value="blurple" data-lang-key="themePurple">Purple</option>
-                                        <option value="darkrose" data-lang-key="themeRose">Rose</option>  
-                                        <option value="xmas" data-lang-key="themeXmas">Christmas</option> 
-                                    </select>
-                                </div>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionAppearance"></span></h4>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="theme"></strong>
+                                <p data-lang-key="themeDescription"></p>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="useCustomColorOption"></strong>
-                                    <p data-lang-key="useCustomColorOptionDesc"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-use-custom-color">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                            <div class="setting-control">
+                                <select id="theme-select" class="settings-select">
+                                    <option value="blue" data-lang-key="themeBlue">Blue</option>      
+                                    <option value="dark" data-lang-key="themeDark">Dark</option>      
+                                    <option value="blurple" data-lang-key="themePurple">Purple</option>
+                                    <option value="darkrose" data-lang-key="themeRose">Rose</option>  
+                                    <option value="xmas" data-lang-key="themeXmas">Christmas</option> 
+                                </select>
                             </div>
-                            <div class="setting-item" id="accent-color-container">
-                                <div class="setting-label">
-                                    <strong data-lang-key="customColor"></strong>
-                                    <p data-lang-key="customColorDesc"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <input type="color" id="accent-color-picker" class="settings-color-picker">
-                                </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="useCustomColorOption"></strong>
+                                <p data-lang-key="useCustomColorOptionDesc"></p>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="backgroundAnimation"></strong>
-                                    <p data-lang-key="backgroundAnimationDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="animation-select" class="settings-select">
-                                        <option value="off" data-lang-key="animOff"></option>
-                                        <option value="flow" data-lang-key="animFlow"></option>
-                                        <option value="nebula" data-lang-key="animNebula"></option>       
-                                        <option value="aurora" data-lang-key="animAurora"></option>       
-                                        <option value="xmas" data-lang-key="animXmas"></option>
-                                    </select>
-                                </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-use-custom-color">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item" id="accent-color-container">
+                            <div class="setting-label">
+                                <strong data-lang-key="customColor"></strong>
+                                <p data-lang-key="customColorDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <input type="color" id="accent-color-picker" class="settings-color-picker">
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="backgroundAnimation"></strong>
+                                <p data-lang-key="backgroundAnimationDescription"></p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="animation-select" class="settings-select">
+                                    <option value="off" data-lang-key="animOff"></option>
+                                    <option value="flow" data-lang-key="animFlow"></option>
+                                    <option value="nebula" data-lang-key="animNebula"></option>       
+                                    <option value="aurora" data-lang-key="animAurora"></option>       
+                                    <option value="xmas" data-lang-key="animXmas"></option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
                     <!-- TAB 2: PLAYER -->
                     <div id="tab-player" class="settings-tab-content">
-                        <div class="settings-section">
-                            <h4 class="settings-section-title"><span data-lang-key="sectionPlayer"></span></h4>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="sleepTimer"></strong>
-                                    <p data-lang-key="sleepTimerDesc"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="sleep-timer-select" class="settings-select">
-                                        <option value="0" data-lang-key="timerOff"></option>
-                                        <option value="15">15 Min</option>
-                                        <option value="30">30 Min</option>
-                                        <option value="60">60 Min</option>
-                                    </select>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionPlayer"></span></h4>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="sleepTimer"></strong>
+                                <p data-lang-key="sleepTimerDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="sleep-timer-select" class="settings-select">
+                                    <option value="0" data-lang-key="timerOff"></option>
+                                    <option value="15">15 Min</option>
+                                    <option value="30">30 Min</option>
+                                    <option value="60">60 Min</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="playbackSpeed">Playback Speed</strong>
+                                <p data-lang-key="playbackSpeedDesc">Adjust playback rate (0.5x - 2.0x)</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <span id="speed-value" style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">1.0x</span>
+                                    <input type="range" id="speed-slider" class="settings-range" min="0.5" max="2.0" step="0.1" value="1.0">
+                                    <button id="speed-reset-btn" class="settings-button" title="Reset Speed">&#8634;</button>
                                 </div>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="playbackSpeed">Playback Speed</strong>
-                                    <p data-lang-key="playbackSpeedDesc">Adjust playback rate (0.5x - 2.0x)</p>
-                                </div>
-                                <div class="setting-control">
-                                     <div class="input-group">
-                                        <span id="speed-value" style="font-size: 0.8rem; min-width: 30px;">1.0x</span>
-                                        <input type="range" id="speed-slider" class="settings-range" min="0.5" max="2.0" step="0.1" value="1.0">
-                                        <button id="speed-reset-btn" class="settings-button" style="padding: 4px 8px; margin-left: 5px;" title="Reset Speed">&#8634;</button>
-                                     </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="visualizer"></strong>
+                                <p data-lang-key="visualizerDescription"></p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-visualizer">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="visualizerStyle"></strong>
+                                <p data-lang-key="visualizerStyleDescription"></p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="visualizer-style-select" class="settings-select">
+                                    <option value="bars" data-lang-key="visBars"></option>
+                                    <option value="waveform" data-lang-key="visWaveform"></option>        
+                                    <option value="orbit" data-lang-key="visOrbit"></option>
+                                    <option value="glitch" data-lang-key="visGlitch"></option>       
+                                    <option value="zen" data-lang-key="visZen"></option>
+                                    <option value="retro" data-lang-key="visRetro"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="visSensitivity"></strong>
+                                <p data-lang-key="visSensitivityDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <input type="range" id="visualizer-sensitivity" class="settings-range" min="0.5" max="4" step="0.1" value="1.5">
+                                    <button id="visualizer-sensitivity-reset-btn" class="settings-button" title="Reset Sensitivity">&#8634;</button>
                                 </div>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="visualizer"></strong>
-                                    <p data-lang-key="visualizerDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-visualizer">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="coverEmoji"></strong>
+                                <p data-lang-key="coverEmojiDescription"></p>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="visualizerStyle"></strong>
-                                    <p data-lang-key="visualizerStyleDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="visualizer-style-select" class="settings-select">
-                                        <option value="bars" data-lang-key="visBars"></option>
-                                        <option value="waveform" data-lang-key="visWaveform"></option>        
-                                        <option value="orbit" data-lang-key="visOrbit"></option>
-                                        <option value="glitch" data-lang-key="visGlitch"></option>       
-                                        <option value="zen" data-lang-key="visZen"></option>
-                                        <option value="retro" data-lang-key="visRetro"></option>
-                                    </select>
-                                </div>
+                            <div class="setting-control">
+                                <select id="emoji-select" class="settings-select">
+                                    <option value="note" data-lang-key="emojiNote"></option>
+                                    <option value="dino" data-lang-key="emojiDino"></option>
+                                    <option value="loving_dinos" data-lang-key="emojiLovingDinos">Loving Dinos</option>
+                                    <option value="gift" data-lang-key="emojiGift"></option>
+                                    <option value="custom" data-lang-key="emojiCustom"></option>      
+                                </select>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="visSensitivity"></strong>
-                                    <p data-lang-key="visSensitivityDesc"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <div class="input-group">
-                                        <input type="range" id="visualizer-sensitivity" class="settings-range" min="0.5" max="4" step="0.1" value="1.5">
-                                        <button id="visualizer-sensitivity-reset-btn" class="settings-button" style="padding: 4px 8px; margin-left: 5px;" title="Reset Sensitivity">&#8634;</button>
-                                    </div>
-                                </div>
+                        </div>
+
+                        <div class="setting-item" id="custom-emoji-container">
+                            <div class="setting-label">
+                                <strong data-lang-key="customEmoji"></strong>
+                                <p data-lang-key="customEmojiDescription"></p>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="coverEmoji"></strong>
-                                    <p data-lang-key="coverEmojiDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="emoji-select" class="settings-select">
-                                        <option value="note" data-lang-key="emojiNote"></option>
-                                        <option value="dino" data-lang-key="emojiDino"></option>
-                                        <option value="loving_dinos" data-lang-key="emojiLovingDinos">Loving Dinos</option>
-                                        <option value="gift" data-lang-key="emojiGift"></option>
-                                        <option value="custom" data-lang-key="emojiCustom"></option>      
-                                    </select>
-                                </div>
+                            <div class="setting-control">
+                                <input type="text" id="custom-emoji-input" class="settings-input" placeholder="&#127925;">
                             </div>
-                            <div class="setting-item" id="custom-emoji-container">
-                                <div class="setting-label">
-                                    <strong data-lang-key="customEmoji"></strong>
-                                    <p data-lang-key="customEmojiDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <input type="text" id="custom-emoji-input" class="settings-input" placeholder="&#127925;">
-                                </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="enableDeleteSongs"></strong>
+                                <p data-lang-key="enableDeleteSongsDescription"></p>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="enableDeleteSongs"></strong>
-                                    <p data-lang-key="enableDeleteSongsDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-delete-songs">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-delete-songs">
+                                    <span class="slider"></span>
+                                </label>
                             </div>
                         </div>
                     </div>
 
                     <!-- TAB 3: DOWNLOADS -->
                     <div id="tab-downloads" class="settings-tab-content">
-                        <div class="settings-section">
-                            <h4 class="settings-section-title"><span data-lang-key="sectionDownloads"></span></h4>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="defaultDownloadFolder"></strong>
-                                    <p data-lang-key="defaultDownloadFolderDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <div class="input-group">
-                                        <input type="text" id="default-download-folder" class="settings-input-readonly" readonly>
-                                        <button id="change-download-folder-btn" class="settings-button" data-lang-key="changeButton"></button>
-                                    </div>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionDownloads"></span></h4>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="defaultDownloadFolder"></strong>
+                                <p data-lang-key="defaultDownloadFolderDescription"></p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <input type="text" id="default-download-folder" class="settings-input" style="max-width: 180px;" readonly>
+                                    <button id="change-download-folder-btn" class="settings-button" data-lang-key="changeButton"></button>
                                 </div>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="audioQuality"></strong>
-                                    <p data-lang-key="audioQualityDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                     <select id="audio-quality-select" class="settings-select">
-                                        <option value="best" data-lang-key="qualityBest"></option>        
-                                        <option value="high" data-lang-key="qualityHigh"></option>        
-                                        <option value="standard" data-lang-key="qualityStandard"></option>
-                                    </select>
-                                </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="audioQuality"></strong>
+                                <p data-lang-key="audioQualityDescription"></p>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="refreshFolder"></strong>
-                                    <p data-lang-key="refreshFolderDesc"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <button id="refresh-folder-btn" class="settings-button" data-lang-key="refreshFolder"></button>
-                                </div>
+                            <div class="setting-control">
+                                 <select id="audio-quality-select" class="settings-select">
+                                    <option value="best" data-lang-key="qualityBest"></option>        
+                                    <option value="high" data-lang-key="qualityHigh"></option>        
+                                    <option value="standard" data-lang-key="qualityStandard"></option>
+                                </select>
                             </div>
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="autoLoadLastFolder"></strong>
-                                    <p data-lang-key="autoLoadLastFolderDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-auto-load-last-folder">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="refreshFolder"></strong>
+                                <p data-lang-key="refreshFolderDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <button id="refresh-folder-btn" class="settings-button" data-lang-key="refreshFolder"></button>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="autoLoadLastFolder"></strong>
+                                <p data-lang-key="autoLoadLastFolderDescription"></p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-auto-load-last-folder">
+                                    <span class="slider"></span>
+                                </label>
                             </div>
                         </div>
                     </div>
 
                     <!-- TAB: THEME PACKS -->
                     <div id="tab-themepacks" class="settings-tab-content">
-                        <div class="settings-section">
+                        <div class="theme-packs-container">
                             <h4 class="settings-section-title"><span data-lang-key="sectionThemePacks">Theme Packs</span></h4>
-                            <div id="snuggle-pack-item" class="setting-item snuggle-pack-container">      
-                                <div class="setting-label">
+                            
+                            <div id="snuggle-pack-item" class="theme-pack-card snuggle-pack-container">      
+                                <div class="theme-pack-info">
                                     <strong class="snuggle-title">&#10024; Snuggle Time (Theme-Pack)</strong>  
-                                    <p data-lang-key="snuggleTimeDesc">Aktiviere das exklusive SnuggleDino Erlebnis mit festen Effekten.</p>
+                                    <p data-lang-key="snuggleTimeDesc"></p>
                                 </div>
-                                <div class="setting-control">
+                                <div class="theme-pack-action">
                                     <label class="toggle-switch">
                                         <input type="checkbox" id="toggle-snuggle-time">
                                         <span class="slider"></span>
                                     </label>
                                 </div>
                             </div>
-                            <div id="sleeptime-pack-item" class="setting-item sleeptime-pack-container">      
-                                <div class="setting-label">
+
+                            <div id="sleeptime-pack-item" class="theme-pack-card sleeptime-pack-container">      
+                                <div class="theme-pack-info">
                                     <strong class="sleeptime-title">&#127769; Sleep Time (Night-Pack)</strong>  
-                                    <p data-lang-key="sleepTimeDesc">Sanfte Nacht-Atmosphäre mit Mondschein und Sternen.</p>
+                                    <p data-lang-key="sleepTimeDesc"></p>
                                 </div>
-                                <div class="setting-control">
+                                <div class="theme-pack-action">
                                     <label class="toggle-switch">
                                         <input type="checkbox" id="toggle-sleeptime">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="cyberpunk-pack-item" class="theme-pack-card cyberpunk-pack-container">      
+                                <div class="theme-pack-info">
+                                    <strong class="cyberpunk-title">&#9889; Cyberpunk (2077-Pack)</strong>  
+                                    <p data-lang-key="cyberpunkDesc"></p>
+                                </div>
+                                <div class="theme-pack-action">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-cyberpunk">
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -575,81 +606,82 @@
 
                     <!-- TAB 4: AUDIO EXTRAS -->
                     <div id="tab-audio" class="settings-tab-content">
-                        <div class="settings-section">
-                            <h4 class="settings-section-title"><span data-lang-key="sectionAudioExtras">Audio Extras</span></h4>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionAudioExtras">Audio Extras</span></h4>
 
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="bassBoost">Bass Boost</strong>
-                                    <p data-lang-key="bassBoostDesc">Verst&#228;rke die tiefen Frequenzen.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-bass-boost">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="bassBoost">Bass Boost</strong>
+                                <p data-lang-key="bassBoostDesc">Verst&#228;rke die tiefen Frequenzen.</p>
                             </div>
-                            <div class="setting-item" id="bass-boost-slider-container" style="display: none;">
-                                <div class="setting-label">
-                                    <strong data-lang-key="bassBoostLevel">Bass Level</strong>
-                                </div>
-                                <div class="setting-control">
-                                     <div class="input-group">
-                                        <span id="bass-boost-value" style="font-size: 0.8rem; min-width: 30px;">6dB</span>
-                                        <input type="range" id="bass-boost-slider" class="settings-range" min="0" max="15" step="1" value="6">
-                                        <button id="bass-boost-reset-btn" class="settings-button" style="padding: 4px 8px; margin-left: 5px;" title="Reset Bass Boost">&#8634;</button>
-                                     </div>
-                                </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-bass-boost">
+                                    <span class="slider"></span>
+                                </label>
                             </div>
+                        </div>
 
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="trebleBoost">Crystalizer</strong>
-                                    <p data-lang-key="trebleBoostDesc">Verleiht dem Klang mehr Klarheit.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-treble-boost">
-                                        <span class="slider"></span>
-                                    </label>
+                        <div class="setting-item" id="bass-boost-slider-container" style="display: none;">
+                            <div class="setting-label">
+                                <strong data-lang-key="bassBoostLevel">Bass Level</strong>
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <span id="bass-boost-value" style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">6dB</span>
+                                    <input type="range" id="bass-boost-slider" class="settings-range" min="0" max="15" step="1" value="6">
+                                    <button id="bass-boost-reset-btn" class="settings-button" title="Reset Bass Boost">&#8634;</button>
                                 </div>
                             </div>
-                            <div class="setting-item" id="treble-boost-slider-container" style="display: none;">
-                                <div class="setting-label">
-                                    <strong data-lang-key="trebleBoostLevel">Treble Level</strong>        
-                                </div>
-                                <div class="setting-control">
-                                     <div class="input-group">
-                                        <span id="treble-boost-value" style="font-size: 0.8rem; min-width: 30px;">6dB</span>
-                                        <input type="range" id="treble-boost-slider" class="settings-range" min="0" max="15" step="1" value="6">
-                                        <button id="treble-boost-reset-btn" class="settings-button" style="padding: 4px 8px; margin-left: 5px;" title="Reset Crystalizer">&#8634;</button>
-                                     </div>
-                                </div>
-                            </div>
+                        </div>
 
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="reverb">Reverb</strong>
-                                    <p data-lang-key="reverbDesc">F&#252;gt einen r&#228;umlichen Hall-Effekt hinzu.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-reverb">
-                                        <span class="slider"></span>
-                                    </label>
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="trebleBoost">Crystalizer</strong>
+                                <p data-lang-key="trebleBoostDesc">Verleiht dem Klang mehr Klarheit.</p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-treble-boost">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item" id="treble-boost-slider-container" style="display: none;">
+                            <div class="setting-label">
+                                <strong data-lang-key="trebleBoostLevel">Treble Level</strong>        
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <span id="treble-boost-value" style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">6dB</span>
+                                    <input type="range" id="treble-boost-slider" class="settings-range" min="0" max="15" step="1" value="6">
+                                    <button id="treble-boost-reset-btn" class="settings-button" title="Reset Crystalizer">&#8634;</button>
                                 </div>
                             </div>
-                            <div class="setting-item" id="reverb-slider-container" style="display: none;">
-                                <div class="setting-label">
-                                    <strong data-lang-key="reverbLevel">Mix</strong>
-                                </div>
-                                <div class="setting-control">
-                                     <div class="input-group">
-                                        <span id="reverb-value" style="font-size: 0.8rem; min-width: 30px;">30%</span>
-                                        <input type="range" id="reverb-slider" class="settings-range" min="0" max="100" step="5" value="30">
-                                        <button id="reverb-reset-btn" class="settings-button" style="padding: 4px 8px; margin-left: 5px;" title="Reset Reverb">&#8634;</button>
-                                     </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="reverb">Reverb</strong>
+                                <p data-lang-key="reverbDesc">F&#252;gt einen r&#228;umlichen Hall-Effekt hinzu.</p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-reverb">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item" id="reverb-slider-container" style="display: none;">
+                            <div class="setting-label">
+                                <strong data-lang-key="reverbLevel">Mix</strong>
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <span id="reverb-value" style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">30%</span>
+                                    <input type="range" id="reverb-slider" class="settings-range" min="0" max="100" step="5" value="30">
+                                    <button id="reverb-reset-btn" class="settings-button" title="Reset Reverb">&#8634;</button>
                                 </div>
                             </div>
                         </div>
@@ -657,108 +689,90 @@
 
                     <!-- TAB 5: EXTRAS -->
                     <div id="tab-extras" class="settings-tab-content">
-                        <div class="settings-section">
-                            <h4 class="settings-section-title"><span data-lang-key="sectionExtras">Extras & Tools</span></h4>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionExtras">Extras & Tools</span></h4>
 
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="cinemaMode">Cinema Mode</strong>
-                                    <p data-lang-key="cinemaModeDesc">Dimmt das Interface f&#252;r puren Musikgenuss.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-cinema-mode">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="cinemaMode">Cinema Mode</strong>
+                                <p data-lang-key="cinemaModeDesc">Dimmt das Interface f&#252;r puren Musikgenuss.</p>
                             </div>
-
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="perfModeLabel">Performance Mode</strong>       
-                                    <p data-lang-key="perfModeDesc">Deaktiviert Visualizer und Animationen f&#252;r maximale CPU-Schonung.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-performance-mode">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-cinema-mode">
+                                    <span class="slider"></span>
+                                </label>
                             </div>
+                        </div>
 
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="fpsLimitLabel">FPS Limit</strong>
-                                    <p data-lang-key="fpsLimitDesc">Begrenze die Bildrate f&#252;r Visualizer und Animationen (15 - 120).</p>
-                                </div>
-                                <div class="setting-control">
-                                     <div class="input-group fps-control-group">
-                                        <input type="number" id="fps-input" class="settings-input fps-number-input" min="15" max="120" placeholder="60">
-                                        <input type="range" id="fps-slider" class="settings-range" min="15" max="120" step="1" value="60">
-                                     </div>
-                                </div>
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="perfModeLabel">Performance Mode</strong>       
+                                <p data-lang-key="perfModeDesc">Deaktiviert Visualizer und Animationen f\u00FCr maximale CPU-Schonung.</p>
                             </div>
-
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="showStatsLabel">System-Stats anzeigen</strong> 
-                                    <p data-lang-key="showStatsDesc">Zeigt FPS und Performance-Daten im Hauptfenster an.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-show-stats">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-performance-mode">
+                                    <span class="slider"></span>
+                                </label>
                             </div>
+                        </div>
 
-                            <div class="setting-item" style="display: none !important;">
-                                <div class="setting-label">
-                                    <strong data-lang-key="enableFocusOption"></strong>
-                                    <p data-lang-key="enableFocusOptionDesc"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-enable-focus">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="fpsLimitLabel">FPS Limit</strong>
+                                <p data-lang-key="fpsLimitDesc">Begrenze die Bildrate f\u00FCr Visualizer und Animationen (15 - 120).</p>
                             </div>
-
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="enableFavoritesOption">Favorites Filter</strong>
-                                    <p data-lang-key="enableFavoritesOptionDesc">Show a button to filter the playlist for favorites.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" id="toggle-favorites-option">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                            <div class="setting-control">
+                                <input type="number" id="fps-input" class="settings-input" style="width: 80px; text-align: center;" min="15" max="120" placeholder="60">
                             </div>
+                        </div>
 
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="playlistPosition">Playlist Position</strong>
-                                    <p data-lang-key="playlistPositionDesc">Choose position.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <select id="playlist-position-select" class="settings-select">
-                                        <option value="right" data-lang-key="posRight">Right</option>
-                                        <option value="left" data-lang-key="posLeft">Left</option>
-                                    </select>
-                                </div>
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="showStatsLabel">System-Stats anzeigen</strong> 
+                                <p data-lang-key="showStatsDesc">Zeigt FPS und Performance-Daten im Hauptfenster an.</p>
                             </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-show-stats">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
 
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="exportPlaylist">Playlist Export</strong>       
-                                    <p data-lang-key="exportPlaylistDesc">Speichere die aktuelle Playlist als Datei.</p>
-                                </div>
-                                <div class="setting-control">
-                                    <button id="btn-export-playlist" class="settings-button" data-lang-key="saveBtn">Speichern</button>
-                                </div>
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="enableFavoritesOption">Favorites Filter</strong>
+                                <p data-lang-key="enableFavoritesOptionDesc">Show a button to filter the playlist for favorites.</p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-favorites-option">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="playlistPosition">Playlist Position</strong>
+                                <p data-lang-key="playlistPositionDesc">Choose position.</p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="playlist-position-select" class="settings-select">
+                                    <option value="right" data-lang-key="posRight">Right</option>
+                                    <option value="left" data-lang-key="posLeft">Left</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="exportPlaylist">Playlist Export</strong>       
+                                <p data-lang-key="exportPlaylistDesc">Speichere die aktuelle Playlist als Datei.</p>
+                            </div>
+                            <div class="setting-control">
+                                <button id="btn-export-playlist" class="settings-button" data-lang-key="saveBtn">Speichern</button>
                             </div>
                         </div>
                     </div>

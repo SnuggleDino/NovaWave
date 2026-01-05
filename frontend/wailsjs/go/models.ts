@@ -38,6 +38,8 @@ export namespace main {
 	    loop: string;
 	    shuffle: boolean;
 	    snuggleTimeEnabled: boolean;
+	    sleepTimeEnabled: boolean;
+	    cyberpunkEnabled: boolean;
 	    playlistPosition: string;
 	    playlistHidden: boolean;
 	
@@ -84,6 +86,8 @@ export namespace main {
 	        this.loop = source["loop"];
 	        this.shuffle = source["shuffle"];
 	        this.snuggleTimeEnabled = source["snuggleTimeEnabled"];
+	        this.sleepTimeEnabled = source["sleepTimeEnabled"];
+	        this.cyberpunkEnabled = source["cyberpunkEnabled"];
 	        this.playlistPosition = source["playlistPosition"];
 	        this.playlistHidden = source["playlistHidden"];
 	    }

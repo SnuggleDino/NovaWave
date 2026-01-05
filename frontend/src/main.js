@@ -198,8 +198,7 @@ function triggerPerformanceHint(force = false) {
 
 function setPerformanceMode(enabled, silent = false) {
     performanceMode = enabled;
-    settings.performanceMode = enabled;
-    windowApi.setSetting('performanceMode', enabled);
+    saveSetting('performanceMode', enabled);
 
     const toggle = document.getElementById('toggle-performance-mode');
     if (toggle) toggle.checked = enabled;
@@ -207,8 +206,7 @@ function setPerformanceMode(enabled, silent = false) {
     if (enabled) {
         // If Snuggle Time was active, turn it off because they conflict
         if (settings.snuggleTimeEnabled) {
-            settings.snuggleTimeEnabled = false;
-            windowApi.setSetting('snuggleTimeEnabled', false);
+            saveSetting('snuggleTimeEnabled', false);
             const stToggle = document.getElementById('toggle-snuggle-time');
             if (stToggle) stToggle.checked = false;
             applySnuggleTime(false);
@@ -354,8 +352,9 @@ const translations = {
         helpMiniDesc: 'F\u00FCr mehr Platz auf dem Desktop: Der MINI-Modus bietet dir das Wesentliche.',      
         helpFavDesc: 'Deine Lieblingssongs findest du schneller, wenn du sie mit dem Stern markierst.',   
         helpOpenSettings: '\u00D6ffne die Einstellungen hier f\u00FCr mehr Details',
-        snuggleTimeDesc: 'Aktiviere das exklusive SnuggleDino Erlebnis mit festen Effekten.',
-        sleepTimeDesc: 'Sanfte Nacht-Atmosph\u00E4re mit Mondschein und Sternen.',
+        snuggleTimeDesc: 'Erlebe pure Geborgenheit mit dem exklusiven SnuggleDino Design und liebevollen Herz-Effekten.',
+        sleepTimeDesc: 'Genie\u00DFe die Ruhe der Nacht mit funkelnden Sternschnuppen und einer beruhigenden, tiefblauen Atmosph\u00E4re.',
+        cyberpunkDesc: 'Erlebe das High-Tech Interface von Night City mit knalligen Neon-Akzenten und futuristischen Glitch-Effekten.',
         newBadge: 'NEU',
         devTitle: 'Entwickler & Hotkey-Info',
         devStandardHotkeys: 'Standard Hotkeys',
@@ -453,8 +452,9 @@ const translations = {
         helpMiniDesc: 'Need more space? The MINI mode gives you a compact player experience.',
         helpFavDesc: 'Keep your favorites close! Use the star icon to highlight songs you love.',
         helpOpenSettings: 'Open the settings here for more details',
-        snuggleTimeDesc: 'Activate the exclusive SnuggleDino experience with fixed effects.',
-        sleepTimeDesc: 'Gentle night atmosphere with moonlight and stars.',
+        snuggleTimeDesc: 'Experience pure comfort with the exclusive SnuggleDino design and lovely heart effects.',
+        sleepTimeDesc: 'Enjoy the peace of the night with twinkling shooting stars and a calming, deep blue atmosphere.',
+        cyberpunkDesc: 'Experience the high-tech interface of Night City with bright neon accents and futuristic glitch effects.',
         newBadge: 'NEW',
         devTitle: 'Developer & Hotkey Info',
         devStandardHotkeys: 'Standard Hotkeys',
@@ -557,18 +557,125 @@ function playNext() {
 function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else playTrack(currentIndex - 1 < 0 ? playlist.length - 1 : currentIndex - 1); }
 
 // --- UI & DOM MANIPULATION ---
-async function applySleepTime(enabled, showIntro = false) {
+async function applyCyberpunk(enabled, showIntro = false) {
+    document.body.classList.toggle('cyberpunk-active', enabled);
+    const accentToggle = document.getElementById('toggle-use-custom-color');
+    
+    if (enabled) {
+        // Exclusive with Snuggle Time
+        if (settings.snuggleTimeEnabled) {
+            saveSetting('snuggleTimeEnabled', false);
+            const stToggle = document.getElementById('toggle-snuggle-time');
+            if (stToggle) stToggle.checked = false;
+            applySnuggleTime(false);
+        }
+        // Exclusive with Sleep Time
+        if (settings.sleepTimeEnabled) {
+            saveSetting('sleepTimeEnabled', false);
+            const slToggle = document.getElementById('toggle-sleeptime');
+            if (slToggle) slToggle.checked = false;
+            applySleepTime(false);
+        }
+        // Exclusive with Performance Mode
+        if (performanceMode) {
+            setPerformanceMode(false, true);
+        }
+
+        if (showIntro) {
+            const intro = document.getElementById('cyberpunk-intro');
+            if (intro) {
+                intro.classList.add('visible');
+                setTimeout(() => intro.classList.remove('visible'), 2500);
+            }
+        }
+
+        document.documentElement.setAttribute('data-theme', 'cyberpunk');
+        visualizerEnabled = true;
+        if (visualizerToggle) visualizerToggle.checked = true;
+        saveSetting('visualizerEnabled', true);
+        if (isPlaying) startVisualizer();
+
+        currentVisualizerStyle = 'glitch';
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = 'glitch';
+            visualizerStyleSelect.disabled = true;
+        }
+        applyAnimationSetting('off');
+        if (animationSelect) {
+            animationSelect.value = 'off';
+            animationSelect.disabled = true;
+        }
+        updateEmoji('auto'); 
+        if (emojiSelect) {
+            emojiSelect.value = 'auto';
+            emojiSelect.disabled = true;
+        }
+        if (themeSelect) themeSelect.disabled = true;
+        
+        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
+
+        if (accentToggle) {
+            accentToggle.checked = false;
+            accentToggle.disabled = true;
+            if (accentColorContainer) accentColorContainer.classList.add('hidden');
+            document.documentElement.style.removeProperty('--accent');
+        }
+        updateCachedColor();
+    } else {
+        const th = settings.theme || 'blue';
+        document.documentElement.setAttribute('data-theme', th);
+        if (themeSelect) {
+            themeSelect.value = th;
+            themeSelect.disabled = false;
+        }
+
+        currentVisualizerStyle = settings.visualizerStyle || 'bars';
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = currentVisualizerStyle;
+            visualizerStyleSelect.disabled = false;
+        }
+        applyAnimationSetting(settings.animationMode || 'flow');
+        if (animationSelect) {
+            animationSelect.value = settings.animationMode || 'flow';
+            animationSelect.disabled = false;
+        }
+        const et = settings.coverMode || 'note';
+        updateEmoji(et, settings.customCoverEmoji);
+        if (emojiSelect) {
+            emojiSelect.value = et;
+            emojiSelect.disabled = false;
+        }
+        
+        if (accentToggle) {
+            accentToggle.disabled = false;
+            accentToggle.checked = !!settings.useCustomColor;
+            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
+            if (accentToggle.checked) {
+                document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
+            }
+        }
+        updateCachedColor();
+    }
+}
+
+function applySleepTime(enabled, showIntro = false) {
     document.body.classList.toggle('sleeptime-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
     
     if (enabled) {
         // Exclusive with Snuggle Time
         if (settings.snuggleTimeEnabled) {
-            settings.snuggleTimeEnabled = false;
-            windowApi.setSetting('snuggleTimeEnabled', false);
+            saveSetting('snuggleTimeEnabled', false);
             const stToggle = document.getElementById('toggle-snuggle-time');
             if (stToggle) stToggle.checked = false;
             applySnuggleTime(false);
+        }
+        // Exclusive with Cyberpunk
+        if (settings.cyberpunkEnabled) {
+            saveSetting('cyberpunkEnabled', false);
+            const cyToggle = document.getElementById('toggle-cyberpunk');
+            if (cyToggle) cyToggle.checked = false;
+            applyCyberpunk(false);
         }
         
         // Exclusive with Performance Mode
@@ -1031,19 +1138,26 @@ function drawVisualizer() {
     }
 
     lastRenderTime = now - (delta % interval);
-    frameCount++; // Track real rendered frames
+    frameCount++; 
     requestAnimationFrame(drawVisualizer);
 
     const ctx = visualizerCanvas.getContext('2d');
     if (!ctx) return;
     const { width, height } = visualizerCanvas;
     ctx.clearRect(0, 0, width, height);
+    
     const ac = cachedAccentColor;
-    analyser.getByteFrequencyData(visualizerDataArray); const boost = 1 + (visSensitivity * 0.12);        
+    analyser.getByteFrequencyData(visualizerDataArray); 
+    const boost = 1 + (visSensitivity * 0.1);        
 
     if (currentVisualizerStyle === 'bars') {
-        const bl = analyser.frequencyBinCount, hb = bl / 2, bw = (width / hb) / 2; let x = 0;
-        for (let i = 0; i < hb; i++) { const bh = (visualizerDataArray[i] / 255) * height * 0.95 * boost; ctx.fillStyle = ac; ctx.fillRect(width / 2 + x, height - bh, bw, bh); ctx.fillRect(width / 2 - x - bw, height - bh, bw, bh); x += bw + 1; }
+        const bl = visualizerDataArray.length / 2;
+        const bw = (width / bl) * 0.8;
+        for (let i = 0; i < bl; i++) {
+            const bh = (visualizerDataArray[i] / 255) * height * 0.8 * boost;
+            ctx.fillStyle = ac;
+            ctx.fillRect(i * (width / bl), height - bh, bw, bh);
+        }
     } else if (currentVisualizerStyle === 'waveform') {
         ctx.beginPath();
         ctx.lineWidth = 3;
@@ -1057,47 +1171,55 @@ function drawVisualizer() {
             else ctx.lineTo(x, y);
             x += sliceWidth;
         }
-        ctx.lineTo(width, height / 2);
         ctx.stroke();
     } else if (currentVisualizerStyle === 'orbit') {
         const centerX = width / 2, centerY = height / 2;
-        for (let i = 0; i < 3; i++) {
-            const radius = (height / 4) + (visualizerDataArray[i * 10] / 255) * (height / 4);
+        for (let i = 0; i < 4; i++) {
+            const val = visualizerDataArray[i * 8];
+            const radius = (height / 6) + (val / 255) * (height / 3) * boost;
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = i === 0 ? ac : `${ac}66`;
+            ctx.strokeStyle = i === 0 ? ac : `${ac}44`;
             ctx.lineWidth = 2;
             ctx.stroke();
-            const angle = Date.now() * 0.001 * (i + 1);
+            
+            const angle = (Date.now() * 0.001 * (i + 1)) % (Math.PI * 2);
             ctx.beginPath();
-            ctx.arc(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius, 5, 0, Math.PI * 2);
-            ctx.fillStyle = "white";
+            ctx.arc(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius, 4, 0, Math.PI * 2);
+            ctx.fillStyle = "#fff";
             ctx.fill();
         }
     } else if (currentVisualizerStyle === 'glitch') {
-        const bars = 20, bw = width / bars;
+        const bars = 30, bw = width / bars;
         for (let i = 0; i < bars; i++) {
-            const val = visualizerDataArray[i * 5];
-            const bh = (val / 255) * height;
-            ctx.fillStyle = Math.random() > 0.9 ? "#fff" : ac;
-            ctx.fillRect(i * bw, height - bh, bw - 2, bh);
-            if (val > 200 && Math.random() > 0.8) {
-                ctx.fillStyle = "#ef4444";
-                ctx.fillRect(i * bw - 10, height - bh - 20, bw + 20, 2);
+            const val = visualizerDataArray[i * 3];
+            const bh = (val / 255) * height * 0.9 * boost;
+            ctx.fillStyle = ac;
+            ctx.globalAlpha = 0.8;
+            ctx.fillRect(i * bw, height - bh, bw - 4, bh);
+            
+            if (val > 210 && Math.random() > 0.9) {
+                ctx.fillStyle = "#fff";
+                ctx.globalAlpha = 1.0;
+                ctx.fillRect(i * bw - 5, height - bh - 10, bw + 10, 3);
             }
         }
+        ctx.globalAlpha = 1.0;
     } else if (currentVisualizerStyle === 'zen') {
         const centerX = width / 2, centerY = height / 2;
-        const blv = visualizerDataArray[0];
-        const count = 12;
+        const blv = (visualizerDataArray[0] + visualizerDataArray[2]) / 2;
+        const count = 16;
         for (let i = 0; i < count; i++) {
             const angle = (i / count) * Math.PI * 2;
-            const dist = (blv / 255) * (height / 2);
+            const dist = (blv / 255) * (height / 2.2) * boost;
             ctx.beginPath();
-            ctx.arc(centerX + Math.cos(angle) * dist, centerY + Math.sin(angle) * dist, 3, 0, Math.PI * 2);
+            ctx.arc(centerX + Math.cos(angle) * dist, centerY + Math.sin(angle) * dist, 4, 0, Math.PI * 2);
             ctx.fillStyle = ac;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = ac;
             ctx.fill();
         }
+        ctx.shadowBlur = 0;
     } else if (currentVisualizerStyle === 'moonlight') {
         const centerX = width / 2, centerY = height / 2, moonRadius = Math.min(width, height) / 4.5;
         const blv = (visualizerDataArray[0] + visualizerDataArray[1] + visualizerDataArray[2]) / 3;
@@ -1149,11 +1271,17 @@ function applySnuggleTime(enabled, showIntro = false) {
     if (enabled) {
         // Exclusive with Sleep Time
         if (settings.sleepTimeEnabled) {
-            settings.sleepTimeEnabled = false;
-            windowApi.setSetting('sleepTimeEnabled', false);
+            saveSetting('sleepTimeEnabled', false);
             const slToggle = document.getElementById('toggle-sleeptime');
             if (slToggle) slToggle.checked = false;
             applySleepTime(false);
+        }
+        // Exclusive with Cyberpunk
+        if (settings.cyberpunkEnabled) {
+            saveSetting('cyberpunkEnabled', false);
+            const cyToggle = document.getElementById('toggle-cyberpunk');
+            if (cyToggle) cyToggle.checked = false;
+            applyCyberpunk(false);
         }
 
         // Automatically disable Performance Mode if Snuggle Pack is turned on
@@ -1257,7 +1385,7 @@ function setupAudioEvents() {
     });
     audio.addEventListener('ended', () => { stopVisualizer(); if (loopMode === 'one') { audio.currentTime = 0; audio.play(); } else playNext(); });
     audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); });
-    audio.addEventListener('volumechange', () => { currentVolume = audio.volume; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { windowApi.setSetting('volume', currentVolume); }, 500); });
+    audio.addEventListener('volumechange', () => { currentVolume = audio.volume; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
 }
 
 async function loadSettings() {
@@ -1335,6 +1463,44 @@ async function loadSettings() {
 
     if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
     if (loopBtn) { loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); }  
+
+    if (toggleFavoritesOption) {
+        toggleFavoritesOption.checked = settings.enableFavoritesPlaylist || false;
+        if (toggleFavoritesBtn) toggleFavoritesBtn.style.display = settings.enableFavoritesPlaylist ? 'flex' : 'none';
+    }
+
+    if (toggleDeleteSongs) { 
+        toggleDeleteSongs.checked = settings.deleteSongsEnabled || false; 
+        deleteSongsEnabled = settings.deleteSongsEnabled || false; 
+    }
+
+    if (toggleEnableFocus) toggleEnableFocus.checked = settings.enableFocusMode !== false;
+    if (toggleEnableDrag) toggleEnableDrag.checked = settings.enableDragAndDrop !== false;
+    
+    if (toggleUseCustomColor) { 
+        toggleUseCustomColor.checked = settings.useCustomColor || false; 
+        if (accentColorContainer) accentColorContainer.style.display = settings.useCustomColor ? 'flex' : 'none'; 
+    }
+
+    if (toggleCinemaMode) {
+        toggleCinemaMode.checked = settings.cinemaMode || false;
+        document.body.classList.toggle('cinema-mode', settings.cinemaMode || false);
+    }
+
+    if (playlistPositionSelect) {
+        playlistPositionSelect.value = settings.playlistPosition || 'right';
+        if (settings.playlistPosition === 'left') {
+            document.body.classList.add('playlist-left');
+        } else {
+            document.body.classList.remove('playlist-left');
+        }
+    }
+
+    if (settings.playlistHidden) {
+        document.body.classList.add('playlist-hidden');
+    } else {
+        document.body.classList.remove('playlist-hidden');
+    }
 }
 
 function updateLoopIcon() {
@@ -1414,7 +1580,7 @@ function toggleFavorite(path) {
         favorites.splice(index, 1);
         favoritesSet.delete(path);
     }
-    windowApi.setSetting('favorites', favorites);
+    saveSetting('favorites', favorites);
     renderPlaylist();
     updateUIForCurrentTrack();
     if (showingFavoritesOnly) filterPlaylist(searchInput ? searchInput.value : '');
@@ -1479,8 +1645,8 @@ function setupEventListeners() {
     const bind = (el, ev, h) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, h); };
     bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) audio.pause(); else (currentIndex === -1) ? playTrack(0) : audio.play(); });
     bind(nextBtn, 'click', playNext); bind(prevBtn, 'click', playPrev);
-    bind(shuffleBtn, 'click', () => { shuffleOn = !shuffleOn; shuffleBtn.classList.toggle('mode-btn--active', shuffleOn); windowApi.setSetting('shuffle', shuffleOn); });
-    bind(loopBtn, 'click', () => { loopMode = (loopMode === 'off' ? 'all' : (loopMode === 'all' ? 'one' : 'off')); loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); windowApi.setSetting('loop', loopMode); });
+    bind(shuffleBtn, 'click', () => { shuffleOn = !shuffleOn; shuffleBtn.classList.toggle('mode-btn--active', shuffleOn); saveSetting('shuffle', shuffleOn); });
+    bind(loopBtn, 'click', () => { loopMode = (loopMode === 'off' ? 'all' : (loopMode === 'all' ? 'one' : 'off')); loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); saveSetting('loop', loopMode); });
     bind(progressBar, 'click', (e) => { if (!isNaN(audio.duration)) { const r = progressBar.getBoundingClientRect(); audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; } });
     bind(volumeSlider, 'input', (e) => { audio.volume = parseFloat(e.target.value); });
     bind(openLibraryBtn, 'click', () => { libraryOverlay.classList.add('visible'); });
@@ -1494,7 +1660,7 @@ function setupEventListeners() {
             renderPlaylist();
             updateUIForCurrentTrack();
             currentFolderPath = r.folderPath;
-            windowApi.setSetting('currentFolderPath', currentFolderPath);
+            saveSetting('currentFolderPath', currentFolderPath);
             libraryOverlay.classList.remove('visible');
         }
     });
@@ -1504,7 +1670,7 @@ function setupEventListeners() {
         const r = await windowApi.refreshMusicFolder(path);
         if (r && r.tracks) {
             currentFolderPath = r.folderPath;
-            windowApi.setSetting('currentFolderPath', currentFolderPath);
+            saveSetting('currentFolderPath', currentFolderPath);
             basePlaylist = r.tracks;
             sortPlaylist(sortMode);
             if (currentTrackPath) currentIndex = playlist.findIndex(t => t.path === currentTrackPath);    
@@ -1562,8 +1728,7 @@ function setupEventListeners() {
 
     bind(toggleMiniMode, 'change', (e) => {
         const isMini = e.target.checked;
-        settings.miniMode = isMini;
-        windowApi.setSetting('miniMode', isMini);
+        saveSetting('miniMode', isMini);
         if (isMini) {
             document.body.classList.add('is-mini');
             windowApi.setWindowSize(340, 600);
@@ -1576,20 +1741,22 @@ function setupEventListeners() {
         setTimeout(updateTrackTitleScroll, 300);
     });
     bind(downloadBtn, 'click', handleDownload);
-    if (langButtons) langButtons.forEach(btn => { bind(btn, 'click', () => { currentLanguage = btn.dataset.lang; langButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyTranslations(); windowApi.setSetting('language', currentLanguage); }); });
+    if (langButtons) langButtons.forEach(btn => { bind(btn, 'click', () => { currentLanguage = btn.dataset.lang; langButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyTranslations(); saveSetting('language', currentLanguage); }); });
     bind(themeSelect, 'change', (e) => {
         const th = e.target.value;
         document.documentElement.setAttribute('data-theme', th);
-        windowApi.setSetting('theme', th);
+        saveSetting('theme', th);
         setTimeout(updateCachedColor, 100);
     });
     bind(accentColorPicker, 'input', (e) => {
         const color = e.target.value;
         document.documentElement.style.setProperty('--accent', color); 
         updateCachedColor();
+        // Constant saving during slide might be heavy, but required for "Custom" feel
+        saveSetting('customAccentColor', color);
     });
     bind(accentColorPicker, 'change', (e) => {
-        windowApi.setSetting('customAccentColor', e.target.value);
+        saveSetting('customAccentColor', e.target.value);
     });
     
     // Clean Wails File Drop Handler
@@ -1614,41 +1781,40 @@ function setupEventListeners() {
 
 
 
-    bind(sortSelect, 'change', (e) => { sortMode = e.target.value; windowApi.setSetting('sortMode', sortMode); sortPlaylist(sortMode); });
+    bind(sortSelect, 'change', (e) => { sortMode = e.target.value; saveSetting('sortMode', sortMode); sortPlaylist(sortMode); });
     bind(settingsBtn, 'click', () => { settingsOverlay.classList.add('visible'); });
     bind(settingsCloseBtn, 'click', () => { settingsOverlay.classList.remove('visible'); });
-    bind(changeFolderBtn, 'click', async () => { const nf = await windowApi.selectFolder(); if (nf) { if (downloadFolderInput) downloadFolderInput.value = nf; settings.downloadFolder = nf; windowApi.setSetting('downloadFolder', nf); } });  
-    bind(qualitySelect, 'change', (e) => windowApi.setSetting('audioQuality', e.target.value));
+    bind(changeFolderBtn, 'click', async () => { const nf = await windowApi.selectFolder(); if (nf) { if (downloadFolderInput) downloadFolderInput.value = nf; saveSetting('downloadFolder', nf); } });  
+    bind(qualitySelect, 'change', (e) => saveSetting('audioQuality', e.target.value));
     bind(visualizerToggle, 'change', (e) => {
         visualizerEnabled = e.target.checked;
-        settings.visualizerEnabled = visualizerEnabled;
-        windowApi.setSetting('visualizerEnabled', visualizerEnabled);
+        saveSetting('visualizerEnabled', visualizerEnabled);
         if (visualizerEnabled) startVisualizer(); else stopVisualizer();
     });
-    bind(visualizerStyleSelect, 'change', (e) => { currentVisualizerStyle = e.target.value; windowApi.setSetting('visualizerStyle', currentVisualizerStyle); });
-    bind(visualizerSensitivity, 'input', (e) => { visSensitivity = parseFloat(e.target.value); updateAnalyserSettings(); windowApi.setSetting('visSensitivity', visSensitivity); });
+    bind(visualizerStyleSelect, 'change', (e) => { currentVisualizerStyle = e.target.value; saveSetting('visualizerStyle', currentVisualizerStyle); });
+    bind(visualizerSensitivity, 'input', (e) => { visSensitivity = parseFloat(e.target.value); updateAnalyserSettings(); saveSetting('visSensitivity', visSensitivity); });
     bind($('#visualizer-sensitivity-reset-btn'), 'click', () => {
         const def = 1.5;
         if (visualizerSensitivity) visualizerSensitivity.value = def;
         visSensitivity = def;
         updateAnalyserSettings();
-        windowApi.setSetting('visSensitivity', def);
+        saveSetting('visSensitivity', def);
     });
     bind(sleepTimerSelect, 'change', (e) => { const mins = parseInt(e.target.value); if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; } if (mins > 0) { sleepTimerId = setTimeout(() => { audio.pause(); isPlaying = false; updatePlayPauseUI(); showNotification(tr('sleepTimerStopped')); sleepTimerSelect.value = "0"; sleepTimerId = null; }, mins * 60000); showNotification(tr('sleepTimerNotify', mins)); } });
-    bind(animationSelect, 'change', (e) => { const m = e.target.value; windowApi.setSetting('animationMode', m); applyAnimationSetting(m); });
-    bind(autoLoadLastFolderToggle, 'change', (e) => { windowApi.setSetting('autoLoadLastFolder', e.target.checked); if (e.target.checked && currentFolderPath) windowApi.setSetting('currentFolderPath', currentFolderPath); });
-    bind(toggleEnableFocus, 'change', (e) => { windowApi.setSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });       
+    bind(animationSelect, 'change', (e) => { const m = e.target.value; saveSetting('animationMode', m); applyAnimationSetting(m); });
+    bind(autoLoadLastFolderToggle, 'change', (e) => { saveSetting('autoLoadLastFolder', e.target.checked); if (e.target.checked && currentFolderPath) saveSetting('currentFolderPath', currentFolderPath); });
+    bind(toggleEnableFocus, 'change', (e) => { saveSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });       
     bind(toggleFocusModeBtn, 'click', () => {
         document.body.classList.toggle('focus-active');
         if (document.body.classList.contains('focus-active')) showNotification(tr('focusActiveNotify'));
     });
-    bind(toggleEnableDrag, 'change', (e) => { windowApi.setSetting('enableDragAndDrop', e.target.checked); });
+    bind(toggleEnableDrag, 'change', (e) => { saveSetting('enableDragAndDrop', e.target.checked); });
     bind(speedSlider, 'input', (e) => {
         const v = parseFloat(e.target.value);
         audio.defaultPlaybackRate = v;
         audio.playbackRate = v; 
         if(speedValue) speedValue.textContent = v.toFixed(1) + 'x';
-        windowApi.setSetting('playbackSpeed', v);
+        saveSetting('playbackSpeed', v);
     });
     bind($('#speed-reset-btn'), 'click', () => {
         const def = 1.0;
@@ -1656,85 +1822,75 @@ function setupEventListeners() {
         audio.defaultPlaybackRate = def;
         audio.playbackRate = def;
         if (speedValue) speedValue.textContent = def.toFixed(1) + 'x';
-        windowApi.setSetting('playbackSpeed', def);
+        saveSetting('playbackSpeed', def);
     });
 
     bind(bassBoostToggle, 'change', (e) => {
         const enabled = e.target.checked;
-        settings.bassBoostEnabled = enabled;
-        windowApi.setSetting('bassBoostEnabled', enabled);
+        saveSetting('bassBoostEnabled', enabled);
         if (bassBoostContainer) bassBoostContainer.style.display = enabled ? 'flex' : 'none';
         updateAudioEffects();
     });
     bind(bassBoostSlider, 'input', (e) => {
         const val = parseFloat(e.target.value);
-        settings.bassBoostValue = val;
-        windowApi.setSetting('bassBoostValue', val);
+        saveSetting('bassBoostValue', val);
         if (bassBoostValueEl) bassBoostValueEl.textContent = val + 'dB';
         updateAudioEffects();
     });
 
     bind(trebleBoostToggle, 'change', (e) => {
         const enabled = e.target.checked;
-        settings.trebleBoostEnabled = enabled;
-        windowApi.setSetting('trebleBoostEnabled', enabled);
+        saveSetting('trebleBoostEnabled', enabled);
         if (trebleBoostContainer) trebleBoostContainer.style.display = enabled ? 'flex' : 'none';
         updateAudioEffects();
     });
     bind(trebleBoostSlider, 'input', (e) => {
         const val = parseFloat(e.target.value);
-        settings.trebleBoostValue = val;
-        windowApi.setSetting('trebleBoostValue', val);
+        saveSetting('trebleBoostValue', val);
         if (trebleBoostValueEl) trebleBoostValueEl.textContent = val + 'dB';
         updateAudioEffects();
     });
 
     bind(reverbToggle, 'change', (e) => {
         const enabled = e.target.checked;
-        settings.reverbEnabled = enabled;
-        windowApi.setSetting('reverbEnabled', enabled);
+        saveSetting('reverbEnabled', enabled);
         if (reverbContainer) reverbContainer.style.display = enabled ? 'flex' : 'none';
         updateAudioEffects();
     });
     bind($('#reverb-slider'), 'input', (e) => {
         const val = parseFloat(e.target.value);
-        settings.reverbValue = val;
-        windowApi.setSetting('reverbValue', val);
+        saveSetting('reverbValue', val);
         if (reverbValueEl) reverbValueEl.textContent = val + '%';
         updateAudioEffects();
     });
 
     bind($('#bass-boost-reset-btn'), 'click', () => {
         const def = 6;
-        settings.bassBoostValue = def;
         if (bassBoostSlider) bassBoostSlider.value = def;
         if (bassBoostValueEl) bassBoostValueEl.textContent = def + 'dB';
-        windowApi.setSetting('bassBoostValue', def);
+        saveSetting('bassBoostValue', def);
         updateAudioEffects();
     });
 
     bind($('#treble-boost-reset-btn'), 'click', () => {
         const def = 6;
-        settings.trebleBoostValue = def;
         if (trebleBoostSlider) trebleBoostSlider.value = def;
         if (trebleBoostValueEl) trebleBoostValueEl.textContent = def + 'dB';
-        windowApi.setSetting('trebleBoostValue', def);
+        saveSetting('trebleBoostValue', def);
         updateAudioEffects();
     });
 
     bind($('#reverb-reset-btn'), 'click', () => {
         const def = 30;
-        settings.reverbValue = def;
         if (reverbSlider) reverbSlider.value = def;
         if (reverbValueEl) reverbValueEl.textContent = def + '%';
-        windowApi.setSetting('reverbValue', def);
+        saveSetting('reverbValue', def);
         updateAudioEffects();
     });
 
     bind(toggleCinemaMode, 'change', (e) => {
         const enabled = e.target.checked;
-        settings.cinemaMode = enabled;
-        windowApi.setSetting('cinemaMode', enabled);
+        saveSetting('cinemaMode', enabled);
         document.body.classList.toggle('cinema-mode', enabled);
     });
 
@@ -1744,8 +1900,7 @@ function setupEventListeners() {
 
     bind(document.getElementById('toggle-show-stats'), 'change', (e) => {
         showStatsOverlay = e.target.checked;
-        settings.showStatsOverlay = showStatsOverlay;
-        windowApi.setSetting('showStatsOverlay', showStatsOverlay);
+        saveSetting('showStatsOverlay', showStatsOverlay);
         const overlay = document.getElementById('stats-overlay');
         if (overlay) overlay.classList.toggle('hidden', !showStatsOverlay);
     });
@@ -1763,24 +1918,28 @@ function setupEventListeners() {
         const enabled = e.target.checked;
         saveSetting('sleepTimeEnabled', enabled);
         applySleepTime(enabled, true);
-        // showNotification removed to suppress Island during intro
+    });
+
+    const toggleCyberpunk = document.getElementById('toggle-cyberpunk');
+    bind(toggleCyberpunk, 'change', (e) => {
+        const enabled = e.target.checked;
+        saveSetting('cyberpunkEnabled', enabled);
+        applyCyberpunk(enabled, true);
     });
 
     const fpsIn = document.getElementById('fps-input');
-    const fpsSl = document.getElementById('fps-slider');
-    const updateFps = (val, isFinal = false) => {
+    const updateFps = (val) => {
         let v = parseInt(val);
         if (isNaN(v)) return;
         let clamped = Math.max(15, Math.min(120, v));
         targetFps = clamped;
-        settings.targetFps = clamped;
-        windowApi.setSetting('targetFps', clamped);
-        if (fpsSl) fpsSl.value = clamped;
-        if (isFinal && fpsIn) fpsIn.value = clamped;
+        saveSetting('targetFps', clamped);
     };
     bind(fpsIn, 'input', (e) => updateFps(e.target.value));
-    bind(fpsIn, 'blur', (e) => updateFps(e.target.value, true));
-    bind(fpsSl, 'input', (e) => { updateFps(e.target.value); if (fpsIn) fpsIn.value = e.target.value; });
+    bind(fpsIn, 'blur', (e) => {
+        updateFps(e.target.value);
+        if (fpsIn) fpsIn.value = targetFps;
+    });
 
     bind(document.getElementById('enable-perf-mode-btn'), 'click', () => {
         setPerformanceMode(true);
@@ -1800,11 +1959,13 @@ function setupEventListeners() {
         showNotification(tr('exportSuccess'));
     });
     bind(toggleUseCustomColor, 'change', (e) => {
-        windowApi.setSetting('useCustomColor', e.target.checked);
-        if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !e.target.checked);     
-        if (e.target.checked) {
-            const color = accentColorPicker ? accentColorPicker.value : '#38bdf8';
+        const enabled = e.target.checked;
+        saveSetting('useCustomColor', enabled);
+        if (accentColorContainer) accentColorContainer.style.display = enabled ? 'flex' : 'none';     
+        if (enabled) {
+            const color = settings.customAccentColor || '#38bdf8';
             document.documentElement.style.setProperty('--accent', color);
+            if (accentColorPicker) accentColorPicker.value = color;
         } else {
             document.documentElement.style.removeProperty('--accent');
         }
@@ -1813,20 +1974,17 @@ function setupEventListeners() {
     bind(emojiSelect, 'change', (e) => {
         const v = e.target.value;
         if (customEmojiContainer) customEmojiContainer.style.display = v === 'custom' ? 'flex' : 'none';
-        settings.coverMode = v; 
-        windowApi.setSetting('coverMode', v);
+        saveSetting('coverMode', v);
         updateEmoji(v, customEmojiInput ? customEmojiInput.value : '');
     });
     bind(customEmojiInput, 'input', (e) => {
         const v = e.target.value;
-        settings.customCoverEmoji = v;
-        windowApi.setSetting('customCoverEmoji', v);
+        saveSetting('customCoverEmoji', v);
         updateEmoji('custom', v);
     });
     bind(toggleDeleteSongs, 'change', (e) => {
         deleteSongsEnabled = e.target.checked;
-        settings.deleteSongsEnabled = deleteSongsEnabled;
-        windowApi.setSetting('deleteSongsEnabled', deleteSongsEnabled);
+        saveSetting('deleteSongsEnabled', deleteSongsEnabled);
         renderPlaylist();
     });
     bind(playlistEl, 'click', (e) => {
@@ -1863,7 +2021,7 @@ function setupEventListeners() {
 
     bind(toggleFavoritesOption, 'change', (e) => {
         const enabled = e.target.checked;
-        windowApi.setSetting('enableFavoritesPlaylist', enabled);
+        saveSetting('enableFavoritesPlaylist', enabled);
         if (toggleFavoritesBtn) toggleFavoritesBtn.style.display = enabled ? 'flex' : 'none';
         if (!enabled && showingFavoritesOnly) {
             showingFavoritesOnly = false;
@@ -2041,7 +2199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (togglePlaylistBtn) {
         togglePlaylistBtn.addEventListener('click', () => {
             const isHidden = document.body.classList.toggle('playlist-hidden');
-            windowApi.setSetting('playlistHidden', isHidden);
+            saveSetting('playlistHidden', isHidden);
             
             // Update icon state (optional visual feedback)
             togglePlaylistBtn.style.color = isHidden ? 'var(--text-muted)' : 'var(--accent)';
@@ -2086,7 +2244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playlistPositionSelect) {
         playlistPositionSelect.addEventListener('change', (e) => {
             const pos = e.target.value;
-            windowApi.setSetting('playlistPosition', pos);
+            saveSetting('playlistPosition', pos);
             if (pos === 'left') {
                 document.body.classList.add('playlist-left');
             } else {
@@ -2156,43 +2314,35 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await loadSettings();
 
-            const stToggle = document.getElementById('toggle-snuggle-time');
+            // Apply Theme Packs after settings are loaded
             if (settings.snuggleTimeEnabled) {
+                const stToggle = document.getElementById('toggle-snuggle-time');
                 if (stToggle) stToggle.checked = true;
                 applySnuggleTime(true);
-            } else {
-                if (stToggle) stToggle.checked = false;
-                applySnuggleTime(false);
-            }
-
-            const slToggle = document.getElementById('toggle-sleeptime');
-            if (settings.sleepTimeEnabled) {
+            } else if (settings.sleepTimeEnabled) {
+                const slToggle = document.getElementById('toggle-sleeptime');
                 if (slToggle) slToggle.checked = true;
                 applySleepTime(true);
+            } else if (settings.cyberpunkEnabled) {
+                const cyToggle = document.getElementById('toggle-cyberpunk');
+                if (cyToggle) cyToggle.checked = true;
+                applyCyberpunk(true);
             } else {
-                if (slToggle) slToggle.checked = false;
-                applySleepTime(false);
-            }
-
-            if (settings.theme && !settings.snuggleTimeEnabled && !settings.sleepTimeEnabled) {
-                document.documentElement.setAttribute('data-theme', settings.theme);
-            }
-
-            if (settings.useCustomColor && settings.customAccentColor && !settings.snuggleTimeEnabled) {  
-                document.documentElement.style.setProperty('--accent', settings.customAccentColor);       
-                if (accentColorPicker) accentColorPicker.value = settings.customAccentColor;
+                // Only apply standard theme if no pack is active
+                if (settings.theme) {
+                    document.documentElement.setAttribute('data-theme', settings.theme);
+                }
+                if (settings.useCustomColor && settings.customAccentColor) {
+                    document.documentElement.style.setProperty('--accent', settings.customAccentColor);
+                    if (accentColorPicker) accentColorPicker.value = settings.customAccentColor;
+                }
             }
 
             updateCachedColor();
-            applyTranslations();
 
             audio.volume = currentVolume;
             if (volumeSlider) volumeSlider.value = currentVolume;
             if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
-
-            if (settings.snuggleTimeEnabled) {
-                setTimeout(() => updateEmoji('loving_dinos'), 500);
-            }
 
             setTimeout(hideSplash, 2000);
         } catch (err) {

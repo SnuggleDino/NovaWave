@@ -18,7 +18,8 @@ import (
 )
 
 type App struct {
-	ctx context.Context
+	ctx   context.Context
+	mu    sync.Mutex // For thread-safe settings access
 }
 
 // Config speichert alle Einstellungen
@@ -60,6 +61,8 @@ type Config struct {
 	Loop                    string   `json:"loop"`
 	Shuffle                 bool     `json:"shuffle"`
 	SnuggleTimeEnabled      bool     `json:"snuggleTimeEnabled"`
+	SleepTimeEnabled        bool     `json:"sleepTimeEnabled"`
+	CyberpunkEnabled        bool     `json:"cyberpunkEnabled"`
 	PlaylistPosition        string   `json:"playlistPosition"`
 	PlaylistHidden          bool     `json:"playlistHidden"`
 }
@@ -231,21 +234,28 @@ func (a *App) SaveConfig(config Config) string {
 
 // Helper to get current config, update one field, and save
 func (a *App) SetSetting(key string, value interface{}) {
-	cfg := a.LoadConfig()
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	path := getConfigPath()
 	
-	// Quick & dirty reflection-less update via JSON roundtrip for simplicity in this context,
-	// or manual switch. Given the dynamic nature of JS calls, map[string]interface{} might be better
-	// but we are using a struct.
-	// We will convert struct to map, update, then back to struct.
-	
-	data, _ := json.Marshal(cfg)
+	// Read existing data as map to preserve fields not in struct (if any)
+	// and to handle raw updates
 	var configMap map[string]interface{}
-	json.Unmarshal(data, &configMap)
+	data, err := os.ReadFile(path)
+	if err == nil {
+		json.Unmarshal(data, &configMap)
+	}
+
+	if configMap == nil {
+		configMap = make(map[string]interface{})
+	}
 	
 	configMap[key] = value
 	
+	os.MkdirAll(filepath.Dir(path), 0755)
 	newData, _ := json.MarshalIndent(configMap, "", "  ")
-	_ = os.WriteFile(getConfigPath(), newData, 0644)
+	_ = os.WriteFile(path, newData, 0644)
 }
 
 func (a *App) GetSettings() Config {
