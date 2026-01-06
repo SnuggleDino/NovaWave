@@ -47,6 +47,22 @@
         <div class="cyber-sub-text">Welcome to the future</div>
     </div>
 
+    <!-- Sunset Drive Intro (Synthwave) -->
+    <div id="sunset-intro" class="sunset-intro-overlay">
+        <div class="synth-sun"></div>
+        <div class="synth-grid"></div>
+        <h2 class="synth-title">SUNSET DRIVE</h2>
+    </div>
+
+    <!-- Sakura Spirit Intro (Japan) -->
+    <div id="sakura-intro" class="sakura-intro-overlay">
+        <div class="sakura-falling-container" id="sakura-falling-container"></div>
+        <div class="sakura-title-box">
+            <h2 class="sakura-title">Sakura Spirit</h2>
+            <p class="sakura-subtitle">Find your inner peace</p>
+        </div>
+    </div>
+
     <div class="background-animation"></div>
 
     <!-- Performance Hint (Dynamic Island Style) -->
@@ -222,8 +238,55 @@
         </main>
 
         <footer class="app-footer">
-            <div id="footer-left">2.5.5 GO</div>
+            <div id="footer-left">2.5.6 GO</div>
+            <div class="footer-right" style="margin-left: auto;">
+                <button id="project-info-btn" class="footer-info-btn">INFO</button>
+            </div>
         </footer>
+    </div>
+
+    <!-- ================= PROJECT INFO MODAL ================= -->
+    <div id="project-info-overlay" class="overlay-container">
+        <div class="glass-panel settings-modal project-info-modal" style="max-width: 450px;">
+            <div class="easter-egg-glow"></div>
+            <div class="settings-header">
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> <span class="glitch-text" data-text="Projekt Information">Projekt Information</span></h3>
+                <button id="project-info-close-btn" class="close-modal-btn">&times;</button>
+            </div>
+            <div class="settings-content project-info-body">
+                <div class="info-list">
+                    <div class="info-row">
+                        <span class="info-label">Author:</span>
+                        <span class="info-value">SnuggleDino</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Player Version:</span>
+                        <span class="info-value">2.5.6 GO</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Go Wails Version:</span>
+                        <span class="info-value">v2.9.2</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Last Update:</span>
+                        <span class="info-value">06.01.2026</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">GitHub User:</span>
+                        <a href="https://github.com/SnuggleDino" target="_blank" class="info-link">SnuggleDino</a>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Projekt Link:</span>
+                        <a href="https://github.com/SnuggleDino/NovaWave-WAILS" target="_blank" class="info-link">GitHub Repository</a>
+                    </div>
+                </div>
+                <div class="easter-egg-footer">
+                    <span class="dino-stamp">🦖</span>
+                    <span class="dino-stamp dino-2">🦕</span>
+                </div>
+                <p class="info-footer">Your Music &#8226; Your Style &#8226; Your Rules</p>
+            </div>
+        </div>
     </div>
 
     <!-- ================= LIBRARY MODAL ================= -->
@@ -446,6 +509,7 @@
                                     <option value="glitch" data-lang-key="visGlitch"></option>       
                                     <option value="zen" data-lang-key="visZen"></option>
                                     <option value="retro" data-lang-key="visRetro"></option>
+                                    <option value="sakura_bloom">Sakura Bloom</option>
                                 </select>
                             </div>
                         </div>
@@ -597,6 +661,32 @@
                                 <div class="theme-pack-action">
                                     <label class="toggle-switch">
                                         <input type="checkbox" id="toggle-cyberpunk">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="sunset-pack-item" class="theme-pack-card sunset-pack-container">
+                                <div class="theme-pack-info">
+                                    <strong class="sunset-title">🏎️ Sunset Drive (Synthwave)</strong>
+                                    <p data-lang-key="sunsetDesc"></p>
+                                </div>
+                                <div class="theme-pack-action">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-sunset">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="sakura-pack-item" class="theme-pack-card sakura-pack-container">
+                                <div class="theme-pack-info">
+                                    <strong class="sakura-label">🌸 Sakura Spirit (Japan)</strong>
+                                    <p data-lang-key="sakuraDesc"></p>
+                                </div>
+                                <div class="theme-pack-action">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-sakura">
                                         <span class="slider"></span>
                                     </label>
                                 </div>

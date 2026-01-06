@@ -158,6 +158,40 @@ body.is-mini #toggle-playlist-btn {
     --shadow-soft: 0 20px 50px rgba(0, 30, 10, 0.6);
 }
 
+:root[data-theme="sunset"] {
+    --bg-main: #1f0b2e; /* Deep Synth Purple */
+    --bg-card: rgba(45, 15, 65, 0.8);
+    --bg-card-light: rgba(75, 25, 100, 0.6);
+    --accent: #f97316; /* Sunset Orange */
+    --accent-soft: rgba(249, 115, 22, 0.2);
+    --text-main: #fae8ff;
+    --text-muted: #d8b4fe;
+    --border-soft: rgba(236, 72, 153, 0.3); /* Neon Pink Border */
+    --shadow-soft: 0 20px 50px rgba(109, 40, 217, 0.4);
+}
+
+:root[data-theme="sunset"] body {
+    background: linear-gradient(to bottom, #1f0b2e 0%, #4c1d95 100%);
+    background-attachment: fixed;
+}
+
+:root[data-theme="sakura"] {
+    --bg-main: #2a1b22; /* Dark Brown/Reddish base for contrast */
+    --bg-card: rgba(50, 30, 40, 0.85);
+    --bg-card-light: rgba(80, 50, 60, 0.6);
+    --accent: #fbcfe8; /* Sakura Pink */
+    --accent-soft: rgba(251, 207, 232, 0.15);
+    --text-main: #fff1f2;
+    --text-muted: #fda4af;
+    --border-soft: rgba(251, 207, 232, 0.2);
+    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="sakura"] body {
+    background: radial-gradient(circle at top, #4a2c36 0%, #2a1b22 100%);
+    background-attachment: fixed;
+}
+
 /* =========================================
    UNIFIED FEATURES INDICATOR (Minimal Modal)
    ========================================= */
@@ -755,6 +789,169 @@ body.ready .app-shell {
   flex-shrink: 0;
 }
 
+.footer-info-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.footer-info-btn:hover {
+    color: var(--accent);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.project-info-body {
+    padding: 25px !important;
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.info-value {
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.info-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.info-link:hover {
+    text-decoration: underline;
+}
+
+.info-footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* =========================================
+   PROJECT INFO EASTER EGG STYLES
+   ========================================= */
+
+.project-info-modal {
+    position: relative;
+    z-index: 0;
+    overflow: hidden; /* Important for the rotating border */
+    border: none !important;
+    background: var(--bg-card) !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+/* The "Running Light" Border */
+.project-info-modal::before {
+    content: '';
+    position: absolute;
+    z-index: -2;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        transparent, 
+        var(--accent), 
+        #8b5cf6, 
+        transparent 30%
+    );
+    animation: rotate-border 4s linear infinite;
+}
+
+/* Inner Background to reveal the border */
+.project-info-modal::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: 2px;
+    top: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: var(--bg-card);
+    border-radius: inherit;
+}
+
+@keyframes rotate-border {
+    100% { transform: rotate(360deg); }
+}
+
+.glitch-text {
+    position: relative;
+    display: inline-block;
+    color: var(--accent);
+    font-weight: 800;
+}
+
+.easter-egg-footer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    min-height: 80px;
+    gap: 40px; /* Space between dinos */
+}
+
+.dino-stamp {
+    font-size: 2.5rem;
+    display: inline-block;
+    animation: dancing-dino-left 2s infinite ease-in-out;
+    filter: drop-shadow(0 0 10px var(--accent));
+}
+
+.dino-2 {
+    animation: dancing-dino-right 2s infinite ease-in-out;
+}
+
+@keyframes dancing-dino-left {
+    0% { transform: translateX(-20px) scaleX(1); }
+    45% { transform: translateX(20px) scaleX(1); }
+    50% { transform: translateX(20px) scaleX(-1); }
+    95% { transform: translateX(-20px) scaleX(-1); }
+    100% { transform: translateX(-20px) scaleX(1); }
+}
+
+@keyframes dancing-dino-right {
+    0% { transform: translateX(20px) scaleX(-1); }
+    45% { transform: translateX(-20px) scaleX(-1); }
+    50% { transform: translateX(-20px) scaleX(1); }
+    95% { transform: translateX(20px) scaleX(1); }
+    100% { transform: translateX(20px) scaleX(-1); }
+}
+
 /* --- PLAYER DETAILS --- */
 .cover-art-container {
     display: flex;
@@ -778,6 +975,8 @@ body.ready .app-shell {
   flex-shrink: 1;
 }
 .music-emoji {
+  width: 100%;
+  height: 100%;
   font-size: 100px;
   transition: transform 0.1s ease-out;
   display: flex;
@@ -791,6 +990,28 @@ body.ready .app-shell {
     object-fit: contain;
     padding: 10px;
     filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+}
+
+/* --- Special Covers for Themes --- */
+/* --- Sun Cover for Sunset Drive --- */
+.sun-cover {
+    width: 45%;
+    height: 45%;
+    background: linear-gradient(to bottom, #fde047 0%, #f97316 50%, #ec4899 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(249, 115, 22, 0.5);
+    position: relative;
+}
+
+.sakura-cover {
+    font-size: 120px;
+    filter: drop-shadow(0 0 20px rgba(251, 207, 232, 0.8));
+    animation: sakura-float 4s ease-in-out infinite alternate;
+}
+
+@keyframes sakura-float {
+    from { transform: translateY(0) rotate(0deg); }
+    to { transform: translateY(-10px) rotate(10deg); }
 }
 
 .track-info-area {
@@ -877,11 +1098,6 @@ body.ready .app-shell {
     50% { transform: translateY(-3px); }
 }
 
-.sleeptime-pack-container {
-    background-image: linear-gradient(var(--bg-card), var(--bg-card)), 
-                      linear-gradient(135deg, #38bdf8 0%, #fde68a 100%) !important;
-    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2) !important;
-}
 .snuggle-intro-img {
     width: 250px;
     height: auto;
@@ -1550,23 +1766,104 @@ body.cinema-mode .player-column {
     transition: transform 1s ease;
 }
 
-/* Theme Pack Previews */
-.theme-pack-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-soft);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 15px;
+/* =========================================
+   CINEMATIC THEME PACKS UI (Fresh Design)
+   ========================================= */
+
+.theme-packs-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px 5px;
+}
+
+.theme-pack-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    padding: 18px 24px;
+    display: flex;
     align-items: center;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    border-left: 5px solid var(--preview-color, var(--accent));
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    height: auto !important; /* Reset previous fixed height */
 }
 
 .theme-pack-card:hover {
-    transform: translateX(5px);
     background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+    border-color: var(--theme-color, var(--accent));
+}
+
+/* Decorative Accent Dot */
+.theme-pack-card::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: var(--theme-color, var(--accent));
+    border-radius: 50%;
+    margin-right: 20px;
+    box-shadow: 0 0 15px var(--theme-color, var(--accent));
+    flex-shrink: 0;
+}
+
+.theme-pack-info {
+    flex: 1;
+    z-index: 1;
+    text-align: left;
+    margin-top: 0 !important; /* Reset grid pull-up */
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.theme-pack-info strong {
+    font-size: 1rem;
+    color: var(--text-main);
+    display: block;
+}
+
+.theme-pack-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+    padding: 0;
+}
+
+.theme-pack-action {
+    z-index: 1;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Theme Colors */
+#snuggle-pack-item { --theme-color: #c1d37f; }
+#sleeptime-pack-item { --theme-color: #38bdf8; }
+#cyberpunk-pack-item { --theme-color: #fde047; }
+#sunset-pack-item { --theme-color: #f97316; }
+#sakura-pack-item { --theme-color: #fbcfe8; }
+
+/* Global reset for any leftover theme classes */
+.snuggle-pack-container, .sleeptime-pack-container, .cyberpunk-pack-container, 
+.sunset-pack-container, .sakura-pack-container {
+    background-image: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 18px 24px !important;
+    position: relative !important;
+}
+
+/* Nuke all old decorative circles/effects */
+.snuggle-pack-container::before, .snuggle-pack-container::after,
+.sleeptime-pack-container::before, .sleeptime-pack-container::after,
+.cyberpunk-pack-container::before, .cyberpunk-pack-container::after {
+    display: none !important;
+    content: none !important;
 }
 
 
@@ -2422,24 +2719,6 @@ body.is-mini .volume-row {
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
-.snuggle-pack-container {
-    --border-color-1: #c1d37f;
-    --border-color-2: #f472b6;
-    box-shadow: 0 0 20px rgba(193, 211, 127, 0.1);
-}
-
-.sleeptime-pack-container {
-    --border-color-1: #38bdf8;
-    --border-color-2: #fde68a;
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
-}
-
-.cyberpunk-pack-container {
-    --border-color-1: #fcee0a;
-    --border-color-2: #00ffff;
-    box-shadow: 0 0 20px rgba(252, 238, 10, 0.1);
-}
-
 .theme-pack-info {
     flex: 1;
     padding-right: 20px;
@@ -2622,27 +2901,6 @@ body.is-mini .volume-row {
     background-attachment: fixed;
 }
 
-/* Sleep Time Pack Container in Settings */
-.sleeptime-pack-container {
-    position: relative;
-    overflow: visible !important;
-    border: 2px solid transparent !important;
-    background-image: linear-gradient(var(--bg-card), var(--bg-card)), 
-                      linear-gradient(135deg, #1e293b, #334155, #fde68a); 
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    border-radius: 14px !important;
-    transition: all 0.3s ease;
-    padding: 14px 20px !important;
-    margin: 5px -5px;
-}
-
-.sleeptime-pack-container:hover {
-    box-shadow: 0 6px 25px rgba(253, 230, 138, 0.2);
-    transform: translateY(-1px);
-}
-
 .sleeptime-title {
     background: linear-gradient(to right, #94a3b8, #fde68a);
     -webkit-background-clip: text;
@@ -2822,19 +3080,6 @@ body.is-mini .volume-row {
     border: 2px solid var(--accent);
 }
 
-/* Cyberpunk Preview Border */
-.cyberpunk-pack-container {
-    position: relative;
-    overflow: visible !important;
-    border: 2px solid transparent !important;
-    background-image: linear-gradient(var(--bg-card), var(--bg-card)), 
-                      linear-gradient(135deg, #fcee0a, #ff003c, #00ffff); 
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-    box-shadow: 0 0 20px rgba(252, 238, 10, 0.2);
-    border-radius: 14px !important;
-}
-
 .cyberpunk-title {
     background: linear-gradient(to right, #fcee0a, #ff003c);
     -webkit-background-clip: text;
@@ -2998,4 +3243,151 @@ kbd {
     font-size: 0.9rem;
     color: var(--text-muted);
     font-weight: 500;
+}
+
+/* =========================================
+   NEW THEME PACK STYLES (Sunset & Sakura)
+   ========================================= */
+
+/* --- Sunset Drive Intro --- */
+.sunset-intro-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, #2e1065 0%, #000000 100%);
+    z-index: 100000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+.sunset-intro-overlay.visible {
+    opacity: 1; pointer-events: auto;
+}
+
+.synth-sun {
+    width: 180px; height: 180px;
+    background: linear-gradient(to bottom, #fde047 0%, #f97316 50%, #ec4899 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 80px rgba(249, 115, 22, 0.4);
+    position: relative;
+    z-index: 2;
+    margin-bottom: -30px; /* Sits exactly on horizon */
+    -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 40%, transparent 45%, black 45%, black 50%, transparent 50%, transparent 55%, black 55%, black 60%, transparent 60%, transparent 65%, black 65%, black 70%, transparent 70%, transparent 75%, black 75%, black 80%, transparent 80%, transparent 85%, black 85%, black 90%, transparent 90%);
+    animation: sun-rise 3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes sun-rise {
+    from { transform: translateY(150px) scale(0.7); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.synth-grid {
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; 
+    background: 
+        linear-gradient(rgba(236, 72, 153, 0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(236, 72, 153, 0.5) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(250px) rotateX(75deg); /* Even flatter horizon */
+    transform-origin: center 20%; /* Shift perspective origin upwards */
+    animation: grid-move 10s linear infinite;
+    z-index: 1;
+}
+
+@keyframes grid-move {
+    from { background-position: 0 0; }
+    to { background-position: 0 1000px; }
+}
+
+.synth-title {
+    font-size: 4rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    margin-top: 20px;
+    z-index: 10;
+    font-style: italic;
+    
+    /* Vibrant Synthwave Gradient */
+    background: linear-gradient(to bottom, #ffffff 20%, #f472b6 45%, #db2777 55%, #4c1d95 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    /* Strong Neon Glow */
+    filter: drop-shadow(0 0 15px rgba(219, 39, 119, 0.6));
+    
+    opacity: 0;
+    transform: scale(0.85);
+    animation: title-zoom 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+}
+
+@keyframes title-zoom {
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* --- Sakura Spirit Intro --- */
+.sakura-intro-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #fdf2f8;
+    z-index: 100000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 1s ease;
+}
+
+.sakura-intro-overlay.visible { opacity: 1; pointer-events: auto; }
+
+.sakura-title {
+    font-size: 3rem;
+    color: #9d174d;
+    font-family: serif;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: sakura-text-fade 1.5s ease-out 0.3s forwards;
+}
+
+.sakura-subtitle {
+    font-size: 1rem;
+    color: #db2777;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: sakura-text-fade 1.5s ease-out 0.8s forwards;
+}
+
+@keyframes sakura-text-fade {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sakura-falling-container {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.falling-petal {
+    position: absolute;
+    top: -20px;
+    color: #fbcfe8;
+    font-size: 20px;
+    user-select: none;
+    pointer-events: none;
+    animation-name: falling-petal-anim;
+    animation-timing-function: linear;
+}
+
+@keyframes falling-petal-anim {
+    to { transform: translateY(110vh) rotate(360deg); }
+}
+
+.sunset-title { 
+    background: linear-gradient(to right, #f97316, #db2777);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.sakura-label { 
+    color: #fbcfe8 !important; 
+    text-shadow: 0 0 10px rgba(251, 207, 232, 0.3);
 }

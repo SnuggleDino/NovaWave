@@ -1,6 +1,7 @@
 import * as App from '../wailsjs/go/main/App.js';
 import lovingDinosImg from './assets/Two_Loving_Cute_Dinos.png';
 import lovingDinosIco from './assets/Two_Loving_Cute_Dinos.ico';
+import { translations } from './translations.js';
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
@@ -223,298 +224,6 @@ function setPerformanceMode(enabled, silent = false) {
     }
 }
 
-// --- TRANSLATIONS (SAFE UNICODE) ---
-const translations = {
-    de: {
-        appTitle: 'NovaWave - Musik Player', appSubtitle: 'Lokal & YouTube',
-        nothingPlaying: 'Nichts spielt', unknownArtist: 'Unbekannter K\u00FCnstler',
-        loadFolder: 'Ordner laden', refreshFolder: 'Aktualisieren', searchPlaceholder: 'Playlist durchsuchen...', emptyPlaylist: 'Playlist ist leer. Lade einen Ordner!',
-        noFavoritesFound: 'Keine Favoriten in diesem Ordner gefunden.',
-        track: 'Titel', tracks: 'Titel', playlistTitle: 'Playlist',
-        downloaderTitle: 'Downloader', downloadButton: 'Download', urlPlaceholder: 'YouTube URL...',      
-        renamePlaceholder: 'Optionaler Name...', statusReady: 'Bereit.', statusUrlMissing: 'URL fehlt!',  
-        statusFolderAbort: 'Ordnerauswahl abgebrochen.', statusStarting: 'Download startet...',
-        statusSuccess: 'Download erfolgreich!', statusError: 'Fehler beim Download', statusPlaybackError: 'Fehler bei der Wiedergabe', statusTitleMissing: 'Titel fehlt!',
-        statusProgress: (p) => `Lade... ${p}%`,
-        settingsTitle: 'Einstellungen', defaultDownloadFolder: 'Standard-Download-Ordner',
-        changeButton: '\u00C4ndern', audioQuality: 'Audioqualit\u00E4t (Download)', qualityBest: 'Beste',
-        qualityHigh: 'Hoch (192k)', qualityStandard: 'Standard (128k)',
-        backgroundAnimation: 'Hintergrundanimation',
-        themeBlue: 'Standard Blau', themeDark: 'Mitternachts-Lila', themePurple: 'Blurple', themeRose: 'Tiefrot', themeDino: 'Dino Gr\u00FCn', themeXmas: 'Weihnachten',
-        shuffle: 'Zufallswiedergabe', previous: 'Zur\u00FCck', playPause: 'Abspielen/Pause',
-        next: 'Weiter', loop: 'Wiederholen', settings: 'Einstellungen', close: 'Schlie\u00DFen',
-        toggleDownloader: 'YouTube Downloader', deleteSong: 'Song l\u00F6schen',
-        confirmDeleteTitle: 'Song l\u00F6schen best\u00E4tigen',
-        confirmDeleteMessage: 'M\u00F6chten Sie diesen Song wirklich unwiderruflich l\u00F6schen?',
-        confirmDeleteButton: 'Ja, l\u00F6schen',
-        cancelDeleteButton: 'Abbrechen',
-        theme: 'Design', visualizer: 'Visualizer', sortBy: 'Sortieren nach',
-        sortNameAZ: 'Name A-Z', sortNameZA: 'Name Z-A', sortNewest: 'Zuletzt ge\u00E4ndert',
-        visualizerStyle: 'Visualizer-Stil',
-        visualizerStyleDescription: 'W\u00E4hle einen visuellen Effekt f\u00FCr den Player.',
-        visBars: 'Balken (Classic)',
-        visWaveform: 'Ocean Waves',
-        visOrbit: 'Stellar Orbit',
-        visGlitch: 'Cyber Pulse',
-        visZen: 'Zen Harmony',
-        visRetro: 'Retro-Pixel',
-        visSensitivity: 'Visualizer-Empfindlichkeit',
-        visSensitivityDesc: 'Stelle ein, wie stark der Visualizer auf Musik reagiert.',
-        sleepTimer: 'Sleep Timer',
-        sleepTimerDesc: 'Stoppt die Musik automatisch nach der gew\u00E4hlten Zeit.',
-        timerOff: 'Aus',
-        nowPlaying: 'Jetzt l\u00E4uft',
-        customColor: 'Eigene Akzentfarbe',
-        customColorDesc: 'W\u00E4hle deine Lieblingsfarbe f\u00FCr das Interface.',
-        focusMode: 'Fokus-Modus umschalten',
-        dropFiles: 'Musik oder Ordner hierher ziehen',
-        sectionExtras: 'Extras & Spezialfunktionen',
-        enableFocusOption: 'Fokus-Modus Button anzeigen',
-        enableFocusOptionDesc: 'Blendet den kleinen Button am Visualizer ein oder aus.',
-        enableDragOption: 'Drag & Drop aktivieren',
-        enableDragOptionDesc: 'Erm\u00F6glicht das Hinzuf\u00FCgen von Musik durch Reinziehen.',
-        useCustomColorOption: 'Eigene Akzentfarbe nutzen',
-        useCustomColorOptionDesc: 'Wende deine gew\u00E4hlte Farbe an oder nutze Theme-Standards.',
-        coverEmoji: 'Cover-Symbol',
-        coverEmojiDescription: 'W\u00E4hle ein Emoji f\u00FCr das Album-Cover in der Mitte.',
-        emojiNote: 'Musiknote',
-        emojiDino: 'Dino',
-        emojiLovingDinos: 'Verliebte Dinos',
-        emojiGift: 'Weihnachtsgeschenk',
-        emojiCustom: 'Benutzerdefiniert',
-        customEmoji: 'Benutzerdefiniertes Emoji',
-        customEmojiDescription: 'Gib ein einzelnes Emoji ein (z.B. per Win + .).',
-        enableDeleteSongs: 'Song-L\u00F6schen aktivieren',
-        enableDeleteSongsDescription: 'Erm\u00F6glicht das unwiderrufliche L\u00F6schen von Titeln.',
-        autoLoadLastFolder: 'Zuletzt benutzten Ordner automatisch laden',
-        autoLoadLastFolderDescription: 'L\u00E4dt den letzten Ordner automatisch beim Start der App.',        
-        sectionAppearance: 'Erscheinungsbild & Design',
-        themeDescription: 'Passe das Aussehen und die Farbgebung der App an.',
-        backgroundAnimationDescription: 'Aktiviere oder deaktiviere die Hintergrundanimation.',
-        sectionPlayer: 'Player-Einstellungen',
-        visualizerDescription: 'Aktiviere oder deaktiviere den Audio-Visualizer.',
-        sectionDownloads: 'Downloads & Ordner',
-        defaultDownloadFolderDescription: 'Lege den Standardordner f\u00FCr YouTube-Downloads fest.',
-        audioQualityDescription: 'W\u00E4hle die Audioqualit\u00E4t f\u00FCr neue YouTube-Downloads.',
-        refreshFolder: 'Ordner aktualisieren',
-        refreshFolderDesc: 'Sucht nach neuen Dateien im aktuell geladenen Ordner.',
-        animOff: 'Aus', animFlow: 'Flow', animNebula: 'Nebula', animStellar: 'Stellar', animAurora: 'Aurora', animXmas: 'Schneefall',
-        editTitle: 'Titel bearbeiten', editTitleDesc: '\u00C4ndern Sie den Anzeigenamen in der Playlist.',    
-        currentTitle: 'Aktuell gespeichert', previewTitle: 'Vorschau (Neu)',
-        saveBtn: 'Speichern', cancelBtn: 'Abbrechen',
-        loadFolderDesc: 'W\u00E4hlen Sie das Hauptverzeichnis Ihrer Musiksammlung.',
-        titleUpdated: 'Titel erfolgreich ge\u00E4ndert!',
-        songDeleted: 'Song erfolgreich gel\u00F6scht!',
-        downloaderSectionTitle: 'YouTube Video zu MP3',
-        tracksAdded: (count) => `${count} Titel hinzugef\u00FCgt`,
-        editTitleInputPlaceholder: 'Titel eingeben...', 
-        miniLabel: 'MINI',
-        miniModeTitle: 'Mini-Player Modus',
-        dropZoneText: 'Musik hierher ziehen...',
-        playbackSpeed: 'Abspielgeschwindigkeit',
-        playbackSpeedDesc: 'Passe die Geschwindigkeit an (0.5x - 2.0x).',
-        focusActiveNotify: 'Fokus-Modus aktiv (Klicke oben rechts zum Verlassen)',
-        showInFolder: 'Im Ordner anzeigen',
-        sleepTimerNotify: (m) => `Sleep Timer aktiviert: ${m} Minuten`,
-        sleepTimerStopped: 'Sleep Timer: Musik gestoppt.',
-        bassBoost: 'Bass Boost', bassBoostDesc: 'Verst\u00E4rke die tiefen Frequenzen.', bassBoostLevel: 'Intensit\u00E4t',
-        trebleBoost: 'Crystalizer', trebleBoostDesc: 'Verst\u00E4rke die H\u00F6hen f\u00FCr mehr Klarheit.', trebleBoostLevel: 'Intensit\u00E4t',
-        reverb: 'Reverb', reverbDesc: 'R\u00E4umlicher Hall-Effekt.', reverbLevel: 'Mix',
-        activeFeatures: 'Aktive Effekte',
-        sectionAudioExtras: 'Audio-Extras', sectionExtras: 'Extras & Tools',
-        sectionThemePacks: 'Theme Packs',
-        cinemaMode: 'Kino-Modus', cinemaModeDesc: 'Dimmt die Benutzeroberfl\u00E4che f\u00FCr mehr Fokus.',       
-        exportPlaylist: 'Playlist exportieren', exportPlaylistDesc: 'Speichere die aktuelle Liste als Textdatei.',
-        exportSuccess: 'Playlist erfolgreich exportiert!',
-        enableFavoritesOption: 'Favoriten-Playlist', enableFavoritesOptionDesc: 'Zeige einen Button, um nur Favoriten anzuzeigen.',
-        playlistPosition: 'Playlist Position', playlistPositionDesc: 'W\u00E4hle, ob die Playlist links oder rechts angezeigt werden soll.',
-        posLeft: 'Links', posRight: 'Rechts (Standard)',
-        toggleFavorite: 'Favorit umschalten',
-        addToFavorites: 'Zu Favoriten hinzuf\u00FCgen',
-        removeFromFavorites: 'Von Favoriten entfernen',
-        perfLagMsg: 'System-Lag erkannt. Performance-Mode aktivieren?',
-        perfModeOn: 'Performance-Mode: Ein (Animationen & Vis aus)',
-        perfModeLabel: 'Performance Mode',
-        perfModeDesc: 'Deaktiviert Visualizer und Animationen f\u00FCr maximale CPU-Schonung.',
-        showStatsLabel: 'System-Stats anzeigen',
-        showStatsDesc: 'Zeigt FPS und Performance-Daten im Hauptfenster an.',
-        fpsLimitLabel: 'FPS Limit',
-        fpsLimitDesc: 'Begrenze die Bildrate f\u00FCr Visualizer und Animationen (15 - 120).',
-        statStatus: 'Status', statStable: 'Stabil', statUnstable: 'Instabil', statFrame: 'Frame',
-        statStability: 'Stabilit\u00E4t', statPowerSave: 'Energiesparen',
-        helpTitle: 'Hilfe & Bedienung',
-        helpPlayback: 'Wiedergabe',
-        helpFeatures: 'Funktionen',
-        helpPlayDesc: 'Starte deine Musik ganz einfach mit dem Play-Button oder der Leertaste.',
-        helpNextDesc: 'Wechsle Songs mit den Pfeiltasten (Links/Rechts) oder klicke in die Playlist.',    
-        helpSkipDesc: 'Halte die Umschalt-Taste (Shift) gedr\u00FCckt und nutze die Pfeiltasten zum Spulen.', 
-        helpDragDesc: 'M\u00F6chtest du neue Lieder h\u00F6ren? Ziehe sie einfach per Drag & Drop in den Player.',
-        helpMiniDesc: 'F\u00FCr mehr Platz auf dem Desktop: Der MINI-Modus bietet dir das Wesentliche.',      
-        helpFavDesc: 'Deine Lieblingssongs findest du schneller, wenn du sie mit dem Stern markierst.',   
-        helpOpenSettings: '\u00D6ffne die Einstellungen hier f\u00FCr mehr Details',
-        snuggleTimeDesc: 'Erlebe pure Geborgenheit mit dem exklusiven SnuggleDino Design und liebevollen Herz-Effekten.',
-        sleepTimeDesc: 'Genie\u00DFe die Ruhe der Nacht mit funkelnden Sternschnuppen und einer beruhigenden, tiefblauen Atmosph\u00E4re.',
-        cyberpunkDesc: 'Erlebe das High-Tech Interface von Night City mit knalligen Neon-Akzenten und futuristischen Glitch-Effekten.',
-        newBadge: 'NEU',
-        devTitle: 'Entwickler & Hotkey-Info',
-        devStandardHotkeys: 'Standard Hotkeys',
-        devDebugHotkeys: 'Debug & Dev',
-        devPlayPause: 'Abspielen / Pause',
-        devNextSong: 'N\u00E4chster Song',
-        devPrevSong: 'Vorheriger Song',
-        devVol: 'Lautst\u00E4rke +/-',
-        devSkip: '5 Sek. vor/zur\u00FCck',
-        devOpenMenu: 'Dieses Men\u00FC \u00F6ffnen',
-        devPerfHint: 'Performance-Hinweis (Island)',
-        devWinSize: 'Fenstergr\u00F6\u00DFe Debug (Size)',
-        devFooter: 'NovaWave Entwicklerkonsole',
-    },
-    en: {
-        appTitle: 'NovaWave - Music Player', appSubtitle: 'Local & YouTube',
-        nothingPlaying: 'Nothing Playing', unknownArtist: 'Unknown Artist',
-        loadFolder: 'Load Folder', refreshFolder: 'Refresh', searchPlaceholder: 'Search playlist...', emptyPlaylist: 'Playlist is empty!',
-        noFavoritesFound: 'No favorites found in this folder.',
-        track: 'track', tracks: 'tracks', playlistTitle: 'Playlist',
-        downloaderTitle: 'Downloader', downloadButton: 'Download', urlPlaceholder: 'YouTube URL...',      
-        renamePlaceholder: 'Optional name...', statusReady: 'Ready.', statusUrlMissing: 'URL is missing!',
-        statusFolderAbort: 'Folder selection aborted.', statusStarting: 'Starting download...',
-        statusSuccess: 'Download successful!', statusError: 'Download error', statusPlaybackError: 'Playback Error', statusTitleMissing: 'Title missing!',
-        statusProgress: (p) => `Downloading... ${p}%`,
-        settingsTitle: 'Settings', defaultDownloadFolder: 'Default Download Folder',
-        changeButton: 'Change', audioQuality: 'Audio Quality (Download)', qualityBest: 'Best',
-        qualityHigh: 'High (192k)', qualityStandard: 'Standard (128k)',
-        backgroundAnimation: 'Background Animation',
-        themeBlue: 'Standard Blue', themeDark: 'Midnight Purple', themePurple: 'Blurple', themeRose: 'Deep Rose', themeDino: 'Dino Green', themeXmas: 'Christmas',
-        shuffle: 'Shuffle', previous: 'Previous', playPause: 'Play/Pause',
-        next: 'Next', loop: 'Loop', settings: 'Settings', close: 'Close',
-        toggleDownloader: 'YouTube Downloader', deleteSong: 'Delete Song',
-        confirmDeleteTitle: 'Confirm Song Deletion',
-        confirmDeleteMessage: 'Are you sure you want to permanently delete this song?',
-        confirmDeleteButton: 'Yes, Delete',
-        cancelDeleteButton: 'Cancel',
-        theme: 'Theme', visualizer: 'Visualizer', sortBy: 'Sort By',
-        sortNameAZ: 'Name A-Z', sortNameZA: 'Name Z-A', sortNewest: 'Recently Modified',
-        visualizerStyle: 'Visualizer Style',
-        visualizerStyleDescription: 'Choose a visual effect for the player.',
-        visBars: 'Bars (Classic)',
-        visWaveform: 'Ocean Waves',
-        visOrbit: 'Stellar Orbit',
-        visGlitch: 'Cyber Pulse',
-        visZen: 'Zen Harmony',
-        visRetro: 'Retro Pixels',
-        visSensitivity: 'Visualizer Sensitivity',
-        visSensitivityDesc: 'Adjust how much the visualizer reacts to the music.',
-        sleepTimer: 'Sleep Timer',
-        sleepTimerDesc: 'Automatically stops the music after the selected time.',
-        timerOff: 'Off',
-        nowPlaying: 'Now Playing',
-        customColor: 'Custom Accent Color',
-        customColorDesc: 'Choose your favorite color for the interface.',
-        focusMode: 'Toggle Focus Mode',
-        dropFiles: 'Drop music or folders here',
-        sectionExtras: 'Extras & Special Features',
-        enableFocusOption: 'Show Focus Mode Button',
-        enableFocusOptionDesc: 'Toggle the visibility of the focus mode button on the visualizer.',       
-        enableDragOption: 'Enable Drag & Drop',
-        enableDragOptionDesc: 'Allows adding music by dragging files into the window.',
-        bassBoost: 'Bass Boost', bassBoostDesc: 'Enhance low frequencies.', bassBoostLevel: 'Intensity',  
-        trebleBoost: 'Crystalizer', trebleBoostDesc: 'Enhance highs for clarity.', trebleBoostLevel: 'Intensity',
-        reverb: 'Reverb', reverbDesc: 'Spatial reverb effect.', reverbLevel: 'Mix',
-        activeFeatures: 'Active Effects',
-        sectionAudioExtras: 'Audio Extras', sectionExtras: 'Extras & Tools',
-        sectionThemePacks: 'Theme Packs',
-        cinemaMode: 'Cinema Mode', cinemaModeDesc: 'Dims the UI for better focus.',
-        enableFavoritesOption: 'Favorites Playlist', enableFavoritesOptionDesc: 'Show a button to filter the playlist for favorites.',
-        playlistPosition: 'Playlist Position', playlistPositionDesc: 'Choose whether the playlist should be displayed on the left or right.',
-        posLeft: 'Left', posRight: 'Right (Default)',
-        toggleFavorite: 'Toggle Favorite',
-        addToFavorites: 'Add to Favorites',
-        removeFromFavorites: 'Remove from Favorites',
-        exportPlaylist: 'Export Playlist', exportPlaylistDesc: 'Save current list as a text file.',       
-        exportSuccess: 'Playlist exported successfully!',
-        perfLagMsg: 'System lag detected. Enable Performance Mode?',
-        perfModeOn: 'Performance Mode: On (Animations & Vis off)',
-        perfModeLabel: 'Performance Mode',
-        perfModeDesc: 'Disables visualizer and animations for maximum CPU saving.',
-        showStatsLabel: 'Show System Stats',
-        showStatsDesc: 'Displays FPS and performance data in the main window.',
-        fpsLimitLabel: 'FPS Limit',
-        fpsLimitDesc: 'Limit the frame rate for visualizer and animations (15 - 120).',
-        statStatus: 'Status', statStable: 'Stable', statUnstable: 'Unstable', statFrame: 'Frame',
-        statStability: 'Stability', statPowerSave: 'Power Save',
-        helpTitle: 'Help & Controls',
-        helpPlayback: 'Playback',
-        helpFeatures: 'Features',
-        helpPlayDesc: 'Start your music journey by clicking Play or pressing the Space bar.',
-        helpNextDesc: 'Switch tracks using the Arrow keys (Left/Right) or pick from the playlist.',       
-        helpSkipDesc: 'Hold the Shift key and use Arrows to seek 5 seconds forward or backward.',
-        helpDragDesc: 'Want new tracks? Just drag and drop music files or folders into the window.',      
-        helpMiniDesc: 'Need more space? The MINI mode gives you a compact player experience.',
-        helpFavDesc: 'Keep your favorites close! Use the star icon to highlight songs you love.',
-        helpOpenSettings: 'Open the settings here for more details',
-        snuggleTimeDesc: 'Experience pure comfort with the exclusive SnuggleDino design and lovely heart effects.',
-        sleepTimeDesc: 'Enjoy the peace of the night with twinkling shooting stars and a calming, deep blue atmosphere.',
-        cyberpunkDesc: 'Experience the high-tech interface of Night City with bright neon accents and futuristic glitch effects.',
-        newBadge: 'NEW',
-        devTitle: 'Developer & Hotkey Info',
-        devStandardHotkeys: 'Standard Hotkeys',
-        devDebugHotkeys: 'Debug & Dev',
-        devPlayPause: 'Play / Pause',
-        devNextSong: 'Next Track',
-        devPrevSong: 'Previous Track',
-        devVol: 'Volume +/-',
-        devSkip: 'Skip 5s fwd/back',
-        devOpenMenu: 'Open this menu',
-        devPerfHint: 'Performance Hint (Island)',
-        devWinSize: 'Window Size Debug (Size)',
-        devFooter: 'NovaWave Dev Console',
-        useCustomColorOption: 'Use Custom Accent Color',
-        useCustomColorOptionDesc: 'Apply your selected color or use theme defaults.',
-        coverEmoji: 'Cover Emoji',
-        coverEmojiDescription: 'Choose an emoji for the album cover in the center.',
-        emojiNote: 'Music Note',
-        emojiDino: 'Dino',
-        emojiLovingDinos: 'Loving Dinos',
-        emojiGift: 'Christmas Gift',
-        emojiCustom: 'Custom',
-        customEmoji: 'Custom Emoji',
-        customEmojiDescription: 'Enter a single emoji (e.g. Win + .).',
-        enableDeleteSongs: 'Enable Song Deletion',
-        enableDeleteSongsDescription: 'Allows permanent deletion of songs from your system.',
-        autoLoadLastFolder: 'Automatically load last used folder',
-        autoLoadLastFolderDescription: 'Automatically loads the last used directory on startup.',
-        sectionAppearance: 'Appearance & Design',
-        themeDescription: 'Customize the look and feel of the application.',
-        backgroundAnimationDescription: 'Enable or disable the background animation.',
-        sectionPlayer: 'Player Settings',
-        visualizerDescription: 'Enable or disable the audio visualizer.',
-        sectionDownloads: 'Downloads & Folders',
-        defaultDownloadFolderDescription: 'Set the default directory for all YouTube downloads.',
-        audioQualityDescription: 'Choose the audio quality for YouTube downloads.',
-        refreshFolder: 'Refresh Folder',
-        refreshFolderDesc: 'Scan the current folder for new music files.',
-        animOff: 'Off', animFlow: 'Flow', animNebula: 'Nebula', animStellar: 'Stellar', animAurora: 'Aurora', animXmas: 'Snowfall',
-        editTitle: 'Edit Title', editTitleDesc: 'Change the display name in the playlist.',
-        currentTitle: 'Currently Saved', previewTitle: 'Preview (New)',
-        saveBtn: 'Save', cancelBtn: 'Cancel',
-        loadFolderDesc: 'Select the main directory of your music collection.',
-        titleUpdated: 'Title successfully changed!',
-        songDeleted: 'Song successfully deleted!',
-        downloaderSectionTitle: 'YouTube Video to MP3',
-        tracksAdded: (count) => `${count} tracks added`,
-        editTitleInputPlaceholder: 'Enter title...',
-        miniLabel: 'MINI',
-        miniModeTitle: 'Mini Player Mode',
-        dropZoneText: 'Drop music here...',
-        playbackSpeed: 'Playback Speed',
-        playbackSpeedDesc: 'Adjust the playback rate (0.5x - 2.0x).',
-        focusActiveNotify: 'Focus Mode active (Click top right to exit)',
-        showInFolder: 'Show in Folder',
-        sleepTimerNotify: (m) => `Sleep Timer enabled: ${m} minutes`,
-        sleepTimerStopped: 'Sleep Timer: Music stopped.',
-    }
-};
-
 function tr(key, ...args) {
     const langCode = currentLanguage || (settings && settings.language) || 'de';
     const lang = translations[langCode] || translations.de;
@@ -576,6 +285,10 @@ async function applyCyberpunk(enabled, showIntro = false) {
             if (slToggle) slToggle.checked = false;
             applySleepTime(false);
         }
+        // Exclusive with Sunset & Sakura
+        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
+        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
+        
         // Exclusive with Performance Mode
         if (performanceMode) {
             setPerformanceMode(false, true);
@@ -658,7 +371,197 @@ async function applyCyberpunk(enabled, showIntro = false) {
     }
 }
 
+async function applySunsetDrive(enabled, showIntro = false) {
+    document.body.classList.toggle('sunset-active', enabled);
+    const accentToggle = document.getElementById('toggle-use-custom-color');
+    
+    if (enabled) {
+        if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
+        if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
+        if (settings.cyberpunkEnabled) { saveSetting('cyberpunkEnabled', false); document.getElementById('toggle-cyberpunk').checked = false; applyCyberpunk(false); }
+        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
+        
+        if (performanceMode) setPerformanceMode(false, true);
+
+        if (showIntro) {
+            const intro = document.getElementById('sunset-intro');
+            if (intro) {
+                intro.classList.add('visible');
+                setTimeout(() => intro.classList.remove('visible'), 3500);
+            }
+        }
+
+        document.documentElement.setAttribute('data-theme', 'sunset');
+        visualizerEnabled = true;
+        if (visualizerToggle) visualizerToggle.checked = true;
+        saveSetting('visualizerEnabled', true);
+        if (isPlaying) startVisualizer();
+
+        currentVisualizerStyle = 'retro'; 
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = 'retro';
+            visualizerStyleSelect.disabled = true;
+        }
+        
+        applyAnimationSetting('flow'); 
+        if (animationSelect) {
+            animationSelect.value = 'flow';
+            animationSelect.disabled = true;
+        }
+
+        updateEmoji('sunset_sun'); 
+        if (emojiSelect) {
+            emojiSelect.value = 'sunset_sun';
+            emojiSelect.disabled = true;
+        }
+        if (themeSelect) themeSelect.disabled = true;
+        
+        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
+
+        if (accentToggle) {
+            accentToggle.checked = false;
+            accentToggle.disabled = true;
+            if (accentColorContainer) accentColorContainer.classList.add('hidden');
+            document.documentElement.style.removeProperty('--accent');
+        }
+        updateCachedColor();
+    } else {
+        const th = settings.theme || 'blue';
+        document.documentElement.setAttribute('data-theme', th);
+        if (themeSelect) { themeSelect.value = th; themeSelect.disabled = false; }
+
+        currentVisualizerStyle = settings.visualizerStyle || 'bars';
+        if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
+        
+        applyAnimationSetting(settings.animationMode || 'flow');
+        if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
+        
+        const et = settings.coverMode || 'note';
+        updateEmoji(et, settings.customCoverEmoji);
+        if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
+        
+        if (accentToggle) {
+            accentToggle.disabled = false;
+            accentToggle.checked = !!settings.useCustomColor;
+            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
+            if (accentToggle.checked) document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
+        }
+        updateCachedColor();
+    }
+}
+
+async function applySakuraSpirit(enabled, showIntro = false) {
+    document.body.classList.toggle('sakura-active', enabled);
+    const accentToggle = document.getElementById('toggle-use-custom-color');
+    
+    if (enabled) {
+        if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
+        if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
+        if (settings.cyberpunkEnabled) { saveSetting('cyberpunkEnabled', false); document.getElementById('toggle-cyberpunk').checked = false; applyCyberpunk(false); }
+        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
+
+        if (performanceMode) setPerformanceMode(false, true);
+
+        if (showIntro) {
+            const intro = document.getElementById('sakura-intro');
+            if (intro) {
+                intro.classList.add('visible');
+                createSakuraPetals(); 
+                setTimeout(() => { 
+                    intro.classList.remove('visible'); 
+                    stopSakuraPetals(); 
+                }, 4000);
+            }
+        }
+
+        document.documentElement.setAttribute('data-theme', 'sakura');
+        visualizerEnabled = true;
+        if (visualizerToggle) visualizerToggle.checked = true;
+        saveSetting('visualizerEnabled', true);
+        if (isPlaying) startVisualizer();
+
+        currentVisualizerStyle = 'sakura_bloom'; 
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = 'sakura_bloom';
+            visualizerStyleSelect.disabled = true;
+        }
+        
+        applyAnimationSetting('off'); 
+        if (animationSelect) {
+            animationSelect.value = 'off';
+            animationSelect.disabled = true;
+        }
+
+        updateEmoji('sakura_flower'); 
+        if (emojiSelect) {
+            emojiSelect.value = 'sakura_flower';
+            emojiSelect.disabled = true;
+        }
+        if (themeSelect) themeSelect.disabled = true;
+        
+        if (customEmojiContainer) {
+            customEmojiContainer.style.display = 'flex';
+            if(customEmojiInput) customEmojiInput.value = '🌸';
+        }
+
+        if (accentToggle) {
+            accentToggle.checked = false;
+            accentToggle.disabled = true;
+            if (accentColorContainer) accentColorContainer.classList.add('hidden');
+            document.documentElement.style.removeProperty('--accent');
+        }
+        updateCachedColor();
+    } else {
+        const th = settings.theme || 'blue';
+        document.documentElement.setAttribute('data-theme', th);
+        if (themeSelect) { themeSelect.value = th; themeSelect.disabled = false; }
+
+        currentVisualizerStyle = settings.visualizerStyle || 'bars';
+        if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
+        
+        applyAnimationSetting(settings.animationMode || 'flow');
+        if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
+        
+        const et = settings.coverMode || 'note';
+        updateEmoji(et, settings.customCoverEmoji);
+        if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
+        
+        if (accentToggle) {
+            accentToggle.disabled = false;
+            accentToggle.checked = !!settings.useCustomColor;
+            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
+            if (accentToggle.checked) document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
+        }
+        updateCachedColor();
+    }
+}
+
+let sakuraInterval;
+function createSakuraPetals() {
+    const container = document.getElementById('sakura-falling-container');
+    if(!container) return;
+    container.innerHTML = '';
+    sakuraInterval = setInterval(() => {
+        const petal = document.createElement('div');
+        petal.classList.add('falling-petal');
+        petal.textContent = '🌸';
+        petal.style.left = Math.random() * 100 + '%';
+        petal.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        petal.style.opacity = Math.random();
+        petal.style.fontSize = (Math.random() * 10 + 15) + 'px';
+        container.appendChild(petal);
+        setTimeout(() => petal.remove(), 5000);
+    }, 300);
+}
+
+function stopSakuraPetals() {
+    if(sakuraInterval) clearInterval(sakuraInterval);
+    const container = document.getElementById('sakura-falling-container');
+    if(container) container.innerHTML = '';
+}
+
 function applySleepTime(enabled, showIntro = false) {
+
     document.body.classList.toggle('sleeptime-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
     
@@ -677,6 +580,9 @@ function applySleepTime(enabled, showIntro = false) {
             if (cyToggle) cyToggle.checked = false;
             applyCyberpunk(false);
         }
+        // Exclusive with Sunset & Sakura
+        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
+        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
         
         // Exclusive with Performance Mode
         if (performanceMode) {
@@ -893,19 +799,34 @@ function updateEmoji(emojiType, customEmoji) {
 
     const isSnuggle = settings.snuggleTimeEnabled || document.body.classList.contains('snuggle-time-active');
     const isSleep = settings.sleepTimeEnabled || document.body.classList.contains('sleeptime-active');
+    const isSunset = settings.sunsetEnabled || document.body.classList.contains('sunset-active');
+    const isSakura = settings.sakuraEnabled || document.body.classList.contains('sakura-active');
 
     if (isSnuggle) {
         emojiType = 'loving_dinos';
     } else if (isSleep) {
         emojiType = 'moon';
+    } else if (isSunset) {
+        emojiType = 'sunset_sun';
+    } else if (isSakura) {
+        emojiType = 'sakura_flower';
     }
 
-    let emoji = '\uD83C\uDFB5'; // Note
+    let emoji = '🎵'; 
     let isImage = false;
+    let isHtml = false;
 
-    if (emojiType === 'note') emoji = '\uD83C\uDFB5';
-    else if (emojiType === 'dino') emoji = '\uD83E\uDD95'; // Brachiosaurus/Dino
-    else if (emojiType === 'moon') emoji = '\uD83C\uDF19';
+    if (emojiType === 'note') emoji = '🎵';
+    else if (emojiType === 'dino') emoji = '🦖'; 
+    else if (emojiType === 'moon') emoji = '🌙';
+    else if (emojiType === 'sunset_sun') {
+        emoji = '<div class="sun-cover"></div>';
+        isHtml = true;
+    }
+    else if (emojiType === 'sakura_flower') {
+        emoji = '<div class="sakura-cover">🌸</div>';
+        isHtml = true;
+    }
     else if (emojiType === 'loving_dinos') {
         emoji = lovingDinosImg;
         isImage = true;
@@ -932,6 +853,8 @@ function updateEmoji(emojiType, customEmoji) {
         }
         
         musicEmojiEl.innerHTML = `<img src="${emoji}" alt="Cover" draggable="false" ondragstart="return false;" style="background: transparent !important; border: none !important; width: 100%; height: 100%; object-fit: contain;">`;
+    } else if (isHtml) {
+        musicEmojiEl.innerHTML = emoji;
     } else {
         musicEmojiEl.textContent = emoji;
     }
@@ -1249,6 +1172,48 @@ function drawVisualizer() {
             }
         }
         ctx.shadowBlur = 0;
+    } else if (currentVisualizerStyle === 'sakura_bloom') {
+        const centerX = width / 2, centerY = height / 2;
+        const count = 12; // Far fewer flowers for a clearer look
+        const radiusBase = Math.min(width, height) / 3;
+        
+        for (let i = 0; i < count; i++) {
+            const dataIdx = Math.floor((i / count) * (visualizerDataArray.length * 0.5));
+            const val = visualizerDataArray[dataIdx];
+            // Added more complex movement to break the circle symmetry
+            const angle = (i / count) * Math.PI * 2 + (Date.now() * 0.0003);
+            const drift = Math.sin(Date.now() * 0.001 + i) * 20;
+            
+            const dist = radiusBase + (val / 255) * (radiusBase * 1.2) * boost + drift;
+            const x = centerX + Math.cos(angle) * dist;
+            const y = centerY + Math.sin(angle) * dist;
+            
+            const size = 8 + (val / 255) * 15;
+            
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(angle + (Date.now() * 0.0008)); // Slower rotation
+            ctx.fillStyle = '#fbcfe8';
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#fbcfe8';
+            ctx.globalAlpha = 0.6 + (val / 255) * 0.4;
+
+            for (let p = 0; p < 5; p++) {
+                ctx.rotate((Math.PI * 2) / 5);
+                ctx.beginPath();
+                ctx.ellipse(0, -size, size * 0.6, size, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            ctx.beginPath();
+            ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
+            ctx.fillStyle = '#fda4af';
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 0;
     } else if (currentVisualizerStyle === 'zen') {
 
         const centerX = width / 2, centerY = height / 2;
@@ -1328,6 +1293,9 @@ function applySnuggleTime(enabled, showIntro = false) {
             if (cyToggle) cyToggle.checked = false;
             applyCyberpunk(false);
         }
+        // Exclusive with Sunset & Sakura
+        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
+        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
 
         // Automatically disable Performance Mode if Snuggle Pack is turned on
         if (performanceMode) {
@@ -1972,6 +1940,20 @@ function setupEventListeners() {
         applyCyberpunk(enabled, true);
     });
 
+    const toggleSunset = document.getElementById('toggle-sunset');
+    bind(toggleSunset, 'change', (e) => {
+        const enabled = e.target.checked;
+        saveSetting('sunsetEnabled', enabled);
+        applySunsetDrive(enabled, true);
+    });
+
+    const toggleSakura = document.getElementById('toggle-sakura');
+    bind(toggleSakura, 'change', (e) => {
+        const enabled = e.target.checked;
+        saveSetting('sakuraEnabled', enabled);
+        applySakuraSpirit(enabled, true);
+    });
+
     const fpsIn = document.getElementById('fps-input');
     const updateFps = (val) => {
         let v = parseInt(val);
@@ -2042,10 +2024,19 @@ function setupEventListeners() {
     });
     bind(playlistEl, 'contextmenu', (e) => { const r = e.target.closest('.track-row'); if (r) { e.preventDefault(); showContextMenu(e, parseInt(r.dataset.index, 10)); } });
     bind($('#context-menu-show-folder'), 'click', () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; windowApi.showInFolder(playlist[contextTrackIndex].path); });
+    const toggleDownloaderBtn = document.getElementById('toggle-downloader-btn');
     bind(toggleDownloaderBtn, 'click', () => {
-        resetDownloaderUI();
         downloaderOverlay.classList.add('visible');
     });
+
+    const infoBtn = document.getElementById('project-info-btn');
+    const infoOverlay = document.getElementById('project-info-overlay');
+    const infoCloseBtn = document.getElementById('project-info-close-btn');
+
+    bind(infoBtn, 'click', () => infoOverlay.classList.add('visible'));
+    bind(infoCloseBtn, 'click', () => infoOverlay.classList.remove('visible'));
+    bind(infoOverlay, 'click', (e) => { if(e.target === infoOverlay) infoOverlay.classList.remove('visible'); });
+
 
     function resetDownloaderUI() {
         if (ytUrlInput) ytUrlInput.value = '';
@@ -2372,6 +2363,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cyToggle = document.getElementById('toggle-cyberpunk');
                 if (cyToggle) cyToggle.checked = true;
                 applyCyberpunk(true);
+            } else if (settings.sunsetEnabled) {
+                const suToggle = document.getElementById('toggle-sunset');
+                if (suToggle) suToggle.checked = true;
+                applySunsetDrive(true);
+            } else if (settings.sakuraEnabled) {
+                const saToggle = document.getElementById('toggle-sakura');
+                if (saToggle) saToggle.checked = true;
+                applySakuraSpirit(true);
             } else {
                 // Only apply standard theme if no pack is active
                 if (settings.theme) {
