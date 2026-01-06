@@ -988,7 +988,7 @@ function setupVisualizer() {
         reverbGain = audioContext.createGain();
         reverbGain.gain.value = 0;
 
-        analyser.fftSize = 256;
+        analyser.fftSize = 512;
         updateAnalyserSettings();
 
         // New Graph:
@@ -1205,7 +1205,52 @@ function drawVisualizer() {
             }
         }
         ctx.globalAlpha = 1.0;
+    } else if (currentVisualizerStyle === 'retro') {
+        // High-Resolution & Extra-Wide Retro Mode: Filling the X-axis completely
+        const targetRows = 18;
+        const totalBlockHeight = height / targetRows;
+        const gapY = 1.5; 
+        const blockHeight = totalBlockHeight - gapY;
+        
+        // Much wider Rectangles to fill the X-axis effectively
+        const blockWidth = blockHeight * 5.0; 
+        const gapX = 3;
+        const totalBlockWidth = blockWidth + gapX;
+        
+        const centerX = width / 2;
+        // Fill entire width from center
+        const maxColumns = Math.ceil(centerX / totalBlockWidth) + 1;
+        // Focus on active frequency range (lower 50%) to ensure bars at edges move
+        const usefulDataLimit = Math.floor(visualizerDataArray.length * 0.5);
+
+        for (let i = 0; i < maxColumns; i++) {
+            const dataIndex = Math.floor((i / maxColumns) * usefulDataLimit); 
+            let val = visualizerDataArray[dataIndex] * boost;
+            
+            const numBlocks = Math.floor((val / 255) * targetRows);
+            
+            const xRight = centerX + (i * totalBlockWidth);
+            const xLeft = centerX - ((i + 1) * totalBlockWidth);
+
+            for (let j = 0; j < numBlocks; j++) {
+                 if (j >= targetRows) break;
+                 const y = height - ((j + 1) * totalBlockHeight);
+                 
+                 // Strict 12-4-2 Color Logic (6-2-1 scaled for 18 rows)
+                 if (j >= 16) ctx.fillStyle = '#ff4444';      
+                 else if (j >= 12) ctx.fillStyle = '#ffcc00'; 
+                 else ctx.fillStyle = ac;                    
+
+                 ctx.shadowBlur = blockHeight * 0.8; 
+                 ctx.shadowColor = ctx.fillStyle;
+                 
+                 ctx.fillRect(xLeft, y, blockWidth, blockHeight);
+                 ctx.fillRect(xRight, y, blockWidth, blockHeight);
+            }
+        }
+        ctx.shadowBlur = 0;
     } else if (currentVisualizerStyle === 'zen') {
+
         const centerX = width / 2, centerY = height / 2;
         const blv = (visualizerDataArray[0] + visualizerDataArray[2]) / 2;
         const count = 16;
