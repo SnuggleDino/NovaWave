@@ -885,7 +885,7 @@ async function handleDownload() {
     try {
         let result;
         if (activeDownloaderMode === 'spotify') {
-            downloadStatusEl.textContent = "Lade Spotify-Metadaten...";
+            downloadStatusEl.textContent = tr('statusLoadingMetadata');
             result = await windowApi.downloadFromSpotify(url, qualitySelect.value);
         } else {
             result = await windowApi.downloadFromYouTube({ url, customName: ytNameInput.value.trim(), quality: qualitySelect.value });

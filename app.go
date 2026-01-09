@@ -219,6 +219,10 @@ func (a *App) LoadConfig() Config {
 	if loadedConf.TargetFps == 0 {
 		loadedConf.TargetFps = 60
 	}
+	if loadedConf.DownloadFolder == "" {
+		cwd, _ := os.Getwd()
+		loadedConf.DownloadFolder = cwd
+	}
 
 	return loadedConf
 }
@@ -511,6 +515,8 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 		cwd, _ := os.Getwd()
 		folderPath = cwd
 	}
+	
+	fmt.Println("DEBUG: Downloading to:", folderPath) // DEBUG LOG
 
 	cwd, err := os.Getwd()
 	if err != nil {
