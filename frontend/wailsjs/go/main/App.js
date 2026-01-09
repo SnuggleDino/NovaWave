@@ -14,6 +14,10 @@ export function DownloadFromYouTube(arg1) {
   return window['go']['main']['App']['DownloadFromYouTube'](arg1);
 }
 
+export function GetAppMeta() {
+  return window['go']['main']['App']['GetAppMeta']();
+}
+
 export function GetSettings() {
   return window['go']['main']['App']['GetSettings']();
 }

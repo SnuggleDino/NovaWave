@@ -6,6 +6,7 @@ import { translations } from './translations.js';
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
     getSettings: App.GetSettings,
+    getAppMeta: App.GetAppMeta, // NEU
     setSetting: App.SetSetting,
     selectFolder: App.SelectFolder,
     selectMusicFolder: App.SelectMusicFolder,
@@ -2191,6 +2192,35 @@ function makeDraggable(modal, handle) {
     }
 }
 
+async function loadAppMeta() {
+    try {
+        const meta = await windowApi.getAppMeta();
+        if (meta) {
+            const footerVer = document.getElementById('footer-version');
+            if (footerVer) footerVer.textContent = meta.version;
+
+            const mAuth = document.getElementById('meta-author');
+            const mVer = document.getElementById('meta-version');
+            const mGo = document.getElementById('meta-go-version');
+            const mDate = document.getElementById('meta-date');
+            const mGit = document.getElementById('meta-github');
+            const mRepo = document.getElementById('meta-repo');
+
+            if (mAuth) mAuth.textContent = meta.author;
+            if (mVer) mVer.textContent = meta.version;
+            if (mGo) mGo.textContent = meta.goVersion;
+            if (mDate) mDate.textContent = meta.buildDate;
+            if (mGit) {
+                mGit.textContent = meta.githubUser;
+                mGit.href = `https://github.com/${meta.githubUser}`;
+            }
+            if (mRepo) mRepo.href = meta.repoLink;
+        }
+    } catch (e) {
+        console.error("Meta load failed", e);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     $ = (s) => document.querySelector(s);
     trackTitleEl = $('#track-title-large'); trackArtistEl = $('#track-artist-large'); musicEmojiEl = $('#music-emoji');
@@ -2229,6 +2259,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (devModalCloseBtn && devModalOverlay) {
         devModalCloseBtn.addEventListener('click', () => devModalOverlay.classList.remove('visible'));    
     }
+
+    loadAppMeta(); // Load version info
+
 
     const userHelpOverlay = document.getElementById('user-help-overlay');
     const userHelpBtn = document.getElementById('user-help-btn');

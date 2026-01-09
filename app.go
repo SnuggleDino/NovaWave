@@ -168,6 +168,10 @@ func getConfigPath() string {
 	return path
 }
 
+func (a *App) GetAppMeta() AppMeta {
+	return CurrentMeta
+}
+
 func (a *App) LoadConfig() Config {
 	path := getConfigPath()
 	data, err := os.ReadFile(path)

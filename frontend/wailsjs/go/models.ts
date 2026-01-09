@@ -1,5 +1,27 @@
 export namespace main {
 	
+	export class AppMeta {
+	    version: string;
+	    buildDate: string;
+	    author: string;
+	    goVersion: string;
+	    githubUser: string;
+	    repoLink: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new AppMeta(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.version = source["version"];
+	        this.buildDate = source["buildDate"];
+	        this.author = source["author"];
+	        this.goVersion = source["goVersion"];
+	        this.githubUser = source["githubUser"];
+	        this.repoLink = source["repoLink"];
+	    }
+	}
 	export class Config {
 	    theme: string;
 	    volume: number;

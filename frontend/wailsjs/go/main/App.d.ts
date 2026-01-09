@@ -8,6 +8,8 @@ export function DownloadFromSpotify(arg1:string,arg2:string):Promise<main.Simple
 
 export function DownloadFromYouTube(arg1:main.DownloadOptions):Promise<main.SimpleResult>;
 
+export function GetAppMeta():Promise<main.AppMeta>;
+
 export function GetSettings():Promise<main.Config>;
 
 export function GetSpotifyMetadata(arg1:string):Promise<main.SpotifyTrack>;
