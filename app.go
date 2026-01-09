@@ -161,7 +161,7 @@ func (a *App) SetWindowSize(width int, height int) {
 	wailsRuntime.WindowSetSize(a.ctx, width, height)
 }
 
-// --- EINSTELLUNGEN (CONFIG) ---
+// --- Config ---
 func getConfigPath() string {
 	configDir, _ := os.UserConfigDir()
 	path := filepath.Join(configDir, "NovaWave", "settings.json")
@@ -265,7 +265,7 @@ func (a *App) GetSettings() Config {
 	return a.LoadConfig()
 }
 
-// --- DATEISYSTEM & DIALOGE ---
+// --- File System & Dialogs ---
 func (a *App) SelectFolderDialog() string {
 	selection, err := wailsRuntime.OpenDirectoryDialog(a.ctx, wailsRuntime.OpenDialogOptions{
 		Title: "Ordner wählen",
@@ -499,7 +499,7 @@ func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
 	return SimpleResult{Success: true}
 }
 
-// --- DOWNLOADER ---
+// --- Downloader ---
 func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	cfg := a.LoadConfig()
 	folderPath := cfg.DownloadFolder
@@ -579,9 +579,7 @@ func (a *App) SendPlaybackState(isPlaying bool) {
 	// or we just use this to trigger system media controls if implemented.
 }
 
-// =============================================================================
-// --- SPOTIFY DOWNLOADER (EXTENSION) ---
-// =============================================================================
+// --- Spotify Downloader ---
 
 func (a *App) IsSpotifyUrl(url string) bool {
 	return a.spotifyService.IsSpotifyUrl(url)

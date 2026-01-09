@@ -1,6 +1,4 @@
-/* =========================================
-   PLAYLIST TOGGLE ANIMATION & POSITIONING
-   ========================================= */
+/* --- Playlist Toggle Animation & Positioning --- */
 
 .main-grid {
     transition: grid-template-columns 0.5s cubic-bezier(0.4, 0, 0.2, 1), gap 0.5s ease;
@@ -192,9 +190,7 @@ body.is-mini #toggle-playlist-btn {
     background-attachment: fixed;
 }
 
-/* =========================================
-   UNIFIED FEATURES INDICATOR (Minimal Modal)
-   ========================================= */
+/* --- Unified Features Indicator (Minimal Modal) --- */
 
 .active-features-container {
     position: absolute;
@@ -328,13 +324,9 @@ body.is-mini #toggle-playlist-btn {
     100% { opacity: 0.4; transform: scale(0.8); }
 }
 
-/* =========================================
-   RESET & BASE
-   ========================================= */
+/* --- Reset & Base --- */
 
-/* =========================================
-   DYNAMIC ISLAND PERFORMANCE HINT
-   ========================================= */
+/* --- Dynamic Island Performance Hint --- */
 
 .dynamic-island-hint {
     position: fixed;
@@ -403,9 +395,7 @@ body.is-mini #toggle-playlist-btn {
     transform: scale(1.05);
 }
 
-/* =========================================
-   STATS OVERLAY
-   ========================================= */
+/* --- Stats Overlay --- */
 
 .stats-overlay {
     position: fixed;
@@ -595,9 +585,7 @@ input, textarea { user-select: text; }
     animation: splash-zoom-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* =========================================
-   NOVA PULSE INTRO (Clean & Premium)
-   ========================================= */
+/* --- Nova Pulse Intro (Clean & Premium) --- */
 
 .splash-overlay {
     position: fixed;
@@ -860,9 +848,7 @@ body.ready .app-shell {
     font-weight: 600;
 }
 
-/* =========================================
-   PROJECT INFO EASTER EGG STYLES
-   ========================================= */
+/* --- Project Info Easter Egg Styles --- */
 
 .project-info-modal {
     position: relative;
@@ -1202,9 +1188,7 @@ input[type=range].volume-slider::-moz-range-thumb {
   padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; cursor: pointer;
 }
 .primary-btn { background: var(--accent); color: #000; border: none; font-weight: 600; }
-/* =========================================
-   MODERN DOWNLOADER LAYOUT
-   ========================================= */
+/* --- Modern Downloader Layout --- */
 
 .downloader-section {
     display: flex;
@@ -1527,9 +1511,7 @@ input[type=range].volume-slider::-moz-range-thumb {
     transform: rotate(90deg);
 }
 
-/* =========================================
-   PREMIUM SETTINGS UI (Nova Edition)
-   ========================================= */
+/* --- Premium Settings UI (Nova Edition) --- */
 
 .settings-body {
     display: flex;
@@ -1766,9 +1748,7 @@ body.cinema-mode .player-column {
     transition: transform 1s ease;
 }
 
-/* =========================================
-   CINEMATIC THEME PACKS UI (Fresh Design)
-   ========================================= */
+/* --- Cinematic Theme Packs UI (Fresh Design) --- */
 
 .theme-packs-container {
     display: flex;
@@ -1867,9 +1847,7 @@ body.cinema-mode .player-column {
 }
 
 
-/* =========================================
-   FOCUS MODE
-   ========================================= */
+/* --- Focus Mode --- */
 .visualizer-container {
     position: relative;
 }
@@ -1896,9 +1874,7 @@ body.cinema-mode .player-column {
     transform: scale(1.1);
 }
 
-/* =========================================
-   NEW FOCUS MODE (ZEN SYSTEM)
-   ========================================= */
+/* --- New Focus Mode (Zen System) --- */
 
 body.focus-active .app-header,
 body.focus-active .extras-column,
