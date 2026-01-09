@@ -338,12 +338,12 @@
                     <div id="view-youtube" class="downloader-view">
                         <div class="downloader-input-group">
                             <div class="input-wrapper">
-                                <label class="input-label" data-lang-key="urlPlaceholder">YouTube URL</label> 
-                                <input type="text" id="yt-url-input" class="settings-input" placeholder="https://youtube.com/watch?v=...">
+                                <label class="input-label" data-lang-key="ytUrlLabel">YouTube URL</label> 
+                                <input type="text" id="yt-url-input" class="settings-input" data-lang-placeholder="ytUrlPlaceholder">
                             </div>
                             <div class="input-wrapper">
                                 <label class="input-label" data-lang-key="renamePlaceholder">Dateiname (optional)</label>
-                                <input type="text" id="yt-name-input" class="settings-input" placeholder="Mein Song">
+                                <input type="text" id="yt-name-input" class="settings-input" data-lang-placeholder="ytNamePlaceholder">
                             </div>
                         </div>
                     </div>
@@ -352,12 +352,12 @@
                     <div id="view-spotify" class="downloader-view" style="display: none;">
                         <div class="downloader-input-group">
                             <div class="input-wrapper">
-                                <label class="input-label">Spotify Track URL</label> 
-                                <input type="text" id="spotify-url-input" class="settings-input" placeholder="https://open.spotify.com/track/...">
+                                <label class="input-label" data-lang-key="spotifyUrlLabel">Spotify Song URL</label> 
+                                <input type="text" id="spotify-url-input" class="settings-input" data-lang-placeholder="spotifyUrlPlaceholder">
                             </div>
                             <div class="info-box" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted); padding: 8px; background: rgba(255,255,255,0.05); border-radius: 6px;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                                Metadaten (Titel, Interpret) werden automatisch geladen.
+                                <span data-lang-key="spotifyMetadataInfo">Metadaten (Titel, Interpret) werden automatisch geladen.</span>
                             </div>
                         </div>
                     </div>
