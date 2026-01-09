@@ -178,6 +178,20 @@ export namespace main {
 	        this.newPath = source["newPath"];
 	    }
 	}
+	export class SpotifyTrack {
+	    title: string;
+	    artist: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new SpotifyTrack(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.title = source["title"];
+	        this.artist = source["artist"];
+	    }
+	}
 
 }
 

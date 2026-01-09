@@ -4,11 +4,17 @@ import {main} from '../models';
 
 export function DeleteTrack(arg1:string):Promise<main.SimpleResult>;
 
+export function DownloadFromSpotify(arg1:string,arg2:string):Promise<main.SimpleResult>;
+
 export function DownloadFromYouTube(arg1:main.DownloadOptions):Promise<main.SimpleResult>;
 
 export function GetSettings():Promise<main.Config>;
 
+export function GetSpotifyMetadata(arg1:string):Promise<main.SpotifyTrack>;
+
 export function GetTracks(arg1:string):Promise<Array<main.Track>>;
+
+export function IsSpotifyUrl(arg1:string):Promise<boolean>;
 
 export function LoadConfig():Promise<main.Config>;
 

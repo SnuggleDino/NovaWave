@@ -18,8 +18,9 @@ import (
 )
 
 type App struct {
-	ctx   context.Context
-	mu    sync.Mutex // For thread-safe settings access
+	ctx            context.Context
+	mu             sync.Mutex // For thread-safe settings access
+	spotifyService *SpotifyService
 }
 
 // Config speichert alle Einstellungen
@@ -95,7 +96,9 @@ type FolderResult struct {
 }
 
 func NewApp() *App {
-	return &App{}
+	return &App{
+		spotifyService: NewSpotifyService(),
+	}
 }
 
 func (a *App) startup(ctx context.Context) {
@@ -574,4 +577,35 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 func (a *App) SendPlaybackState(isPlaying bool) {
 	// Placeholder: In Wails, we might emit an event if backend needs to know, 
 	// or we just use this to trigger system media controls if implemented.
+}
+
+// =============================================================================
+// --- SPOTIFY DOWNLOADER (EXTENSION) ---
+// =============================================================================
+
+func (a *App) IsSpotifyUrl(url string) bool {
+	return a.spotifyService.IsSpotifyUrl(url)
+}
+
+func (a *App) GetSpotifyMetadata(url string) (*SpotifyTrack, error) {
+	return a.spotifyService.GetTrackMetadata(url)
+}
+
+func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, error) {
+	track, err := a.spotifyService.GetTrackMetadata(url)
+	if err != nil {
+		return SimpleResult{Success: false, Error: "Spotify Metadata Error: " + err.Error()}, nil
+	}
+
+	// Suche auf YouTube nach "Artist - Title lyrics" für beste Ergebnisse
+	searchQuery := fmt.Sprintf("ytsearch1:%s - %s lyrics", track.Artist, track.Title)
+	
+	opts := DownloadOptions{
+		Url:        searchQuery,
+		CustomName: fmt.Sprintf("%s - %s", track.Artist, track.Title),
+		Quality:    quality,
+	}
+
+	// Wir nutzen die existierende Download-Logik
+	return a.DownloadFromYouTube(opts)
 }

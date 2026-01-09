@@ -6,6 +6,10 @@ export function DeleteTrack(arg1) {
   return window['go']['main']['App']['DeleteTrack'](arg1);
 }
 
+export function DownloadFromSpotify(arg1, arg2) {
+  return window['go']['main']['App']['DownloadFromSpotify'](arg1, arg2);
+}
+
 export function DownloadFromYouTube(arg1) {
   return window['go']['main']['App']['DownloadFromYouTube'](arg1);
 }
@@ -14,8 +18,16 @@ export function GetSettings() {
   return window['go']['main']['App']['GetSettings']();
 }
 
+export function GetSpotifyMetadata(arg1) {
+  return window['go']['main']['App']['GetSpotifyMetadata'](arg1);
+}
+
 export function GetTracks(arg1) {
   return window['go']['main']['App']['GetTracks'](arg1);
+}
+
+export function IsSpotifyUrl(arg1) {
+  return window['go']['main']['App']['IsSpotifyUrl'](arg1);
 }
 
 export function LoadConfig() {

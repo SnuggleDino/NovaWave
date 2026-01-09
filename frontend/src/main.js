@@ -11,6 +11,8 @@ const windowApi = {
     selectMusicFolder: App.SelectMusicFolder,
     refreshMusicFolder: App.RefreshMusicFolder,
     downloadFromYouTube: App.DownloadFromYouTube,
+    downloadFromSpotify: App.DownloadFromSpotify,
+    isSpotifyUrl: App.IsSpotifyUrl,
     deleteTrack: App.DeleteTrack,
     updateTitle: App.UpdateTitle,
     showInFolder: App.ShowInFolder,
@@ -47,6 +49,8 @@ let currentVisualizerStyle = 'bars';
 let visSensitivity = 1.5;
 let sleepTimerId = null;
 let lastNotifiedPath = null;
+let activeDownloaderMode = 'youtube'; // NEU
+
 
 // Visualizer State
 let audioContext, analyser, sourceNode, bassFilter, trebleFilter, reverbNode, reverbGain, masterGain;
@@ -55,6 +59,8 @@ let visualizerRunning = false;
 
 // DOM Elements
 let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, mainFavoriteBtn;
+// Spotify & Tabs
+let spotifyUrlInput, tabYtBtn, tabSpotifyBtn, viewYt, viewSpotify;
 let favorites = [];
 let favoritesSet = new Set();
 let showingFavoritesOnly = false;
@@ -861,18 +867,35 @@ function updateEmoji(emojiType, customEmoji) {
 }
 
 async function handleDownload() {
-    const url = ytUrlInput.value.trim(); if (!url) { downloadStatusEl.textContent = tr('statusUrlMissing'); return; }
+    let url = '';
+    
+    if (activeDownloaderMode === 'spotify') {
+        url = spotifyUrlInput.value.trim();
+    } else {
+        url = ytUrlInput.value.trim();
+    }
+
+    if (!url) { downloadStatusEl.textContent = tr('statusUrlMissing'); return; }
 
     downloadBtn.disabled = true;
     downloadBtn.style.opacity = '0.5';
     downloadStatusEl.textContent = tr('statusStarting');
 
     try {
-        const result = await windowApi.downloadFromYouTube({ url, customName: ytNameInput.value.trim(), quality: qualitySelect.value });
+        let result;
+        if (activeDownloaderMode === 'spotify') {
+            downloadStatusEl.textContent = "Lade Spotify-Metadaten...";
+            result = await windowApi.downloadFromSpotify(url, qualitySelect.value);
+        } else {
+            result = await windowApi.downloadFromYouTube({ url, customName: ytNameInput.value.trim(), quality: qualitySelect.value });
+        }
+
         if (result.success) {
             downloadStatusEl.textContent = tr('statusSuccess');
             ytUrlInput.value = '';
             ytNameInput.value = '';
+            if (spotifyUrlInput) spotifyUrlInput.value = ''; // Clear Spotify too
+
             if (currentFolderPath && settings.downloadFolder && currentFolderPath === settings.downloadFolder) {
                 refreshFolderBtn.click();
             }
@@ -2178,6 +2201,10 @@ document.addEventListener('DOMContentLoaded', () => {
     libraryOverlay = $('#library-overlay'); libraryCloseBtn = $('#library-close-btn'); loadFolderBtn = $('#load-folder-btn');
     refreshFolderBtn = $('#refresh-folder-btn'); searchInput = $('.playlist-search-input'); sortSelect = $('#sort-select');
     ytUrlInput = $('#yt-url-input'); ytNameInput = $('#yt-name-input'); downloadBtn = $('#download-btn'); 
+    spotifyUrlInput = $('#spotify-url-input'); // NEU
+    tabYtBtn = $('#tab-yt-btn'); tabSpotifyBtn = $('#tab-spotify-btn'); // NEU
+    viewYt = $('#view-youtube'); viewSpotify = $('#view-spotify'); // NEU
+    
     downloaderOverlay = $('#downloader-overlay'); downloaderCloseBtn = $('#downloader-close-btn'); downloadStatusEl = $('.status-text');
     downloadProgressFill = $('.yt-progress-fill'); visualizerCanvas = $('#visualizer-canvas'); visualizerContainer = $('.visualizer-container');
     langButtons = document.querySelectorAll('.lang-btn'); settingsBtn = $('#settings-btn'); settingsOverlay = $('#settings-overlay');
@@ -2287,6 +2314,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.classList.remove('playlist-left');
             }
         });
+    }
+
+    // --- Downloader Tabs Logic (Correctly Placed) ---
+    if (tabYtBtn && tabSpotifyBtn) {
+        // Init default state
+        if (activeDownloaderMode === 'youtube') {
+            tabYtBtn.classList.add('active');
+            viewYt.style.display = 'block';
+            viewSpotify.style.display = 'none';
+        }
+
+        tabYtBtn.addEventListener('click', () => {
+            activeDownloaderMode = 'youtube';
+            tabYtBtn.classList.add('active');
+            tabSpotifyBtn.classList.remove('active');
+            viewYt.style.display = 'block';
+            viewSpotify.style.display = 'none';
+        });
+
+        tabSpotifyBtn.addEventListener('click', () => {
+            activeDownloaderMode = 'spotify';
+            tabSpotifyBtn.classList.add('active');
+            tabYtBtn.classList.remove('active');
+            viewSpotify.style.display = 'block';
+            viewYt.style.display = 'none';
+        });
+    }
+
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', handleDownload);
     }
 
     const overlays = [settingsOverlay, libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay')];      

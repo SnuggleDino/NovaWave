@@ -3391,3 +3391,44 @@ kbd {
     color: #fbcfe8 !important; 
     text-shadow: 0 0 10px rgba(251, 207, 232, 0.3);
 }
+
+/* --- Downloader Tabs --- */
+.downloader-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-soft);
+    padding-bottom: 10px;
+}
+
+.downloader-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.downloader-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+}
+
+.downloader-tab-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#view-spotify .input-wrapper input:focus {
+    border-color: #1DB954 !important;
+    box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+}
+
