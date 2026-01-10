@@ -1,6 +1,6 @@
 export const translations = {
     de: {
-        appTitle: 'NovaWave - Musik Player', appSubtitle: 'Your Music \u2022 Your Style \u2022 Your Rules',
+        appTitle: 'NovaWave - Musik Player', appSubtitle: 'Deine Musik \u2022 Dein Style \u2022 Deine Regeln',
         nothingPlaying: 'Nichts spielt', unknownArtist: 'Unbekannter K\u00FCnstler',
         loadFolder: 'Ordner laden', refreshFolder: 'Aktualisieren', searchPlaceholder: 'Playlist durchsuchen...', emptyPlaylist: 'Playlist ist leer. Lade einen Ordner!',
         noFavoritesFound: 'Keine Favoriten in diesem Ordner gefunden.',
