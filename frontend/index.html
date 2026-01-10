@@ -656,15 +656,19 @@
 
                     <!-- TAB: THEME PACKS -->
                     <div id="tab-themepacks" class="settings-tab-content">
-                        <div class="theme-packs-container">
-                            <h4 class="settings-section-title"><span data-lang-key="sectionThemePacks">Theme Packs</span></h4>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionThemePacks">Theme Packs</span></h4>
+                        <div class="theme-grid">
                             
-                            <div id="snuggle-pack-item" class="theme-pack-card snuggle-pack-container">      
-                                <div class="theme-pack-info">
-                                    <strong class="snuggle-title">&#10024; Snuggle Time (Theme-Pack)</strong>  
+                            <!-- Snuggle Time -->
+                            <div class="theme-card" id="snuggle-pack-item">
+                                <div class="theme-preview-box preview-snuggle">
+                                    <span class="preview-emoji">✨</span>
+                                </div>
+                                <div class="theme-info-box">
+                                    <strong>Snuggle Time</strong>
                                     <p data-lang-key="snuggleTimeDesc"></p>
                                 </div>
-                                <div class="theme-pack-action">
+                                <div class="theme-action-box">
                                     <label class="toggle-switch">
                                         <input type="checkbox" id="toggle-snuggle-time">
                                         <span class="slider"></span>
@@ -672,12 +676,16 @@
                                 </div>
                             </div>
 
-                            <div id="sleeptime-pack-item" class="theme-pack-card sleeptime-pack-container">      
-                                <div class="theme-pack-info">
-                                    <strong class="sleeptime-title">&#127769; Sleep Time (Night-Pack)</strong>  
+                            <!-- Sleep Time -->
+                            <div class="theme-card" id="sleeptime-pack-item">
+                                <div class="theme-preview-box preview-sleep">
+                                    <span class="preview-emoji">🌙</span>
+                                </div>
+                                <div class="theme-info-box">
+                                    <strong>Sleep Time</strong>
                                     <p data-lang-key="sleepTimeDesc"></p>
                                 </div>
-                                <div class="theme-pack-action">
+                                <div class="theme-action-box">
                                     <label class="toggle-switch">
                                         <input type="checkbox" id="toggle-sleeptime">
                                         <span class="slider"></span>
@@ -685,12 +693,16 @@
                                 </div>
                             </div>
 
-                            <div id="cyberpunk-pack-item" class="theme-pack-card cyberpunk-pack-container">      
-                                <div class="theme-pack-info">
-                                    <strong class="cyberpunk-title">&#9889; Cyberpunk (2077-Pack)</strong>  
+                            <!-- Cyberpunk -->
+                            <div class="theme-card" id="cyberpunk-pack-item">
+                                <div class="theme-preview-box preview-cyber">
+                                    <span class="preview-emoji">⚡</span>
+                                </div>
+                                <div class="theme-info-box">
+                                    <strong>Cyberpunk</strong>
                                     <p data-lang-key="cyberpunkDesc"></p>
                                 </div>
-                                <div class="theme-pack-action">
+                                <div class="theme-action-box">
                                     <label class="toggle-switch">
                                         <input type="checkbox" id="toggle-cyberpunk">
                                         <span class="slider"></span>
@@ -698,12 +710,16 @@
                                 </div>
                             </div>
 
-                            <div id="sunset-pack-item" class="theme-pack-card sunset-pack-container">
-                                <div class="theme-pack-info">
-                                    <strong class="sunset-title">🏎️ Sunset Drive (Synthwave)</strong>
+                            <!-- Sunset Drive -->
+                            <div class="theme-card" id="sunset-pack-item">
+                                <div class="theme-preview-box preview-sunset">
+                                    <span class="preview-emoji">🏎️</span>
+                                </div>
+                                <div class="theme-info-box">
+                                    <strong>Sunset Drive</strong>
                                     <p data-lang-key="sunsetDesc"></p>
                                 </div>
-                                <div class="theme-pack-action">
+                                <div class="theme-action-box">
                                     <label class="toggle-switch">
                                         <input type="checkbox" id="toggle-sunset">
                                         <span class="slider"></span>
@@ -711,18 +727,40 @@
                                 </div>
                             </div>
 
-                            <div id="sakura-pack-item" class="theme-pack-card sakura-pack-container">
-                                <div class="theme-pack-info">
-                                    <strong class="sakura-label">🌸 Sakura Spirit (Japan)</strong>
+                            <!-- Sakura Spirit -->
+                            <div class="theme-card" id="sakura-pack-item">
+                                <div class="theme-preview-box preview-sakura">
+                                    <span class="preview-emoji">🌸</span>
+                                </div>
+                                <div class="theme-info-box">
+                                    <strong>Sakura Spirit</strong>
                                     <p data-lang-key="sakuraDesc"></p>
                                 </div>
-                                <div class="theme-pack-action">
+                                <div class="theme-action-box">
                                     <label class="toggle-switch">
                                         <input type="checkbox" id="toggle-sakura">
                                         <span class="slider"></span>
                                     </label>
                                 </div>
                             </div>
+
+                            <!-- NovaWave 95 -->
+                            <div class="theme-card" id="win95-pack-item">
+                                <div class="theme-preview-box preview-win95-theme">
+                                    <span class="preview-emoji">💾</span>
+                                </div>
+                                <div class="theme-info-box">
+                                    <strong>NovaWave 95</strong>
+                                    <p data-lang-key="win95ThemeDesc"></p>
+                                </div>
+                                <div class="theme-action-box">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-win95">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 

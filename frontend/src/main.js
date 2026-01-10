@@ -513,6 +513,7 @@ async function applySakuraSpirit(enabled, showIntro = false) {
         if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
         if (settings.cyberpunkEnabled) { saveSetting('cyberpunkEnabled', false); document.getElementById('toggle-cyberpunk').checked = false; applyCyberpunk(false); }
         if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
+        if (settings.novaWave95Enabled) { saveSetting('novaWave95Enabled', false); document.getElementById('toggle-win95').checked = false; applyNovaWave95(false); }
 
         if (performanceMode) setPerformanceMode(false, true);
 
@@ -557,6 +558,78 @@ async function applySakuraSpirit(enabled, showIntro = false) {
             customEmojiContainer.style.display = 'flex';
             if(customEmojiInput) customEmojiInput.value = '🌸';
         }
+
+        if (accentToggle) {
+            accentToggle.checked = false;
+            accentToggle.disabled = true;
+            if (accentColorContainer) accentColorContainer.classList.add('hidden');
+            document.documentElement.style.removeProperty('--accent');
+        }
+        updateCachedColor();
+    } else {
+        const th = settings.theme || 'blue';
+        document.documentElement.setAttribute('data-theme', th);
+        if (themeSelect) { themeSelect.value = th; themeSelect.disabled = false; }
+
+        currentVisualizerStyle = settings.visualizerStyle || 'bars';
+        if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
+        
+        applyAnimationSetting(settings.animationMode || 'flow');
+        if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
+        
+        const et = settings.coverMode || 'note';
+        updateEmoji(et, settings.customCoverEmoji);
+        if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
+        
+        if (accentToggle) {
+            accentToggle.disabled = false;
+            accentToggle.checked = !!settings.useCustomColor;
+            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
+            if (accentToggle.checked) document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
+        }
+        updateCachedColor();
+    }
+}
+
+async function applyNovaWave95(enabled, showIntro = false) {
+    document.body.classList.toggle('win95-active', enabled);
+    const accentToggle = document.getElementById('toggle-use-custom-color');
+    
+    if (enabled) {
+        if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
+        if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
+        if (settings.cyberpunkEnabled) { saveSetting('cyberpunkEnabled', false); document.getElementById('toggle-cyberpunk').checked = false; applyCyberpunk(false); }
+        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
+        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
+
+        if (performanceMode) setPerformanceMode(false, true);
+
+        document.documentElement.setAttribute('data-theme', 'novawave95');
+        visualizerEnabled = true;
+        if (visualizerToggle) visualizerToggle.checked = true;
+        saveSetting('visualizerEnabled', true);
+        if (isPlaying) startVisualizer();
+
+        currentVisualizerStyle = 'retro'; 
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = 'retro';
+            visualizerStyleSelect.disabled = true;
+        }
+        
+        applyAnimationSetting('off'); 
+        if (animationSelect) {
+            animationSelect.value = 'off';
+            animationSelect.disabled = true;
+        }
+
+        updateEmoji('note'); 
+        if (emojiSelect) {
+            emojiSelect.value = 'note';
+            emojiSelect.disabled = true;
+        }
+        if (themeSelect) themeSelect.disabled = true;
+        
+        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
 
         if (accentToggle) {
             accentToggle.checked = false;
@@ -1713,6 +1786,13 @@ function setupEventListeners() {
         applySakuraSpirit(enabled, true);
     });
 
+    const toggleWin95 = document.getElementById('toggle-win95');
+    bind(toggleWin95, 'change', (e) => {
+        const enabled = e.target.checked;
+        saveSetting('novaWave95Enabled', enabled);
+        applyNovaWave95(enabled, true);
+    });
+
     const fpsIn = document.getElementById('fps-input');
     const updateFps = (val) => {
         let v = parseInt(val);
@@ -2204,6 +2284,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const saToggle = document.getElementById('toggle-sakura');
                 if (saToggle) saToggle.checked = true;
                 applySakuraSpirit(true);
+            } else if (settings.novaWave95Enabled) {
+                const nwToggle = document.getElementById('toggle-win95');
+                if (nwToggle) nwToggle.checked = true;
+                applyNovaWave95(true);
             } else {
                 // Only apply standard theme if no pack is active
                 if (settings.theme) {

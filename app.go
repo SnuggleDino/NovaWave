@@ -67,9 +67,10 @@ type Config struct {
 	PlaylistPosition        string   `json:"playlistPosition"`
 	PlaylistHidden          bool     `json:"playlistHidden"`
 	GradientTitleEnabled    bool     `json:"gradientTitleEnabled"`
-	ActiveIntro             string   `json:"activeIntro"`
-	SunsetEnabled           bool     `json:"sunsetEnabled"`
-	SakuraEnabled           bool     `json:"sakuraEnabled"`
+	ActiveIntro             string   `json:"activeIntro"`          // NEU
+	SunsetEnabled           bool     `json:"sunsetEnabled"`        // NEU
+	SakuraEnabled           bool     `json:"sakuraEnabled"`        // NEU
+	NovaWave95Enabled       bool     `json:"novaWave95Enabled"`    // NEU
 }
 
 // Track defines a song for the frontend
