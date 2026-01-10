@@ -64,6 +64,7 @@ export namespace main {
 	    cyberpunkEnabled: boolean;
 	    playlistPosition: string;
 	    playlistHidden: boolean;
+	    gradientTitleEnabled: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -112,6 +113,7 @@ export namespace main {
 	        this.cyberpunkEnabled = source["cyberpunkEnabled"];
 	        this.playlistPosition = source["playlistPosition"];
 	        this.playlistHidden = source["playlistHidden"];
+	        this.gradientTitleEnabled = source["gradientTitleEnabled"];
 	    }
 	}
 	export class DownloadOptions {

@@ -23,7 +23,7 @@ type App struct {
 	spotifyService *SpotifyService
 }
 
-// Config speichert alle Einstellungen
+// Config stores all settings
 type Config struct {
 	Theme                   string   `json:"theme"`
 	Volume                  float64  `json:"volume"`
@@ -66,9 +66,10 @@ type Config struct {
 	CyberpunkEnabled        bool     `json:"cyberpunkEnabled"`
 	PlaylistPosition        string   `json:"playlistPosition"`
 	PlaylistHidden          bool     `json:"playlistHidden"`
+	GradientTitleEnabled    bool     `json:"gradientTitleEnabled"` // NEU
 }
 
-// Track definiert einen Song für das Frontend
+// Track defines a song for the frontend
 type Track struct {
 	Path     string  `json:"path"`
 	Title    string  `json:"title"`
@@ -605,7 +606,7 @@ func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, err
 		return SimpleResult{Success: false, Error: "Spotify Metadata Error: " + err.Error()}, nil
 	}
 
-	// Suche auf YouTube nach "Artist - Title lyrics" für beste Ergebnisse
+	// Search on YouTube for "Artist - Title lyrics" for best results
 	searchQuery := fmt.Sprintf("ytsearch1:%s - %s lyrics", track.Artist, track.Title)
 	
 	opts := DownloadOptions{
@@ -614,6 +615,6 @@ func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, err
 		Quality:    quality,
 	}
 
-	// Wir nutzen die existierende Download-Logik
+	// We use the existing download logic
 	return a.DownloadFromYouTube(opts)
 }

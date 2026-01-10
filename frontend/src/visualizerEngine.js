@@ -1,128 +1,167 @@
-// NovaWave Visualizer Engine
-// Handles all canvas rendering and audio analysis logic
-
 export class VisualizerEngine {
-    constructor(audioElement, canvas, emojiElement, settings) {
+    constructor(audioElement, canvasElement, options = {}) {
         this.audio = audioElement;
-        this.canvas = canvas;
-        this.emojiElement = emojiElement;
-        this.ctx = canvas ? canvas.getContext('2d') : null;
-        this.settings = settings || {};
+        this.canvas = canvasElement;
+        this.ctx = this.canvas.getContext('2d');
         
+        // Options & Defaults
+        this.visualizerEnabled = options.enabled || true;
+        this.style = options.style || 'bars';
+        this.sensitivity = options.sensitivity || 1.5;
+        this.accentColor = options.accentColor || '#38bdf8';
+        this.targetFps = options.targetFps || 60;
+        this.musicEmojiEl = options.musicEmojiEl || null; // For bouncing effect
+
+        // State
+        this.isRunning = false;
         this.audioContext = null;
         this.analyser = null;
-        this.sourceNode = null;
+        this.source = null;
         this.dataArray = null;
-        this.isRunning = false;
         
+        // Effects Nodes
         this.bassFilter = null;
         this.trebleFilter = null;
         this.reverbNode = null;
         this.reverbGain = null;
-        
+
+        // Loop vars
         this.lastRenderTime = 0;
-        this.frameCount = 0;
-        this.peaks = new Array(256).fill(0);
-        
-        console.log("VisualizerEngine: Instance created", { hasCanvas: !!canvas });
+        this.animationFrameId = null;
+        this.frameCount = 0; // NEU
     }
 
     init() {
-        if (this.audioContext || !this.audio || !this.canvas) return;
-        try {
-            console.log("VisualizerEngine: Initializing AudioContext");
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            this.sourceNode = this.audioContext.createMediaElementSource(this.audio);
-            this.analyser = this.audioContext.createAnalyser();
+        if (this.audioContext) return;
 
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.audioContext = new AudioContext();
+            
+            // Create Source
+            // Note: If source is already connected elsewhere, this might fail or steal it.
+            // In main.js it was created once globally. 
+            // We assume this engine owns the source connection now.
+            if (!this.source) {
+                this.source = this.audioContext.createMediaElementSource(this.audio);
+            }
+
+            this.analyser = this.audioContext.createAnalyser();
+            
+            // Filters
             this.bassFilter = this.audioContext.createBiquadFilter();
             this.bassFilter.type = 'lowshelf';
             this.bassFilter.frequency.value = 120;
+            this.bassFilter.gain.value = 0;
 
             this.trebleFilter = this.audioContext.createBiquadFilter();
             this.trebleFilter.type = 'highshelf';
             this.trebleFilter.frequency.value = 3000;
+            this.trebleFilter.gain.value = 0;
 
+            // Reverb
             this.reverbNode = this.audioContext.createConvolver();
-            const buffer = this.createReverbBuffer(2.0);
-            if (buffer) this.reverbNode.buffer = buffer;
-            
+            this.reverbNode.buffer = this.createReverbBuffer(2.0);
             this.reverbGain = this.audioContext.createGain();
             this.reverbGain.gain.value = 0;
 
-            this.analyser.fftSize = 512;
-            this.updateAnalyserSettings();
-
             // Routing
-            this.sourceNode.connect(this.bassFilter);
+            // Source -> Bass -> Treble -> Analyser -> Destination (Dry)
+            // Treble -> Reverb -> ReverbGain -> Analyser (Wet)
+            
+            this.source.connect(this.bassFilter);
             this.bassFilter.connect(this.trebleFilter);
+            
             this.trebleFilter.connect(this.analyser);
-            this.analyser.connect(this.audioContext.destination);
-
+            
             this.trebleFilter.connect(this.reverbNode);
             this.reverbNode.connect(this.reverbGain);
             this.reverbGain.connect(this.analyser);
 
+            this.analyser.connect(this.audioContext.destination);
+
+            this.updateAnalyserSettings();
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-            console.log("VisualizerEngine: Init successful");
+
         } catch (e) {
-            console.error("VisualizerEngine: Init Error:", e);
+            console.error("VisualizerEngine init error:", e);
+            this.visualizerEnabled = false;
         }
     }
 
     createReverbBuffer(duration) {
         if (!this.audioContext) return null;
-        try {
-            const rate = this.audioContext.sampleRate || 44100;
-            const len = rate * duration;
-            const buffer = this.audioContext.createBuffer(2, len, rate);
-            for (let c = 0; c < 2; c++) {
-                const channel = buffer.getChannelData(c);
-                for (let i = 0; i < len; i++) {
-                    channel[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
-                }
+        const rate = this.audioContext.sampleRate;
+        const len = rate * duration;
+        const buffer = this.audioContext.createBuffer(2, len, rate);
+        for (let c = 0; c < 2; c++) {
+            const channel = buffer.getChannelData(c);
+            for (let i = 0; i < len; i++) {
+                channel[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
             }
-            return buffer;
-        } catch (e) { return null; }
+        }
+        return buffer;
+    }
+
+    updateSettings(newSettings) {
+        if (newSettings.style !== undefined) this.style = newSettings.style;
+        if (newSettings.sensitivity !== undefined) {
+            this.sensitivity = newSettings.sensitivity;
+            this.updateAnalyserSettings();
+        }
+        if (newSettings.accentColor !== undefined) this.accentColor = newSettings.accentColor;
+        if (newSettings.targetFps !== undefined) this.targetFps = newSettings.targetFps;
+        if (newSettings.enabled !== undefined) this.visualizerEnabled = newSettings.enabled;
+        
+        // Audio Effects
+        this.updateAudioEffects(newSettings);
+    }
+
+    updateAudioEffects(settings) {
+        if (!this.audioContext) return;
+        const t = this.audioContext.currentTime;
+
+        if (this.bassFilter && settings.bassBoostEnabled !== undefined) {
+            const bg = settings.bassBoostEnabled ? (parseFloat(settings.bassBoostValue) || 6) : 0;
+            this.bassFilter.gain.cancelScheduledValues(t);
+            this.bassFilter.gain.setTargetAtTime(bg, t, 0.1);
+        }
+
+        if (this.trebleFilter && settings.trebleBoostEnabled !== undefined) {
+            const tg = settings.trebleBoostEnabled ? (parseFloat(settings.trebleBoostValue) || 6) : 0;
+            this.trebleFilter.gain.cancelScheduledValues(t);
+            this.trebleFilter.gain.setTargetAtTime(tg, t, 0.1);
+        }
+
+        if (this.reverbGain && settings.reverbEnabled !== undefined) {
+            const val = parseFloat(settings.reverbValue) || 30;
+            const rg = settings.reverbEnabled ? (val / 100) : 0;
+            this.reverbGain.gain.cancelScheduledValues(t);
+            this.reverbGain.gain.setTargetAtTime(rg, t, 0.1);
+        }
     }
 
     updateAnalyserSettings() {
         if (!this.analyser) return;
-        const sensitivity = this.settings.visSensitivity || 1.5;
         this.analyser.smoothingTimeConstant = 0.6;
-        this.analyser.maxDecibels = -15 - (sensitivity * 15);
+        this.analyser.fftSize = 512;
+        const dbValue = -15 - (this.sensitivity * 15);
+        this.analyser.maxDecibels = dbValue;
     }
 
-    updateAudioEffects() {
-        if (!this.audioContext) return;
-        const t = this.audioContext.currentTime;
-        
-        if (this.bassFilter) {
-            const val = this.settings.bassBoostEnabled ? (this.settings.bassBoostValue || 6) : 0;
-            this.bassFilter.gain.setTargetAtTime(val, t, 0.1);
+    resize() {
+        if (this.canvas && this.canvas.parentElement) {
+            this.canvas.width = this.canvas.parentElement.clientWidth;
+            this.canvas.height = this.canvas.parentElement.clientHeight;
         }
-        if (this.trebleFilter) {
-            const val = this.settings.trebleBoostEnabled ? (this.settings.trebleBoostValue || 6) : 0;
-            this.trebleFilter.gain.setTargetAtTime(val, t, 0.1);
-        }
-        if (this.reverbGain) {
-            const val = this.settings.reverbEnabled ? ((this.settings.reverbValue || 30) / 100) : 0;
-            this.reverbGain.gain.setTargetAtTime(val, t, 0.1);
-        }
-    }
-
-    updateEmojiAnimation() {
-        if (!this.emojiElement || !this.dataArray || isNaN(this.audio.currentTime)) return;
-        const blv = (this.dataArray[0] + this.dataArray[1]) / 2;
-        const fy = Math.sin(this.audio.currentTime * 2) * 10;
-        const boost = 1 + ((this.settings.visSensitivity || 1.5) * 0.1);
-        let js = (blv > 180) ? 1 + (Math.min((blv - 180) / 50, 1) * 0.15 * boost) : 1; 
-        this.emojiElement.style.transform = `translateY(${fy}px) scale(${js})`;
     }
 
     start() {
+        if (!this.visualizerEnabled) return;
         if (!this.audioContext) this.init();
-        if (this.audioContext && this.audioContext.state === 'suspended') this.audioContext.resume();
+        if (this.audioContext && this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
         if (!this.isRunning) {
             this.isRunning = true;
             this.draw();
@@ -131,120 +170,60 @@ export class VisualizerEngine {
 
     stop() {
         this.isRunning = false;
-        if (this.ctx && this.canvas) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+        if (this.ctx && this.canvas) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
     }
 
     draw() {
         if (!this.isRunning) return;
-        if (document.hidden) { requestAnimationFrame(() => this.draw()); return; }
 
+        // FPS Throttling
         const now = performance.now();
-        const targetFps = this.settings.targetFps || 60;
-        const interval = 1000 / targetFps;
-        if (now - this.lastRenderTime < interval) {
-            requestAnimationFrame(() => this.draw());
+        const interval = 1000 / this.targetFps;
+        const delta = now - this.lastRenderTime;
+
+        if (delta < interval) {
+            this.animationFrameId = requestAnimationFrame(() => this.draw());
             return;
         }
-        this.lastRenderTime = now;
-        requestAnimationFrame(() => this.draw());
 
-        if (!this.analyser || !this.ctx) return;
+        this.lastRenderTime = now - (delta % interval);
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
+        this.frameCount++; // NEU
 
-        this.analyser.getByteFrequencyData(this.dataArray);
-        this.updateEmojiAnimation();
-        
-        const { width, height } = this.canvas;
+        // Drawing
+        const width = this.canvas.width;
+        const height = this.canvas.height;
         this.ctx.clearRect(0, 0, width, height);
+
+        if (!this.analyser) return;
         
-        const ac = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38bdf8';
-        const style = this.settings.visualizerStyle || 'bars';
-        const boost = 1 + ((this.settings.visSensitivity || 1.5) * 0.1);
-        const perfMode = this.settings.performanceMode;
+        this.analyser.getByteFrequencyData(this.dataArray);
+        const boost = 1 + (this.sensitivity * 0.1);
+        const ac = this.accentColor;
 
-        if (style === 'retro') this.drawRetro(width, height, ac, boost, perfMode);
-        else if (style === 'sakura_bloom') this.drawSakura(width, height, ac, boost);
-        else if (style === 'bars') this.drawBars(width, height, ac, boost);
-        else if (style === 'waveform') this.drawWaveform(width, height, ac);
-        else if (style === 'orbit') this.drawOrbit(width, height, ac, boost);
-        else if (style === 'glitch') this.drawGlitch(width, height, ac, boost);
-        else if (style === 'zen') this.drawZen(width, height, ac, boost);
-        else if (style === 'moonlight') this.drawMoonlight(width, height, ac, boost);
-    }
+        // Styles
+        if (this.style === 'bars') this.drawBars(width, height, ac, boost);
+        else if (this.style === 'waveform') this.drawWaveform(width, height, ac);
+        else if (this.style === 'orbit') this.drawOrbit(width, height, ac, boost);
+        else if (this.style === 'glitch') this.drawGlitch(width, height, ac, boost);
+        else if (this.style === 'retro') this.drawRetro(width, height, ac, boost);
+        else if (this.style === 'sakura_bloom') this.drawSakura(width, height, ac, boost);
+        else if (this.style === 'zen') this.drawZen(width, height, ac, boost);
+        else if (this.style === 'moonlight') this.drawMoonlight(width, height, ac, boost);
 
-    drawRetro(width, height, ac, boost, perfMode) {
-        const targetRows = 18;
-        const totalBlockHeight = height / targetRows;
-        const gapY = 1.5; 
-        const blockHeight = totalBlockHeight - gapY;
-        const blockWidth = blockHeight * 5.0; 
-        const gapX = 3;
-        const totalBlockWidth = blockWidth + gapX;
-        const centerX = width / 2;
-        let maxColumns = Math.min(50, Math.ceil(centerX / totalBlockWidth) + 1);
-        const usefulDataLimit = Math.floor(this.dataArray.length * 0.5);
-
-        for (let i = 0; i < maxColumns; i++) {
-            const dataIndex = Math.floor((i / maxColumns) * usefulDataLimit); 
-            const val = this.dataArray[dataIndex] * boost;
-            const numBlocks = Math.floor((val / 255) * targetRows);
-            const xRight = centerX + (i * totalBlockWidth);
-            const xLeft = centerX - ((i + 1) * totalBlockWidth);
-
-            for (let j = 0; j < numBlocks; j++) {
-                 if (j >= targetRows) break;
-                 const y = height - ((j + 1) * totalBlockHeight);
-                 if (j >= 16) this.ctx.fillStyle = '#ff4444';      
-                 else if (j >= 12) this.ctx.fillStyle = '#ffcc00'; 
-                 else this.ctx.fillStyle = ac;                    
-
-                 if (!perfMode) {
-                    this.ctx.shadowBlur = blockHeight * 0.8; 
-                    this.ctx.shadowColor = this.ctx.fillStyle;
-                 }
-                 this.ctx.fillRect(xLeft, y, blockWidth, blockHeight);
-                 this.ctx.fillRect(xRight, y, blockWidth, blockHeight);
-            }
+        // Bouncing Emoji (Global Effect)
+        if (this.musicEmojiEl && !this.audio.paused) {
+            const blv = (this.dataArray[0] + this.dataArray[1]) / 2;
+            const fy = Math.sin(this.audio.currentTime * 2) * 10;
+            let js = (blv > 180) ? 1 + (Math.min((blv - 180) / 50, 1) * 0.15) : 1;
+            this.musicEmojiEl.style.transform = `translateY(${fy}px) scale(${js})`;
         }
-        this.ctx.shadowBlur = 0;
     }
 
-    drawSakura(width, height, ac, boost) {
-        const centerX = width / 2, centerY = height / 2;
-        const count = 14; 
-        const radiusBase = Math.min(width, height) / 3;
-        for (let i = 0; i < count; i++) {
-            const dataIdx = Math.floor((i / count) * (this.dataArray.length * 0.5));
-            const val = this.dataArray[dataIdx];
-            const angle = (i / count) * Math.PI * 2 + (Date.now() * 0.0003);
-            const drift = Math.sin(Date.now() * 0.001 + i) * 25;
-            const dist = radiusBase + (val / 255) * (radiusBase * 1.3) * boost + drift;
-            const x = centerX + Math.cos(angle) * dist;
-            const y = centerY + Math.sin(angle) * dist;
-            const size = 10 + (val / 255) * 18;
-            this.ctx.save();
-            this.ctx.translate(x, y);
-            this.ctx.rotate(angle + (Date.now() * 0.0006));
-            this.ctx.fillStyle = '#fbcfe8';
-            this.ctx.shadowBlur = 15;
-            this.ctx.shadowColor = '#fbcfe8';
-            this.ctx.globalAlpha = 0.6 + (val / 255) * 0.4;
-            for (let p = 0; p < 5; p++) {
-                this.ctx.rotate((Math.PI * 2) / 5);
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, 0);
-                this.ctx.bezierCurveTo(-size/2, -size, -size, -size/2, 0, -size*0.8);
-                this.ctx.bezierCurveTo(size, -size/2, size/2, -size, 0, 0);
-                this.ctx.fill();
-            }
-            this.ctx.beginPath();
-            this.ctx.arc(0, 0, size * 0.25, 0, Math.PI * 2);
-            this.ctx.fillStyle = '#fda4af';
-            this.ctx.fill();
-            this.ctx.restore();
-        }
-        this.ctx.globalAlpha = 1.0;
-        this.ctx.shadowBlur = 0;
-    }
+    // --- Specific Draw Methods ---
 
     drawBars(width, height, ac, boost) {
         const bl = this.dataArray.length / 2;
@@ -282,6 +261,7 @@ export class VisualizerEngine {
             this.ctx.strokeStyle = i === 0 ? ac : `${ac}44`;
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
+            
             const angle = (Date.now() * 0.001 * (i + 1)) % (Math.PI * 2);
             this.ctx.beginPath();
             this.ctx.arc(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius, 4, 0, Math.PI * 2);
@@ -298,6 +278,7 @@ export class VisualizerEngine {
             this.ctx.fillStyle = ac;
             this.ctx.globalAlpha = 0.8;
             this.ctx.fillRect(i * bw, height - bh, bw - 4, bh);
+            
             if (val > 210 && Math.random() > 0.9) {
                 this.ctx.fillStyle = "#fff";
                 this.ctx.globalAlpha = 1.0;
@@ -305,6 +286,83 @@ export class VisualizerEngine {
             }
         }
         this.ctx.globalAlpha = 1.0;
+    }
+
+    drawRetro(width, height, ac, boost) {
+        const targetRows = 18;
+        const totalBlockHeight = height / targetRows;
+        const gapY = 1.5; 
+        const blockHeight = totalBlockHeight - gapY;
+        const blockWidth = blockHeight * 5.0; 
+        const gapX = 3;
+        const totalBlockWidth = blockWidth + gapX;
+        const centerX = width / 2;
+        const maxColumns = Math.ceil(centerX / totalBlockWidth) + 1;
+        const usefulDataLimit = Math.floor(this.dataArray.length * 0.5);
+
+        for (let i = 0; i < maxColumns; i++) {
+            const dataIndex = Math.floor((i / maxColumns) * usefulDataLimit); 
+            let val = this.dataArray[dataIndex] * boost;
+            const numBlocks = Math.floor((val / 255) * targetRows);
+            const xRight = centerX + (i * totalBlockWidth);
+            const xLeft = centerX - ((i + 1) * totalBlockWidth);
+
+            for (let j = 0; j < numBlocks; j++) {
+                 if (j >= targetRows) break;
+                 const y = height - ((j + 1) * totalBlockHeight);
+                 
+                 if (j >= 16) this.ctx.fillStyle = '#ff4444';      
+                 else if (j >= 12) this.ctx.fillStyle = '#ffcc00'; 
+                 else this.ctx.fillStyle = ac;                    
+
+                 this.ctx.shadowBlur = blockHeight * 0.8; 
+                 this.ctx.shadowColor = this.ctx.fillStyle;
+                 
+                 this.ctx.fillRect(xLeft, y, blockWidth, blockHeight);
+                 this.ctx.fillRect(xRight, y, blockWidth, blockHeight);
+            }
+        }
+        this.ctx.shadowBlur = 0;
+    }
+
+    drawSakura(width, height, ac, boost) {
+        const centerX = width / 2, centerY = height / 2;
+        const count = 12;
+        const radiusBase = Math.min(width, height) / 3;
+        
+        for (let i = 0; i < count; i++) {
+            const dataIdx = Math.floor((i / count) * (this.dataArray.length * 0.5));
+            const val = this.dataArray[dataIdx];
+            const angle = (i / count) * Math.PI * 2 + (Date.now() * 0.0003);
+            const drift = Math.sin(Date.now() * 0.001 + i) * 20;
+            const dist = radiusBase + (val / 255) * (radiusBase * 1.2) * boost + drift;
+            const x = centerX + Math.cos(angle) * dist;
+            const y = centerY + Math.sin(angle) * dist;
+            const size = 8 + (val / 255) * 15;
+            
+            this.ctx.save();
+            this.ctx.translate(x, y);
+            this.ctx.rotate(angle + (Date.now() * 0.0008));
+            this.ctx.fillStyle = '#fbcfe8';
+            this.ctx.shadowBlur = 15;
+            this.ctx.shadowColor = '#fbcfe8';
+            this.ctx.globalAlpha = 0.6 + (val / 255) * 0.4;
+
+            for (let p = 0; p < 5; p++) {
+                this.ctx.rotate((Math.PI * 2) / 5);
+                this.ctx.beginPath();
+                this.ctx.ellipse(0, -size, size * 0.6, size, 0, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+            
+            this.ctx.beginPath();
+            this.ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
+            this.ctx.fillStyle = '#fda4af';
+            this.ctx.fill();
+            this.ctx.restore();
+        }
+        this.ctx.globalAlpha = 1.0;
+        this.ctx.shadowBlur = 0;
     }
 
     drawZen(width, height, ac, boost) {
@@ -328,10 +386,12 @@ export class VisualizerEngine {
         const centerX = width / 2, centerY = height / 2, moonRadius = Math.min(width, height) / 4.5;
         const blv = (this.dataArray[0] + this.dataArray[1] + this.dataArray[2]) / 3;
         const pulse = (blv / 255) * 25 * boost;
+        
         this.ctx.beginPath();
         this.ctx.arc(centerX, centerY, moonRadius + pulse + 20, 0, Math.PI * 2);
         this.ctx.fillStyle = `${ac}11`;
         this.ctx.fill();
+
         this.ctx.beginPath();
         this.ctx.arc(centerX, centerY, moonRadius + (pulse * 0.5), 0, Math.PI * 2);
         this.ctx.fillStyle = ac;
@@ -339,6 +399,7 @@ export class VisualizerEngine {
         this.ctx.shadowColor = ac;
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
+
         for (let i = 0; i < this.dataArray.length; i += 4) {
             const val = this.dataArray[i];
             if (val > 80) {
@@ -346,6 +407,7 @@ export class VisualizerEngine {
                 const orbitDist = moonRadius + 30 + (val / 255) * (width / 4);
                 const x = centerX + Math.cos(angle) * orbitDist;
                 const y = centerY + Math.sin(angle) * orbitDist;
+                
                 this.ctx.beginPath();
                 this.ctx.arc(x, y, (val / 255) * 4, 0, Math.PI * 2);
                 this.ctx.fillStyle = i % 8 === 0 ? "#fff" : ac;
@@ -354,5 +416,11 @@ export class VisualizerEngine {
                 this.ctx.globalAlpha = 1.0;
             }
         }
+    }
+
+    getAndResetFrameCount() {
+        const count = this.frameCount;
+        this.frameCount = 0;
+        return count;
     }
 }

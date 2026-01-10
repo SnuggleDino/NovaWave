@@ -238,7 +238,6 @@
         </main>
 
         <footer class="app-footer">
-            <div id="footer-left"><span id="footer-version">...</span></div>
             <div class="footer-right" style="margin-left: auto;">
                 <button id="project-info-btn" class="footer-info-btn">INFO</button>
             </div>
@@ -250,7 +249,7 @@
         <div class="glass-panel settings-modal project-info-modal" style="max-width: 450px;">
             <div class="easter-egg-glow"></div>
             <div class="settings-header">
-                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> <span class="glitch-text" data-text="Projekt Information">Projekt Information</span></h3>
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> <span class="glitch-text" data-lang-key="projectInfoTitle" data-text="INFO">Projekt Information</span></h3>
                 <button id="project-info-close-btn" class="close-modal-btn">&times;</button>
             </div>
             <div class="settings-content project-info-body">
@@ -457,6 +456,19 @@
                             </div>
                             <div class="setting-control">
                                 <input type="color" id="accent-color-picker" class="settings-color-picker">
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="gradientTitle"></strong>
+                                <p data-lang-key="gradientTitleDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-gradient-title">
+                                    <span class="slider"></span>
+                                </label>
                             </div>
                         </div>
 

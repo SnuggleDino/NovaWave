@@ -13,7 +13,7 @@ type AppMeta struct {
 // CurrentMeta speichert die aktuellen Build-Daten zentral an einem Ort
 var CurrentMeta = AppMeta{
 	Version:    "2.5.7 GO",
-	BuildDate:  "09.01.2026",
+	BuildDate:  "10.01.2026",
 	Author:     "SnuggleDino",
 	GoVersion:  "v2.9.2 (Go 1.23)",
 	GithubUser: "SnuggleDino",

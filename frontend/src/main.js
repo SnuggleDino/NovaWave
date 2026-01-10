@@ -2,6 +2,7 @@ import * as App from '../wailsjs/go/main/App.js';
 import lovingDinosImg from './assets/Two_Loving_Cute_Dinos.png';
 import lovingDinosIco from './assets/Two_Loving_Cute_Dinos.ico';
 import { translations } from './translations.js';
+import { VisualizerEngine } from './visualizerEngine.js'; // NEU
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
@@ -54,9 +55,7 @@ let activeDownloaderMode = 'youtube'; // NEU
 
 
 // Visualizer State
-let audioContext, analyser, sourceNode, bassFilter, trebleFilter, reverbNode, reverbGain, masterGain;
-let visualizerDataArray;
-let visualizerRunning = false;
+let visualizer; // Instance of VisualizerEngine
 
 // DOM Elements
 let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, mainFavoriteBtn;
@@ -70,7 +69,7 @@ let trackToDeletePath = null;
 let bassBoostToggle, bassBoostSlider, bassBoostValueEl, bassBoostContainer;
 let trebleBoostToggle, trebleBoostSlider, trebleBoostValueEl, trebleBoostContainer;
 let reverbToggle, reverbSlider, reverbValueEl, reverbContainer;
-let toggleCinemaMode, btnExportPlaylist, playlistPositionSelect;
+let toggleCinemaMode, btnExportPlaylist, playlistPositionSelect, toggleGradientTitle; // Added toggleGradientTitle
 let renderPlaylistRequestId = null;
 
 // Performance
@@ -89,6 +88,44 @@ let cachedAccentColor = '#38bdf8';
 let isStatsLoopRunning = false;
 let warmupFrames = 0;
 
+function initVisualizerEngine() {
+    if (visualizer) return;
+    // Wait until DOM elements are ready (audio & canvas)
+    if (!audio || !visualizerCanvas) return;
+
+    visualizer = new VisualizerEngine(audio, visualizerCanvas, {
+        enabled: settings.visualizerEnabled,
+        style: settings.visualizerStyle,
+        sensitivity: settings.visSensitivity,
+        accentColor: cachedAccentColor,
+        targetFps: settings.targetFps,
+        musicEmojiEl: musicEmojiEl
+    });
+    
+    // Initial Effects Update
+    visualizer.updateSettings({
+        bassBoostEnabled: settings.bassBoostEnabled,
+        bassBoostValue: settings.bassBoostValue,
+        trebleBoostEnabled: settings.trebleBoostEnabled,
+        trebleBoostValue: settings.trebleBoostValue,
+        reverbEnabled: settings.reverbEnabled,
+        reverbValue: settings.reverbValue
+    });
+}
+
+function updateAudioEffects() {
+    if (visualizer) {
+        visualizer.updateSettings({
+            bassBoostEnabled: settings.bassBoostEnabled,
+            bassBoostValue: settings.bassBoostValue,
+            trebleBoostEnabled: settings.trebleBoostEnabled,
+            trebleBoostValue: settings.trebleBoostValue,
+            reverbEnabled: settings.reverbEnabled,
+            reverbValue: settings.reverbValue
+        });
+    }
+}
+
 function saveSetting(key, value) {
     if (settings) settings[key] = value;
     windowApi.setSetting(key, value);
@@ -96,6 +133,9 @@ function saveSetting(key, value) {
 
 function updateCachedColor() {
     cachedAccentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38bdf8';
+    if (visualizer) {
+        visualizer.updateSettings({ accentColor: cachedAccentColor });
+    }
 }
 
 function updatePerformanceStats() {
@@ -120,11 +160,17 @@ function updatePerformanceStats() {
     const timeSinceLastLog = now - lastFrameTime;
     if (timeSinceLastLog >= statsInterval) {
         const appFps = Math.round((appFrameCount * 1000) / timeSinceLastLog);
-        fps = Math.round((frameCount * 1000) / timeSinceLastLog);
+        
+        // Get FPS from Engine
+        let visFps = 0;
+        if (visualizer) {
+            visFps = Math.round((visualizer.getAndResetFrameCount() * 1000) / timeSinceLastLog);
+        }
+        fps = visFps; // Update global var for stats display
         
         // Rolling average for stability check
         if (isPlaying && !performanceMode && visualizerEnabled) {
-            avgFps = (avgFps * 0.7) + (fps * 0.3);
+            avgFps = (avgFps * 0.7) + (visFps * 0.3);
         } else {
             avgFps = appFps; 
         }
@@ -132,7 +178,7 @@ function updatePerformanceStats() {
         const currentFrameTime = appFps > 0 ? Math.round(1000 / appFps) : 0;
         
         appFrameCount = 0;
-        frameCount = 0;
+        frameCount = 0; // Not used anymore but kept for safety
         lastFrameTime = now;
 
         if (showStatsOverlay || (avgFps < targetFps * 0.8)) {
@@ -220,12 +266,12 @@ function setPerformanceMode(enabled, silent = false) {
             applySnuggleTime(false);
         }
 
-        stopVisualizer();
+        if (visualizer) visualizer.stop();
         applyAnimationSetting('off');
         document.body.classList.add('perf-mode-active');
         if (!silent) showNotification(tr('perfModeOn'));
     } else {
-        if (isPlaying) startVisualizer();
+        if (isPlaying && visualizer) visualizer.start();
         applyAnimationSetting(settings.animationMode || 'flow');
         document.body.classList.remove('perf-mode-active');
     }
@@ -254,9 +300,9 @@ function playTrack(index) {
     audio.defaultPlaybackRate = speed;
     audio.playbackRate = speed;
     
-    // Ensure Context is running
-    if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume();
+    // Ensure Context is running (via Visualizer Engine)
+    if (visualizer && visualizer.audioContext && visualizer.audioContext.state === 'suspended') {
+        visualizer.audioContext.resume();
     }
 
     audio.play().catch(e => console.error("Error playing audio:", e));
@@ -758,7 +804,13 @@ function renderPlaylist() {
 }
 
 function applyTranslations() {
-    document.querySelectorAll('[data-lang-key]').forEach(el => { const text = tr(el.dataset.langKey); if (text) el.textContent = text; });
+    document.querySelectorAll('[data-lang-key]').forEach(el => { 
+        const text = tr(el.dataset.langKey); 
+        if (text) {
+            el.textContent = text;
+            if (el.classList.contains('glitch-text')) el.setAttribute('data-text', text);
+        } 
+    });
 
     const newBadgeEl = document.getElementById('snuggle-new-badge');
     if (newBadgeEl) {
@@ -913,390 +965,15 @@ async function handleDownload() {
     }
 }
 
-function setupVisualizer() {
-    if (audioContext) return;
-    try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        sourceNode = audioContext.createMediaElementSource(audio);
-        analyser = audioContext.createAnalyser();
 
-        bassFilter = audioContext.createBiquadFilter();
-        bassFilter.type = 'lowshelf';
-        bassFilter.frequency.value = 120;
-        bassFilter.gain.value = 0;
 
-        trebleFilter = audioContext.createBiquadFilter();
-        trebleFilter.type = 'highshelf';
-        trebleFilter.frequency.value = 3000;
-        trebleFilter.gain.value = 0;
 
-        reverbNode = audioContext.createConvolver();
-        reverbNode.buffer = createReverbBuffer(2.0); 
-        reverbGain = audioContext.createGain();
-        reverbGain.gain.value = 0;
 
-        analyser.fftSize = 512;
-        updateAnalyserSettings();
 
-        // New Graph:
-        // Source -> Bass -> Treble -> Analyser -> Destination (Dry)
-        // Treble -> Reverb -> ReverbGain -> Analyser (Wet)
-        
-        sourceNode.connect(bassFilter);
-        bassFilter.connect(trebleFilter);
-        
-        // Dry Path
-        trebleFilter.connect(analyser);
-        
-        // Wet Path
-        trebleFilter.connect(reverbNode);
-        reverbNode.connect(reverbGain);
-        reverbGain.connect(analyser);
 
-        // Final Output
-        analyser.connect(audioContext.destination);
 
-        visualizerDataArray = new Uint8Array(analyser.frequencyBinCount);
-        updateAudioEffects();
-    } catch (e) { console.error("Visualizer error:", e); visualizerEnabled = false; }
-}
 
-function createReverbBuffer(duration) {
-    const rate = audioContext.sampleRate;
-    const len = rate * duration;
-    const buffer = audioContext.createBuffer(2, len, rate);
-    for (let c = 0; c < 2; c++) {
-        const channel = buffer.getChannelData(c);
-        for (let i = 0; i < len; i++) {
-            channel[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
-        }
-    }
-    return buffer;
-}
 
-function updateAudioEffects() {
-    if (!audioContext) return;
-    const t = audioContext.currentTime;
-
-    const bassOn = !!settings.bassBoostEnabled;
-    const crystalOn = !!settings.trebleBoostEnabled;
-    const reverbOn = !!settings.reverbEnabled;
-
-    if (bassFilter) {
-        const bg = bassOn ? (parseFloat(settings.bassBoostValue) || 6) : 0;
-        bassFilter.gain.cancelScheduledValues(t);
-        bassFilter.gain.setTargetAtTime(bg, t, 0.1);
-    }
-
-    if (trebleFilter) {
-        const tg = crystalOn ? (parseFloat(settings.trebleBoostValue) || 6) : 0;
-        trebleFilter.gain.cancelScheduledValues(t);
-        trebleFilter.gain.setTargetAtTime(tg, t, 0.1);
-    }
-
-    if (reverbGain) {
-        const val = parseFloat(settings.reverbValue) || 30;
-        const rg = reverbOn ? (val / 100) : 0;
-        reverbGain.gain.cancelScheduledValues(t);
-        reverbGain.gain.setTargetAtTime(rg, t, 0.1);
-    }
-
-    const mainIndicator = document.getElementById('active-features-indicator');
-    if (mainIndicator) {
-        mainIndicator.classList.toggle('active', bassOn || crystalOn || reverbOn);
-    }
-
-    const mb = document.getElementById('modal-feat-bass');
-    const mc = document.getElementById('modal-feat-crystal');
-    const mr = document.getElementById('modal-feat-reverb');
-    if (mb) mb.classList.toggle('active', bassOn);
-    if (mc) mc.classList.toggle('active', crystalOn);
-    if (mr) mr.classList.toggle('active', reverbOn);
-}
-
-function startVisualizer() {
-    if (!visualizerEnabled || !isPlaying) return;
-
-    if (!audioContext || audioContext.state === 'closed') {
-        setupVisualizer();
-        if (!audioContext) return;
-    }
-
-    if (visualizerContainer && visualizerCanvas) {
-        if (visualizerContainer.clientWidth > 0 && visualizerContainer.clientHeight > 0) {
-            visualizerCanvas.width = visualizerContainer.clientWidth;
-            visualizerCanvas.height = visualizerContainer.clientHeight;
-        }
-    }
-
-    if (visualizerRunning) return;
-
-    if (audioContext.state === 'suspended') {
-        audioContext.resume().catch(e => console.error("Resume failed", e)).finally(() => {
-            if (!visualizerRunning && isPlaying) {
-                visualizerRunning = true;
-                drawVisualizer();
-            }
-        });
-    } else {
-        visualizerRunning = true;
-        drawVisualizer();
-    }
-}
-
-function stopVisualizer() {
-    visualizerRunning = false;
-    if (visualizerCanvas) {
-        const ctx = visualizerCanvas.getContext('2d');
-        if (ctx) ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-    }
-}
-
-function updateAnalyserSettings() {
-    if (!analyser) return;
-    analyser.smoothingTimeConstant = 0.6;
-    const dbValue = -15 - (visSensitivity * 15);
-    analyser.maxDecibels = dbValue;
-}
-
-function drawVisualizer() {
-    if (!visualizerRunning || performanceMode || !visualizerEnabled || !analyser) {
-        visualizerRunning = false;
-        return;
-    }
-
-    if (!isPlaying) {
-        visualizerRunning = false;
-        return;
-    }
-
-    if (document.hidden) {
-        requestAnimationFrame(drawVisualizer);
-        return;
-    }
-
-    const now = performance.now();
-    const interval = 1000 / targetFps;
-    const delta = now - lastRenderTime;
-
-    if (delta < interval) {
-        requestAnimationFrame(drawVisualizer);
-        return;
-    }
-
-    lastRenderTime = now - (delta % interval);
-    frameCount++; 
-    requestAnimationFrame(drawVisualizer);
-
-    const ctx = visualizerCanvas.getContext('2d');
-    if (!ctx) return;
-    const { width, height } = visualizerCanvas;
-    ctx.clearRect(0, 0, width, height);
-    
-    const ac = cachedAccentColor;
-    analyser.getByteFrequencyData(visualizerDataArray); 
-    const boost = 1 + (visSensitivity * 0.1);        
-
-    if (currentVisualizerStyle === 'bars') {
-        const bl = visualizerDataArray.length / 2;
-        const bw = (width / bl) * 0.8;
-        for (let i = 0; i < bl; i++) {
-            const bh = (visualizerDataArray[i] / 255) * height * 0.8 * boost;
-            ctx.fillStyle = ac;
-            ctx.fillRect(i * (width / bl), height - bh, bw, bh);
-        }
-    } else if (currentVisualizerStyle === 'waveform') {
-        ctx.beginPath();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = ac;
-        const sliceWidth = width / visualizerDataArray.length;
-        let x = 0;
-        for (let i = 0; i < visualizerDataArray.length; i++) {
-            const v = visualizerDataArray[i] / 128.0;
-            const y = (v * height) / 2;
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-            x += sliceWidth;
-        }
-        ctx.stroke();
-    } else if (currentVisualizerStyle === 'orbit') {
-        const centerX = width / 2, centerY = height / 2;
-        for (let i = 0; i < 4; i++) {
-            const val = visualizerDataArray[i * 8];
-            const radius = (height / 6) + (val / 255) * (height / 3) * boost;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = i === 0 ? ac : `${ac}44`;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            const angle = (Date.now() * 0.001 * (i + 1)) % (Math.PI * 2);
-            ctx.beginPath();
-            ctx.arc(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius, 4, 0, Math.PI * 2);
-            ctx.fillStyle = "#fff";
-            ctx.fill();
-        }
-    } else if (currentVisualizerStyle === 'glitch') {
-        const bars = 30, bw = width / bars;
-        for (let i = 0; i < bars; i++) {
-            const val = visualizerDataArray[i * 3];
-            const bh = (val / 255) * height * 0.9 * boost;
-            ctx.fillStyle = ac;
-            ctx.globalAlpha = 0.8;
-            ctx.fillRect(i * bw, height - bh, bw - 4, bh);
-            
-            if (val > 210 && Math.random() > 0.9) {
-                ctx.fillStyle = "#fff";
-                ctx.globalAlpha = 1.0;
-                ctx.fillRect(i * bw - 5, height - bh - 10, bw + 10, 3);
-            }
-        }
-        ctx.globalAlpha = 1.0;
-    } else if (currentVisualizerStyle === 'retro') {
-        // High-Resolution & Extra-Wide Retro Mode: Filling the X-axis completely
-        const targetRows = 18;
-        const totalBlockHeight = height / targetRows;
-        const gapY = 1.5; 
-        const blockHeight = totalBlockHeight - gapY;
-        
-        // Much wider Rectangles to fill the X-axis effectively
-        const blockWidth = blockHeight * 5.0; 
-        const gapX = 3;
-        const totalBlockWidth = blockWidth + gapX;
-        
-        const centerX = width / 2;
-        // Fill entire width from center
-        const maxColumns = Math.ceil(centerX / totalBlockWidth) + 1;
-        // Focus on active frequency range (lower 50%) to ensure bars at edges move
-        const usefulDataLimit = Math.floor(visualizerDataArray.length * 0.5);
-
-        for (let i = 0; i < maxColumns; i++) {
-            const dataIndex = Math.floor((i / maxColumns) * usefulDataLimit); 
-            let val = visualizerDataArray[dataIndex] * boost;
-            
-            const numBlocks = Math.floor((val / 255) * targetRows);
-            
-            const xRight = centerX + (i * totalBlockWidth);
-            const xLeft = centerX - ((i + 1) * totalBlockWidth);
-
-            for (let j = 0; j < numBlocks; j++) {
-                 if (j >= targetRows) break;
-                 const y = height - ((j + 1) * totalBlockHeight);
-                 
-                 // Strict 12-4-2 Color Logic (6-2-1 scaled for 18 rows)
-                 if (j >= 16) ctx.fillStyle = '#ff4444';      
-                 else if (j >= 12) ctx.fillStyle = '#ffcc00'; 
-                 else ctx.fillStyle = ac;                    
-
-                 ctx.shadowBlur = blockHeight * 0.8; 
-                 ctx.shadowColor = ctx.fillStyle;
-                 
-                 ctx.fillRect(xLeft, y, blockWidth, blockHeight);
-                 ctx.fillRect(xRight, y, blockWidth, blockHeight);
-            }
-        }
-        ctx.shadowBlur = 0;
-    } else if (currentVisualizerStyle === 'sakura_bloom') {
-        const centerX = width / 2, centerY = height / 2;
-        const count = 12; // Far fewer flowers for a clearer look
-        const radiusBase = Math.min(width, height) / 3;
-        
-        for (let i = 0; i < count; i++) {
-            const dataIdx = Math.floor((i / count) * (visualizerDataArray.length * 0.5));
-            const val = visualizerDataArray[dataIdx];
-            // Added more complex movement to break the circle symmetry
-            const angle = (i / count) * Math.PI * 2 + (Date.now() * 0.0003);
-            const drift = Math.sin(Date.now() * 0.001 + i) * 20;
-            
-            const dist = radiusBase + (val / 255) * (radiusBase * 1.2) * boost + drift;
-            const x = centerX + Math.cos(angle) * dist;
-            const y = centerY + Math.sin(angle) * dist;
-            
-            const size = 8 + (val / 255) * 15;
-            
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(angle + (Date.now() * 0.0008)); // Slower rotation
-            ctx.fillStyle = '#fbcfe8';
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = '#fbcfe8';
-            ctx.globalAlpha = 0.6 + (val / 255) * 0.4;
-
-            for (let p = 0; p < 5; p++) {
-                ctx.rotate((Math.PI * 2) / 5);
-                ctx.beginPath();
-                ctx.ellipse(0, -size, size * 0.6, size, 0, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            
-            ctx.beginPath();
-            ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
-            ctx.fillStyle = '#fda4af';
-            ctx.fill();
-            
-            ctx.restore();
-        }
-        ctx.globalAlpha = 1.0;
-        ctx.shadowBlur = 0;
-    } else if (currentVisualizerStyle === 'zen') {
-
-        const centerX = width / 2, centerY = height / 2;
-        const blv = (visualizerDataArray[0] + visualizerDataArray[2]) / 2;
-        const count = 16;
-        for (let i = 0; i < count; i++) {
-            const angle = (i / count) * Math.PI * 2;
-            const dist = (blv / 255) * (height / 2.2) * boost;
-            ctx.beginPath();
-            ctx.arc(centerX + Math.cos(angle) * dist, centerY + Math.sin(angle) * dist, 4, 0, Math.PI * 2);
-            ctx.fillStyle = ac;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = ac;
-            ctx.fill();
-        }
-        ctx.shadowBlur = 0;
-    } else if (currentVisualizerStyle === 'moonlight') {
-        const centerX = width / 2, centerY = height / 2, moonRadius = Math.min(width, height) / 4.5;
-        const blv = (visualizerDataArray[0] + visualizerDataArray[1] + visualizerDataArray[2]) / 3;
-        const pulse = (blv / 255) * 25 * boost;
-        
-        // Soft Glow
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, moonRadius + pulse + 20, 0, Math.PI * 2);
-        ctx.fillStyle = `${ac}11`;
-        ctx.fill();
-
-        // The Moon
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, moonRadius + (pulse * 0.5), 0, Math.PI * 2);
-        ctx.fillStyle = ac;
-        ctx.shadowBlur = 40 + pulse;
-        ctx.shadowColor = ac;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        // Visualizer Waves (Orbiting stars)
-        for (let i = 0; i < visualizerDataArray.length; i += 4) {
-            const val = visualizerDataArray[i];
-            if (val > 80) {
-                const angle = (i / visualizerDataArray.length) * Math.PI * 2 + (Date.now() * 0.0003);
-                const orbitDist = moonRadius + 30 + (val / 255) * (width / 4);
-                const x = centerX + Math.cos(angle) * orbitDist;
-                const y = centerY + Math.sin(angle) * orbitDist;
-                
-                ctx.beginPath();
-                ctx.arc(x, y, (val / 255) * 4, 0, Math.PI * 2);
-                ctx.fillStyle = i % 8 === 0 ? "#fff" : ac;
-                ctx.globalAlpha = val / 255;
-                ctx.fill();
-                ctx.globalAlpha = 1.0;
-            }
-        }
-    }
-    if (musicEmojiEl && !isNaN(audio.currentTime)) {
-        const blv = (visualizerDataArray[0] + visualizerDataArray[1]) / 2, fy = Math.sin(audio.currentTime * 2) * 10;
-        let js = (blv > 180) ? 1 + (Math.min((blv - 180) / 50, 1) * 0.15) : 1; musicEmojiEl.style.transform = `translateY(${fy}px) scale(${js})`;
-    }
-}
 
 function applySnuggleTime(enabled, showIntro = false) {
     document.body.classList.toggle('snuggle-time-active', enabled);
@@ -1335,12 +1012,15 @@ function applySnuggleTime(enabled, showIntro = false) {
         }
 
         document.documentElement.setAttribute('data-theme', 'dinolove');
-        visualizerEnabled = true;
+        
         if (visualizerToggle) visualizerToggle.checked = true;
         windowApi.setSetting('visualizerEnabled', true);
-        if (isPlaying) startVisualizer();
+        
+        if (visualizer) {
+            visualizer.updateSettings({ enabled: true, style: 'retro' });
+            if (isPlaying) visualizer.start();
+        }
 
-        currentVisualizerStyle = 'retro';
         if (visualizerStyleSelect) {
             visualizerStyleSelect.value = 'retro';
             visualizerStyleSelect.disabled = true;
@@ -1374,9 +1054,13 @@ function applySnuggleTime(enabled, showIntro = false) {
             themeSelect.disabled = false;
         }
 
-        currentVisualizerStyle = settings.visualizerStyle || 'bars';
+        const restoredStyle = settings.visualizerStyle || 'bars';
+        if (visualizer) {
+            visualizer.updateSettings({ style: restoredStyle });
+        }
+
         if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = currentVisualizerStyle;
+            visualizerStyleSelect.value = restoredStyle;
             visualizerStyleSelect.disabled = false;
         }
         applyAnimationSetting(settings.animationMode || 'flow');
@@ -1412,15 +1096,18 @@ function setupAudioEvents() {
         document.body.classList.add('is-playing');
         updatePlayPauseUI();
         updateUIForCurrentTrack();
-        startVisualizer();
+        if (visualizer) visualizer.start();
     });
     audio.addEventListener('pause', () => {
         isPlaying = false;
         document.body.classList.remove('is-playing');
         updatePlayPauseUI();
-        stopVisualizer();
+        if (visualizer) visualizer.stop();
     });
-    audio.addEventListener('ended', () => { stopVisualizer(); if (loopMode === 'one') { audio.currentTime = 0; audio.play(); } else playNext(); });
+    audio.addEventListener('ended', () => { 
+        if (visualizer) visualizer.stop(); 
+        if (loopMode === 'one') { audio.currentTime = 0; audio.play(); } else playNext(); 
+    });
     audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); });
     audio.addEventListener('volumechange', () => { currentVolume = audio.volume; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
 }
@@ -1514,9 +1201,17 @@ async function loadSettings() {
     if (toggleEnableFocus) toggleEnableFocus.checked = settings.enableFocusMode !== false;
     if (toggleEnableDrag) toggleEnableDrag.checked = settings.enableDragAndDrop !== false;
     
-    if (toggleUseCustomColor) { 
-        toggleUseCustomColor.checked = settings.useCustomColor || false; 
-        if (accentColorContainer) accentColorContainer.style.display = settings.useCustomColor ? 'flex' : 'none'; 
+    if (toggleUseCustomColor) {
+        toggleUseCustomColor.checked = !!settings.useCustomColor;
+        if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !settings.useCustomColor);
+        if (settings.useCustomColor) {
+            document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
+        }
+    }
+    
+    if (toggleGradientTitle) {
+        toggleGradientTitle.checked = !!settings.gradientTitleEnabled;
+        document.body.classList.toggle('gradient-title-active', !!settings.gradientTitleEnabled);
     }
 
     if (toggleCinemaMode) {
@@ -1824,18 +1519,26 @@ function setupEventListeners() {
     bind(changeFolderBtn, 'click', async () => { const nf = await windowApi.selectFolder(); if (nf) { if (downloadFolderInput) downloadFolderInput.value = nf; saveSetting('downloadFolder', nf); } });  
     bind(qualitySelect, 'change', (e) => saveSetting('audioQuality', e.target.value));
     bind(visualizerToggle, 'change', (e) => {
-        visualizerEnabled = e.target.checked;
-        saveSetting('visualizerEnabled', visualizerEnabled);
-        if (visualizerEnabled) startVisualizer(); else stopVisualizer();
+        saveSetting('visualizerEnabled', e.target.checked);
+        if (visualizer) {
+            visualizer.updateSettings({ enabled: e.target.checked });
+            if (e.target.checked) visualizer.start(); else visualizer.stop();
+        }
     });
-    bind(visualizerStyleSelect, 'change', (e) => { currentVisualizerStyle = e.target.value; saveSetting('visualizerStyle', currentVisualizerStyle); });
-    bind(visualizerSensitivity, 'input', (e) => { visSensitivity = parseFloat(e.target.value); updateAnalyserSettings(); saveSetting('visSensitivity', visSensitivity); });
+    bind(visualizerStyleSelect, 'change', (e) => { 
+        saveSetting('visualizerStyle', e.target.value); 
+        if (visualizer) visualizer.updateSettings({ style: e.target.value });
+    });
+    bind(visualizerSensitivity, 'input', (e) => { 
+        const val = parseFloat(e.target.value); 
+        saveSetting('visSensitivity', val);
+        if (visualizer) visualizer.updateSettings({ sensitivity: val });
+    });
     bind($('#visualizer-sensitivity-reset-btn'), 'click', () => {
         const def = 1.5;
         if (visualizerSensitivity) visualizerSensitivity.value = def;
-        visSensitivity = def;
-        updateAnalyserSettings();
         saveSetting('visSensitivity', def);
+        if (visualizer) visualizer.updateSettings({ sensitivity: def });
     });
     bind(sleepTimerSelect, 'change', (e) => { const mins = parseInt(e.target.value); if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; } if (mins > 0) { sleepTimerId = setTimeout(() => { audio.pause(); isPlaying = false; updatePlayPauseUI(); showNotification(tr('sleepTimerStopped')); sleepTimerSelect.value = "0"; sleepTimerId = null; }, mins * 60000); showNotification(tr('sleepTimerNotify', mins)); } });
     bind(animationSelect, 'change', (e) => { const m = e.target.value; saveSetting('animationMode', m); applyAnimationSetting(m); });
@@ -2010,17 +1713,19 @@ function setupEventListeners() {
         showNotification(tr('exportSuccess'));
     });
     bind(toggleUseCustomColor, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('useCustomColor', enabled);
-        if (accentColorContainer) accentColorContainer.style.display = enabled ? 'flex' : 'none';     
-        if (enabled) {
-            const color = settings.customAccentColor || '#38bdf8';
-            document.documentElement.style.setProperty('--accent', color);
-            if (accentColorPicker) accentColorPicker.value = color;
+        saveSetting('useCustomColor', e.target.checked);
+        accentColorContainer.classList.toggle('hidden', !e.target.checked);
+        if (e.target.checked) {
+            document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
         } else {
             document.documentElement.style.removeProperty('--accent');
         }
-        setTimeout(updateCachedColor, 50);
+        updateCachedColor();
+    });
+    
+    bind(toggleGradientTitle, 'change', (e) => {
+        saveSetting('gradientTitleEnabled', e.target.checked);
+        document.body.classList.toggle('gradient-title-active', e.target.checked);
     });
     bind(emojiSelect, 'change', (e) => {
         const v = e.target.value;
@@ -2196,9 +1901,6 @@ async function loadAppMeta() {
     try {
         const meta = await windowApi.getAppMeta();
         if (meta) {
-            const footerVer = document.getElementById('footer-version');
-            if (footerVer) footerVer.textContent = meta.version;
-
             const mAuth = document.getElementById('meta-author');
             const mVer = document.getElementById('meta-version');
             const mGo = document.getElementById('meta-go-version');
@@ -2231,9 +1933,9 @@ document.addEventListener('DOMContentLoaded', () => {
     libraryOverlay = $('#library-overlay'); libraryCloseBtn = $('#library-close-btn'); loadFolderBtn = $('#load-folder-btn');
     refreshFolderBtn = $('#refresh-folder-btn'); searchInput = $('.playlist-search-input'); sortSelect = $('#sort-select');
     ytUrlInput = $('#yt-url-input'); ytNameInput = $('#yt-name-input'); downloadBtn = $('#download-btn'); 
-    spotifyUrlInput = $('#spotify-url-input'); // NEU
-    tabYtBtn = $('#tab-yt-btn'); tabSpotifyBtn = $('#tab-spotify-btn'); // NEU
-    viewYt = $('#view-youtube'); viewSpotify = $('#view-spotify'); // NEU
+    spotifyUrlInput = $('#spotify-url-input');
+    tabYtBtn = $('#tab-yt-btn'); tabSpotifyBtn = $('#tab-spotify-btn');
+    viewYt = $('#view-youtube'); viewSpotify = $('#view-spotify');
     
     downloaderOverlay = $('#downloader-overlay'); downloaderCloseBtn = $('#downloader-close-btn'); downloadStatusEl = $('.status-text');
     downloadProgressFill = $('.yt-progress-fill'); visualizerCanvas = $('#visualizer-canvas'); visualizerContainer = $('.visualizer-container');
@@ -2261,6 +1963,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadAppMeta(); // Load version info
+    initVisualizerEngine(); // Init Visualizer
+
 
 
     const userHelpOverlay = document.getElementById('user-help-overlay');
@@ -2314,6 +2018,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     accentColorPicker = $('#accent-color-picker');
     dropZone = $('#drop-zone'); toggleEnableDrag = $('#toggle-enable-drag'); toggleUseCustomColor = $('#toggle-use-custom-color');
+    toggleGradientTitle = $('#toggle-gradient-title'); // NEU
     accentColorContainer = $('#accent-color-container');
     toggleEnableFocus = $('#toggle-enable-focus'); toggleFocusModeBtn = $('#toggle-focus-mode-btn');      
     speedSlider = $('#speed-slider'); speedValue = $('#speed-value');
