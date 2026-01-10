@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="de" data-theme="blue">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-lang-key="appTitle">NovaWave</title>
     <!-- Use direct paths relative to index.html -->
-    <link rel="icon" type="image/png" href="./src/assets/icon.png">
-    <link rel="stylesheet" href="./src/style.css">
-    
+    <link rel="icon" type="image/png" href="/src/assets/icon.png">
+    <link rel="stylesheet" href="/style.css">
+
     <!-- Fix for Wails: ensure context menu disabling if needed or drag regions -->
     <style>
         /* Optional: Wails specific overrides if standard CSS isn't enough */
         body {
             /* Prevent default context menu */
-            --wails-draggable: no-drag; 
+            --wails-draggable: no-drag;
         }
     </style>
 </head>
+
 <body>
     <!-- Sleep Time Intro -->
     <div id="sleep-intro" class="sleep-intro-overlay">
@@ -26,7 +28,7 @@
 
     <!-- Snuggle Time Intro -->
     <div id="snuggle-intro" class="snuggle-intro-overlay">
-        <img src="./src/assets/Two_Loving_Cute_Dinos.png" alt="Loving Dinos" class="snuggle-intro-img">
+        <img src="/src/assets/Two_Loving_Cute_Dinos.png" alt="Loving Dinos" class="snuggle-intro-img">
         <h2 class="snuggle-intro-text">Snuggle Up!</h2>
     </div>
 
@@ -57,7 +59,12 @@
     <!-- Performance Hint (Dynamic Island Style) -->
     <div id="performance-hint" class="dynamic-island-hint">
         <div class="hint-content">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+            </svg>
             <span id="hint-text" data-lang-key="perfLagMsg">System-Lag erkannt. Performance-Mode aktivieren?</span>
             <button id="enable-perf-mode-btn">OK</button>
         </div>
@@ -65,18 +72,23 @@
 
     <!-- Stats Overlay -->
     <div id="stats-overlay" class="stats-overlay hidden">
-        <div class="stats-item"><span class="stat-label">FPS</span>: <span id="stat-fps" class="stat-value">60</span></div>
-        <div class="stats-item"><span class="stat-label" data-lang-key="statFrame">Frame</span>: <span id="stat-time" class="stat-value">16ms</span></div>
-        <div class="stats-item"><span class="stat-label" data-lang-key="statStatus">Status</span>: <span id="stat-lag" class="stat-value">Stabil</span></div>
-        <div class="stats-item"><span class="stat-label" data-lang-key="perfModeLabel">Performance</span>: <span id="stat-perf-info" class="stat-value">-</span></div>
-        <div id="debug-size-item" class="stats-item hidden"><span class="stat-label">Size</span>: <span id="stat-size" class="stat-value">0x0</span></div>
+        <div class="stats-item"><span class="stat-label">FPS</span>: <span id="stat-fps" class="stat-value">60</span>
+        </div>
+        <div class="stats-item"><span class="stat-label" data-lang-key="statFrame">Frame</span>: <span id="stat-time"
+                class="stat-value">16ms</span></div>
+        <div class="stats-item"><span class="stat-label" data-lang-key="statStatus">Status</span>: <span id="stat-lag"
+                class="stat-value">Stabil</span></div>
+        <div class="stats-item"><span class="stat-label" data-lang-key="perfModeLabel">Performance</span>: <span
+                id="stat-perf-info" class="stat-value">-</span></div>
+        <div id="debug-size-item" class="stats-item hidden"><span class="stat-label">Size</span>: <span id="stat-size"
+                class="stat-value">0x0</span></div>
     </div>
 
     <div class="app-shell">
         <!-- ================= HEADER ================= -->
         <header class="app-header">
             <div class="app-title-block">
-                <img src="./src/assets/icon.png" alt="App Icon" class="logo-icon">
+                <img src="/src/assets/icon.png" alt="App Icon" class="logo-icon">
                 <div class="app-title-text">
                     <h1 data-lang-key="appTitle">NovaWave</h1>
                     <p data-lang-key="appSubtitle">Lokal &amp; YouTube</p>
@@ -99,17 +111,40 @@
                     </div>
                 </div>
                 <div class="header-item">
-                    <button id="toggle-playlist-btn" class="control-btn" style="margin-right: 12px;" data-lang-title="playlistTitle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                    <button id="toggle-playlist-btn" class="control-btn" style="margin-right: 12px;"
+                        data-lang-title="playlistTitle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="15" y1="3" x2="15" y2="21"></line>
+                        </svg>
                     </button>
-                    <button id="user-help-btn" class="control-btn" style="margin-right: 12px;" data-lang-title="helpTitle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <button id="user-help-btn" class="control-btn" style="margin-right: 12px;"
+                        data-lang-title="helpTitle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
                     </button>
-                    <button id="toggle-downloader-btn" class="control-btn" style="margin-right: 12px;" data-lang-title="toggleDownloader">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <button id="toggle-downloader-btn" class="control-btn" style="margin-right: 12px;"
+                        data-lang-title="toggleDownloader">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
                     </button>
                     <button id="settings-btn" class="control-btn" data-lang-title="settings">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+                            </path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -121,21 +156,38 @@
                     <!-- Unified Active Features Indicator -->
                     <div id="active-features-indicator" class="active-features-container">
                         <div class="features-badge-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                            </svg>
                         </div>
                         <div class="features-minimal-modal">
-                            <div class="modal-header" data-lang-key="activeFeatures">Aktive Effekte</div> 
+                            <div class="modal-header" data-lang-key="activeFeatures">Aktive Effekte</div>
                             <div class="modal-list">
                                 <div id="modal-feat-bass" class="modal-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2"/><circle cx="12" cy="14" r="4"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect width="16" height="20" x="4" y="2" rx="2" />
+                                        <circle cx="12" cy="14" r="4" />
+                                    </svg>
                                     <span data-lang-key="bassBoost">Bass Boost</span>
                                 </div>
                                 <div id="modal-feat-crystal" class="modal-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h12l4 9-10 10L2 12l4-9z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 3h12l4 9-10 10L2 12l4-9z" />
+                                    </svg>
                                     <span data-lang-key="trebleBoost">Crystalizer</span>
                                 </div>
                                 <div id="modal-feat-reverb" class="modal-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <circle cx="12" cy="12" r="6" />
+                                        <circle cx="12" cy="12" r="2" />
+                                    </svg>
                                     <span data-lang-key="reverb">Reverb</span>
                                 </div>
                             </div>
@@ -151,15 +203,29 @@
                         <div id="title-scroll-wrapper" class="title-scroll-wrapper">
                             <h2 id="track-title-large" class="track-title-large"></h2>
                         </div>
-                        <button id="main-favorite-btn" class="fav-track-btn" style="background:none; border:none; padding:0; cursor:pointer; display:none; color: var(--text-muted); flex-shrink: 0;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <button id="main-favorite-btn" class="fav-track-btn"
+                            style="background:none; border:none; padding:0; cursor:pointer; display:none; color: var(--text-muted); flex-shrink: 0;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                </polygon>
+                            </svg>
                         </button>
                     </div>
                     <p id="track-artist-large" class="track-artist-large"></p>
                 </div>
                 <div class="visualizer-container">
-                    <div id="toggle-focus-mode-btn" class="focus-mode-btn" data-lang-title="focusMode" style="display: none;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M9 21H3v-6"></path><path d="M21 3l-7 7"></path><path d="M3 21l7-7"></path></svg>
+                    <div id="toggle-focus-mode-btn" class="focus-mode-btn" data-lang-title="focusMode"
+                        style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 3h6v6"></path>
+                            <path d="M9 21H3v-6"></path>
+                            <path d="M21 3l-7 7"></path>
+                            <path d="M3 21l7-7"></path>
+                        </svg>
                     </div>
                     <canvas id="visualizer-canvas"></canvas>
                 </div>
@@ -174,20 +240,44 @@
                 </div>
                 <div class="controls-area">
                     <button id="shuffle-btn" class="control-btn" data-lang-title="shuffle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 3 21 3 21 8"></polyline>
+                            <line x1="4" y1="20" x2="21" y2="3"></line>
+                            <polyline points="21 16 21 21 16 21"></polyline>
+                            <line x1="15" y1="15" x2="21" y2="21"></line>
+                            <line x1="4" y1="4" x2="9" y2="9"></line>
+                        </svg>
                     </button>
                     <button id="prev-btn" class="control-btn" data-lang-title="previous">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                        </svg>
                     </button>
                     <button id="play-btn" class="control-main" data-lang-title="playPause">
-                        <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                        <svg id="pause-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                        <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        <svg id="pause-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                        </svg>
                     </button>
                     <button id="next-btn" class="control-btn" data-lang-title="next">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                        </svg>
                     </button>
                     <button id="loop-btn" class="control-btn" data-lang-title="loop">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 1l4 4-4 4" />
+                            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                            <path d="M7 23l-4-4 4-4" />
+                            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                        </svg>
                     </button>
                 </div>
                 <div class="volume-control-area">
@@ -204,24 +294,40 @@
                         <div class="playlist-top-row">
                             <h2 class="panel-title" style="margin:0; border:none;" data-lang-key="playlistTitle"></h2>
                             <button id="open-library-btn" class="load-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" style="margin-right:5px;">
+                                    <path
+                                        d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
+                                    </path>
+                                </svg>
                                 <span data-lang-key="loadFolder"></span>
                             </button>
                         </div>
-                    <div class="playlist-toolbar">
-                        <button id="toggle-favorites-btn" class="extras-button" style="display: none; padding: 6px 10px; margin-right: 5px; align-items: center; justify-content: center;" data-lang-title="enableFavoritesOption">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        </button>
-                        <input type="text" class="playlist-search-input" data-lang-placeholder="searchPlaceholder">
-                        <select id="sort-select" class="playlist-sort-select">
-                            <option value="name" data-lang-key="sortNameAZ">Name A-Z</option>
-                            <option value="nameDesc" data-lang-key="sortNameZA">Name Z-A</option>
-                            <option value="newest" data-lang-key="sortNewest">Zuletzt ge&#228;ndert</option>  
-                        </select>
-                    </div>
+                        <div class="playlist-toolbar">
+                            <button id="toggle-favorites-btn" class="extras-button"
+                                style="display: none; padding: 6px 10px; margin-right: 5px; align-items: center; justify-content: center;"
+                                data-lang-title="enableFavoritesOption">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon
+                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                    </polygon>
+                                </svg>
+                            </button>
+                            <input type="text" class="playlist-search-input" data-lang-placeholder="searchPlaceholder">
+                            <select id="sort-select" class="playlist-sort-select">
+                                <option value="name" data-lang-key="sortNameAZ">Name A-Z</option>
+                                <option value="nameDesc" data-lang-key="sortNameZA">Name Z-A</option>
+                                <option value="newest" data-lang-key="sortNewest">Zuletzt ge&#228;ndert</option>
+                            </select>
+                        </div>
                         <p class="playlist-info-bar"></p>
                     </div>
-                    <div class="playlist-scroll-area"><div class="empty-state" data-lang-key="emptyPlaylist"></div></div>
+                    <div class="playlist-scroll-area">
+                        <div class="empty-state" data-lang-key="emptyPlaylist"></div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -238,7 +344,14 @@
         <div class="glass-panel settings-modal project-info-modal" style="max-width: 450px;">
             <div class="easter-egg-glow"></div>
             <div class="settings-header">
-                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> <span class="glitch-text" data-lang-key="projectInfoTitle" data-text="INFO">Projekt Information</span></h3>
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="margin-right:10px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg> <span class="glitch-text" data-lang-key="projectInfoTitle" data-text="INFO">Projekt
+                        Information</span></h3>
                 <button id="project-info-close-btn" class="close-modal-btn">&times;</button>
             </div>
             <div class="settings-content project-info-body">
@@ -281,7 +394,11 @@
     <div id="library-overlay" class="overlay-container">
         <div class="glass-panel settings-modal">
             <div class="settings-header">
-                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> <span data-lang-key="playlistTitle"></span></h3>
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="margin-right:10px;">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg> <span data-lang-key="playlistTitle"></span></h3>
                 <button id="library-close-btn" class="close-modal-btn" data-lang-title="close">&times;</button>
             </div>
             <div class="settings-content">
@@ -293,7 +410,8 @@
                             <p data-lang-key="loadFolderDesc"></p>
                         </div>
                         <div class="setting-control">
-                            <button id="load-folder-btn" class="settings-button primary-btn" data-lang-key="loadFolder"></button>
+                            <button id="load-folder-btn" class="settings-button primary-btn"
+                                data-lang-key="loadFolder"></button>
                         </div>
                     </div>
                 </div>
@@ -305,7 +423,13 @@
     <div id="downloader-overlay" class="overlay-container">
         <div class="glass-panel settings-modal">
             <div class="settings-header">
-                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> <span data-lang-key="downloaderTitle"></span></h3>
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="margin-right:10px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg> <span data-lang-key="downloaderTitle"></span></h3>
                 <button id="downloader-close-btn" class="close-modal-btn" data-lang-title="close">&times;</button>
             </div>
             <div class="settings-content">
@@ -313,11 +437,19 @@
                     <!-- Downloader Tabs -->
                     <div class="downloader-tabs">
                         <button id="tab-yt-btn" class="downloader-tab-btn active">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #ff0000; margin-right: 6px;"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor" style="color: #ff0000; margin-right: 6px;">
+                                <path
+                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                            </svg>
                             YouTube
                         </button>
                         <button id="tab-spotify-btn" class="downloader-tab-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="color: #1DB954; margin-right: 6px;"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor" style="color: #1DB954; margin-right: 6px;">
+                                <path
+                                    d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+                            </svg>
                             Spotify
                         </button>
                     </div>
@@ -326,12 +458,15 @@
                     <div id="view-youtube" class="downloader-view">
                         <div class="downloader-input-group">
                             <div class="input-wrapper">
-                                <label class="input-label" data-lang-key="ytUrlLabel">YouTube URL</label> 
-                                <input type="text" id="yt-url-input" class="settings-input" data-lang-placeholder="ytUrlPlaceholder">
+                                <label class="input-label" data-lang-key="ytUrlLabel">YouTube URL</label>
+                                <input type="text" id="yt-url-input" class="settings-input"
+                                    data-lang-placeholder="ytUrlPlaceholder">
                             </div>
                             <div class="input-wrapper">
-                                <label class="input-label" data-lang-key="renamePlaceholder">Dateiname (optional)</label>
-                                <input type="text" id="yt-name-input" class="settings-input" data-lang-placeholder="ytNamePlaceholder">
+                                <label class="input-label" data-lang-key="renamePlaceholder">Dateiname
+                                    (optional)</label>
+                                <input type="text" id="yt-name-input" class="settings-input"
+                                    data-lang-placeholder="ytNamePlaceholder">
                             </div>
                         </div>
                     </div>
@@ -340,19 +475,34 @@
                     <div id="view-spotify" class="downloader-view" style="display: none;">
                         <div class="downloader-input-group">
                             <div class="input-wrapper">
-                                <label class="input-label" data-lang-key="spotifyUrlLabel">Spotify Song URL</label> 
-                                <input type="text" id="spotify-url-input" class="settings-input" data-lang-placeholder="spotifyUrlPlaceholder">
+                                <label class="input-label" data-lang-key="spotifyUrlLabel">Spotify Song URL</label>
+                                <input type="text" id="spotify-url-input" class="settings-input"
+                                    data-lang-placeholder="spotifyUrlPlaceholder">
                             </div>
-                            <div class="info-box" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted); padding: 8px; background: rgba(255,255,255,0.05); border-radius: 6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right:5px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                                <span data-lang-key="spotifyMetadataInfo">Metadaten (Titel, Interpret) werden automatisch geladen.</span>
+                            <div class="info-box"
+                                style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted); padding: 8px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2"
+                                    style="vertical-align: middle; margin-right:5px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <span data-lang-key="spotifyMetadataInfo">Metadaten (Titel, Interpret) werden
+                                    automatisch geladen.</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="downloader-controls">
-                        <button id="download-btn" class="settings-button primary-btn download-main-btn">  
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <button id="download-btn" class="settings-button primary-btn download-main-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round" style="margin-right: 8px;">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
                             <span data-lang-key="downloadButton">Download</span>
                         </button>
                         <div class="status-container">
@@ -376,32 +526,73 @@
                 <!-- SIDEBAR NAVIGATION -->
                 <div class="settings-sidebar">
                     <button class="settings-nav-btn active" data-target="tab-appearance">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.5 1.5"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                            <path d="M2 2l7.5 1.5"></path>
+                        </svg>
                         <span data-lang-key="sectionAppearance"></span>
                     </button>
                     <button class="settings-nav-btn" data-target="tab-player">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
                         <span data-lang-key="sectionPlayer"></span>
                     </button>
                     <button class="settings-nav-btn" data-target="tab-audio">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6"/><path d="M8 18V6"/><path d="M13 18V10"/><path d="M18 18V4"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 18v-6" />
+                            <path d="M8 18V6" />
+                            <path d="M13 18V10" />
+                            <path d="M18 18V4" />
+                        </svg>
                         <span data-lang-key="sectionAudioExtras">Audio Extras</span>
                     </button>
                     <button class="settings-nav-btn" data-target="tab-downloads">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
                         <span data-lang-key="sectionDownloads"></span>
                     </button>
                     <button class="settings-nav-btn" data-target="tab-intros">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3"></path><path d="M12 15v5s3.03-.55 5-2c2.2-1.62 3-5 3-5"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z">
+                            </path>
+                            <path
+                                d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z">
+                            </path>
+                            <path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3"></path>
+                            <path d="M12 15v5s3.03-.55 5-2c2.2-1.62 3-5 3-5"></path>
+                        </svg>
                         <span data-lang-key="sectionIntros">Startup Intros</span>
                         <div id="snuggle-new-badge" class="new-badge-dancing"></div>
                     </button>
                     <button class="settings-nav-btn" data-target="tab-themepacks">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                            </path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
                         <span data-lang-key="sectionThemePacks">Theme Packs</span>
                     </button>
                     <button class="settings-nav-btn" data-target="tab-extras">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
                         <span data-lang-key="sectionExtras">Extras & Tools</span>
                     </button>
                 </div>
@@ -412,7 +603,7 @@
                     <!-- TAB 1: APPEARANCE -->
                     <div id="tab-appearance" class="settings-tab-content active">
                         <h4 class="settings-section-title"><span data-lang-key="sectionAppearance"></span></h4>
-                        
+
                         <div class="setting-item">
                             <div class="setting-label">
                                 <strong data-lang-key="theme"></strong>
@@ -420,11 +611,11 @@
                             </div>
                             <div class="setting-control">
                                 <select id="theme-select" class="settings-select">
-                                    <option value="blue" data-lang-key="themeBlue">Blue</option>      
-                                    <option value="dark" data-lang-key="themeDark">Dark</option>      
+                                    <option value="blue" data-lang-key="themeBlue">Blue</option>
+                                    <option value="dark" data-lang-key="themeDark">Dark</option>
                                     <option value="blurple" data-lang-key="themePurple">Purple</option>
-                                    <option value="darkrose" data-lang-key="themeRose">Rose</option>  
-                                    <option value="xmas" data-lang-key="themeXmas">Christmas</option> 
+                                    <option value="darkrose" data-lang-key="themeRose">Rose</option>
+                                    <option value="xmas" data-lang-key="themeXmas">Christmas</option>
                                 </select>
                             </div>
                         </div>
@@ -474,8 +665,8 @@
                                 <select id="animation-select" class="settings-select">
                                     <option value="off" data-lang-key="animOff"></option>
                                     <option value="flow" data-lang-key="animFlow"></option>
-                                    <option value="nebula" data-lang-key="animNebula"></option>       
-                                    <option value="aurora" data-lang-key="animAurora"></option>       
+                                    <option value="nebula" data-lang-key="animNebula"></option>
+                                    <option value="aurora" data-lang-key="animAurora"></option>
                                     <option value="xmas" data-lang-key="animXmas"></option>
                                 </select>
                             </div>
@@ -485,7 +676,7 @@
                     <!-- TAB 2: PLAYER -->
                     <div id="tab-player" class="settings-tab-content">
                         <h4 class="settings-section-title"><span data-lang-key="sectionPlayer"></span></h4>
-                        
+
                         <div class="setting-item">
                             <div class="setting-label">
                                 <strong data-lang-key="sleepTimer"></strong>
@@ -508,9 +699,12 @@
                             </div>
                             <div class="setting-control">
                                 <div class="action-group">
-                                    <span id="speed-value" style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">1.0x</span>
-                                    <input type="range" id="speed-slider" class="settings-range" min="0.5" max="2.0" step="0.1" value="1.0">
-                                    <button id="speed-reset-btn" class="settings-button" title="Reset Speed">&#8634;</button>
+                                    <span id="speed-value"
+                                        style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">1.0x</span>
+                                    <input type="range" id="speed-slider" class="settings-range" min="0.5" max="2.0"
+                                        step="0.1" value="1.0">
+                                    <button id="speed-reset-btn" class="settings-button"
+                                        title="Reset Speed">&#8634;</button>
                                 </div>
                             </div>
                         </div>
@@ -536,9 +730,9 @@
                             <div class="setting-control">
                                 <select id="visualizer-style-select" class="settings-select">
                                     <option value="bars" data-lang-key="visBars"></option>
-                                    <option value="waveform" data-lang-key="visWaveform"></option>        
+                                    <option value="waveform" data-lang-key="visWaveform"></option>
                                     <option value="orbit" data-lang-key="visOrbit"></option>
-                                    <option value="glitch" data-lang-key="visGlitch"></option>       
+                                    <option value="glitch" data-lang-key="visGlitch"></option>
                                     <option value="zen" data-lang-key="visZen"></option>
                                     <option value="retro" data-lang-key="visRetro"></option>
                                     <option value="sakura_bloom">Sakura Bloom</option>
@@ -553,8 +747,10 @@
                             </div>
                             <div class="setting-control">
                                 <div class="action-group">
-                                    <input type="range" id="visualizer-sensitivity" class="settings-range" min="0.5" max="4" step="0.1" value="1.5">
-                                    <button id="visualizer-sensitivity-reset-btn" class="settings-button" title="Reset Sensitivity">&#8634;</button>
+                                    <input type="range" id="visualizer-sensitivity" class="settings-range" min="0.5"
+                                        max="4" step="0.1" value="1.5">
+                                    <button id="visualizer-sensitivity-reset-btn" class="settings-button"
+                                        title="Reset Sensitivity">&#8634;</button>
                                 </div>
                             </div>
                         </div>
@@ -570,7 +766,7 @@
                                     <option value="dino" data-lang-key="emojiDino"></option>
                                     <option value="loving_dinos" data-lang-key="emojiLovingDinos">Loving Dinos</option>
                                     <option value="gift" data-lang-key="emojiGift"></option>
-                                    <option value="custom" data-lang-key="emojiCustom"></option>      
+                                    <option value="custom" data-lang-key="emojiCustom"></option>
                                 </select>
                             </div>
                         </div>
@@ -581,7 +777,8 @@
                                 <p data-lang-key="customEmojiDescription"></p>
                             </div>
                             <div class="setting-control">
-                                <input type="text" id="custom-emoji-input" class="settings-input" placeholder="&#127925;">
+                                <input type="text" id="custom-emoji-input" class="settings-input"
+                                    placeholder="&#127925;">
                             </div>
                         </div>
 
@@ -602,7 +799,7 @@
                     <!-- TAB 3: DOWNLOADS -->
                     <div id="tab-downloads" class="settings-tab-content">
                         <h4 class="settings-section-title"><span data-lang-key="sectionDownloads"></span></h4>
-                        
+
                         <div class="setting-item">
                             <div class="setting-label">
                                 <strong data-lang-key="defaultDownloadFolder"></strong>
@@ -610,8 +807,10 @@
                             </div>
                             <div class="setting-control">
                                 <div class="action-group">
-                                    <input type="text" id="default-download-folder" class="settings-input" style="max-width: 180px;" readonly>
-                                    <button id="change-download-folder-btn" class="settings-button" data-lang-key="changeButton"></button>
+                                    <input type="text" id="default-download-folder" class="settings-input"
+                                        style="max-width: 180px;" readonly>
+                                    <button id="change-download-folder-btn" class="settings-button"
+                                        data-lang-key="changeButton"></button>
                                 </div>
                             </div>
                         </div>
@@ -622,9 +821,9 @@
                                 <p data-lang-key="audioQualityDescription"></p>
                             </div>
                             <div class="setting-control">
-                                 <select id="audio-quality-select" class="settings-select">
-                                    <option value="best" data-lang-key="qualityBest"></option>        
-                                    <option value="high" data-lang-key="qualityHigh"></option>        
+                                <select id="audio-quality-select" class="settings-select">
+                                    <option value="best" data-lang-key="qualityBest"></option>
+                                    <option value="high" data-lang-key="qualityHigh"></option>
                                     <option value="standard" data-lang-key="qualityStandard"></option>
                                 </select>
                             </div>
@@ -636,7 +835,8 @@
                                 <p data-lang-key="refreshFolderDesc"></p>
                             </div>
                             <div class="setting-control">
-                                <button id="refresh-folder-btn" class="settings-button" data-lang-key="refreshFolder"></button>
+                                <button id="refresh-folder-btn" class="settings-button"
+                                    data-lang-key="refreshFolder"></button>
                             </div>
                         </div>
 
@@ -656,9 +856,10 @@
 
                     <!-- TAB: THEME PACKS -->
                     <div id="tab-themepacks" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionThemePacks">Theme Packs</span></h4>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionThemePacks">Theme Packs</span>
+                        </h4>
                         <div class="theme-grid">
-                            
+
                             <!-- Snuggle Time -->
                             <div class="theme-card" id="snuggle-pack-item">
                                 <div class="theme-preview-box preview-snuggle">
@@ -766,7 +967,8 @@
 
                     <!-- TAB 4: AUDIO EXTRAS -->
                     <div id="tab-audio" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionAudioExtras">Audio Extras</span></h4>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionAudioExtras">Audio Extras</span>
+                        </h4>
 
                         <div class="setting-item">
                             <div class="setting-label">
@@ -787,9 +989,12 @@
                             </div>
                             <div class="setting-control">
                                 <div class="action-group">
-                                    <span id="bass-boost-value" style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">6dB</span>
-                                    <input type="range" id="bass-boost-slider" class="settings-range" min="0" max="15" step="1" value="6">
-                                    <button id="bass-boost-reset-btn" class="settings-button" title="Reset Bass Boost">&#8634;</button>
+                                    <span id="bass-boost-value"
+                                        style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">6dB</span>
+                                    <input type="range" id="bass-boost-slider" class="settings-range" min="0" max="15"
+                                        step="1" value="6">
+                                    <button id="bass-boost-reset-btn" class="settings-button"
+                                        title="Reset Bass Boost">&#8634;</button>
                                 </div>
                             </div>
                         </div>
@@ -809,13 +1014,16 @@
 
                         <div class="setting-item" id="treble-boost-slider-container" style="display: none;">
                             <div class="setting-label">
-                                <strong data-lang-key="trebleBoostLevel">Treble Level</strong>        
+                                <strong data-lang-key="trebleBoostLevel">Treble Level</strong>
                             </div>
                             <div class="setting-control">
                                 <div class="action-group">
-                                    <span id="treble-boost-value" style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">6dB</span>
-                                    <input type="range" id="treble-boost-slider" class="settings-range" min="0" max="15" step="1" value="6">
-                                    <button id="treble-boost-reset-btn" class="settings-button" title="Reset Crystalizer">&#8634;</button>
+                                    <span id="treble-boost-value"
+                                        style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">6dB</span>
+                                    <input type="range" id="treble-boost-slider" class="settings-range" min="0" max="15"
+                                        step="1" value="6">
+                                    <button id="treble-boost-reset-btn" class="settings-button"
+                                        title="Reset Crystalizer">&#8634;</button>
                                 </div>
                             </div>
                         </div>
@@ -839,9 +1047,12 @@
                             </div>
                             <div class="setting-control">
                                 <div class="action-group">
-                                    <span id="reverb-value" style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">30%</span>
-                                    <input type="range" id="reverb-slider" class="settings-range" min="0" max="100" step="5" value="30">
-                                    <button id="reverb-reset-btn" class="settings-button" title="Reset Reverb">&#8634;</button>
+                                    <span id="reverb-value"
+                                        style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">30%</span>
+                                    <input type="range" id="reverb-slider" class="settings-range" min="0" max="100"
+                                        step="5" value="30">
+                                    <button id="reverb-reset-btn" class="settings-button"
+                                        title="Reset Reverb">&#8634;</button>
                                 </div>
                             </div>
                         </div>
@@ -849,7 +1060,8 @@
 
                     <!-- TAB: STARTUP INTROS -->
                     <div id="tab-intros" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionIntros">Startup Intros</span></h4>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionIntros">Startup Intros</span>
+                        </h4>
                         <div class="intro-grid">
                             <!-- Waterdrop Intro Card -->
                             <div class="intro-card active" data-intro="waterdrop">
@@ -858,10 +1070,12 @@
                                 </div>
                                 <div class="intro-info">
                                     <strong class="intro-title">Waterdrop</strong>
-                                    <p class="intro-desc" data-lang-key="introWaterdropDesc">The classic NovaWave pulse animation.</p>
+                                    <p class="intro-desc" data-lang-key="introWaterdropDesc">The classic NovaWave pulse
+                                        animation.</p>
                                 </div>
                                 <div class="intro-actions">
-                                    <button class="settings-button primary-btn apply-intro-btn" data-intro="waterdrop" data-lang-key="introApplyBtn">Apply</button>
+                                    <button class="settings-button primary-btn apply-intro-btn" data-intro="waterdrop"
+                                        data-lang-key="introApplyBtn">Apply</button>
                                 </div>
                             </div>
 
@@ -872,10 +1086,12 @@
                                 </div>
                                 <div class="intro-info">
                                     <strong class="intro-title">NovaWave 95</strong>
-                                    <p class="intro-desc" data-lang-key="introWin95Desc">Nostalgic Windows 95 style with setup feeling.</p>
+                                    <p class="intro-desc" data-lang-key="introWin95Desc">Nostalgic Windows 95 style with
+                                        setup feeling.</p>
                                 </div>
                                 <div class="intro-actions">
-                                    <button class="settings-button primary-btn apply-intro-btn" data-intro="novawave95" data-lang-key="introApplyBtn">Apply</button>
+                                    <button class="settings-button primary-btn apply-intro-btn" data-intro="novawave95"
+                                        data-lang-key="introApplyBtn">Apply</button>
                                 </div>
                             </div>
                         </div>
@@ -883,7 +1099,8 @@
 
                     <!-- TAB 5: EXTRAS -->
                     <div id="tab-extras" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionExtras">Extras & Tools</span></h4>
+                        <h4 class="settings-section-title"><span data-lang-key="sectionExtras">Extras & Tools</span>
+                        </h4>
 
                         <div class="setting-item">
                             <div class="setting-label">
@@ -900,8 +1117,9 @@
 
                         <div class="setting-item">
                             <div class="setting-label">
-                                <strong data-lang-key="perfModeLabel">Performance Mode</strong>       
-                                <p data-lang-key="perfModeDesc">Deaktiviert Visualizer und Animationen f\u00FCr maximale CPU-Schonung.</p>
+                                <strong data-lang-key="perfModeLabel">Performance Mode</strong>
+                                <p data-lang-key="perfModeDesc">Deaktiviert Visualizer und Animationen f\u00FCr maximale
+                                    CPU-Schonung.</p>
                             </div>
                             <div class="setting-control">
                                 <label class="toggle-switch">
@@ -914,16 +1132,18 @@
                         <div class="setting-item">
                             <div class="setting-label">
                                 <strong data-lang-key="fpsLimitLabel">FPS Limit</strong>
-                                <p data-lang-key="fpsLimitDesc">Begrenze die Bildrate f\u00FCr Visualizer und Animationen (15 - 120).</p>
+                                <p data-lang-key="fpsLimitDesc">Begrenze die Bildrate f\u00FCr Visualizer und
+                                    Animationen (15 - 120).</p>
                             </div>
                             <div class="setting-control">
-                                <input type="number" id="fps-input" class="settings-input" style="width: 80px; text-align: center;" min="15" max="120" placeholder="60">
+                                <input type="number" id="fps-input" class="settings-input"
+                                    style="width: 80px; text-align: center;" min="15" max="120" placeholder="60">
                             </div>
                         </div>
 
                         <div class="setting-item">
                             <div class="setting-label">
-                                <strong data-lang-key="showStatsLabel">System-Stats anzeigen</strong> 
+                                <strong data-lang-key="showStatsLabel">System-Stats anzeigen</strong>
                                 <p data-lang-key="showStatsDesc">Zeigt FPS und Performance-Daten im Hauptfenster an.</p>
                             </div>
                             <div class="setting-control">
@@ -937,7 +1157,8 @@
                         <div class="setting-item">
                             <div class="setting-label">
                                 <strong data-lang-key="enableFavoritesOption">Favorites Filter</strong>
-                                <p data-lang-key="enableFavoritesOptionDesc">Show a button to filter the playlist for favorites.</p>
+                                <p data-lang-key="enableFavoritesOptionDesc">Show a button to filter the playlist for
+                                    favorites.</p>
                             </div>
                             <div class="setting-control">
                                 <label class="toggle-switch">
@@ -962,11 +1183,12 @@
 
                         <div class="setting-item">
                             <div class="setting-label">
-                                <strong data-lang-key="exportPlaylist">Playlist Export</strong>       
+                                <strong data-lang-key="exportPlaylist">Playlist Export</strong>
                                 <p data-lang-key="exportPlaylistDesc">Speichere die aktuelle Playlist als Datei.</p>
                             </div>
                             <div class="setting-control">
-                                <button id="btn-export-playlist" class="settings-button" data-lang-key="saveBtn">Speichern</button>
+                                <button id="btn-export-playlist" class="settings-button"
+                                    data-lang-key="saveBtn">Speichern</button>
                             </div>
                         </div>
                     </div>
@@ -990,17 +1212,23 @@
     <div id="edit-title-overlay" class="overlay-container">
         <div class="glass-panel settings-modal">
             <div class="settings-header">
-                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> <span data-lang-key="editTitle"></span></h3>
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="margin-right:10px;">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg> <span data-lang-key="editTitle"></span></h3>
                 <button id="edit-title-close-btn" class="close-modal-btn" data-lang-title="close">&times;</button>
             </div>
             <div class="settings-content">
-                <div class="setting-item" style="flex-direction: column; align-items: flex-start;">       
+                <div class="setting-item" style="flex-direction: column; align-items: flex-start;">
                     <div class="setting-label" style="margin-bottom: 10px;">
                         <strong data-lang-key="editTitle"></strong>
                         <p data-lang-key="editTitleDesc"></p>
                     </div>
                     <div class="setting-control" style="width: 100%;">
-                        <input type="text" id="edit-title-input" class="settings-input" data-lang-placeholder="editTitleInputPlaceholder" placeholder="Titel eingeben...">
+                        <input type="text" id="edit-title-input" class="settings-input"
+                            data-lang-placeholder="editTitleInputPlaceholder" placeholder="Titel eingeben...">
                     </div>
                 </div>
 
@@ -1009,16 +1237,17 @@
                         <span class="edit-preview-label" data-lang-key="currentTitle"></span>
                         <span id="original-title-preview" class="edit-preview-text"></span>
                     </div>
-                    <div style="height: 1px; background: var(--border-soft); margin: 10px 0;"></div>      
+                    <div style="height: 1px; background: var(--border-soft); margin: 10px 0;"></div>
                     <div class="edit-preview-item">
                         <span class="edit-preview-label" data-lang-key="previewTitle"></span>
                         <span id="new-title-preview" class="edit-preview-text" style="color: var(--accent);"></span>
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">      
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
                     <button id="edit-title-cancel-btn" class="settings-button" data-lang-key="cancelBtn"></button>
-                    <button id="edit-title-save-btn" class="settings-button primary-btn" data-lang-key="saveBtn"></button>
+                    <button id="edit-title-save-btn" class="settings-button primary-btn"
+                        data-lang-key="saveBtn"></button>
                 </div>
             </div>
         </div>
@@ -1033,9 +1262,11 @@
             </div>
             <div class="settings-content">
                 <p class="confirm-message" data-lang-key="confirmDeleteMessage"></p>
-                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">      
-                    <button id="confirm-delete-cancel-btn" class="settings-button" data-lang-key="cancelDeleteButton"></button>
-                    <button id="confirm-delete-btn" class="settings-button primary-btn" data-lang-key="confirmDeleteButton" disabled></button>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
+                    <button id="confirm-delete-cancel-btn" class="settings-button"
+                        data-lang-key="cancelDeleteButton"></button>
+                    <button id="confirm-delete-btn" class="settings-button primary-btn"
+                        data-lang-key="confirmDeleteButton" disabled></button>
                 </div>
             </div>
         </div>
@@ -1058,49 +1289,98 @@
     <div id="user-help-overlay" class="overlay-container">
         <div class="glass-panel settings-modal" style="max-width: 500px;">
             <div class="settings-header">
-                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> <span data-lang-key="helpTitle">Hilfe &amp; Bedienung</span></h3>
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="margin-right:10px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg> <span data-lang-key="helpTitle">Hilfe &amp; Bedienung</span></h3>
                 <button id="user-help-close-btn" class="close-modal-btn">&times;</button>
             </div>
             <div class="settings-content">
                 <div class="settings-section">
-                    <h4 class="settings-section-title" data-lang-key="helpPlayback">Wiedergabe</h4>       
+                    <h4 class="settings-section-title" data-lang-key="helpPlayback">Wiedergabe</h4>
                     <ul class="help-list">
                         <li>
-                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            <span data-lang-key="helpPlayDesc">Klicke auf den Play-Button oder dr&#252;cke Leertaste.</span>
+                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            <span data-lang-key="helpPlayDesc">Klicke auf den Play-Button oder dr&#252;cke
+                                Leertaste.</span>
                         </li>
                         <li>
-                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
-                            <span data-lang-key="helpNextDesc">Nutze die Pfeiltasten f&#252;r n&#228;chsten/vorherigen Song.</span>
+                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                            <span data-lang-key="helpNextDesc">Nutze die Pfeiltasten f&#252;r n&#228;chsten/vorherigen
+                                Song.</span>
                         </li>
                         <li>
-                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m13 17 5-5-5-5"></path><path d="m6 17 5-5-5-5"></path></svg>
+                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m13 17 5-5-5-5"></path>
+                                <path d="m6 17 5-5-5-5"></path>
+                            </svg>
                             <span data-lang-key="helpSkipDesc">Halte Umschalt + Pfeiltasten zum Spulen (5s).</span>
                         </li>
                     </ul>
                 </div>
                 <div class="settings-section">
-                    <h4 class="settings-section-title" data-lang-key="helpFeatures">Funktionen</h4>       
+                    <h4 class="settings-section-title" data-lang-key="helpFeatures">Funktionen</h4>
                     <ul class="help-list">
                         <li>
-                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
                             <span data-lang-key="helpDragDesc">Ziehe Musikdateien direkt in das Fenster.</span>
                         </li>
                         <li>
-                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
-                            <span data-lang-key="helpMiniDesc">Nutze den MINI-Schalter f&#252;r den kompakten Player.</span>
+                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="3" rx="2" />
+                                <path d="M3 9h18"></path>
+                                <path d="M9 21V9"></path>
+                            </svg>
+                            <span data-lang-key="helpMiniDesc">Nutze den MINI-Schalter f&#252;r den kompakten
+                                Player.</span>
                         </li>
                         <li>
-                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                            <span data-lang-key="helpFavDesc">Deine Lieblingssongs findest du schneller, wenn du sie mit dem Stern markierst.</span>
+                            <svg class="help-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                </polygon>
+                            </svg>
+                            <span data-lang-key="helpFavDesc">Deine Lieblingssongs findest du schneller, wenn du sie mit
+                                dem Stern markierst.</span>
                         </li>
                     </ul>
                 </div>
                 <div id="help-to-settings-btn" class="help-settings-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+                        </path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
                     <span data-lang-key="helpOpenSettings">&#214;ffne die Einstellungen hier</span>
                 </div>
-                <p style="font-size: 0.9rem; color: var(--accent); text-align: center; font-weight: 600; margin-top: 10px;">NovaWave &#8226; Enjoy your Snuggle-Time</p>
+                <p
+                    style="font-size: 0.9rem; color: var(--accent); text-align: center; font-weight: 600; margin-top: 10px;">
+                    NovaWave &#8226; Enjoy your Snuggle-Time</p>
             </div>
         </div>
     </div>
@@ -1109,7 +1389,13 @@
     <div id="dev-modal-overlay" class="overlay-container">
         <div class="glass-panel settings-modal" style="max-width: 500px;">
             <div class="settings-header">
-                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="m14.5 4-5 16"></path></svg> <span data-lang-key="devTitle">Developer & Hotkey Info</span></h3>
+                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="margin-right:10px;">
+                        <path d="m18 16 4-4-4-4"></path>
+                        <path d="m6 8-4 4 4 4"></path>
+                        <path d="m14.5 4-5 16"></path>
+                    </svg> <span data-lang-key="devTitle">Developer & Hotkey Info</span></h3>
                 <button id="dev-modal-close-btn" class="close-modal-btn">&times;</button>
             </div>
             <div class="settings-content">
@@ -1118,23 +1404,23 @@
                     <div class="dev-hotkey-list">
                         <div class="dev-hotkey-item">
                             <div class="kbd-wrapper"><kbd>Space</kbd></div>
-                            <span class="hotkey-desc" data-lang-key="devPlayPause">Play / Pause</span>    
+                            <span class="hotkey-desc" data-lang-key="devPlayPause">Play / Pause</span>
                         </div>
                         <div class="dev-hotkey-item">
                             <div class="kbd-wrapper"><kbd>&#8594;</kbd></div>
-                            <span class="hotkey-desc" data-lang-key="devNextSong">N&#228;chster Song</span>   
+                            <span class="hotkey-desc" data-lang-key="devNextSong">N&#228;chster Song</span>
                         </div>
                         <div class="dev-hotkey-item">
                             <div class="kbd-wrapper"><kbd>&#8592;</kbd></div>
-                            <span class="hotkey-desc" data-lang-key="devPrevSong">Vorheriger Song</span>  
+                            <span class="hotkey-desc" data-lang-key="devPrevSong">Vorheriger Song</span>
                         </div>
                         <div class="dev-hotkey-item">
                             <div class="kbd-wrapper"><kbd>&#8593;</kbd> / <kbd>&#8595;</kbd></div>
-                            <span class="hotkey-desc" data-lang-key="devVol">Lautst&#228;rke +/-</span>       
+                            <span class="hotkey-desc" data-lang-key="devVol">Lautst&#228;rke +/-</span>
                         </div>
                         <div class="dev-hotkey-item">
                             <div class="kbd-wrapper"><kbd>Shift</kbd> + <kbd>Arrows</kbd></div>
-                            <span class="hotkey-desc" data-lang-key="devSkip">5 Sek. vor/zur&#252;ck</span>   
+                            <span class="hotkey-desc" data-lang-key="devSkip">5 Sek. vor/zur&#252;ck</span>
                         </div>
                     </div>
                 </div>
@@ -1146,16 +1432,18 @@
                             <span class="hotkey-desc" data-lang-key="devOpenMenu">Dieses Men&#252; &#246;ffnen</span>
                         </div>
                         <div class="dev-hotkey-item">
-                            <div class="kbd-wrapper"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>X</kbd></div>  
+                            <div class="kbd-wrapper"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>X</kbd></div>
                             <span class="hotkey-desc" data-lang-key="devPerfHint">Performance Hint (Island)</span>
                         </div>
                         <div class="dev-hotkey-item">
-                            <div class="kbd-wrapper"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>H</kbd></div>  
-                            <span class="hotkey-desc" data-lang-key="devWinSize">Fenstergr&#246;&#223;e Debug (Size)</span>
+                            <div class="kbd-wrapper"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>H</kbd></div>
+                            <span class="hotkey-desc" data-lang-key="devWinSize">Fenstergr&#246;&#223;e Debug
+                                (Size)</span>
                         </div>
                     </div>
                 </div>
-                <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 20px;" data-lang-key="devFooter">NovaWave Dev Console</p>
+                <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 20px;"
+                    data-lang-key="devFooter">NovaWave Dev Console</p>
             </div>
         </div>
     </div>
@@ -1163,4 +1451,5 @@
     <!-- MAIN SCRIPT -->
     <script type="module" src="./src/main.js"></script>
 </body>
+
 </html>

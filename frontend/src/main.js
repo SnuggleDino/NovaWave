@@ -2,13 +2,13 @@ import * as App from '../wailsjs/go/main/App.js';
 import lovingDinosImg from './assets/Two_Loving_Cute_Dinos.png';
 import lovingDinosIco from './assets/Two_Loving_Cute_Dinos.ico';
 import { translations } from './translations.js';
-import { VisualizerEngine } from './visualizerEngine.js'; 
-import { IntroManager } from './intro.js'; 
+import { VisualizerEngine } from './visualizerEngine.js';
+import { IntroManager } from './intro.js';
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
     getSettings: App.GetSettings,
-    getAppMeta: App.GetAppMeta,  
+    getAppMeta: App.GetAppMeta,
     setSetting: App.SetSetting,
     selectFolder: App.SelectFolder,
     selectMusicFolder: App.SelectMusicFolder,
@@ -26,7 +26,7 @@ const windowApi = {
     sendPlaybackState: App.SendPlaybackState
 };
 
-window.api = windowApi; 
+window.api = windowApi;
 
 // --- STATE & GLOBALS ---
 let playlist = [];
@@ -40,7 +40,7 @@ document.body.appendChild(audio);
 
 let currentVolume = 0.2;
 let shuffleOn = false;
-let loopMode = 'off'; 
+let loopMode = 'off';
 let currentLanguage = 'de';
 let settings = {};
 let sortMode = 'name';
@@ -52,7 +52,7 @@ let currentVisualizerStyle = 'bars';
 let visSensitivity = 1.5;
 let sleepTimerId = null;
 let lastNotifiedPath = null;
-let activeDownloaderMode = 'youtube';  
+let activeDownloaderMode = 'youtube';
 
 
 // Visualizer State
@@ -102,7 +102,7 @@ function initVisualizerEngine() {
         targetFps: settings.targetFps,
         musicEmojiEl: musicEmojiEl
     });
-    
+
     // Initial Effects Update
     visualizer.updateSettings({
         bassBoostEnabled: settings.bassBoostEnabled,
@@ -144,7 +144,7 @@ function updatePerformanceStats() {
         requestAnimationFrame(updatePerformanceStats);
         return;
     }
-    
+
     const now = performance.now();
     const interval = 1000 / targetFps;
     const statsInterval = 1000; // Recalculate stats every 1s
@@ -161,23 +161,23 @@ function updatePerformanceStats() {
     const timeSinceLastLog = now - lastFrameTime;
     if (timeSinceLastLog >= statsInterval) {
         const appFps = Math.round((appFrameCount * 1000) / timeSinceLastLog);
-        
+
         // Get FPS from Engine
         let visFps = 0;
         if (visualizer) {
             visFps = Math.round((visualizer.getAndResetFrameCount() * 1000) / timeSinceLastLog);
         }
         fps = visFps; // Update global var for stats display
-        
+
         // Rolling average for stability check
         if (isPlaying && !performanceMode && visualizerEnabled) {
             avgFps = (avgFps * 0.7) + (visFps * 0.3);
         } else {
-            avgFps = appFps; 
+            avgFps = appFps;
         }
-        
+
         const currentFrameTime = appFps > 0 ? Math.round(1000 / appFps) : 0;
-        
+
         appFrameCount = 0;
         frameCount = 0; // Not used anymore but kept for safety
         lastFrameTime = now;
@@ -191,7 +191,7 @@ function updatePerformanceStats() {
             if (fpsEl) {
                 const visStatus = (isPlaying && !performanceMode) ? fps : '-';
                 fpsEl.textContent = `${appFps} (${visStatus})`;
-                
+
                 if (appFps >= targetFps * 0.9) fpsEl.style.color = '#4ade80';
                 else if (appFps >= targetFps * 0.6) fpsEl.style.color = '#fbbf24';
                 else fpsEl.style.color = '#ef4444';
@@ -201,12 +201,12 @@ function updatePerformanceStats() {
 
             if (lagEl) {
                 if (performanceMode) {
-                     lagEl.textContent = tr('statPowerSave');
-                     lagEl.style.color = '#38bdf8';
+                    lagEl.textContent = tr('statPowerSave');
+                    lagEl.style.color = '#38bdf8';
                 } else if (avgFps < targetFps * 0.5) {
                     lagEl.textContent = 'LAG';
                     lagEl.style.color = '#ef4444';
-                    if (warmupFrames > 5) triggerPerformanceHint(); 
+                    if (warmupFrames > 5) triggerPerformanceHint();
                 } else if (avgFps < targetFps * 0.8) {
                     lagEl.textContent = tr('statUnstable');
                     lagEl.style.color = '#fbbf24';
@@ -226,13 +226,13 @@ function updatePerformanceStats() {
             }
         }
     }
-    
+
     if (isPlaying && !performanceMode && visualizerEnabled) {
         warmupFrames++;
     } else {
         warmupFrames = 0;
     }
-    
+
     requestAnimationFrame(updatePerformanceStats);
 }
 
@@ -287,20 +287,20 @@ function tr(key, ...args) {
 
 // --- CORE PLAYER LOGIC ---
 function playTrack(index) {
-    if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }        
+    if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
     currentIndex = index;
     const track = playlist[index];
     currentTrackPath = track.path;
     let rawPath = track.path.replace(/\\/g, '/');
     let serverPath = '/music/' + rawPath;
     let safeUrl = encodeURI(serverPath).replace(/#/g, '%23');
-    
+
     audio.src = safeUrl;
 
     const speed = speedSlider ? parseFloat(speedSlider.value) : 1.0;
     audio.defaultPlaybackRate = speed;
     audio.playbackRate = speed;
-    
+
     // Ensure Context is running (via Visualizer Engine)
     if (visualizer && visualizer.audioContext && visualizer.audioContext.state === 'suspended') {
         visualizer.audioContext.resume();
@@ -323,7 +323,7 @@ function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else pla
 async function applyCyberpunk(enabled, showIntro = false) {
     document.body.classList.toggle('cyberpunk-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
-    
+
     if (enabled) {
         // Exclusive with Snuggle Time
         if (settings.snuggleTimeEnabled) {
@@ -342,7 +342,7 @@ async function applyCyberpunk(enabled, showIntro = false) {
         // Exclusive with Sunset & Sakura
         if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
         if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
-        
+
         // Exclusive with Performance Mode
         if (performanceMode) {
             setPerformanceMode(false, true);
@@ -372,13 +372,13 @@ async function applyCyberpunk(enabled, showIntro = false) {
             animationSelect.value = 'off';
             animationSelect.disabled = true;
         }
-        updateEmoji('auto'); 
+        updateEmoji('auto');
         if (emojiSelect) {
             emojiSelect.value = 'auto';
             emojiSelect.disabled = true;
         }
         if (themeSelect) themeSelect.disabled = true;
-        
+
         if (customEmojiContainer) customEmojiContainer.style.display = 'none';
 
         if (accentToggle) {
@@ -412,7 +412,7 @@ async function applyCyberpunk(enabled, showIntro = false) {
             emojiSelect.value = et;
             emojiSelect.disabled = false;
         }
-        
+
         if (accentToggle) {
             accentToggle.disabled = false;
             accentToggle.checked = !!settings.useCustomColor;
@@ -428,13 +428,13 @@ async function applyCyberpunk(enabled, showIntro = false) {
 async function applySunsetDrive(enabled, showIntro = false) {
     document.body.classList.toggle('sunset-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
-    
+
     if (enabled) {
         if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
         if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
         if (settings.cyberpunkEnabled) { saveSetting('cyberpunkEnabled', false); document.getElementById('toggle-cyberpunk').checked = false; applyCyberpunk(false); }
         if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
-        
+
         if (performanceMode) setPerformanceMode(false, true);
 
         if (showIntro) {
@@ -451,25 +451,25 @@ async function applySunsetDrive(enabled, showIntro = false) {
         saveSetting('visualizerEnabled', true);
         if (isPlaying) startVisualizer();
 
-        currentVisualizerStyle = 'retro'; 
+        currentVisualizerStyle = 'retro';
         if (visualizerStyleSelect) {
             visualizerStyleSelect.value = 'retro';
             visualizerStyleSelect.disabled = true;
         }
-        
-        applyAnimationSetting('flow'); 
+
+        applyAnimationSetting('flow');
         if (animationSelect) {
             animationSelect.value = 'flow';
             animationSelect.disabled = true;
         }
 
-        updateEmoji('sunset_sun'); 
+        updateEmoji('sunset_sun');
         if (emojiSelect) {
             emojiSelect.value = 'sunset_sun';
             emojiSelect.disabled = true;
         }
         if (themeSelect) themeSelect.disabled = true;
-        
+
         if (customEmojiContainer) customEmojiContainer.style.display = 'none';
 
         if (accentToggle) {
@@ -486,14 +486,14 @@ async function applySunsetDrive(enabled, showIntro = false) {
 
         currentVisualizerStyle = settings.visualizerStyle || 'bars';
         if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
-        
+
         applyAnimationSetting(settings.animationMode || 'flow');
         if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
-        
+
         const et = settings.coverMode || 'note';
         updateEmoji(et, settings.customCoverEmoji);
         if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
-        
+
         if (accentToggle) {
             accentToggle.disabled = false;
             accentToggle.checked = !!settings.useCustomColor;
@@ -507,7 +507,7 @@ async function applySunsetDrive(enabled, showIntro = false) {
 async function applySakuraSpirit(enabled, showIntro = false) {
     document.body.classList.toggle('sakura-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
-    
+
     if (enabled) {
         if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
         if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
@@ -521,10 +521,10 @@ async function applySakuraSpirit(enabled, showIntro = false) {
             const intro = document.getElementById('sakura-intro');
             if (intro) {
                 intro.classList.add('visible');
-                createSakuraPetals(); 
-                setTimeout(() => { 
-                    intro.classList.remove('visible'); 
-                    stopSakuraPetals(); 
+                createSakuraPetals();
+                setTimeout(() => {
+                    intro.classList.remove('visible');
+                    stopSakuraPetals();
                 }, 4000);
             }
         }
@@ -535,28 +535,28 @@ async function applySakuraSpirit(enabled, showIntro = false) {
         saveSetting('visualizerEnabled', true);
         if (isPlaying) startVisualizer();
 
-        currentVisualizerStyle = 'sakura_bloom'; 
+        currentVisualizerStyle = 'sakura_bloom';
         if (visualizerStyleSelect) {
             visualizerStyleSelect.value = 'sakura_bloom';
             visualizerStyleSelect.disabled = true;
         }
-        
-        applyAnimationSetting('off'); 
+
+        applyAnimationSetting('off');
         if (animationSelect) {
             animationSelect.value = 'off';
             animationSelect.disabled = true;
         }
 
-        updateEmoji('sakura_flower'); 
+        updateEmoji('sakura_flower');
         if (emojiSelect) {
             emojiSelect.value = 'sakura_flower';
             emojiSelect.disabled = true;
         }
         if (themeSelect) themeSelect.disabled = true;
-        
+
         if (customEmojiContainer) {
             customEmojiContainer.style.display = 'flex';
-            if(customEmojiInput) customEmojiInput.value = '🌸';
+            if (customEmojiInput) customEmojiInput.value = '🌸';
         }
 
         if (accentToggle) {
@@ -573,14 +573,14 @@ async function applySakuraSpirit(enabled, showIntro = false) {
 
         currentVisualizerStyle = settings.visualizerStyle || 'bars';
         if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
-        
+
         applyAnimationSetting(settings.animationMode || 'flow');
         if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
-        
+
         const et = settings.coverMode || 'note';
         updateEmoji(et, settings.customCoverEmoji);
         if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
-        
+
         if (accentToggle) {
             accentToggle.disabled = false;
             accentToggle.checked = !!settings.useCustomColor;
@@ -594,7 +594,7 @@ async function applySakuraSpirit(enabled, showIntro = false) {
 async function applyNovaWave95(enabled, showIntro = false) {
     document.body.classList.toggle('win95-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
-    
+
     if (enabled) {
         if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
         if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
@@ -610,25 +610,25 @@ async function applyNovaWave95(enabled, showIntro = false) {
         saveSetting('visualizerEnabled', true);
         if (isPlaying) startVisualizer();
 
-        currentVisualizerStyle = 'retro'; 
+        currentVisualizerStyle = 'retro';
         if (visualizerStyleSelect) {
             visualizerStyleSelect.value = 'retro';
             visualizerStyleSelect.disabled = true;
         }
-        
-        applyAnimationSetting('off'); 
+
+        applyAnimationSetting('off');
         if (animationSelect) {
             animationSelect.value = 'off';
             animationSelect.disabled = true;
         }
 
-        updateEmoji('note'); 
+        updateEmoji('note');
         if (emojiSelect) {
             emojiSelect.value = 'note';
             emojiSelect.disabled = true;
         }
         if (themeSelect) themeSelect.disabled = true;
-        
+
         if (customEmojiContainer) customEmojiContainer.style.display = 'none';
 
         if (accentToggle) {
@@ -645,14 +645,14 @@ async function applyNovaWave95(enabled, showIntro = false) {
 
         currentVisualizerStyle = settings.visualizerStyle || 'bars';
         if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
-        
+
         applyAnimationSetting(settings.animationMode || 'flow');
         if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
-        
+
         const et = settings.coverMode || 'note';
         updateEmoji(et, settings.customCoverEmoji);
         if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
-        
+
         if (accentToggle) {
             accentToggle.disabled = false;
             accentToggle.checked = !!settings.useCustomColor;
@@ -666,7 +666,7 @@ async function applyNovaWave95(enabled, showIntro = false) {
 let sakuraInterval;
 function createSakuraPetals() {
     const container = document.getElementById('sakura-falling-container');
-    if(!container) return;
+    if (!container) return;
     container.innerHTML = '';
     sakuraInterval = setInterval(() => {
         const petal = document.createElement('div');
@@ -682,16 +682,16 @@ function createSakuraPetals() {
 }
 
 function stopSakuraPetals() {
-    if(sakuraInterval) clearInterval(sakuraInterval);
+    if (sakuraInterval) clearInterval(sakuraInterval);
     const container = document.getElementById('sakura-falling-container');
-    if(container) container.innerHTML = '';
+    if (container) container.innerHTML = '';
 }
 
 function applySleepTime(enabled, showIntro = false) {
 
     document.body.classList.toggle('sleeptime-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
-    
+
     if (enabled) {
         // Exclusive with Snuggle Time
         if (settings.snuggleTimeEnabled) {
@@ -710,7 +710,7 @@ function applySleepTime(enabled, showIntro = false) {
         // Exclusive with Sunset & Sakura
         if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
         if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
-        
+
         // Exclusive with Performance Mode
         if (performanceMode) {
             setPerformanceMode(false, true);
@@ -740,13 +740,13 @@ function applySleepTime(enabled, showIntro = false) {
             animationSelect.value = 'starry';
             animationSelect.disabled = true;
         }
-        updateEmoji('moon'); 
+        updateEmoji('moon');
         if (emojiSelect) {
             emojiSelect.value = 'moon';
             emojiSelect.disabled = true;
         }
         if (themeSelect) themeSelect.disabled = true;
-        
+
         if (customEmojiContainer) customEmojiContainer.style.display = 'none';
 
         if (accentToggle) {
@@ -780,7 +780,7 @@ function applySleepTime(enabled, showIntro = false) {
             emojiSelect.value = et;
             emojiSelect.disabled = false;
         }
-        
+
         if (accentToggle) {
             accentToggle.disabled = false;
             accentToggle.checked = !!settings.useCustomColor;
@@ -826,7 +826,7 @@ function updateUIForCurrentTrack() {
     if (isPlaying && lastNotifiedPath !== track.path) { showNotification(`${tr('nowPlaying')}: ${track.title}`); lastNotifiedPath = track.path; }
 }
 
-function updatePlayPauseUI() { if (playIcon && pauseIcon) { playIcon.style.display = isPlaying ? 'none' : 'block'; pauseIcon.style.display = isPlaying ? 'block' : 'none'; } updateActiveTrackInPlaylist(); }       
+function updatePlayPauseUI() { if (playIcon && pauseIcon) { playIcon.style.display = isPlaying ? 'none' : 'block'; pauseIcon.style.display = isPlaying ? 'block' : 'none'; } updateActiveTrackInPlaylist(); }
 
 function updateActiveTrackInPlaylist() {
     if (!playlistEl) return;
@@ -872,13 +872,13 @@ function renderPlaylist() {
             fragment.appendChild(row);
         }
         playlistEl.appendChild(fragment); renderIndex = limit;
-        if (renderIndex < playlist.length) renderPlaylistRequestId = requestAnimationFrame(renderChunk);  
+        if (renderIndex < playlist.length) renderPlaylistRequestId = requestAnimationFrame(renderChunk);
     }
     renderChunk();
 }
 
 function applyTranslations() {
-    document.querySelectorAll('[data-lang-key]').forEach(el => { 
+    document.querySelectorAll('[data-lang-key]').forEach(el => {
         // Logic for intro buttons: change key based on active state
         if (el.classList.contains('apply-intro-btn')) {
             const card = el.closest('.intro-card');
@@ -888,7 +888,7 @@ function applyTranslations() {
             }
         }
 
-        const text = tr(el.dataset.langKey); 
+        const text = tr(el.dataset.langKey);
         if (text) {
             // Special case for buttons to avoid appending if multiple calls happen
             if (el.tagName === 'BUTTON') {
@@ -897,7 +897,7 @@ function applyTranslations() {
                 el.textContent = text;
             }
             if (el.classList.contains('glitch-text')) el.setAttribute('data-text', text);
-        } 
+        }
     });
 
     const newBadgeEl = document.getElementById('snuggle-new-badge');
@@ -959,12 +959,12 @@ function updateEmoji(emojiType, customEmoji) {
         emojiType = 'sakura_flower';
     }
 
-    let emoji = '🎵'; 
+    let emoji = '🎵';
     let isImage = false;
     let isHtml = false;
 
     if (emojiType === 'note') emoji = '🎵';
-    else if (emojiType === 'dino') emoji = '🦖'; 
+    else if (emojiType === 'dino') emoji = '🦖';
     else if (emojiType === 'moon') emoji = '🌙';
     else if (emojiType === 'sunset_sun') {
         emoji = '<div class="sun-cover"></div>';
@@ -982,13 +982,13 @@ function updateEmoji(emojiType, customEmoji) {
     else if (emojiType === 'custom' && customEmoji) emoji = customEmoji.trim();
 
     if (emojiType === 'auto' || emojiType === undefined) {
-       if (currentTrackPath) {
+        if (currentTrackPath) {
             let rawPath = currentTrackPath.replace(/\\/g, '/');
             let safeUrlPath = encodeURI(rawPath).replace(/#/g, '%23');
             const coverUrl = '/cover/' + safeUrlPath;
             isImage = true;
             emoji = coverUrl;
-       }
+        }
     }
 
     if (isImage) {
@@ -996,9 +996,9 @@ function updateEmoji(emojiType, customEmoji) {
         const existingImg = musicEmojiEl.querySelector('img');
         if (existingImg) {
             // Check if src ends with the emoji url
-            if(existingImg.src.endsWith(emoji.replace(/^\./, ''))) return;
+            if (existingImg.src.endsWith(emoji.replace(/^\./, ''))) return;
         }
-        
+
         musicEmojiEl.innerHTML = `<img src="${emoji}" alt="Cover" draggable="false" ondragstart="return false;" style="background: transparent !important; border: none !important; width: 100%; height: 100%; object-fit: contain;">`;
     } else if (isHtml) {
         musicEmojiEl.innerHTML = emoji;
@@ -1009,7 +1009,7 @@ function updateEmoji(emojiType, customEmoji) {
 
 async function handleDownload() {
     let url = '';
-    
+
     if (activeDownloaderMode === 'spotify') {
         url = spotifyUrlInput.value.trim();
     } else {
@@ -1044,7 +1044,7 @@ async function handleDownload() {
             downloadStatusEl.textContent = `${tr('statusError')}: ${result.error}`;
             if (downloadProgressFill) downloadProgressFill.style.width = '0%';
         }
-    } catch (err) { 
+    } catch (err) {
         downloadStatusEl.textContent = `${tr('statusError')}: ${err.message}`;
         if (downloadProgressFill) downloadProgressFill.style.width = '0%';
     } finally {
@@ -1066,7 +1066,7 @@ async function handleDownload() {
 function applySnuggleTime(enabled, showIntro = false) {
     document.body.classList.toggle('snuggle-time-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
-    
+
     if (enabled) {
         // Exclusive with Sleep Time
         if (settings.sleepTimeEnabled) {
@@ -1100,10 +1100,10 @@ function applySnuggleTime(enabled, showIntro = false) {
         }
 
         document.documentElement.setAttribute('data-theme', 'dinolove');
-        
+
         if (visualizerToggle) visualizerToggle.checked = true;
         windowApi.setSetting('visualizerEnabled', true);
-        
+
         if (visualizer) {
             visualizer.updateSettings({ enabled: true, style: 'retro' });
             if (isPlaying) visualizer.start();
@@ -1124,7 +1124,7 @@ function applySnuggleTime(enabled, showIntro = false) {
             emojiSelect.disabled = true;
         }
         if (themeSelect) themeSelect.disabled = true;
-        
+
         if (customEmojiContainer) customEmojiContainer.style.display = 'none';
 
         if (accentToggle) {
@@ -1162,7 +1162,7 @@ function applySnuggleTime(enabled, showIntro = false) {
             emojiSelect.value = et;
             emojiSelect.disabled = false;
         }
-        if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none'; 
+        if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';
 
         if (accentToggle) {
             accentToggle.disabled = false;
@@ -1177,7 +1177,7 @@ function applySnuggleTime(enabled, showIntro = false) {
 }
 
 function setupAudioEvents() {
-    audio.addEventListener('timeupdate', () => { if (!isNaN(audio.duration)) { const p = (audio.currentTime / audio.duration) * 100; if (progressFill) progressFill.style.width = `${p}%`; if (currentTimeEl) currentTimeEl.textContent = formatTime(audio.currentTime); }});
+    audio.addEventListener('timeupdate', () => { if (!isNaN(audio.duration)) { const p = (audio.currentTime / audio.duration) * 100; if (progressFill) progressFill.style.width = `${p}%`; if (currentTimeEl) currentTimeEl.textContent = formatTime(audio.currentTime); } });
     audio.addEventListener('durationchange', () => { if (durationEl) durationEl.textContent = isNaN(audio.duration) ? '0:00' : formatTime(audio.duration); });
     audio.addEventListener('play', () => {
         isPlaying = true;
@@ -1192,9 +1192,9 @@ function setupAudioEvents() {
         updatePlayPauseUI();
         if (visualizer) visualizer.stop();
     });
-    audio.addEventListener('ended', () => { 
-        if (visualizer) visualizer.stop(); 
-        if (loopMode === 'one') { audio.currentTime = 0; audio.play(); } else playNext(); 
+    audio.addEventListener('ended', () => {
+        if (visualizer) visualizer.stop();
+        if (loopMode === 'one') { audio.currentTime = 0; audio.play(); } else playNext();
     });
     audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); });
     audio.addEventListener('volumechange', () => { currentVolume = audio.volume; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
@@ -1203,7 +1203,7 @@ function setupAudioEvents() {
 async function loadSettings() {
     const s = await windowApi.getSettings();
     if (s) settings = s;
-    
+
     // Restore Language
     if (settings.language) {
         currentLanguage = settings.language;
@@ -1227,12 +1227,12 @@ async function loadSettings() {
     if (volumeSlider) volumeSlider.value = currentVolume;
     if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
 
-    shuffleOn = settings.shuffle || false; 
-    loopMode = settings.loop || 'off'; 
+    shuffleOn = settings.shuffle || false;
+    loopMode = settings.loop || 'off';
     sortMode = settings.sortMode || 'name';
 
     if (langButtons) langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
-    
+
     // Set active Intro cards BEFORE translations
     if (settings.activeIntro) {
         const introCards = document.querySelectorAll('.intro-card');
@@ -1247,18 +1247,18 @@ async function loadSettings() {
 
     if (downloadFolderInput) downloadFolderInput.value = settings.downloadFolder || '';
     if (qualitySelect) qualitySelect.value = settings.audioQuality || 'best';
-    
-    if (animationSelect) { 
-        let mode = settings.animationMode || 'flow'; 
-        animationSelect.value = mode; 
-        applyAnimationSetting(mode); 
+
+    if (animationSelect) {
+        let mode = settings.animationMode || 'flow';
+        animationSelect.value = mode;
+        applyAnimationSetting(mode);
     }
 
     if (themeSelect) themeSelect.value = settings.theme || 'blue';
     if (visualizerToggle) { visualizerToggle.checked = settings.visualizerEnabled !== false; visualizerEnabled = settings.visualizerEnabled !== false; }
     if (visualizerStyleSelect) { currentVisualizerStyle = settings.visualizerStyle || 'bars'; visualizerStyleSelect.value = currentVisualizerStyle; }
     if (visualizerSensitivity) { visSensitivity = settings.visSensitivity || 1.5; visualizerSensitivity.value = visSensitivity; }
-    
+
     if (emojiSelect) {
         const et = settings.coverMode || 'note';
         emojiSelect.value = et;
@@ -1266,7 +1266,7 @@ async function loadSettings() {
     }
 
     if (autoLoadLastFolderToggle) autoLoadLastFolderToggle.checked = settings.autoLoadLastFolder !== false;
-    
+
     // Ensure mini mode is reset or handled
     if (toggleMiniMode) {
         toggleMiniMode.checked = false;
@@ -1290,21 +1290,21 @@ async function loadSettings() {
     }
 
     if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
-    if (loopBtn) { loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); }  
+    if (loopBtn) { loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); }
 
     if (toggleFavoritesOption) {
         toggleFavoritesOption.checked = settings.enableFavoritesPlaylist || false;
         if (toggleFavoritesBtn) toggleFavoritesBtn.style.display = settings.enableFavoritesPlaylist ? 'flex' : 'none';
     }
 
-    if (toggleDeleteSongs) { 
-        toggleDeleteSongs.checked = settings.deleteSongsEnabled || false; 
-        deleteSongsEnabled = settings.deleteSongsEnabled || false; 
+    if (toggleDeleteSongs) {
+        toggleDeleteSongs.checked = settings.deleteSongsEnabled || false;
+        deleteSongsEnabled = settings.deleteSongsEnabled || false;
     }
 
     if (toggleEnableFocus) toggleEnableFocus.checked = settings.enableFocusMode !== false;
     if (toggleEnableDrag) toggleEnableDrag.checked = settings.enableDragAndDrop !== false;
-    
+
     if (toggleUseCustomColor) {
         toggleUseCustomColor.checked = !!settings.useCustomColor;
         if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !settings.useCustomColor);
@@ -1312,7 +1312,7 @@ async function loadSettings() {
             document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
         }
     }
-    
+
     if (toggleGradientTitle) {
         toggleGradientTitle.checked = !!settings.gradientTitleEnabled;
         document.body.classList.toggle('gradient-title-active', !!settings.gradientTitleEnabled);
@@ -1440,7 +1440,7 @@ function filterPlaylist(q) {
 
 function sortPlaylist(m) {
     const srt = [...basePlaylist];
-    if (m === 'name') srt.sort((a, b) => a.title.localeCompare(b.title, 'de', { numeric: true }));        
+    if (m === 'name') srt.sort((a, b) => a.title.localeCompare(b.title, 'de', { numeric: true }));
     else if (m === 'nameDesc') srt.sort((a, b) => b.title.localeCompare(a.title, 'de', { numeric: true }));
     else if (m === 'newest') srt.sort((a, b) => (b.mtime || 0) - (a.mtime || 0));
     basePlaylist = srt;
@@ -1452,12 +1452,12 @@ function showContextMenu(e, idx) {
     if (!contextMenu) return;
     if (contextMenuFavorite && playlist[idx]) {
         const isFav = favorites.includes(playlist[idx].path);
-        contextMenuFavorite.textContent = isFav ? tr('removeFromFavorites') : tr('addToFavorites');       
+        contextMenuFavorite.textContent = isFav ? tr('removeFromFavorites') : tr('addToFavorites');
     }
     contextMenu.style.top = `${e.clientY}px`;
     contextMenu.style.left = `${e.clientX}px`;
     contextMenu.style.display = 'block';
-    const hcm = () => { contextMenu.style.display = 'none'; window.removeEventListener('click', hcm); };  
+    const hcm = () => { contextMenu.style.display = 'none'; window.removeEventListener('click', hcm); };
     window.addEventListener('click', hcm);
 }
 
@@ -1492,7 +1492,7 @@ function setupEventListeners() {
         if (r && r.tracks) {
             basePlaylist = r.tracks;
             playlist = [...basePlaylist];
-            currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;  
+            currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
             renderPlaylist();
             updateUIForCurrentTrack();
             currentFolderPath = r.folderPath;
@@ -1509,7 +1509,7 @@ function setupEventListeners() {
             saveSetting('currentFolderPath', currentFolderPath);
             basePlaylist = r.tracks;
             sortPlaylist(sortMode);
-            if (currentTrackPath) currentIndex = playlist.findIndex(t => t.path === currentTrackPath);    
+            if (currentTrackPath) currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
             updateUIForCurrentTrack();
             settingsOverlay.classList.remove('visible');
         }
@@ -1530,7 +1530,7 @@ function setupEventListeners() {
             if (debugEl && statsOverlay) {
                 const isHidden = debugEl.classList.contains('hidden');
                 debugEl.classList.toggle('hidden', !isHidden);
-                if (isHidden) { statsOverlay.classList.remove('hidden'); updateDebugSize(); } 
+                if (isHidden) { statsOverlay.classList.remove('hidden'); updateDebugSize(); }
                 else { if (!showStatsOverlay) statsOverlay.classList.add('hidden'); }
             }
             return;
@@ -1544,11 +1544,11 @@ function setupEventListeners() {
 
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         switch (e.code) {
-            case 'Space': e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break;     
+            case 'Space': e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break;
             case 'ArrowRight': if (e.shiftKey) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); else playNext(); break;
             case 'ArrowLeft': if (e.shiftKey) audio.currentTime = Math.max(0, audio.currentTime - 5); else playPrev(); break;
-            case 'ArrowUp': e.preventDefault(); audio.volume = Math.min(1, audio.volume + 0.05); break;   
-            case 'ArrowDown': e.preventDefault(); audio.volume = Math.max(0, audio.volume - 0.05); break; 
+            case 'ArrowUp': e.preventDefault(); audio.volume = Math.min(1, audio.volume + 0.05); break;
+            case 'ArrowDown': e.preventDefault(); audio.volume = Math.max(0, audio.volume - 0.05); break;
             case 'MediaPlayPause':
             case 'MediaPlay':
             case 'MediaPause':
@@ -1577,14 +1577,16 @@ function setupEventListeners() {
         setTimeout(updateTrackTitleScroll, 300);
     });
     bind(downloadBtn, 'click', handleDownload);
-    if (langButtons) langButtons.forEach(btn => { bind(btn, 'click', () => { 
-        currentLanguage = btn.dataset.lang; 
-        document.documentElement.lang = currentLanguage;
-        langButtons.forEach(b => b.classList.remove('active')); 
-        btn.classList.add('active'); 
-        applyTranslations(); 
-        saveSetting('language', currentLanguage); 
-    }); });
+    if (langButtons) langButtons.forEach(btn => {
+        bind(btn, 'click', () => {
+            currentLanguage = btn.dataset.lang;
+            document.documentElement.lang = currentLanguage;
+            langButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            applyTranslations();
+            saveSetting('language', currentLanguage);
+        });
+    });
     bind(themeSelect, 'change', (e) => {
         const th = e.target.value;
         document.documentElement.setAttribute('data-theme', th);
@@ -1593,7 +1595,7 @@ function setupEventListeners() {
     });
     bind(accentColorPicker, 'input', (e) => {
         const color = e.target.value;
-        document.documentElement.style.setProperty('--accent', color); 
+        document.documentElement.style.setProperty('--accent', color);
         updateCachedColor();
         // Constant saving during slide might be heavy, but required for "Custom" feel
         saveSetting('customAccentColor', color);
@@ -1601,24 +1603,24 @@ function setupEventListeners() {
     bind(accentColorPicker, 'change', (e) => {
         saveSetting('customAccentColor', e.target.value);
     });
-    
+
     // Clean Wails File Drop Handler
     if (window.runtime) {
         window.runtime.EventsOn("media-key", (key) => {
-             if (key === 'playpause') {
-                 if (isPlaying) audio.pause(); else audio.play();
-             } else if (key === 'next') {
-                 playNext();
-             } else if (key === 'prev') {
-                 playPrev();
-             } else if (key === 'stop') {
-                 audio.pause();
-                 audio.currentTime = 0;
-             } else if (key === 'play') {
-                 audio.play();
-             } else if (key === 'pause') {
-                 audio.pause();
-             }
+            if (key === 'playpause') {
+                if (isPlaying) audio.pause(); else audio.play();
+            } else if (key === 'next') {
+                playNext();
+            } else if (key === 'prev') {
+                playPrev();
+            } else if (key === 'stop') {
+                audio.pause();
+                audio.currentTime = 0;
+            } else if (key === 'play') {
+                audio.play();
+            } else if (key === 'pause') {
+                audio.pause();
+            }
         });
     }
 
@@ -1627,7 +1629,7 @@ function setupEventListeners() {
     bind(sortSelect, 'change', (e) => { sortMode = e.target.value; saveSetting('sortMode', sortMode); sortPlaylist(sortMode); });
     bind(settingsBtn, 'click', () => { settingsOverlay.classList.add('visible'); });
     bind(settingsCloseBtn, 'click', () => { settingsOverlay.classList.remove('visible'); });
-    bind(changeFolderBtn, 'click', async () => { const nf = await windowApi.selectFolder(); if (nf) { if (downloadFolderInput) downloadFolderInput.value = nf; saveSetting('downloadFolder', nf); } });  
+    bind(changeFolderBtn, 'click', async () => { const nf = await windowApi.selectFolder(); if (nf) { if (downloadFolderInput) downloadFolderInput.value = nf; saveSetting('downloadFolder', nf); } });
     bind(qualitySelect, 'change', (e) => saveSetting('audioQuality', e.target.value));
     bind(visualizerToggle, 'change', (e) => {
         saveSetting('visualizerEnabled', e.target.checked);
@@ -1636,12 +1638,12 @@ function setupEventListeners() {
             if (e.target.checked) visualizer.start(); else visualizer.stop();
         }
     });
-    bind(visualizerStyleSelect, 'change', (e) => { 
-        saveSetting('visualizerStyle', e.target.value); 
+    bind(visualizerStyleSelect, 'change', (e) => {
+        saveSetting('visualizerStyle', e.target.value);
         if (visualizer) visualizer.updateSettings({ style: e.target.value });
     });
-    bind(visualizerSensitivity, 'input', (e) => { 
-        const val = parseFloat(e.target.value); 
+    bind(visualizerSensitivity, 'input', (e) => {
+        const val = parseFloat(e.target.value);
         saveSetting('visSensitivity', val);
         if (visualizer) visualizer.updateSettings({ sensitivity: val });
     });
@@ -1654,7 +1656,7 @@ function setupEventListeners() {
     bind(sleepTimerSelect, 'change', (e) => { const mins = parseInt(e.target.value); if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; } if (mins > 0) { sleepTimerId = setTimeout(() => { audio.pause(); isPlaying = false; updatePlayPauseUI(); showNotification(tr('sleepTimerStopped')); sleepTimerSelect.value = "0"; sleepTimerId = null; }, mins * 60000); showNotification(tr('sleepTimerNotify', mins)); } });
     bind(animationSelect, 'change', (e) => { const m = e.target.value; saveSetting('animationMode', m); applyAnimationSetting(m); });
     bind(autoLoadLastFolderToggle, 'change', (e) => { saveSetting('autoLoadLastFolder', e.target.checked); if (e.target.checked && currentFolderPath) saveSetting('currentFolderPath', currentFolderPath); });
-    bind(toggleEnableFocus, 'change', (e) => { saveSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });       
+    bind(toggleEnableFocus, 'change', (e) => { saveSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });
     bind(toggleFocusModeBtn, 'click', () => {
         document.body.classList.toggle('focus-active');
         if (document.body.classList.contains('focus-active')) showNotification(tr('focusActiveNotify'));
@@ -1663,8 +1665,8 @@ function setupEventListeners() {
     bind(speedSlider, 'input', (e) => {
         const v = parseFloat(e.target.value);
         audio.defaultPlaybackRate = v;
-        audio.playbackRate = v; 
-        if(speedValue) speedValue.textContent = v.toFixed(1) + 'x';
+        audio.playbackRate = v;
+        if (speedValue) speedValue.textContent = v.toFixed(1) + 'x';
         saveSetting('playbackSpeed', v);
     });
     bind($('#speed-reset-btn'), 'click', () => {
@@ -1819,8 +1821,8 @@ function setupEventListeners() {
     });
 
     bind(btnExportPlaylist, 'click', () => {
-        if (!playlist || playlist.length === 0) { showNotification(tr('emptyPlaylist')); return; }        
-        const content = playlist.map((t, i) => `${i+1}. ${t.artist || 'Unknown'} - ${t.title}`).join('\n');
+        if (!playlist || playlist.length === 0) { showNotification(tr('emptyPlaylist')); return; }
+        const content = playlist.map((t, i) => `${i + 1}. ${t.artist || 'Unknown'} - ${t.title}`).join('\n');
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1840,7 +1842,7 @@ function setupEventListeners() {
         }
         updateCachedColor();
     });
-    
+
     bind(toggleGradientTitle, 'change', (e) => {
         saveSetting('gradientTitleEnabled', e.target.checked);
         document.body.classList.toggle('gradient-title-active', e.target.checked);
@@ -1882,7 +1884,7 @@ function setupEventListeners() {
 
     bind(infoBtn, 'click', () => infoOverlay.classList.add('visible'));
     bind(infoCloseBtn, 'click', () => infoOverlay.classList.remove('visible'));
-    bind(infoOverlay, 'click', (e) => { if(e.target === infoOverlay) infoOverlay.classList.remove('visible'); });
+    bind(infoOverlay, 'click', (e) => { if (e.target === infoOverlay) infoOverlay.classList.remove('visible'); });
 
 
     function resetDownloaderUI() {
@@ -1898,7 +1900,7 @@ function setupEventListeners() {
     bind(toggleFavoritesBtn, 'click', () => {
         showingFavoritesOnly = !showingFavoritesOnly;
         toggleFavoritesBtn.classList.toggle('active', showingFavoritesOnly);
-        toggleFavoritesBtn.style.color = showingFavoritesOnly ? 'var(--accent)' : 'var(--text-main)';     
+        toggleFavoritesBtn.style.color = showingFavoritesOnly ? 'var(--accent)' : 'var(--text-main)';
         filterPlaylist(searchInput ? searchInput.value : '');
     });
 
@@ -1943,16 +1945,18 @@ function setupEventListeners() {
     bind(editTitleSaveBtn, 'click', async () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; const t = playlist[contextTrackIndex]; const nt = editTitleInput.value.trim(); if (!nt) return; const r = await windowApi.updateTitle(t.path, nt); if (r.success) { t.title = nt; const bt = basePlaylist.find(x => x.path === t.path); if (bt) bt.title = nt; renderPlaylist(); updateUIForCurrentTrack(); editTitleOverlay.classList.remove('visible'); showNotification(tr('titleUpdated')); } });
     bind(confirmDeleteCancelBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
     bind(confirmDeleteCloseBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
-    bind(confirmDeleteBtn, 'click', async () => { if (!trackToDeletePath) return; const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null; const r = await windowApi.deleteTrack(trackToDeletePath); if (r.success) {
-        basePlaylist = basePlaylist.filter(x => x.path !== trackToDeletePath);
-        playlist = playlist.filter(x => x.path !== trackToDeletePath);
-        const favIdx = favorites.indexOf(trackToDeletePath);
-        if (favIdx !== -1) {
-            favorites.splice(favIdx, 1);
-            windowApi.setSetting('favorites', favorites);
+    bind(confirmDeleteBtn, 'click', async () => {
+        if (!trackToDeletePath) return; const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null; const r = await windowApi.deleteTrack(trackToDeletePath); if (r.success) {
+            basePlaylist = basePlaylist.filter(x => x.path !== trackToDeletePath);
+            playlist = playlist.filter(x => x.path !== trackToDeletePath);
+            const favIdx = favorites.indexOf(trackToDeletePath);
+            if (favIdx !== -1) {
+                favorites.splice(favIdx, 1);
+                windowApi.setSetting('favorites', favorites);
+            }
+            if (ctp) { if (trackToDeletePath === ctp) { audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI(); } else { currentIndex = playlist.findIndex(x => x.path === ctp); } }
+            renderPlaylist(); updateUIForCurrentTrack(); confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; showNotification(tr('songDeleted'));
         }
-        if (ctp) { if (trackToDeletePath === ctp) { audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI(); } else { currentIndex = playlist.findIndex(x => x.path === ctp); } } 
-        renderPlaylist(); updateUIForCurrentTrack(); confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; showNotification(tr('songDeleted')); } 
     });
     let resTimeout; new ResizeObserver(() => { if (visualizerCanvas && visualizerContainer) { visualizerCanvas.width = visualizerContainer.clientWidth; visualizerCanvas.height = visualizerContainer.clientHeight; } }).observe(visualizerContainer);
     window.addEventListener('resize', () => {
@@ -1970,10 +1974,10 @@ function setupEventListeners() {
     });
 }
 
-function showNotification(msg) { 
-    if (!notificationBar || !notificationMessage) return; if (notificationTimeout) clearTimeout(notificationTimeout); 
-    notificationMessage.textContent = msg; notificationBar.classList.remove('visible'); void notificationBar.offsetWidth; notificationBar.classList.add('visible'); 
-    notificationTimeout = setTimeout(() => { notificationBar.classList.remove('visible'); }, 5000);       
+function showNotification(msg) {
+    if (!notificationBar || !notificationMessage) return; if (notificationTimeout) clearTimeout(notificationTimeout);
+    notificationMessage.textContent = msg; notificationBar.classList.remove('visible'); void notificationBar.offsetWidth; notificationBar.classList.add('visible');
+    notificationTimeout = setTimeout(() => { notificationBar.classList.remove('visible'); }, 5000);
 }
 
 function makeDraggable(modal, handle) {
@@ -2050,11 +2054,11 @@ document.addEventListener('DOMContentLoaded', () => {
     playlistEl = $('.playlist-scroll-area'); playlistInfoBar = $('.playlist-info-bar'); openLibraryBtn = $('#open-library-btn');
     libraryOverlay = $('#library-overlay'); libraryCloseBtn = $('#library-close-btn'); loadFolderBtn = $('#load-folder-btn');
     refreshFolderBtn = $('#refresh-folder-btn'); searchInput = $('.playlist-search-input'); sortSelect = $('#sort-select');
-    ytUrlInput = $('#yt-url-input'); ytNameInput = $('#yt-name-input'); downloadBtn = $('#download-btn'); 
+    ytUrlInput = $('#yt-url-input'); ytNameInput = $('#yt-name-input'); downloadBtn = $('#download-btn');
     spotifyUrlInput = $('#spotify-url-input');
     tabYtBtn = $('#tab-yt-btn'); tabSpotifyBtn = $('#tab-spotify-btn');
     viewYt = $('#view-youtube'); viewSpotify = $('#view-spotify');
-    
+
     downloaderOverlay = $('#downloader-overlay'); downloaderCloseBtn = $('#downloader-close-btn'); downloadStatusEl = $('.status-text');
     downloadProgressFill = $('.yt-progress-fill'); visualizerCanvas = $('#visualizer-canvas'); visualizerContainer = $('.visualizer-container');
     langButtons = document.querySelectorAll('.lang-btn'); settingsBtn = $('#settings-btn'); settingsOverlay = $('#settings-overlay');
@@ -2077,14 +2081,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const devModalOverlay = $('#dev-modal-overlay');
     const devModalCloseBtn = $('#dev-modal-close-btn');
     if (devModalCloseBtn && devModalOverlay) {
-        devModalCloseBtn.addEventListener('click', () => devModalOverlay.classList.remove('visible'));    
+        devModalCloseBtn.addEventListener('click', () => devModalOverlay.classList.remove('visible'));
     }
 
-        loadAppMeta(); // Load version info
+    loadAppMeta(); // Load version info
 
-    
 
-        const userHelpOverlay = document.getElementById('user-help-overlay');
+
+    const userHelpOverlay = document.getElementById('user-help-overlay');
     const userHelpBtn = document.getElementById('user-help-btn');
     const userHelpCloseBtn = document.getElementById('user-help-close-btn');
 
@@ -2117,11 +2121,11 @@ document.addEventListener('DOMContentLoaded', () => {
         togglePlaylistBtn.addEventListener('click', () => {
             const isHidden = document.body.classList.toggle('playlist-hidden');
             saveSetting('playlistHidden', isHidden);
-            
+
             // Update icon state (optional visual feedback)
             togglePlaylistBtn.style.color = isHidden ? 'var(--text-muted)' : 'var(--accent)';
             togglePlaylistBtn.style.borderColor = isHidden ? 'var(--border-soft)' : 'var(--accent)';
-            
+
             // Adjust resizing
             setTimeout(() => {
                 if (visualizerCanvas && visualizerContainer) {
@@ -2135,9 +2139,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     accentColorPicker = $('#accent-color-picker');
     dropZone = $('#drop-zone'); toggleEnableDrag = $('#toggle-enable-drag'); toggleUseCustomColor = $('#toggle-use-custom-color');
-    toggleGradientTitle = $('#toggle-gradient-title');  
+    toggleGradientTitle = $('#toggle-gradient-title');
     accentColorContainer = $('#accent-color-container');
-    toggleEnableFocus = $('#toggle-enable-focus'); toggleFocusModeBtn = $('#toggle-focus-mode-btn');      
+    toggleEnableFocus = $('#toggle-enable-focus'); toggleFocusModeBtn = $('#toggle-focus-mode-btn');
     speedSlider = $('#speed-slider'); speedValue = $('#speed-value');
 
     bassBoostToggle = $('#toggle-bass-boost');
@@ -2201,7 +2205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadBtn.addEventListener('click', handleDownload);
     }
 
-    const overlays = [settingsOverlay, libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay')];      
+    const overlays = [settingsOverlay, libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay')];
     overlays.forEach(ov => {
         if (ov) {
             const modal = ov.querySelector('.settings-modal');
@@ -2267,7 +2271,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function initializeApp() {
         try {
+            // Mount intro IMMEDIATELY to prevent any flash of background
+            const defaultIntroMgr = new IntroManager({ activeIntro: 'waterdrop' });
+            const existingSplash = document.getElementById('splash-screen');
+            if (existingSplash) existingSplash.remove();
+            defaultIntroMgr.activeIntro = new (defaultIntroMgr.intros['waterdrop'])();
+            defaultIntroMgr.activeIntro.mount();
+
+            // Now load settings while intro is visible
             await loadSettings();
+
+            // If user has a different intro setting, swap it now
+            const userIntroKey = settings.activeIntro || 'waterdrop';
+            if (userIntroKey !== 'waterdrop' && userIntroKey !== 'none') {
+                // Remove current default intro and mount the user's preferred one
+                defaultIntroMgr.stop();
+                await new Promise(r => setTimeout(r, 100)); // Brief pause for cleanup
+                const userIntroMgr = new IntroManager(settings);
+                await userIntroMgr.play();
+            } else if (userIntroKey === 'none') {
+                // User disabled intros - remove immediately
+                defaultIntroMgr.stop();
+            } else {
+                // Keep waterdrop running for the remaining time (4 seconds total from mount)
+                await new Promise(r => setTimeout(r, 3000)); // Remaining time
+                defaultIntroMgr.stop();
+            }
 
             // Apply Theme Packs after settings are loaded
             if (settings.snuggleTimeEnabled) {
@@ -2305,21 +2334,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-                updateCachedColor();
-            
-                audio.volume = currentVolume;
-                if (volumeSlider) volumeSlider.value = currentVolume;
-                if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
-            
-                // Init Visualizer NOW after settings are loaded
-                initVisualizerEngine();
-            
-                // Intro Manager
-                const introMgr = new IntroManager(settings);
-                const existingSplash = document.getElementById('splash-screen');
-            if (existingSplash) existingSplash.remove();
+            updateCachedColor();
 
-            await introMgr.play();
+            audio.volume = currentVolume;
+            if (volumeSlider) volumeSlider.value = currentVolume;
+            if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
+
+            // Init Visualizer NOW after settings are loaded
+            initVisualizerEngine();
+
             document.body.classList.add('ready');
 
         } catch (err) {

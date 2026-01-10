@@ -4,6 +4,7 @@ go 1.23
 
 require (
 	github.com/dhowden/tag v0.0.0-20240417053706-3d75831295e8
+	github.com/tcolgate/mp3 v0.0.0-20170426193717-e79c5a46d300
 	github.com/wailsapp/wails/v2 v2.11.0
 )
 

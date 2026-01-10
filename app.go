@@ -11,9 +11,11 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/dhowden/tag"
+	"github.com/tcolgate/mp3"
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -67,10 +69,10 @@ type Config struct {
 	PlaylistPosition        string   `json:"playlistPosition"`
 	PlaylistHidden          bool     `json:"playlistHidden"`
 	GradientTitleEnabled    bool     `json:"gradientTitleEnabled"`
-	ActiveIntro             string   `json:"activeIntro"`          // NEU
-	SunsetEnabled           bool     `json:"sunsetEnabled"`        // NEU
-	SakuraEnabled           bool     `json:"sakuraEnabled"`        // NEU
-	NovaWave95Enabled       bool     `json:"novaWave95Enabled"`    // NEU
+	ActiveIntro             string   `json:"activeIntro"`       // NEU
+	SunsetEnabled           bool     `json:"sunsetEnabled"`     // NEU
+	SakuraEnabled           bool     `json:"sakuraEnabled"`     // NEU
+	NovaWave95Enabled       bool     `json:"novaWave95Enabled"` // NEU
 }
 
 // Track defines a song for the frontend
@@ -306,6 +308,39 @@ func (a *App) SelectMusicFolder() FolderResult {
 	return a.RefreshMusicFolder(path)
 }
 
+// Helper to get the directory of the executable
+func getExecutableDir() string {
+	ex, err := os.Executable()
+	if err != nil {
+		// Fallback to working directory if executable path fails
+		cwd, _ := os.Getwd()
+		return cwd
+	}
+	return filepath.Dir(ex)
+}
+
+// getMP3Duration reads MP3 duration natively without external tools
+func getMP3Duration(path string) int {
+	f, err := os.Open(path)
+	if err != nil {
+		return 0
+	}
+	defer f.Close()
+
+	d := mp3.NewDecoder(f)
+	var totalDuration time.Duration
+	var frame mp3.Frame
+	skipped := 0
+
+	for {
+		if err := d.Decode(&frame, &skipped); err != nil {
+			break
+		}
+		totalDuration += frame.Duration()
+	}
+	return int(totalDuration.Seconds())
+}
+
 func (a *App) RefreshMusicFolder(path string) FolderResult {
 	info, err := os.Stat(path)
 	if err != nil {
@@ -336,16 +371,24 @@ func (a *App) RefreshMusicFolder(path string) FolderResult {
 			f.Close()
 		}
 
-		cwd, _ := os.Getwd()
-		ffprobePath := filepath.Join(cwd, "ffprobe.exe")
-		if _, err := os.Stat(ffprobePath); err == nil {
-			cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path)
-			cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-			out, err := cmd.Output()
-			if err == nil {
-				var dur float64
-				if _, err := fmt.Sscanf(strings.TrimSpace(string(out)), "%f", &dur); err == nil {
-					currentTrack.Duration = int(dur)
+		// Try native MP3 duration reading first
+		if strings.HasSuffix(name, ".mp3") {
+			currentTrack.Duration = getMP3Duration(path)
+		}
+
+		// Fallback to ffprobe for other formats or if native failed
+		if currentTrack.Duration == 0 {
+			execDir := getExecutableDir()
+			ffprobePath := filepath.Join(execDir, "ffprobe.exe")
+			if _, err := os.Stat(ffprobePath); err == nil {
+				cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path)
+				cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+				out, err := cmd.Output()
+				if err == nil {
+					var dur float64
+					if _, err := fmt.Sscanf(strings.TrimSpace(string(out)), "%f", &dur); err == nil {
+						currentTrack.Duration = int(dur)
+					}
 				}
 			}
 		}
@@ -370,8 +413,8 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 		return nil, err
 	}
 
-	cwd, _ := os.Getwd()
-	ffprobePath := filepath.Join(cwd, "ffprobe.exe")
+	execDir := getExecutableDir()
+	ffprobePath := filepath.Join(execDir, "ffprobe.exe")
 	hasFFprobe := false
 	if _, err := os.Stat(ffprobePath); err == nil {
 		hasFFprobe = true
@@ -426,7 +469,13 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 				fileHandle.Close()
 			}
 
-			if hasFFprobe {
+			// Try native MP3 duration reading first
+			if strings.HasSuffix(strings.ToLower(f.Name()), ".mp3") {
+				currentTrack.Duration = getMP3Duration(fullPath)
+			}
+
+			// Fallback to ffprobe for other formats or if native failed
+			if currentTrack.Duration == 0 && hasFFprobe {
 				cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPath)
 				cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 				out, err := cmd.Output()
@@ -486,10 +535,10 @@ func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
 }
 
 func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
-	cwd, _ := os.Getwd()
-	ffmpegPath := filepath.Join(cwd, "ffmpeg.exe")
+	execDir := getExecutableDir()
+	ffmpegPath := filepath.Join(execDir, "ffmpeg.exe")
 	if _, err := os.Stat(ffmpegPath); os.IsNotExist(err) {
-		return SimpleResult{Success: false, Error: "ffmpeg.exe not found"}
+		return SimpleResult{Success: false, Error: "ffmpeg.exe not found in " + execDir}
 	}
 
 	ext := filepath.Ext(pathStr)
@@ -522,19 +571,14 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	cfg := a.LoadConfig()
 	folderPath := cfg.DownloadFolder
 	if folderPath == "" {
-		cwd, _ := os.Getwd()
-		folderPath = cwd
+		folderPath = getExecutableDir()
 	}
 
-	fmt.Println("DEBUG: Downloading to:", folderPath) // DEBUG LOG
+	fmt.Println("DEBUG: Downloading to:", folderPath)
 
-	cwd, err := os.Getwd()
-	if err != nil {
-		return SimpleResult{Success: false, Error: err.Error()}, nil
-	}
-
-	ytPath := filepath.Join(cwd, "yt-dlp.exe")
-	ffmpegPath := filepath.Join(cwd, "ffmpeg.exe")
+	execDir := getExecutableDir()
+	ytPath := filepath.Join(execDir, "yt-dlp.exe")
+	ffmpegPath := filepath.Join(execDir, "ffmpeg.exe")
 
 	if _, err := os.Stat(ytPath); os.IsNotExist(err) {
 		return SimpleResult{Success: false, Error: "yt-dlp.exe not found!"}, nil
@@ -564,7 +608,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	args := []string{
 		opts.Url, "-x", "--audio-format", "mp3", "--audio-quality", qVal,
 		"--embed-thumbnail", "--add-metadata",
-		"--ffmpeg-location", cwd,
+		"--ffmpeg-location", execDir,
 		"-P", folderPath, "-o", outputTemplate,
 	}
 

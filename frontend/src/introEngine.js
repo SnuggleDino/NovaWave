@@ -1,3 +1,4 @@
+import iconPng from './assets/icon.png';
 import { translations } from './translations.js';
 
 function getIntroTr(key) {
@@ -36,7 +37,7 @@ export class WaterdropIntro extends Intro {
             <div class="pulse-container">
                 <div class="pulse-ring"></div>
                 <div class="intro-content">
-                    <img src="./src/assets/icon.png" alt="Logo" class="splash-logo">
+                    <img src="${iconPng}" alt="Logo" class="splash-logo">
                     <h1 class="splash-title">NovaWave</h1>
                     <p class="splash-slogan">Your Music &#8226; Your Style &#8226; Your Rules</p>
                 </div>
@@ -60,7 +61,7 @@ export class NovaWave95Intro extends Intro {
             <div class="win95-window">
                 <div class="win95-title-bar">
                     <div class="win95-title-text">
-                        <img src="./src/assets/icon.png" class="win95-mini-icon">
+                        <img src="${iconPng}" class="win95-mini-icon">
                         ${getIntroTr('introWin95Title')}
                     </div>
                     <div class="win95-title-controls">
@@ -70,7 +71,7 @@ export class NovaWave95Intro extends Intro {
                 </div>
                 <div class="win95-body">
                     <div class="win95-upper">
-                        <img src="./src/assets/icon.png" class="win95-main-logo">
+                        <img src="${iconPng}" class="win95-main-logo">
                         <div class="win95-text-info">
                             <strong>NovaWave Player</strong>
                             <p>${getIntroTr('introWin95Version')}</p>
