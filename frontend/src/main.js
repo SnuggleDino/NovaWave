@@ -1259,6 +1259,12 @@ async function loadSettings() {
     if (visualizerStyleSelect) { currentVisualizerStyle = settings.visualizerStyle || 'bars'; visualizerStyleSelect.value = currentVisualizerStyle; }
     if (visualizerSensitivity) { visSensitivity = settings.visSensitivity || 1.5; visualizerSensitivity.value = visSensitivity; }
     
+    if (emojiSelect) {
+        const et = settings.coverMode || 'note';
+        emojiSelect.value = et;
+        if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';
+    }
+
     if (autoLoadLastFolderToggle) autoLoadLastFolderToggle.checked = settings.autoLoadLastFolder !== false;
     
     // Ensure mini mode is reset or handled
