@@ -1,6 +1,5 @@
 package main
 
-// AppMeta enthält alle statischen Projekt-Informationen
 type AppMeta struct {
 	Version    string `json:"version"`
 	BuildDate  string `json:"buildDate"`
@@ -10,9 +9,8 @@ type AppMeta struct {
 	RepoLink   string `json:"repoLink"`
 }
 
-// CurrentMeta speichert die aktuellen Build-Daten zentral an einem Ort
 var CurrentMeta = AppMeta{
-	Version:    "2.5.7 GO",
+	Version:    "2.5.8 GO",
 	BuildDate:  "10.01.2026",
 	Author:     "SnuggleDino",
 	GoVersion:  "v2.9.2 (Go 1.23)",

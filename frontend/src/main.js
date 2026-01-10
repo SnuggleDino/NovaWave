@@ -2,12 +2,13 @@ import * as App from '../wailsjs/go/main/App.js';
 import lovingDinosImg from './assets/Two_Loving_Cute_Dinos.png';
 import lovingDinosIco from './assets/Two_Loving_Cute_Dinos.ico';
 import { translations } from './translations.js';
-import { VisualizerEngine } from './visualizerEngine.js'; // NEU
+import { VisualizerEngine } from './visualizerEngine.js'; 
+import { IntroManager } from './intro.js'; 
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
     getSettings: App.GetSettings,
-    getAppMeta: App.GetAppMeta, // NEU
+    getAppMeta: App.GetAppMeta,  
     setSetting: App.SetSetting,
     selectFolder: App.SelectFolder,
     selectMusicFolder: App.SelectMusicFolder,
@@ -51,7 +52,7 @@ let currentVisualizerStyle = 'bars';
 let visSensitivity = 1.5;
 let sleepTimerId = null;
 let lastNotifiedPath = null;
-let activeDownloaderMode = 'youtube'; // NEU
+let activeDownloaderMode = 'youtube';  
 
 
 // Visualizer State
@@ -805,6 +806,14 @@ function renderPlaylist() {
 
 function applyTranslations() {
     document.querySelectorAll('[data-lang-key]').forEach(el => { 
+        // Logic for intro buttons: change key based on active state
+        if (el.classList.contains('apply-intro-btn')) {
+            const card = el.closest('.intro-card');
+            if (card) {
+                el.dataset.langKey = card.classList.contains('active') ? 'introActiveBtn' : 'introApplyBtn';
+            }
+        }
+
         const text = tr(el.dataset.langKey); 
         if (text) {
             el.textContent = text;
@@ -1232,6 +1241,14 @@ async function loadSettings() {
         document.body.classList.add('playlist-hidden');
     } else {
         document.body.classList.remove('playlist-hidden');
+    }
+
+    if (settings.activeIntro) {
+        const introCards = document.querySelectorAll('.intro-card');
+        introCards.forEach(c => {
+            const isActive = c.dataset.intro === settings.activeIntro;
+            c.classList.toggle('active', isActive);
+        });
     }
 }
 
@@ -2018,7 +2035,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     accentColorPicker = $('#accent-color-picker');
     dropZone = $('#drop-zone'); toggleEnableDrag = $('#toggle-enable-drag'); toggleUseCustomColor = $('#toggle-use-custom-color');
-    toggleGradientTitle = $('#toggle-gradient-title'); // NEU
+    toggleGradientTitle = $('#toggle-gradient-title');  
     accentColorContainer = $('#accent-color-container');
     toggleEnableFocus = $('#toggle-enable-focus'); toggleFocusModeBtn = $('#toggle-focus-mode-btn');      
     speedSlider = $('#speed-slider'); speedValue = $('#speed-value');
@@ -2126,20 +2143,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    setupAudioEvents(); setupEventListeners();
-
-    const hideSplash = () => {
-        const splash = $('#splash-screen');
-        if (splash) {
-            splash.style.opacity = '0';
-            setTimeout(() => {
-                splash.style.display = 'none';
-                document.body.classList.add('ready');
-            }, 1000);
-        } else {
-            document.body.classList.add('ready');
+    // --- Intro Settings Logic ---
+    const introCards = document.querySelectorAll('.intro-card');
+    introCards.forEach(card => {
+        const btn = card.querySelector('.apply-intro-btn');
+        if (btn) {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation(); // prevent card click issues if any
+                // 1. Remove active from all
+                introCards.forEach(c => c.classList.remove('active'));
+                // 2. Add active to current
+                card.classList.add('active');
+                // 3. Update button texts
+                applyTranslations();
+                // 4. Save setting
+                const introKey = card.dataset.intro;
+                saveSetting('activeIntro', introKey);
+            });
         }
-    };
+    });
+
+    setupAudioEvents(); setupEventListeners();
 
     async function initializeApp() {
         try {
@@ -2183,10 +2207,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (volumeSlider) volumeSlider.value = currentVolume;
             if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
 
-            setTimeout(hideSplash, 2000);
+            // Intro Manager
+            const introMgr = new IntroManager(settings);
+            const existingSplash = document.getElementById('splash-screen');
+            if (existingSplash) existingSplash.remove();
+
+            await introMgr.play();
+            document.body.classList.add('ready');
+
         } catch (err) {
             console.error("Initialization failed:", err);
-            hideSplash();
+            document.body.classList.add('ready');
         }
     }
 

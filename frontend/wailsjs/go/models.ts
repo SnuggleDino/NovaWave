@@ -65,6 +65,9 @@ export namespace main {
 	    playlistPosition: string;
 	    playlistHidden: boolean;
 	    gradientTitleEnabled: boolean;
+	    activeIntro: string;
+	    sunsetEnabled: boolean;
+	    sakuraEnabled: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -114,6 +117,9 @@ export namespace main {
 	        this.playlistPosition = source["playlistPosition"];
 	        this.playlistHidden = source["playlistHidden"];
 	        this.gradientTitleEnabled = source["gradientTitleEnabled"];
+	        this.activeIntro = source["activeIntro"];
+	        this.sunsetEnabled = source["sunsetEnabled"];
+	        this.sakuraEnabled = source["sakuraEnabled"];
 	    }
 	}
 	export class DownloadOptions {

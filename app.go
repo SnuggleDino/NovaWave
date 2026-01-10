@@ -7,11 +7,11 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"syscall"
 	"unsafe"
-	"runtime"
 
 	"github.com/dhowden/tag"
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
@@ -66,7 +66,10 @@ type Config struct {
 	CyberpunkEnabled        bool     `json:"cyberpunkEnabled"`
 	PlaylistPosition        string   `json:"playlistPosition"`
 	PlaylistHidden          bool     `json:"playlistHidden"`
-	GradientTitleEnabled    bool     `json:"gradientTitleEnabled"` // NEU
+	GradientTitleEnabled    bool     `json:"gradientTitleEnabled"`
+	ActiveIntro             string   `json:"activeIntro"`
+	SunsetEnabled           bool     `json:"sunsetEnabled"`
+	SakuraEnabled           bool     `json:"sakuraEnabled"`
 }
 
 // Track defines a song for the frontend
@@ -114,47 +117,48 @@ func (a *App) setupMediaKeys() {
 		procRegisterHotKey := user32.NewProc("RegisterHotKey")
 		procGetMessage := user32.NewProc("GetMessageW")
 
-				// IDs: 1001, 1002, 1003, 1004, 1005, 1006
-				// VK codes: Play/Pause (0xB3), Next (0xB0), Prev (0xB1), Stop (0xB2), Play (0xFA), Pause (0xFB)
-				
-				procRegisterHotKey.Call(0, 1001, 0, 0xB3)
-				procRegisterHotKey.Call(0, 1002, 0, 0xB0)
-				procRegisterHotKey.Call(0, 1003, 0, 0xB1)
-				procRegisterHotKey.Call(0, 1004, 0, 0xB2)
-				procRegisterHotKey.Call(0, 1005, 0, 0xFA)
-				procRegisterHotKey.Call(0, 1006, 0, 0xFB)
-		
-				for {
-					var msg struct {
-						Hwnd    uintptr
-						Message uint32
-						WParam  uintptr
-						LParam  uintptr
-						Time    uint32
-						Pt      struct{ X, Y int32 }
-					}
-					ret, _, _ := procGetMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0)
-					if ret == 0 {
-						return
-					}
-		
-					if msg.Message == 0x0312 { // WM_HOTKEY
-						switch msg.WParam {
-						case 1001:
-							wailsRuntime.EventsEmit(a.ctx, "media-key", "playpause")
-						case 1002:
-							wailsRuntime.EventsEmit(a.ctx, "media-key", "next")
-						case 1003:
-							wailsRuntime.EventsEmit(a.ctx, "media-key", "prev")
-						case 1004:
-							wailsRuntime.EventsEmit(a.ctx, "media-key", "stop")
-						case 1005:
-							wailsRuntime.EventsEmit(a.ctx, "media-key", "play")
-						case 1006:
-							wailsRuntime.EventsEmit(a.ctx, "media-key", "pause")
-						}
-					}
-				}	}()
+		// IDs: 1001, 1002, 1003, 1004, 1005, 1006
+		// VK codes: Play/Pause (0xB3), Next (0xB0), Prev (0xB1), Stop (0xB2), Play (0xFA), Pause (0xFB)
+
+		procRegisterHotKey.Call(0, 1001, 0, 0xB3)
+		procRegisterHotKey.Call(0, 1002, 0, 0xB0)
+		procRegisterHotKey.Call(0, 1003, 0, 0xB1)
+		procRegisterHotKey.Call(0, 1004, 0, 0xB2)
+		procRegisterHotKey.Call(0, 1005, 0, 0xFA)
+		procRegisterHotKey.Call(0, 1006, 0, 0xFB)
+
+		for {
+			var msg struct {
+				Hwnd    uintptr
+				Message uint32
+				WParam  uintptr
+				LParam  uintptr
+				Time    uint32
+				Pt      struct{ X, Y int32 }
+			}
+			ret, _, _ := procGetMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0)
+			if ret == 0 {
+				return
+			}
+
+			if msg.Message == 0x0312 { // WM_HOTKEY
+				switch msg.WParam {
+				case 1001:
+					wailsRuntime.EventsEmit(a.ctx, "media-key", "playpause")
+				case 1002:
+					wailsRuntime.EventsEmit(a.ctx, "media-key", "next")
+				case 1003:
+					wailsRuntime.EventsEmit(a.ctx, "media-key", "prev")
+				case 1004:
+					wailsRuntime.EventsEmit(a.ctx, "media-key", "stop")
+				case 1005:
+					wailsRuntime.EventsEmit(a.ctx, "media-key", "play")
+				case 1006:
+					wailsRuntime.EventsEmit(a.ctx, "media-key", "pause")
+				}
+			}
+		}
+	}()
 }
 
 // Config speichert alle Einstellungen
@@ -174,6 +178,9 @@ func (a *App) GetAppMeta() AppMeta {
 }
 
 func (a *App) LoadConfig() Config {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	path := getConfigPath()
 	data, err := os.ReadFile(path)
 
@@ -198,6 +205,7 @@ func (a *App) LoadConfig() Config {
 		PlaybackSpeed:           1.0,
 		EnableFavoritesPlaylist: true,
 		AudioQuality:            "best",
+		ActiveIntro:             "waterdrop",
 	}
 
 	if err != nil {
@@ -250,7 +258,7 @@ func (a *App) SetSetting(key string, value interface{}) {
 	defer a.mu.Unlock()
 
 	path := getConfigPath()
-	
+
 	// Read existing data as map to preserve fields not in struct (if any)
 	// and to handle raw updates
 	var configMap map[string]interface{}
@@ -262,9 +270,9 @@ func (a *App) SetSetting(key string, value interface{}) {
 	if configMap == nil {
 		configMap = make(map[string]interface{})
 	}
-	
+
 	configMap[key] = value
-	
+
 	os.MkdirAll(filepath.Dir(path), 0755)
 	newData, _ := json.MarshalIndent(configMap, "", "  ")
 	_ = os.WriteFile(path, newData, 0644)
@@ -343,7 +351,7 @@ func (a *App) RefreshMusicFolder(path string) FolderResult {
 
 		return FolderResult{
 			Tracks:     []Track{currentTrack},
-				FolderPath: filepath.Dir(path),
+			FolderPath: filepath.Dir(path),
 		}
 	}
 
@@ -374,7 +382,7 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 
 	// Worker Pool Settings
 	// Limit concurrency to avoid too many open files or CPU choke
-	maxConcurrency := 10 
+	maxConcurrency := 10
 	sem := make(chan struct{}, maxConcurrency)
 	var wg sync.WaitGroup
 
@@ -382,7 +390,7 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 		if file.IsDir() {
 			continue
 		}
-		
+
 		name := strings.ToLower(file.Name())
 		if !strings.HasSuffix(name, ".mp3") && !strings.HasSuffix(name, ".flac") && !strings.HasSuffix(name, ".wav") && !strings.HasSuffix(name, ".m4a") && !strings.HasSuffix(name, ".ogg") {
 			continue
@@ -455,7 +463,7 @@ func (a *App) DeleteTrack(path string) SimpleResult {
 func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
 	fileName := filepath.Base(sourcePath)
 	destPath := filepath.Join(destFolder, fileName)
-	
+
 	if sourcePath == destPath {
 		return SimpleResult{Success: true}
 	}
@@ -488,7 +496,7 @@ func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
 
 	cmd := exec.Command(ffmpegPath, "-i", pathStr, "-metadata", "title="+newTitle, "-c", "copy", "-y", tempPath)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	
+
 	err := cmd.Run()
 	if err != nil {
 		return SimpleResult{Success: false, Error: "FFmpeg error: " + err.Error()}
@@ -516,7 +524,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 		cwd, _ := os.Getwd()
 		folderPath = cwd
 	}
-	
+
 	fmt.Println("DEBUG: Downloading to:", folderPath) // DEBUG LOG
 
 	cwd, err := os.Getwd()
@@ -565,7 +573,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	// We could parse stdout for progress here if we wanted to be fancy,
 	// but for now we just wait.
 	// To send progress we'd need to read stdout pipe and emit Wails events.
-	
+
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		outStr := string(output)
@@ -574,19 +582,17 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 		}
 		return SimpleResult{Success: false, Error: outStr}, nil
 	}
-	
+
 	// If custom name was provided, we might want to ensure ID3 title matches using ffmpeg or NodeID3 equivalent?
 	// yt-dlp --add-metadata sets title to video title usually.
 	// If the user provided a custom name, they might expect the metadata Title to match.
 	// We can optionally fix it here if needed, similar to the legacy app.
-	
+
 	return SimpleResult{Success: true}, nil
 }
 
-
-
 func (a *App) SendPlaybackState(isPlaying bool) {
-	// Placeholder: In Wails, we might emit an event if backend needs to know, 
+	// Placeholder: In Wails, we might emit an event if backend needs to know,
 	// or we just use this to trigger system media controls if implemented.
 }
 
@@ -608,7 +614,7 @@ func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, err
 
 	// Search on YouTube for "Artist - Title lyrics" for best results
 	searchQuery := fmt.Sprintf("ytsearch1:%s - %s lyrics", track.Artist, track.Title)
-	
+
 	opts := DownloadOptions{
 		Url:        searchQuery,
 		CustomName: fmt.Sprintf("%s - %s", track.Artist, track.Title),
