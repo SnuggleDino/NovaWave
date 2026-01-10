@@ -1979,12 +1979,11 @@ document.addEventListener('DOMContentLoaded', () => {
         devModalCloseBtn.addEventListener('click', () => devModalOverlay.classList.remove('visible'));    
     }
 
-    loadAppMeta(); // Load version info
-    initVisualizerEngine(); // Init Visualizer
+        loadAppMeta(); // Load version info
 
+    
 
-
-    const userHelpOverlay = document.getElementById('user-help-overlay');
+        const userHelpOverlay = document.getElementById('user-help-overlay');
     const userHelpBtn = document.getElementById('user-help-btn');
     const userHelpCloseBtn = document.getElementById('user-help-close-btn');
 
@@ -2201,15 +2200,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            updateCachedColor();
-
-            audio.volume = currentVolume;
-            if (volumeSlider) volumeSlider.value = currentVolume;
-            if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
-
-            // Intro Manager
-            const introMgr = new IntroManager(settings);
-            const existingSplash = document.getElementById('splash-screen');
+                updateCachedColor();
+            
+                audio.volume = currentVolume;
+                if (volumeSlider) volumeSlider.value = currentVolume;
+                if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
+            
+                // Init Visualizer NOW after settings are loaded
+                initVisualizerEngine();
+            
+                // Intro Manager
+                const introMgr = new IntroManager(settings);
+                const existingSplash = document.getElementById('splash-screen');
             if (existingSplash) existingSplash.remove();
 
             await introMgr.play();
