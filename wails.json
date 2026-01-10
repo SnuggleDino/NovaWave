@@ -7,7 +7,7 @@
   "frontend:dev:watcher": "npm run dev",
   "frontend:dev:serverUrl": "auto",
   "author": {
-    "name": "Refreryo",
+    "name": "SnuggleDino",
     "email": "138483475+SnuggleDino@users.noreply.github.com"
   }
 }

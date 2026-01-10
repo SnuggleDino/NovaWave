@@ -1,7 +1,7 @@
 // intro.js
 // Manages the selection and lifecycle of startup intros
 
-import { WaterdropIntro } from './introEngine.js';
+import { WaterdropIntro, NovaWave95Intro } from './introEngine.js';
 
 export class IntroManager {
     constructor(settings) {
@@ -9,13 +9,11 @@ export class IntroManager {
         this.activeIntro = null;
         this.intros = {
             'waterdrop': WaterdropIntro,
-            // Future intros can be added here
+            'novawave95': NovaWave95Intro
         };
     }
 
     play() {
-        // 1. Determine which intro to show
-        // Default to 'waterdrop' if nothing set, or if set to 'none' handle that.
         const introKey = this.settings.activeIntro || 'waterdrop';
         
         if (introKey === 'none') {
@@ -24,23 +22,20 @@ export class IntroManager {
 
         const IntroClass = this.intros[introKey];
         if (!IntroClass) {
-            console.warn(`Intro '${introKey}' not found. Falling back to Waterdrop.`);
-            // Fallback
             this.activeIntro = new WaterdropIntro();
         } else {
             this.activeIntro = new IntroClass();
         }
 
-        // 2. Mount (Render) the intro
         this.activeIntro.mount();
 
         // 3. Wait for animation to finish
-        // Standard duration for NovaWave intros is ~2.5 - 3 seconds
+        // We increased this to 4s to give complex intros like Win95 enough time
         return new Promise((resolve) => {
             setTimeout(() => {
                 this.stop();
                 resolve();
-            }, 2600); // 2.6s matches the CSS animation timings + buffer
+            }, 4000); 
         });
     }
 
@@ -48,7 +43,6 @@ export class IntroManager {
         if (this.activeIntro) {
             const el = document.getElementById(this.activeIntro.containerId);
             if (el) {
-                // Fade out effect
                 el.style.opacity = '0';
                 el.style.transition = 'opacity 0.5s ease';
                 setTimeout(() => {
@@ -62,7 +56,6 @@ export class IntroManager {
         }
     }
     
-    // Helper to update settings dynamically if needed later
     updateSettings(newSettings) {
         this.settings = { ...this.settings, ...newSettings };
     }

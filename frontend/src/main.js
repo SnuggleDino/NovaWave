@@ -810,13 +810,19 @@ function applyTranslations() {
         if (el.classList.contains('apply-intro-btn')) {
             const card = el.closest('.intro-card');
             if (card) {
-                el.dataset.langKey = card.classList.contains('active') ? 'introActiveBtn' : 'introApplyBtn';
+                const isActive = card.classList.contains('active');
+                el.dataset.langKey = isActive ? 'introActiveBtn' : 'introApplyBtn';
             }
         }
 
         const text = tr(el.dataset.langKey); 
         if (text) {
-            el.textContent = text;
+            // Special case for buttons to avoid appending if multiple calls happen
+            if (el.tagName === 'BUTTON') {
+                el.textContent = text;
+            } else {
+                el.textContent = text;
+            }
             if (el.classList.contains('glitch-text')) el.setAttribute('data-text', text);
         } 
     });
@@ -1131,6 +1137,7 @@ async function loadSettings() {
     } else {
         currentLanguage = 'de';
     }
+    document.documentElement.lang = currentLanguage;
 
     // Restore Favorites
     if (settings.favorites) {
@@ -1153,6 +1160,15 @@ async function loadSettings() {
 
     if (langButtons) langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
     
+    // Set active Intro cards BEFORE translations
+    if (settings.activeIntro) {
+        const introCards = document.querySelectorAll('.intro-card');
+        introCards.forEach(c => {
+            const isActive = c.dataset.intro === settings.activeIntro;
+            c.classList.toggle('active', isActive);
+        });
+    }
+
     // Apply Translations immediately
     applyTranslations();
 
@@ -1241,14 +1257,6 @@ async function loadSettings() {
         document.body.classList.add('playlist-hidden');
     } else {
         document.body.classList.remove('playlist-hidden');
-    }
-
-    if (settings.activeIntro) {
-        const introCards = document.querySelectorAll('.intro-card');
-        introCards.forEach(c => {
-            const isActive = c.dataset.intro === settings.activeIntro;
-            c.classList.toggle('active', isActive);
-        });
     }
 }
 
@@ -1490,7 +1498,14 @@ function setupEventListeners() {
         setTimeout(updateTrackTitleScroll, 300);
     });
     bind(downloadBtn, 'click', handleDownload);
-    if (langButtons) langButtons.forEach(btn => { bind(btn, 'click', () => { currentLanguage = btn.dataset.lang; langButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyTranslations(); saveSetting('language', currentLanguage); }); });
+    if (langButtons) langButtons.forEach(btn => { bind(btn, 'click', () => { 
+        currentLanguage = btn.dataset.lang; 
+        document.documentElement.lang = currentLanguage;
+        langButtons.forEach(b => b.classList.remove('active')); 
+        btn.classList.add('active'); 
+        applyTranslations(); 
+        saveSetting('language', currentLanguage); 
+    }); });
     bind(themeSelect, 'change', (e) => {
         const th = e.target.value;
         document.documentElement.setAttribute('data-theme', th);

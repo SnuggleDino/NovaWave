@@ -3512,6 +3512,43 @@ kbd {
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
 }
 
+.preview-flow {
+    width: 40px;
+    height: 40px;
+    background: repeating-linear-gradient(45deg, var(--accent) 0, var(--accent) 5px, transparent 5px, transparent 10px);
+    opacity: 0.5;
+    animation: flow-preview-anim 3s linear infinite;
+}
+@keyframes flow-preview-anim {
+    from { background-position: 0 0; }
+    to { background-position: 40px 40px; }
+}
+
+.preview-stellar {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(white 1px, transparent 1px);
+    background-size: 8px 8px;
+    opacity: 0.4;
+    animation: stellar-preview-anim 5s ease-in-out infinite;
+}
+@keyframes stellar-preview-anim {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.5); opacity: 0.6; }
+}
+
+.preview-cyber {
+    width: 100%;
+    height: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: cyber-preview-anim 1.5s ease-in-out infinite;
+}
+@keyframes cyber-preview-anim {
+    0%, 100% { transform: translateY(-20px); }
+    50% { transform: translateY(20px); }
+}
+
 .intro-title {
     font-size: 1rem;
     color: var(--text-main);
@@ -3543,3 +3580,211 @@ kbd {
     opacity: 1;
     pointer-events: none;
 }
+
+/* --- Intro Engine Styles --- */
+
+.splash-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    background: #0a0e1b;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.intro-content {
+    position: relative;
+    z-index: 100;
+    text-align: center;
+}
+
+/* Fix Intro Card Buttons */
+.intro-card.active .apply-intro-btn {
+    background: var(--accent) !important;
+    color: #000 !important;
+    pointer-events: none;
+}
+
+/* --- Windows 95 Style Intro --- */
+.splash-overlay.type-95 {
+    background: #008080 !important; /* Classic Windows Teal */
+}
+
+.win95-window {
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #dfdfdf #0a0a0a #0a0a0a #dfdfdf;
+    padding: 2px;
+    width: 400px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    animation: win95-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.win95-title-bar {
+    background: #000080; /* Classic dark blue */
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 5px;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Tahoma', sans-serif;
+}
+
+.win95-mini-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+}
+
+.win95-title-controls {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+}
+
+.win95-btn-small {
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #fff #808080 #808080 #fff;
+    width: 16px;
+    height: 14px;
+    font-size: 10px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    color: black;
+    font-family: sans-serif;
+}
+
+.win95-body {
+    padding: 20px;
+    color: black;
+    font-family: 'Tahoma', sans-serif;
+}
+
+.win95-upper {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.win95-main-logo {
+    width: 48px;
+    height: 48px;
+}
+
+.win95-text-info strong {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.win95-text-info p {
+    font-size: 11px;
+    margin: 0;
+}
+
+.win95-progress-section {
+    border-top: 1px solid #808080;
+    padding-top: 15px;
+}
+
+.win95-status {
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.win95-progress-container {
+    background: white;
+    border: 2px solid;
+    border-color: #808080 #dfdfdf #dfdfdf #808080;
+    height: 20px;
+    padding: 2px;
+    overflow: hidden;
+}
+
+.win95-progress-fill {
+    display: flex;
+    gap: 2px;
+    height: 100%;
+}
+
+.win95-progress-fill span {
+    width: 12px;
+    height: 100%;
+    background: #000080;
+    opacity: 0;
+    flex-shrink: 0;
+    animation: win95-appear 0.01s forwards;
+}
+
+@keyframes win95-appear {
+    to { opacity: 1; }
+}
+
+/* Staggered delays for 21 blocks */
+.win95-progress-fill span:nth-child(1) { animation-delay: 0.1s; }
+.win95-progress-fill span:nth-child(2) { animation-delay: 0.2s; }
+.win95-progress-fill span:nth-child(3) { animation-delay: 0.3s; }
+.win95-progress-fill span:nth-child(4) { animation-delay: 0.4s; }
+.win95-progress-fill span:nth-child(5) { animation-delay: 0.5s; }
+.win95-progress-fill span:nth-child(6) { animation-delay: 0.6s; }
+.win95-progress-fill span:nth-child(7) { animation-delay: 0.7s; }
+.win95-progress-fill span:nth-child(8) { animation-delay: 0.8s; }
+.win95-progress-fill span:nth-child(9) { animation-delay: 0.9s; }
+.win95-progress-fill span:nth-child(10) { animation-delay: 1.0s; }
+.win95-progress-fill span:nth-child(11) { animation-delay: 1.1s; }
+.win95-progress-fill span:nth-child(12) { animation-delay: 1.2s; }
+.win95-progress-fill span:nth-child(13) { animation-delay: 1.3s; }
+.win95-progress-fill span:nth-child(14) { animation-delay: 1.4s; }
+.win95-progress-fill span:nth-child(15) { animation-delay: 1.5s; }
+.win95-progress-fill span:nth-child(16) { animation-delay: 1.6s; }
+.win95-progress-fill span:nth-child(17) { animation-delay: 1.7s; }
+.win95-progress-fill span:nth-child(18) { animation-delay: 1.8s; }
+.win95-progress-fill span:nth-child(19) { animation-delay: 1.9s; }
+.win95-progress-fill span:nth-child(20) { animation-delay: 2.0s; }
+.win95-progress-fill span:nth-child(21) { animation-delay: 2.1s; }
+.win95-progress-fill span:nth-child(22) { animation-delay: 2.2s; }
+.win95-progress-fill span:nth-child(23) { animation-delay: 2.3s; }
+.win95-progress-fill span:nth-child(24) { animation-delay: 2.4s; }
+.win95-progress-fill span:nth-child(25) { animation-delay: 2.5s; }
+
+/* Previews in settings */
+.preview-win95 {
+    width: 40px;
+    height: 30px;
+    background: #c0c0c0;
+    border: 1px solid #000;
+    position: relative;
+}
+.preview-win95::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 6px;
+    background: #000080;
+}
+
+@keyframes win95-pop {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes win95-fill-step {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+
+
+
+
