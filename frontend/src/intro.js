@@ -12,7 +12,7 @@ export class IntroManager {
 
     play() {
         const introKey = this.settings.activeIntro || 'waterdrop';
-        
+
         if (introKey === 'none') {
             return Promise.resolve();
         }
@@ -30,27 +30,33 @@ export class IntroManager {
             setTimeout(() => {
                 this.stop();
                 resolve();
-            }, 4000); 
+            }, 4000);
         });
     }
 
     stop() {
-        if (this.activeIntro) {
-            const el = document.getElementById(this.activeIntro.containerId);
-            if (el) {
-                el.style.opacity = '0';
-                el.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => {
+        return new Promise((resolve) => {
+            if (this.activeIntro) {
+                const el = document.getElementById(this.activeIntro.containerId);
+                if (el) {
+                    el.style.opacity = '0';
+                    el.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        this.activeIntro.unmount();
+                        this.activeIntro = null;
+                        resolve();
+                    }, 500);
+                } else {
                     this.activeIntro.unmount();
                     this.activeIntro = null;
-                }, 500);
+                    resolve();
+                }
             } else {
-                this.activeIntro.unmount();
-                this.activeIntro = null;
+                resolve();
             }
-        }
+        });
     }
-    
+
     updateSettings(newSettings) {
         this.settings = { ...this.settings, ...newSettings };
     }

@@ -728,6 +728,650 @@ textarea {
     display: none !important;
 }
 
+/* ============================================== */
+/* NOVAWAVE 95 INTRO - Windows 95 Style           */
+/* ============================================== */
+.splash-overlay.type-95 {
+    background: #008080;
+    font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, sans-serif;
+}
+
+.win95-window {
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow:
+        inset 1px 1px 0 #dfdfdf,
+        inset -1px -1px 0 #0a0a0a,
+        4px 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 2px;
+    min-width: 380px;
+    animation: win95-appear 0.3s ease-out;
+}
+
+@keyframes win95-appear {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.win95-title-bar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    padding: 3px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.win95-title-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 12px;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.win95-mini-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.win95-title-controls {
+    display: flex;
+    gap: 2px;
+}
+
+.win95-btn-small {
+    width: 16px;
+    height: 14px;
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    padding: 0;
+    line-height: 1;
+}
+
+.win95-btn-small:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+}
+
+.win95-body {
+    background: #c0c0c0;
+    padding: 20px;
+}
+
+.win95-upper {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.win95-main-logo {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+}
+
+.win95-text-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.win95-text-info strong {
+    font-size: 14px;
+    color: #000000;
+    margin-bottom: 4px;
+}
+
+.win95-text-info p {
+    font-size: 11px;
+    color: #000000;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.win95-progress-section {
+    border-top: 1px solid #808080;
+    padding-top: 15px;
+    margin-top: 10px;
+}
+
+.win95-status {
+    font-size: 11px;
+    color: #000000;
+    margin: 0 0 8px 0;
+}
+
+.win95-progress-container {
+    background: #ffffff;
+    border: 1px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    padding: 2px;
+    height: 20px;
+}
+
+.win95-progress-fill {
+    height: 100%;
+    display: flex;
+    gap: 2px;
+    animation: win95-progress 3s steps(25) forwards;
+}
+
+.win95-progress-fill span {
+    width: 12px;
+    height: 100%;
+    background: #000080;
+    opacity: 0;
+}
+
+@keyframes win95-progress {
+    0% {}
+
+    4% {}
+}
+
+.win95-progress-fill span:nth-child(1) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 0.12s;
+}
+
+.win95-progress-fill span:nth-child(2) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 0.24s;
+}
+
+.win95-progress-fill span:nth-child(3) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 0.36s;
+}
+
+.win95-progress-fill span:nth-child(4) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 0.48s;
+}
+
+.win95-progress-fill span:nth-child(5) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 0.60s;
+}
+
+.win95-progress-fill span:nth-child(6) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 0.72s;
+}
+
+.win95-progress-fill span:nth-child(7) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 0.84s;
+}
+
+.win95-progress-fill span:nth-child(8) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 0.96s;
+}
+
+.win95-progress-fill span:nth-child(9) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 1.08s;
+}
+
+.win95-progress-fill span:nth-child(10) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 1.20s;
+}
+
+.win95-progress-fill span:nth-child(11) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 1.32s;
+}
+
+.win95-progress-fill span:nth-child(12) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 1.44s;
+}
+
+.win95-progress-fill span:nth-child(13) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 1.56s;
+}
+
+.win95-progress-fill span:nth-child(14) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 1.68s;
+}
+
+.win95-progress-fill span:nth-child(15) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 1.80s;
+}
+
+.win95-progress-fill span:nth-child(16) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 1.92s;
+}
+
+.win95-progress-fill span:nth-child(17) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 2.04s;
+}
+
+.win95-progress-fill span:nth-child(18) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 2.16s;
+}
+
+.win95-progress-fill span:nth-child(19) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 2.28s;
+}
+
+.win95-progress-fill span:nth-child(20) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 2.40s;
+}
+
+.win95-progress-fill span:nth-child(21) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 2.52s;
+}
+
+.win95-progress-fill span:nth-child(22) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 2.64s;
+}
+
+.win95-progress-fill span:nth-child(23) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 2.76s;
+}
+
+.win95-progress-fill span:nth-child(24) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 2.88s;
+}
+
+.win95-progress-fill span:nth-child(25) {
+    animation: win95-block 3s ease forwards;
+    animation-delay: 3.00s;
+}
+
+@keyframes win95-block {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* ============================================== */
+/* THEME PACK INTROS                              */
+/* ============================================== */
+
+/* Base overlay styles for all theme intros */
+.sleep-intro-overlay,
+.snuggle-intro-overlay,
+.cyber-intro-overlay,
+.sunset-intro-overlay,
+.sakura-intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99998;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.sleep-intro-overlay.visible,
+.snuggle-intro-overlay.visible,
+.cyber-intro-overlay.visible,
+.sunset-intro-overlay.visible,
+.sakura-intro-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ===== SLEEP TIME INTRO ===== */
+.sleep-intro-overlay {
+    background: linear-gradient(180deg, #0a0a1f 0%, #1a1a3e 100%);
+}
+
+.moon-glow {
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #fef3c7 0%, #fbbf24 40%, transparent 70%);
+    border-radius: 50%;
+    box-shadow: 0 0 60px 30px rgba(251, 191, 36, 0.3), 0 0 100px 60px rgba(251, 191, 36, 0.1);
+    animation: moon-pulse 3s ease-in-out infinite;
+    margin-bottom: 30px;
+}
+
+@keyframes moon-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 60px 30px rgba(251, 191, 36, 0.3);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 80px 40px rgba(251, 191, 36, 0.4);
+    }
+}
+
+.sleep-intro-text {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #fef3c7;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+/* ===== SNUGGLE TIME INTRO ===== */
+.snuggle-intro-overlay {
+    background: linear-gradient(180deg, #2a1b22 0%, #4a2c36 100%);
+}
+
+.snuggle-intro-img {
+    width: 180px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: snuggle-bounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 10px 30px rgba(251, 207, 232, 0.3));
+}
+
+@keyframes snuggle-bounce {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(2deg);
+    }
+}
+
+.snuggle-intro-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fbcfe8;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(251, 207, 232, 0.5);
+}
+
+/* ===== CYBERPUNK INTRO ===== */
+.cyber-intro-overlay {
+    background: linear-gradient(180deg, #0f0f1a 0%, #1a0a2e 100%);
+}
+
+.cyber-glitch-text {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #00ffff;
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    position: relative;
+    animation: cyber-glitch 2s infinite;
+    text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+}
+
+.cyber-glitch-text::before,
+.cyber-glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.cyber-glitch-text::before {
+    color: #ff00ff;
+    animation: cyber-glitch-1 0.3s infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+    transform: translate(-2px, -2px);
+}
+
+.cyber-glitch-text::after {
+    color: #ffff00;
+    animation: cyber-glitch-2 0.3s infinite;
+    clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+    transform: translate(2px, 2px);
+}
+
+@keyframes cyber-glitch {
+
+    0%,
+    90%,
+    100% {
+        opacity: 1;
+    }
+
+    92%,
+    94%,
+    96%,
+    98% {
+        opacity: 0.8;
+        transform: skewX(0deg);
+    }
+
+    91%,
+    93%,
+    95%,
+    97%,
+    99% {
+        opacity: 1;
+        transform: skewX(2deg);
+    }
+}
+
+@keyframes cyber-glitch-1 {
+
+    0%,
+    100% {
+        transform: translate(-2px, -2px);
+    }
+
+    50% {
+        transform: translate(2px, 2px);
+    }
+}
+
+@keyframes cyber-glitch-2 {
+
+    0%,
+    100% {
+        transform: translate(2px, 2px);
+    }
+
+    50% {
+        transform: translate(-2px, -2px);
+    }
+}
+
+.cyber-sub-text {
+    font-size: 1rem;
+    color: #ff00ff;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-top: 20px;
+    opacity: 0.8;
+}
+
+/* ===== SUNSET DRIVE INTRO (Synthwave) ===== */
+.sunset-intro-overlay {
+    background: linear-gradient(180deg, #1f0b2e 0%, #4c1d95 50%, #ec4899 100%);
+    overflow: hidden;
+}
+
+.synth-sun {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(180deg, #fbbf24 0%, #f97316 50%, #ec4899 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 60px 20px rgba(249, 115, 22, 0.5);
+    animation: synth-sun-pulse 4s ease-in-out infinite;
+}
+
+.synth-sun::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -50%;
+    width: 200%;
+    height: 50%;
+    background: linear-gradient(0deg,
+            rgba(31, 11, 46, 1) 0%,
+            rgba(31, 11, 46, 0.8) 20%,
+            rgba(31, 11, 46, 0.5) 40%,
+            transparent 100%);
+}
+
+@keyframes synth-sun-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.synth-grid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background:
+        linear-gradient(90deg, rgba(236, 72, 153, 0.3) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(236, 72, 153, 0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(500px) rotateX(60deg);
+    transform-origin: center bottom;
+    animation: grid-scroll 4s linear infinite;
+}
+
+@keyframes grid-scroll {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 40px;
+    }
+}
+
+.synth-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fbbf24;
+    letter-spacing: 12px;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px #f97316, 0 0 40px #ec4899;
+    margin-top: 40px;
+    z-index: 1;
+}
+
+/* ===== SAKURA SPIRIT INTRO ===== */
+.sakura-intro-overlay {
+    background: linear-gradient(180deg, #2a1b22 0%, #4a2c36 100%);
+    overflow: hidden;
+}
+
+.sakura-falling-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.sakura-petal {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(ellipse at center, #fbcfe8 0%, #f9a8d4 100%);
+    border-radius: 50% 0 50% 50%;
+    opacity: 0.8;
+    animation: sakura-fall linear infinite;
+}
+
+@keyframes sakura-fall {
+    0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.8;
+    }
+
+    90% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.sakura-title-box {
+    text-align: center;
+    z-index: 1;
+}
+
+.sakura-title {
+    font-size: 3rem;
+    font-weight: 300;
+    color: #fbcfe8;
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(251, 207, 232, 0.5);
+}
+
+.sakura-subtitle {
+    font-size: 1rem;
+    color: #fda4af;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
 .app-shell {
     display: flex;
     flex-direction: column;
@@ -2815,4 +3459,143 @@ body.is-mini .track-row .track-name {
 
 body.is-mini .track-row .track-artist {
     font-size: 0.7rem !important;
+}
+
+/* ============================================== */
+/* DOWNLOADER TABS                                */
+/* ============================================== */
+.downloader-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.downloader-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.downloader-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+}
+
+.downloader-tab-btn.active {
+    background: var(--accent);
+    color: var(--bg-main);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.downloader-tab-btn.active svg {
+    color: var(--bg-main) !important;
+}
+
+/* ============================================== */
+/* HELP MODAL                                     */
+/* ============================================== */
+.help-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.help-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+    transition: all 0.2s ease;
+}
+
+.help-list li:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--accent);
+}
+
+.help-icon {
+    flex-shrink: 0;
+    color: var(--accent);
+    margin-top: 2px;
+}
+
+.help-list li span {
+    color: var(--text-main);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+/* ============================================== */
+/* DEV MODAL & HOTKEYS                            */
+/* ============================================== */
+.dev-hotkey-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dev-hotkey-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid var(--border-soft);
+    transition: all 0.2s ease;
+}
+
+.dev-hotkey-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--accent);
+}
+
+.kbd-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 28px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.hotkey-desc {
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 500;
 }
