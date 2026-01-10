@@ -1,6 +1,3 @@
-// introEngine.js
-// Handles the logic and rendering of different startup intros
-
 import { translations } from './translations.js';
 
 function getIntroTr(key) {
@@ -14,12 +11,9 @@ export class Intro {
         this.containerId = containerId;
     }
 
-    // Creates the HTML structure for the intro
     mount() {
-        console.warn('Intro.mount() should be implemented by subclass');
     }
 
-    // Cleans up the HTML
     unmount() {
         const container = document.getElementById(this.containerId);
         if (container) {

@@ -4,7 +4,7 @@ type AppMeta struct {
 	Version    string `json:"version"`
 	BuildDate  string `json:"buildDate"`
 	Author     string `json:"author"`
-	GoVersion  string `json:"goVersion"` // Wails/Go Version
+	GoVersion  string `json:"goVersion"` 
 	GithubUser string `json:"githubUser"`
 	RepoLink   string `json:"repoLink"`
 }

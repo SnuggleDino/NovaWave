@@ -16,18 +16,15 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-// FileLoader serves local music and image files
 type FileLoader struct{}
 
 func (h *FileLoader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// A) Music Tunnel (/music/...)
 	if strings.HasPrefix(r.URL.Path, "/music/") {
 		filePath := strings.TrimPrefix(r.URL.Path, "/music/")
 		http.ServeFile(w, r, filePath)
 		return
 	}
 
-	// B) Cover Tunnel (/cover/...)
 	if strings.HasPrefix(r.URL.Path, "/cover/") {
 		filePath := strings.TrimPrefix(r.URL.Path, "/cover/")
 		f, err := os.Open(filePath)

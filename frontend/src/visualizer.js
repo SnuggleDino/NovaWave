@@ -31,7 +31,6 @@ export class Visualizer {
         this.source = this.audioContext.createMediaElementSource(this.audio);
         this.analyser = this.audioContext.createAnalyser();
         
-        // Filter Setup
         this.bassFilter = this.audioContext.createBiquadFilter();
         this.bassFilter.type = 'lowshelf';
         this.bassFilter.frequency.value = 120;
@@ -47,7 +46,6 @@ export class Visualizer {
         this.reverbGain = this.audioContext.createGain();
         this.reverbGain.gain.value = 0;
 
-        // Routing
         this.source.connect(this.bassFilter);
         this.bassFilter.connect(this.trebleFilter);
         this.trebleFilter.connect(this.analyser);

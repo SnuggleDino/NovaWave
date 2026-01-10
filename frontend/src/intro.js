@@ -1,6 +1,3 @@
-// intro.js
-// Manages the selection and lifecycle of startup intros
-
 import { WaterdropIntro, NovaWave95Intro } from './introEngine.js';
 
 export class IntroManager {
@@ -29,8 +26,6 @@ export class IntroManager {
 
         this.activeIntro.mount();
 
-        // 3. Wait for animation to finish
-        // We increased this to 4s to give complex intros like Win95 enough time
         return new Promise((resolve) => {
             setTimeout(() => {
                 this.stop();

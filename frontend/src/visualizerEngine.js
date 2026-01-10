@@ -4,31 +4,27 @@ export class VisualizerEngine {
         this.canvas = canvasElement;
         this.ctx = this.canvas.getContext('2d');
         
-        // Options & Defaults
         this.visualizerEnabled = options.enabled || true;
         this.style = options.style || 'bars';
         this.sensitivity = options.sensitivity || 1.5;
         this.accentColor = options.accentColor || '#38bdf8';
         this.targetFps = options.targetFps || 60;
-        this.musicEmojiEl = options.musicEmojiEl || null; // For bouncing effect
+        this.musicEmojiEl = options.musicEmojiEl || null; 
 
-        // State
         this.isRunning = false;
         this.audioContext = null;
         this.analyser = null;
         this.source = null;
         this.dataArray = null;
         
-        // Effects Nodes
         this.bassFilter = null;
         this.trebleFilter = null;
         this.reverbNode = null;
         this.reverbGain = null;
 
-        // Loop vars
         this.lastRenderTime = 0;
         this.animationFrameId = null;
-        this.frameCount = 0; // NEU
+        this.frameCount = 0; 
     }
 
     init() {
@@ -38,17 +34,12 @@ export class VisualizerEngine {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             this.audioContext = new AudioContext();
             
-            // Create Source
-            // Note: If source is already connected elsewhere, this might fail or steal it.
-            // In main.js it was created once globally. 
-            // We assume this engine owns the source connection now.
             if (!this.source) {
                 this.source = this.audioContext.createMediaElementSource(this.audio);
             }
 
             this.analyser = this.audioContext.createAnalyser();
             
-            // Filters
             this.bassFilter = this.audioContext.createBiquadFilter();
             this.bassFilter.type = 'lowshelf';
             this.bassFilter.frequency.value = 120;
@@ -59,16 +50,11 @@ export class VisualizerEngine {
             this.trebleFilter.frequency.value = 3000;
             this.trebleFilter.gain.value = 0;
 
-            // Reverb
             this.reverbNode = this.audioContext.createConvolver();
             this.reverbNode.buffer = this.createReverbBuffer(2.0);
             this.reverbGain = this.audioContext.createGain();
             this.reverbGain.gain.value = 0;
 
-            // Routing
-            // Source -> Bass -> Treble -> Analyser -> Destination (Dry)
-            // Treble -> Reverb -> ReverbGain -> Analyser (Wet)
-            
             this.source.connect(this.bassFilter);
             this.bassFilter.connect(this.trebleFilter);
             
@@ -113,7 +99,6 @@ export class VisualizerEngine {
         if (newSettings.targetFps !== undefined) this.targetFps = newSettings.targetFps;
         if (newSettings.enabled !== undefined) this.visualizerEnabled = newSettings.enabled;
         
-        // Audio Effects
         this.updateAudioEffects(newSettings);
     }
 
@@ -179,7 +164,6 @@ export class VisualizerEngine {
     draw() {
         if (!this.isRunning) return;
 
-        // FPS Throttling
         const now = performance.now();
         const interval = 1000 / this.targetFps;
         const delta = now - this.lastRenderTime;
@@ -191,9 +175,8 @@ export class VisualizerEngine {
 
         this.lastRenderTime = now - (delta % interval);
         this.animationFrameId = requestAnimationFrame(() => this.draw());
-        this.frameCount++; // NEU
+        this.frameCount++; 
 
-        // Drawing
         const width = this.canvas.width;
         const height = this.canvas.height;
         this.ctx.clearRect(0, 0, width, height);
@@ -204,7 +187,6 @@ export class VisualizerEngine {
         const boost = 1 + (this.sensitivity * 0.1);
         const ac = this.accentColor;
 
-        // Styles
         if (this.style === 'bars') this.drawBars(width, height, ac, boost);
         else if (this.style === 'waveform') this.drawWaveform(width, height, ac);
         else if (this.style === 'orbit') this.drawOrbit(width, height, ac, boost);
@@ -214,7 +196,6 @@ export class VisualizerEngine {
         else if (this.style === 'zen') this.drawZen(width, height, ac, boost);
         else if (this.style === 'moonlight') this.drawMoonlight(width, height, ac, boost);
 
-        // Bouncing Emoji (Global Effect)
         if (this.musicEmojiEl && !this.audio.paused) {
             const blv = (this.dataArray[0] + this.dataArray[1]) / 2;
             const fy = Math.sin(this.audio.currentTime * 2) * 10;
@@ -222,8 +203,6 @@ export class VisualizerEngine {
             this.musicEmojiEl.style.transform = `translateY(${fy}px) scale(${js})`;
         }
     }
-
-    // --- Specific Draw Methods ---
 
     drawBars(width, height, ac, boost) {
         const bl = this.dataArray.length / 2;
