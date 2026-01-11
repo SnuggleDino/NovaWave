@@ -295,10 +295,6 @@ body.is-mini #toggle-playlist-btn {
     flex-shrink: 0;
 }
 
-#modal-feat-crystal svg {
-    color: #fbbf24;
-}
-
 .modal-item::after {
     content: '';
     width: 6px;
@@ -307,11 +303,6 @@ body.is-mini #toggle-playlist-btn {
     border-radius: 50%;
     margin-left: auto;
     box-shadow: 0 0 8px var(--accent);
-}
-
-#modal-feat-crystal::after {
-    background: #fbbf24;
-    box-shadow: 0 0 8px #fbbf24;
 }
 
 @keyframes status-pulse {
@@ -3786,17 +3777,19 @@ input:checked+.slider:before {
 .features-minimal-modal {
     position: absolute;
     top: 0;
-    left: 36px;
+    left: 42px;
     background: rgba(20, 20, 20, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 8px 12px;
-    width: 140px;
+    border-radius: 12px;
+    padding: 10px 14px;
+    min-width: 180px;
+    width: max-content;
     opacity: 0;
     transform: translateX(-10px);
     pointer-events: none;
     transition: all 0.2s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
 .features-badge-icon:hover+.features-minimal-modal {
@@ -3808,7 +3801,7 @@ input:checked+.slider:before {
     font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     letter-spacing: 1px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 4px;
@@ -3817,14 +3810,16 @@ input:checked+.slider:before {
 .modal-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.85rem;
+    gap: 10px;
+    font-size: 0.9rem;
     color: var(--text-main);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    white-space: nowrap;
 }
 
 .modal-item svg {
     color: var(--accent);
+    flex-shrink: 0;
 }
 
 /* ============================================== */
@@ -4079,6 +4074,15 @@ kbd {
 
     to {
         transform: scale(1);
+    }
+}
+
+@keyframes timer-anim {
+    from {
+        stroke-dashoffset: 56.5;
+    }
+    to {
+        stroke-dashoffset: 0;
     }
 }
 

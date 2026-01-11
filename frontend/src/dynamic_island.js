@@ -38,10 +38,19 @@ export class DynamicIsland {
                 this.iconEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
             }
         } else {
-            // Info / Default
+            // Info / Default - Timer Circle
             if (this.iconEl) {
                 this.iconEl.style.display = 'block';
-                this.iconEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+                this.iconEl.innerHTML = `
+                <svg width="24" height="24" viewBox="0 0 24 24" class="timer-svg" style="transform: rotate(-90deg);">
+                    <circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,0.2)" stroke-width="2.5" fill="none"></circle>
+                    <circle cx="12" cy="12" r="9" stroke="var(--accent)" stroke-width="2.5" fill="none" 
+                            stroke-dasharray="56.5" stroke-dashoffset="0"
+                            style="animation: timer-anim var(--timer-duration, 3s) linear forwards;"></circle>
+                </svg>`;
+                
+                const animDuration = duration > 0 ? duration : 3000;
+                this.iconEl.style.setProperty('--timer-duration', `${animDuration}ms`);
             }
         }
 
