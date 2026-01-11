@@ -3409,6 +3409,8 @@ body.is-mini .cover-art-container {
     display: flex !important;
     width: 120px !important;
     height: 120px !important;
+    min-width: 120px !important;
+    min-height: 120px !important;
     aspect-ratio: 1 / 1 !important;
     flex-shrink: 0 !important;
     margin: auto 0 !important;
@@ -3504,7 +3506,7 @@ body.is-mini .volume-icon {
 }
 
 body.is-mini .volume-slider {
-    width: 70px !important;
+    width: 100px !important;
     height: 4px !important;
     margin-left: 8px !important;
 }
