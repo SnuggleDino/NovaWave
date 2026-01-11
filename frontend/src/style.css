@@ -1304,15 +1304,17 @@ textarea {
     bottom: 0;
     left: -50%;
     width: 200%;
-    height: 60%;
+    height: 100%;
     background-image:
-        linear-gradient(rgba(236, 72, 153, 0.6) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(236, 72, 153, 0.6) 1px, transparent 1px);
-    background-size: 60px 60px;
-    transform: perspective(250px) rotateX(60deg);
+        linear-gradient(rgba(236, 72, 153, 0.7) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(236, 72, 153, 0.7) 2px, transparent 2px);
+    background-size: 100px 100px;
+    transform: perspective(500px) rotateX(70deg);
     transform-origin: bottom center;
     animation: grid-scroll 2s linear infinite;
     z-index: 0;
+    mask-image: linear-gradient(to top, black 20%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to top, black 20%, transparent 80%);
 }
 
 @keyframes grid-scroll {
