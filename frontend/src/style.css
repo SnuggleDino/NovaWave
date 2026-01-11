@@ -1272,18 +1272,15 @@ textarea {
 }
 
 .synth-sun {
-    width: 300px;
+    width: 450px;
     height: 300px;
     position: relative;
-    border-radius: 50%;
-    box-shadow: 0 0 100px rgba(249, 115, 22, 0.4);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     animation: synth-sun-pulse 4s ease-in-out infinite;
-    overflow: hidden;
 }
 
 .synth-sun img {
