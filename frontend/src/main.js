@@ -395,9 +395,9 @@ async function applyCyberpunk(enabled, showIntro = false) {
             animationSelect.value = 'off';
             animationSelect.disabled = true;
         }
-        updateEmoji('auto');
+        updateEmoji('cyber');
         if (emojiSelect) {
-            emojiSelect.value = 'auto';
+            emojiSelect.value = 'cyber';
             emojiSelect.disabled = true;
         }
         if (themeSelect) themeSelect.disabled = true;
@@ -987,6 +987,7 @@ function updateEmoji(emojiType, customEmoji) {
 
     if (emojiType === 'note') emoji = '🎵';
     else if (emojiType === 'dino') emoji = '🦖';
+    else if (emojiType === 'cyber') emoji = '🤖';
     else if (emojiType === 'moon') emoji = '🌙';
     else if (emojiType === 'sunset_sun') {
         emoji = '<div class="sun-cover"></div>';

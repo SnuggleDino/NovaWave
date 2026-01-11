@@ -254,6 +254,11 @@ body.is-mini #toggle-playlist-btn {
 :root[data-theme="novawave95"] .app-title-text p {
     color: #fff;
 }
+:root[data-theme="novawave95"] .lang-btn,
+:root[data-theme="novawave95"] .mini-mode-label,
+:root[data-theme="novawave95"] .header-item svg {
+    color: #000000 !important;
+}
 
 .active-features-container {
     position: absolute;
@@ -1173,6 +1178,20 @@ textarea {
     background: linear-gradient(180deg, #0f0f1a 0%, #1a0a2e 100%);
 }
 
+.cyber-intro-overlay::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+}
+
 .cyber-glitch-text {
     font-size: 4rem;
     font-weight: 900;
@@ -1292,8 +1311,7 @@ textarea {
     height: 50%;
     background: linear-gradient(0deg,
             #1f0b2e 0%,
-            rgba(31, 11, 46, 0.6) 20%,
-            transparent 100%);
+            transparent 50%);
 }
 
 @keyframes synth-sun-pulse {
@@ -1310,10 +1328,10 @@ textarea {
 
 .synth-grid {
     position: absolute;
-    bottom: 0;
+    bottom: -20%;
     left: 0;
     width: 100%;
-    height: 50%;
+    height: 80%;
     background:
         linear-gradient(90deg, rgba(236, 72, 153, 0.3) 1px, transparent 1px),
         linear-gradient(0deg, rgba(236, 72, 153, 0.3) 1px, transparent 1px);
@@ -1359,7 +1377,7 @@ textarea {
     pointer-events: none;
 }
 
-.sakura-petal {
+.falling-petal {
     position: absolute;
     width: 12px;
     height: 12px;
