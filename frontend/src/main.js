@@ -2342,6 +2342,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cachedIntro !== 'none') {
             const introMgr = new IntroManager({ activeIntro: cachedIntro });
             introPromise = introMgr.play();
+            // Reveal App UI before intro fades out completely
+            setTimeout(() => {
+                document.body.classList.add('ready');
+            }, 3200);
+        } else {
+            document.body.classList.add('ready');
         }
 
         try {
