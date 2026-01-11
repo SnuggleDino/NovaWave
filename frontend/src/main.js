@@ -2340,4 +2340,319 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initializeApp();
-});
+    // --- MISSING THEME & HELPER FUNCTIONS ---
+
+    function applySunsetDrive(enable) {
+        if (enable) {
+            document.body.classList.add('theme-sunset');
+            document.body.classList.remove('theme-cyberpunk', 'theme-sakura', 'theme-win95', 'theme-sleep', 'theme-snuggle');
+        } else {
+            document.body.classList.remove('theme-sunset');
+        }
+    }
+
+    function applyCyberpunk(enable) {
+        if (enable) {
+            document.body.classList.add('theme-cyberpunk');
+            document.body.classList.remove('theme-sunset', 'theme-sakura', 'theme-win95', 'theme-sleep', 'theme-snuggle');
+        } else {
+            document.body.classList.remove('theme-cyberpunk');
+        }
+    }
+
+    function applySakuraSpirit(enable) {
+        if (enable) {
+            document.body.classList.add('theme-sakura');
+            document.body.classList.remove('theme-sunset', 'theme-cyberpunk', 'theme-win95', 'theme-sleep', 'theme-snuggle');
+        } else {
+            document.body.classList.remove('theme-sakura');
+        }
+    }
+
+    function applyNovaWave95(enable) {
+        if (enable) {
+            document.body.classList.add('theme-win95');
+            document.body.classList.remove('theme-sunset', 'theme-cyberpunk', 'theme-sakura', 'theme-sleep', 'theme-snuggle');
+        } else {
+            document.body.classList.remove('theme-win95');
+        }
+    }
+
+    function applySleepTime(enable) {
+        if (enable) {
+            document.body.classList.add('theme-sleep');
+            document.body.classList.remove('theme-sunset', 'theme-cyberpunk', 'theme-sakura', 'theme-win95', 'theme-snuggle');
+        } else {
+            document.body.classList.remove('theme-sleep');
+        }
+    }
+
+    function applySnuggleTime(enable) {
+        if (enable) {
+            document.body.classList.add('theme-snuggle');
+            document.body.classList.remove('theme-sunset', 'theme-cyberpunk', 'theme-sakura', 'theme-win95', 'theme-sleep');
+        } else {
+            document.body.classList.remove('theme-snuggle');
+        }
+    }
+
+    function setPerformanceMode(enable) {
+        saveSetting('performanceMode', enable);
+        document.body.classList.toggle('performance-mode', enable);
+
+        // Performance Mode & Stats "working together"
+        // When performance mode is ON, we might want to ensure stats can be seen?
+        // User said: "Show System Stats und Performance Mode arbeiten nicht mehr zusammen"
+        const statsOverlay = document.getElementById('stats-overlay');
+        if (statsOverlay) {
+            if (enable) {
+                // If perf mode is ON, show stats (debug mode)
+                statsOverlay.classList.remove('hidden');
+            } else if (!settings.showStatsOverlay) {
+                // If perf mode OFF and stats setting OFF, hide it
+                statsOverlay.classList.add('hidden');
+            }
+        }
+    }
+
+    // --- FIX LOAD FOLDER & REFRESH LOGIC ---
+    // This runs after DOMContentLoaded because we are appending it, assuming this script is deferred or this block executes
+    // But we should wrap in a safe timeout or event just in case
+    setTimeout(() => {
+        // 1. Override Load Folder Button Logic (Direct System Dialog)
+        const btn = document.getElementById('open-library-btn');
+        if (btn) {
+            // Remove old listeners by cloning
+            const newBtn = btn.cloneNode(true);
+            if (btn.parentNode) btn.parentNode.replaceChild(newBtn, btn);
+
+            newBtn.addEventListener('click', async () => {
+                try {
+                    // Direct call to system dialog
+                    const path = await windowApi.selectMusicFolder();
+                    if (path && typeof path === 'string') {
+                        saveSetting('currentFolderPath', path);
+                        currentFolderPath = path;
+
+                        // Refresh the folder
+                        const res = await windowApi.refreshMusicFolder(path);
+                        if (res && res.tracks) {
+                            basePlaylist = res.tracks;
+                            sortPlaylist(sortMode);
+                            renderPlaylist();
+                            updateUIForCurrentTrack();
+                            showNotification('Folder Loaded: ' + path);
+
+                            // Close library modal if it was open (safety)
+                            const libOverlay = document.getElementById('library-overlay');
+                            if (libOverlay) libOverlay.classList.remove('visible');
+                        }
+                    }
+                } catch (e) {
+                    console.error("Load folder failed:", e);
+                }
+            });
+        }
+
+        // 2. Ensure Refresh Button Works
+        const refBtn = document.getElementById('refresh-folder-btn');
+        if (refBtn) {
+            // Clone to strip potential bad listeners
+            const newRefBtn = refBtn.cloneNode(true);
+            if (refBtn.parentNode) refBtn.parentNode.replaceChild(newRefBtn, refBtn);
+
+            newRefBtn.addEventListener('click', async () => {
+                let path = currentFolderPath || settings.currentFolderPath;
+                if (!path) {
+                    // If no path, ask to select one
+                    const btn = document.getElementById('open-library-btn');
+                    if (btn) btn.click();
+                    return;
+                }
+
+                // Spin icon?
+                newRefBtn.style.transform = 'rotate(360deg)';
+                newRefBtn.style.transition = 'transform 1s ease';
+
+                const res = await windowApi.refreshMusicFolder(path);
+                if (res && res.tracks) {
+                    basePlaylist = res.tracks;
+                    sortPlaylist(sortMode);
+                    renderPlaylist();
+                    showNotification('Folder Refreshed');
+                }
+
+                setTimeout(() => {
+                    newRefBtn.style.transform = 'none';
+                    newRefBtn.style.transition = 'none';
+                }, 1000);
+            });
+        }
+
+        // 3. Fix Help & Controls Buttons to point to settings if needed
+        // (Already handled in main block but good to ensure style)
+
+
+        // 3. Fix Help & Controls Buttons to point to settings if needed
+
+    }, 500); // 500ms delay
+
+    function updateAudioEffects() {
+        const bass = settings.bassBoostEnabled;
+        const crystal = settings.trebleBoostEnabled; // Treble is Crystalizer in UI
+        const reverb = settings.reverbEnabled;
+        const isAny = bass || crystal || reverb;
+
+        const indicator = document.getElementById('active-features-indicator');
+        if (indicator) {
+            indicator.style.display = isAny ? 'block' : 'none';
+        }
+
+        const bEl = document.getElementById('modal-feat-bass');
+        if (bEl) bEl.style.display = bass ? 'flex' : 'none';
+
+        const cEl = document.getElementById('modal-feat-crystal');
+        if (cEl) cEl.style.display = crystal ? 'flex' : 'none';
+
+        const rEl = document.getElementById('modal-feat-reverb');
+        if (rEl) rEl.style.display = reverb ? 'flex' : 'none';
+    }
+
+
+    // --- NEW CONTEXT MENU LOGIC ---
+    let cmTimeout;
+    function showContextMenu(e, index) {
+        e.preventDefault();
+        const cm = document.getElementById('context-menu');
+        if (!cm) return;
+
+        // Store index globally
+        contextTrackIndex = index;
+
+        // Calculate position (keep in bounds)
+        let x = e.clientX;
+        let y = e.clientY;
+
+        const w = cm.offsetWidth || 200;
+        const h = cm.offsetHeight || 250;
+
+        if (x + w > window.innerWidth) x = window.innerWidth - w - 10;
+        if (y + h > window.innerHeight) y = window.innerHeight - h - 10;
+
+        cm.style.left = x + 'px';
+        cm.style.top = y + 'px';
+        cm.classList.add('visible');
+
+        // Setup dismiss
+        const dismiss = () => {
+            cm.classList.remove('visible');
+            document.removeEventListener('click', dismiss);
+        };
+        // Delay slightly so the immediate click doesn't close it? 
+        // Actually typically we bind to document click immediately effectively.
+        // Use requestAnimationFrame or setTimeout
+        setTimeout(() => document.addEventListener('click', dismiss), 50);
+    }
+
+    // Bind Context Menu Actions (Running once at end of file)
+    setTimeout(() => {
+        // Play
+        const cmPlay = document.getElementById('cm-play');
+        if (cmPlay) cmPlay.onclick = () => {
+            if (contextTrackIndex !== null) playTrack(contextTrackIndex);
+        };
+
+        // Edit Title
+        const cmEdit = document.getElementById('cm-edit');
+        if (cmEdit) cmEdit.onclick = () => {
+            if (contextTrackIndex === null) return;
+            const t = playlist[contextTrackIndex];
+            if (originalTitlePreview) originalTitlePreview.textContent = t.title;
+            if (newTitlePreview) newTitlePreview.textContent = t.title;
+            if (editTitleInput) editTitleInput.value = t.title;
+            if (editTitleOverlay) editTitleOverlay.classList.add('visible');
+        };
+
+        // Favorite
+        const cmFav = document.getElementById('cm-fav');
+        if (cmFav) cmFav.onclick = () => {
+            if (contextTrackIndex !== null && playlist[contextTrackIndex]) toggleFavorite(playlist[contextTrackIndex].path);
+        };
+
+        // Folder
+        const cmFolder = document.getElementById('cm-folder');
+        if (cmFolder) cmFolder.onclick = () => {
+            if (contextTrackIndex !== null && playlist[contextTrackIndex]) windowApi.showInFolder(playlist[contextTrackIndex].path);
+        };
+
+        // Delete
+        const cmDelete = document.getElementById('cm-delete');
+        if (cmDelete) cmDelete.onclick = () => {
+            // Trigger generic delete confirmation
+            // Re-using logic from main delete handler
+            // Needs to set trackToDeletePath
+            if (contextTrackIndex !== null && playlist[contextTrackIndex]) {
+                trackToDeletePath = playlist[contextTrackIndex].path;
+                if (confirmDeleteOverlay) confirmDeleteOverlay.classList.add('visible');
+            }
+        };
+    }, 1000); // Wait for DOM
+
+
+    // --- DYNAMIC ISLAND NOTIFICATION LOGIC ---
+    let notificationTimeout;
+
+    // Global showNotification function
+    // Type: 'info' | 'loading' | 'success' | 'error'
+    window.showNotification = function (message, type = 'info', duration = 3000) {
+        const island = document.getElementById('dynamic-island');
+        const msgEl = document.getElementById('island-message');
+        const spinner = document.getElementById('island-spinner');
+        const icon = document.getElementById('island-icon');
+
+        if (!island || !msgEl) return;
+
+        // Reset contents
+        if (spinner) spinner.style.display = 'none';
+        if (icon) icon.style.display = 'none';
+
+        msgEl.textContent = message;
+
+        // Type handling
+        if (type === 'loading') {
+            if (spinner) spinner.style.display = 'block';
+            duration = 0; // Infinite (until manually closed or replaced)
+        } else if (type === 'success') {
+            if (icon) {
+                icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #4ade80;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                icon.style.display = 'block';
+            }
+        } else if (type === 'error') {
+            if (icon) {
+                icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+                icon.style.display = 'block';
+            }
+        }
+
+        // Show
+        island.classList.add('visible');
+
+        // Clear existing timeout
+        if (notificationTimeout) clearTimeout(notificationTimeout);
+
+        // Auto hide
+        if (duration > 0) {
+            notificationTimeout = setTimeout(() => {
+                island.classList.remove('visible');
+            }, duration);
+        }
+    };
+
+    // Aliases for compatibility
+    window.hideNotification = function () {
+        const island = document.getElementById('dynamic-island');
+        if (island) island.classList.remove('visible');
+        if (notificationTimeout) clearTimeout(notificationTimeout);
+    };
+
+}); // Close DOMContentLoaded
