@@ -1793,13 +1793,10 @@ body.gradient-title-active .app-title-text p {
     filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
 }
 
-.sun-cover {
-    width: 45%;
-    height: 45%;
-    background: linear-gradient(to bottom, #fde047 0%, #f97316 50%, #ec4899 100%);
-    border-radius: 50%;
-    box-shadow: 0 0 30px rgba(249, 115, 22, 0.5);
-    position: relative;
+body.sunset-active .music-emoji img {
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 15px rgba(249, 115, 22, 0.6));
+    padding: 0;
 }
 
 .sakura-cover {

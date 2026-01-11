@@ -1,5 +1,6 @@
 import * as App from '../wailsjs/go/main/App.js';
 import lovingDinosImg from './assets/Two_Loving_Cute_Dinos.png';
+import sunsetSunImg from './assets/sunset_drive_retrowave_sun.png';
 import lovingDinosIco from './assets/Two_Loving_Cute_Dinos.ico';
 import { translations } from './translations.js';
 import { VisualizerEngine } from './visualizerEngine.js';
@@ -939,8 +940,8 @@ function updateEmoji(emojiType, customEmoji) {
     else if (emojiType === 'cyber') emoji = '🤖';
     else if (emojiType === 'moon') emoji = '🌙';
     else if (emojiType === 'sunset_sun') {
-        emoji = '<div class="sun-cover"></div>';
-        isHtml = true;
+        emoji = sunsetSunImg;
+        isImage = true;
     }
     else if (emojiType === 'sakura_flower') {
         emoji = '<div class="sakura-cover">🌸</div>';
