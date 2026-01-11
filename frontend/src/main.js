@@ -5,6 +5,7 @@ import { translations } from './translations.js';
 import { VisualizerEngine } from './visualizerEngine.js';
 import { IntroManager } from './intro.js';
 import { AudioExtras } from './audio_extras.js';
+import { DynamicIsland } from './dynamic_island.js';
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
@@ -59,6 +60,7 @@ let activeDownloaderMode = 'youtube';
 // Visualizer State
 let visualizer; // Instance of VisualizerEngine
 let audioExtras;
+let dynamicIsland;
 
 // DOM Elements
 let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, mainFavoriteBtn;
@@ -1353,6 +1355,36 @@ async function loadSettings() {
     } else {
         document.body.classList.remove('playlist-hidden');
     }
+
+    // Restore Audio Extras UI
+    if (bassBoostToggle) {
+        bassBoostToggle.checked = settings.bassBoostEnabled || false;
+        if (bassBoostContainer) bassBoostContainer.style.display = settings.bassBoostEnabled ? 'flex' : 'none';
+    }
+    if (bassBoostSlider) {
+        bassBoostSlider.value = settings.bassBoostValue !== undefined ? settings.bassBoostValue : 6;
+        if (bassBoostValueEl) bassBoostValueEl.textContent = bassBoostSlider.value + 'dB';
+    }
+
+    if (trebleBoostToggle) {
+        trebleBoostToggle.checked = settings.trebleBoostEnabled || false;
+        if (trebleBoostContainer) trebleBoostContainer.style.display = settings.trebleBoostEnabled ? 'flex' : 'none';
+    }
+    if (trebleBoostSlider) {
+        trebleBoostSlider.value = settings.trebleBoostValue !== undefined ? settings.trebleBoostValue : 6;
+        if (trebleBoostValueEl) trebleBoostValueEl.textContent = trebleBoostSlider.value + 'dB';
+    }
+
+    if (reverbToggle) {
+        reverbToggle.checked = settings.reverbEnabled || false;
+        if (reverbContainer) reverbContainer.style.display = settings.reverbEnabled ? 'flex' : 'none';
+    }
+    if (reverbSlider) {
+        reverbSlider.value = settings.reverbValue !== undefined ? settings.reverbValue : 30;
+        if (reverbValueEl) reverbValueEl.textContent = reverbSlider.value + '%';
+    }
+    
+    updateAudioEffects();
 }
 
 function updateLoopIcon() {
@@ -1990,11 +2022,7 @@ function setupEventListeners() {
     });
 }
 
-function showNotification(msg) {
-    if (!notificationBar || !notificationMessage) return; if (notificationTimeout) clearTimeout(notificationTimeout);
-    notificationMessage.textContent = msg; notificationBar.classList.remove('visible'); void notificationBar.offsetWidth; notificationBar.classList.add('visible');
-    notificationTimeout = setTimeout(() => { notificationBar.classList.remove('visible'); }, 5000);
-}
+
 
 function makeDraggable(modal, handle) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -2615,60 +2643,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000); // Wait for DOM
 
 
-    // --- DYNAMIC ISLAND NOTIFICATION LOGIC ---
-    let notificationTimeout;
+    // --- DYNAMIC ISLAND LOGIC ---
+    dynamicIsland = new DynamicIsland();
 
-    // Global showNotification function
-    // Type: 'info' | 'loading' | 'success' | 'error'
+    // Global showNotification wrapper
     window.showNotification = function (message, type = 'info', duration = 3000) {
-        const island = document.getElementById('dynamic-island');
-        const msgEl = document.getElementById('island-message');
-        const spinner = document.getElementById('island-spinner');
-        const icon = document.getElementById('island-icon');
-
-        if (!island || !msgEl) return;
-
-        // Reset contents
-        if (spinner) spinner.style.display = 'none';
-        if (icon) icon.style.display = 'none';
-
-        msgEl.textContent = message;
-
-        // Type handling
-        if (type === 'loading') {
-            if (spinner) spinner.style.display = 'block';
-            duration = 0; // Infinite (until manually closed or replaced)
-        } else if (type === 'success') {
-            if (icon) {
-                icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #4ade80;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                icon.style.display = 'block';
-            }
-        } else if (type === 'error') {
-            if (icon) {
-                icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
-                icon.style.display = 'block';
-            }
-        }
-
-        // Show
-        island.classList.add('visible');
-
-        // Clear existing timeout
-        if (notificationTimeout) clearTimeout(notificationTimeout);
-
-        // Auto hide
-        if (duration > 0) {
-            notificationTimeout = setTimeout(() => {
-                island.classList.remove('visible');
-            }, duration);
-        }
+        if (dynamicIsland) dynamicIsland.show(message, type, duration);
     };
 
-    // Aliases for compatibility
     window.hideNotification = function () {
-        const island = document.getElementById('dynamic-island');
-        if (island) island.classList.remove('visible');
-        if (notificationTimeout) clearTimeout(notificationTimeout);
+        if (dynamicIsland) dynamicIsland.hide();
     };
 
 }); // Close DOMContentLoaded
