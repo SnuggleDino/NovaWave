@@ -308,27 +308,27 @@ func (a *App) SelectMusicFolder() FolderResult {
 	return a.RefreshMusicFolder(path)
 }
 
-// getBinaryPath checks for a binary in the bin directory
+// getBinaryPath checks for a binary in the executable_bin directory
 func (a *App) getBinaryPath(name string) string {
-	// 1. Check in CWD/bin
+	// 1. Check in CWD/executable_bin
 	if cwd, err := os.Getwd(); err == nil {
-		p := filepath.Join(cwd, "bin", name)
+		p := filepath.Join(cwd, "executable_bin", name)
 		if info, err := os.Stat(p); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(p)
 			return abs
 		}
 	}
 
-	// 2. Check next to executable/bin
+	// 2. Check next to executable/executable_bin
 	if ex, err := os.Executable(); err == nil {
 		exDir := filepath.Dir(ex)
-		p := filepath.Join(exDir, "bin", name)
+		p := filepath.Join(exDir, "executable_bin", name)
 		if info, err := os.Stat(p); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(p)
 			return abs
 		}
-		// Check one level up/bin
-		pUp := filepath.Join(filepath.Dir(exDir), "bin", name)
+		// Check one level up/executable_bin
+		pUp := filepath.Join(filepath.Dir(exDir), "executable_bin", name)
 		if info, err := os.Stat(pUp); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(pUp)
 			return abs
@@ -595,7 +595,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
 
 	if _, err := os.Stat(ytPath); err != nil {
-		return SimpleResult{Success: false, Error: "yt-dlp.exe not found! Searched in /bin directory."}, nil
+		return SimpleResult{Success: false, Error: "yt-dlp.exe not found! Searched in /executable_bin directory."}, nil
 	}
 	if _, err := os.Stat(ffmpegPath); err != nil {
 		return SimpleResult{Success: false, Error: "ffmpeg.exe not found!"}, nil
