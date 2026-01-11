@@ -352,6 +352,7 @@ function resetToDefaultTheme() {
     
     // 2. Clear all inline styles on root that themes might set
     document.documentElement.style.removeProperty('--accent');
+    document.documentElement.style.removeProperty('--bg-main');
     
     // 3. Restore Base Theme
     const th = settings.theme || 'blue';
@@ -361,7 +362,7 @@ function resetToDefaultTheme() {
     // 4. Reset UI Elements
     if (themeSelect) { themeSelect.disabled = false; themeSelect.value = th; }
     
-    // Restore Custom Color
+    // Restore Custom Color if enabled
     if (settings.useCustomColor && settings.customAccentColor) {
         document.documentElement.style.setProperty('--accent', settings.customAccentColor);
     }
@@ -2324,80 +2325,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initializeApp();
-    // --- MISSING THEME & HELPER FUNCTIONS ---
-
-    function applySunsetDrive(enable) {
-        if (enable) {
-            document.body.classList.add('theme-sunset');
-            document.body.classList.remove('theme-cyberpunk', 'theme-sakura', 'theme-win95', 'theme-sleep', 'theme-snuggle');
-        } else {
-            document.body.classList.remove('theme-sunset');
-        }
-    }
-
-    function applyCyberpunk(enable) {
-        if (enable) {
-            document.body.classList.add('theme-cyberpunk');
-            document.body.classList.remove('theme-sunset', 'theme-sakura', 'theme-win95', 'theme-sleep', 'theme-snuggle');
-        } else {
-            document.body.classList.remove('theme-cyberpunk');
-        }
-    }
-
-    function applySakuraSpirit(enable) {
-        if (enable) {
-            document.body.classList.add('theme-sakura');
-            document.body.classList.remove('theme-sunset', 'theme-cyberpunk', 'theme-win95', 'theme-sleep', 'theme-snuggle');
-        } else {
-            document.body.classList.remove('theme-sakura');
-        }
-    }
-
-    function applyNovaWave95(enable) {
-        if (enable) {
-            document.body.classList.add('theme-win95');
-            document.body.classList.remove('theme-sunset', 'theme-cyberpunk', 'theme-sakura', 'theme-sleep', 'theme-snuggle');
-        } else {
-            document.body.classList.remove('theme-win95');
-        }
-    }
-
-    function applySleepTime(enable) {
-        if (enable) {
-            document.body.classList.add('theme-sleep');
-            document.body.classList.remove('theme-sunset', 'theme-cyberpunk', 'theme-sakura', 'theme-win95', 'theme-snuggle');
-        } else {
-            document.body.classList.remove('theme-sleep');
-        }
-    }
-
-    function applySnuggleTime(enable) {
-        if (enable) {
-            document.body.classList.add('theme-snuggle');
-            document.body.classList.remove('theme-sunset', 'theme-cyberpunk', 'theme-sakura', 'theme-win95', 'theme-sleep');
-        } else {
-            document.body.classList.remove('theme-snuggle');
-        }
-    }
-
-    function setPerformanceMode(enable) {
-        saveSetting('performanceMode', enable);
-        document.body.classList.toggle('performance-mode', enable);
-
-        // Performance Mode & Stats "working together"
-        // When performance mode is ON, we might want to ensure stats can be seen?
-        // User said: "Show System Stats und Performance Mode arbeiten nicht mehr zusammen"
-        const statsOverlay = document.getElementById('stats-overlay');
-        if (statsOverlay) {
-            if (enable) {
-                // If perf mode is ON, show stats (debug mode)
-                statsOverlay.classList.remove('hidden');
-            } else if (!settings.showStatsOverlay) {
-                // If perf mode OFF and stats setting OFF, hide it
-                statsOverlay.classList.add('hidden');
-            }
-        }
-    }
 
     // --- FIX LOAD FOLDER & REFRESH LOGIC ---
     // This runs after DOMContentLoaded because we are appending it, assuming this script is deferred or this block executes
@@ -2480,27 +2407,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. Fix Help & Controls Buttons to point to settings if needed
 
     }, 500); // 500ms delay
-
-    function updateAudioEffects() {
-        const bass = settings.bassBoostEnabled;
-        const crystal = settings.trebleBoostEnabled; // Treble is Crystalizer in UI
-        const reverb = settings.reverbEnabled;
-        const isAny = bass || crystal || reverb;
-
-        const indicator = document.getElementById('active-features-indicator');
-        if (indicator) {
-            indicator.style.display = isAny ? 'block' : 'none';
-        }
-
-        const bEl = document.getElementById('modal-feat-bass');
-        if (bEl) bEl.style.display = bass ? 'flex' : 'none';
-
-        const cEl = document.getElementById('modal-feat-crystal');
-        if (cEl) cEl.style.display = crystal ? 'flex' : 'none';
-
-        const rEl = document.getElementById('modal-feat-reverb');
-        if (rEl) rEl.style.display = reverb ? 'flex' : 'none';
-    }
 
 
     // --- NEW CONTEXT MENU LOGIC ---

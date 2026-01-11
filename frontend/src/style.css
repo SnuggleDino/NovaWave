@@ -1274,11 +1274,11 @@ textarea {
 .synth-sun {
     width: 240px;
     height: 240px;
-    background: linear-gradient(to bottom, #fcd34d 0%, #f97316 50%, #ec4899 100%);
+    background: linear-gradient(to bottom, #fde047 0%, #f97316 50%, #db2777 100%);
     border-radius: 50%;
     position: relative;
     box-shadow: 0 0 80px rgba(249, 115, 22, 0.6);
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     z-index: 1;
     overflow: hidden;
 }
@@ -1286,27 +1286,15 @@ textarea {
 .synth-sun::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(
+    bottom: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
         to bottom,
         transparent 0%,
-        transparent 50%,
-        rgba(31, 11, 46, 1) 50%,
-        rgba(31, 11, 46, 1) 52%,
-        transparent 52%,
-        transparent 60%,
-        rgba(31, 11, 46, 1) 60%,
-        rgba(31, 11, 46, 1) 63%,
-        transparent 63%,
-        transparent 72%,
-        rgba(31, 11, 46, 1) 72%,
-        rgba(31, 11, 46, 1) 76%,
-        transparent 76%,
-        transparent 85%,
-        rgba(31, 11, 46, 1) 85%,
-        rgba(31, 11, 46, 1) 90%,
-        transparent 90%
+        transparent 10%,
+        rgba(15, 10, 30, 1) 10%,
+        rgba(15, 10, 30, 1) 13%
     );
+    border-radius: 50%;
 }
 
 @keyframes synth-sun-pulse {
