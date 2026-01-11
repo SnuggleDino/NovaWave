@@ -1304,12 +1304,12 @@ textarea {
     bottom: 0;
     left: -50%;
     width: 200%;
-    height: 50%;
+    height: 60%;
     background-image:
-        linear-gradient(rgba(236, 72, 153, 0.5) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(236, 72, 153, 0.5) 1px, transparent 1px);
-    background-size: 50px 50px;
-    transform: perspective(300px) rotateX(60deg);
+        linear-gradient(rgba(236, 72, 153, 0.6) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(236, 72, 153, 0.6) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(250px) rotateX(60deg);
     transform-origin: bottom center;
     animation: grid-scroll 2s linear infinite;
     z-index: 0;
