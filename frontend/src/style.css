@@ -1272,29 +1272,26 @@ textarea {
 }
 
 .synth-sun {
-    width: 240px;
-    height: 240px;
-    background: linear-gradient(to bottom, #fde047 0%, #f97316 50%, #db2777 100%);
-    border-radius: 50%;
+    width: 300px;
+    height: 300px;
     position: relative;
-    box-shadow: 0 0 80px rgba(249, 115, 22, 0.6);
-    margin-bottom: 40px;
+    box-shadow: 0 0 100px rgba(249, 115, 22, 0.4);
+    margin-bottom: 30px;
     z-index: 1;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: synth-sun-pulse 4s ease-in-out infinite;
+}
+
+.synth-sun img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .synth-sun::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; width: 100%; height: 100%;
-    background: repeating-linear-gradient(
-        to bottom,
-        transparent 0%,
-        transparent 10%,
-        rgba(15, 10, 30, 1) 10%,
-        rgba(15, 10, 30, 1) 13%
-    );
-    border-radius: 50%;
+    display: none !important;
 }
 
 @keyframes synth-sun-pulse {
