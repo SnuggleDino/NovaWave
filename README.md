@@ -1,6 +1,9 @@
-# 🎵 NovaWave `v2.5.8 GO`
+# 🎵 NovaWave `v2.5.9 GO`
 **NovaWave** is a modern, high-performance desktop music player built with **Wails (Go)** and a polished **Web-based frontend**. It combines professional audio processing with a stunning visual experience and powerful downloader capabilities.
 
+![Version](https://img.shields.io/badge/Version-2.5.9--GO-c1d37f?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
+![Author](https://img.shields.io/badge/Author-SnuggleDino-fbbf24?style=for-the-badge)
 [![Project Link](https://img.shields.io/badge/GitHub-NovaWave--WAILS-blue?style=for-the-badge&logo=github)](https://github.com/SnuggleDino/NovaWave-WAILS)
 
 ---
@@ -82,7 +85,7 @@ Multiple visualization styles to match your mood:
 ---
 
 ## 📊 Project Metadata
-*   **Version:** 2.5.8 GO
+*   **Version:** 2.5.9 GO
 *   **Build Date:** 11.01.2026
 *   **Author:** [SnuggleDino](https://github.com/SnuggleDino)
 *   **Go Version:** v2.9.2 (Go 1.23)
