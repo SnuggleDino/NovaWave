@@ -3339,139 +3339,152 @@ body.focus-active .focus-mode-btn {
     justify-content: center;
 }
 
-/* ================= MINI-PLAYER MODE ================= */
+/* ================= MINI-PLAYER MODE (LANDSCAPE) ================= */
 body.is-mini {
     overflow: hidden !important;
+    background: transparent !important;
 }
 
 body.is-mini .app-shell {
     display: flex !important;
     flex-direction: column !important;
-    width: 100% !important;
-    height: 100% !important;
-    padding: 10px !important;
-    gap: 8px !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    background: var(--bg-main) !important;
 }
 
 body.is-mini .app-header {
-    position: relative !important;
-    width: 100% !important;
-    padding: 5px 10px !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 10px !important;
+    border-bottom: none !important;
     background: transparent !important;
-    border: none !important;
+    justify-content: flex-end !important;
 }
 
-body.is-mini .app-title-block {
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-}
-
-body.is-mini .logo-icon {
-    width: 24px !important;
-    height: 24px !important;
-}
-
-body.is-mini .app-title-text h1 {
-    font-size: 0.9rem !important;
-}
-
-body.is-mini .app-title-text p {
+body.is-mini .app-title-block,
+body.is-mini .lang-switch,
+body.is-mini #user-help-btn,
+body.is-mini #toggle-playlist-btn,
+body.is-mini #toggle-downloader-btn,
+body.is-mini #settings-btn {
     display: none !important;
 }
 
 body.is-mini .header-right {
     display: flex !important;
-    gap: 5px !important;
+    align-items: center !important;
+    gap: 0 !important;
 }
 
-body.is-mini .header-right .header-item:not(:first-child) {
-    display: none !important;
+body.is-mini .header-item {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
-body.is-mini .lang-switch {
+body.is-mini .mini-mode-label {
     display: none !important;
 }
 
 body.is-mini .main-grid {
-    display: flex !important;
-    flex-direction: column !important;
+    display: block !important;
+    padding: 0 15px 10px 15px !important;
     flex: 1 !important;
     min-height: 0 !important;
 }
 
 body.is-mini .player-column {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
+    display: grid !important;
+    grid-template-columns: 70px 1fr !important;
+    grid-template-rows: auto auto auto !important;
+    grid-template-areas:
+        "cover info"
+        "cover controls"
+        "cover progress";
+    gap: 2px 15px !important;
+    width: 100% !important;
+    height: 100% !important;
     padding: 0 !important;
-    gap: 10px !important;
-    flex: 1 !important;
-    overflow: hidden !important;
-}
-
-body.is-mini .extras-column {
-    display: block !important;
-    flex: 1 !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-    border: none !important;
-    min-width: 0 !important;
-}
-
-body.is-mini .app-footer,
-body.is-mini .volume-control-area,
-body.is-mini .visualizer-container,
-body.is-mini .active-features-container {
-    display: none !important;
+    align-content: center !important;
+    justify-items: start !important;
 }
 
 body.is-mini .cover-art-container {
-    display: none !important;
+    grid-area: cover !important;
+    display: flex !important;
+    width: 70px !important;
+    height: 70px !important;
+    margin: 0 !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
+    border-radius: 6px !important;
+}
+
+body.is-mini .cover-art-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 6px !important;
+}
+
+body.is-mini .music-emoji {
+    font-size: 30px !important;
 }
 
 body.is-mini .track-info-area {
+    grid-area: info !important;
+    margin: 0 !important;
+    padding: 0 !important;
     text-align: left !important;
+    align-items: flex-start !important;
     width: 100% !important;
-    padding: 0 5px !important;
+    overflow: hidden !important;
+    display: block !important;
+}
+
+body.is-mini .track-title-flex-box {
+    justify-content: flex-start !important;
+    padding: 0 !important;
+}
+
+body.is-mini .title-scroll-wrapper {
+    justify-content: flex-start !important;
 }
 
 body.is-mini .track-title-large {
-    font-size: 0.9rem !important;
+    font-size: 0.95rem !important;
+    padding: 0 !important;
     text-align: left !important;
+    margin-bottom: 0 !important;
 }
 
 body.is-mini .track-artist-large {
     font-size: 0.75rem !important;
     text-align: left !important;
-}
-
-body.is-mini .progress-area {
-    width: 100% !important;
-    padding: 0 5px !important;
-}
-
-body.is-mini .time-labels {
-    font-size: 0.65rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 body.is-mini .controls-area {
-    gap: 10px !important;
-    padding: 5px 0 !important;
+    grid-area: controls !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    padding: 2px 0 !important;
+    margin-top: 2px !important;
 }
 
 body.is-mini .control-btn {
-    width: 32px !important;
-    height: 32px !important;
+    width: 28px !important;
+    height: 28px !important;
+    background: rgba(255,255,255,0.05) !important;
 }
 
 body.is-mini .control-main {
-    width: 38px !important;
-    height: 38px !important;
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 0.9rem !important;
 }
 
 body.is-mini #shuffle-btn,
@@ -3479,42 +3492,63 @@ body.is-mini #loop-btn {
     display: none !important;
 }
 
+body.is-mini .progress-area {
+    grid-area: progress !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+body.is-mini .progress-bar {
+    height: 4px !important;
+    background: rgba(255,255,255,0.1) !important;
+}
+
+body.is-mini .time-labels {
+    display: none !important;
+}
+
+body.is-mini .visualizer-container {
+    display: block !important;
+    position: absolute !important;
+    right: 15px !important;
+    bottom: 15px !important;
+    width: 60px !important;
+    height: 25px !important;
+    margin: 0 !important;
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+}
+
+body.is-mini .extras-column,
+body.is-mini .app-footer,
+body.is-mini .volume-control-area,
+body.is-mini .active-features-container,
+body.is-mini #active-features-indicator {
+    display: none !important;
+}
+
 body.is-mini .playlist-panel {
-    flex: 1 !important;
-    min-height: 0 !important;
+    display: none !important;
 }
 
 body.is-mini .playlist-header-area {
-    padding: 5px !important;
+    display: none !important;
 }
 
 body.is-mini .panel-title {
-    font-size: 0.9rem !important;
+    display: none !important;
 }
 
 body.is-mini .playlist-scroll-area {
-    max-height: none !important;
+    display: none !important;
 }
 
 body.is-mini .track-row {
-    padding: 6px 8px !important;
-}
-
-body.is-mini .track-row .track-number {
-    font-size: 0.7rem !important;
-    min-width: 18px !important;
-}
-
-body.is-mini .track-row .track-info {
-    gap: 2px !important;
-}
-
-body.is-mini .track-row .track-name {
-    font-size: 0.8rem !important;
-}
-
-body.is-mini .track-row .track-artist {
-    font-size: 0.7rem !important;
+    display: none !important;
 }
 
 /* ============================================== */
