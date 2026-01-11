@@ -308,29 +308,22 @@ func (a *App) SelectMusicFolder() FolderResult {
 	return a.RefreshMusicFolder(path)
 }
 
-// getBinaryPath checks for a binary in the executable_bin directory
+// getBinaryPath checks for a binary in several locations
 func (a *App) getBinaryPath(name string) string {
-	// 1. Check in CWD/executable_bin
-	if cwd, err := os.Getwd(); err == nil {
-		p := filepath.Join(cwd, "executable_bin", name)
-		if info, err := os.Stat(p); err == nil && !info.IsDir() {
-			abs, _ := filepath.Abs(p)
-			return abs
-		}
+	cwd, _ := os.Getwd()
+	ex, _ := os.Executable()
+	exDir := filepath.Dir(ex)
+
+	paths := []string{
+		filepath.Join(cwd, "executable_bin", name),
+		filepath.Join(exDir, "executable_bin", name),
+		filepath.Join(filepath.Dir(exDir), "executable_bin", name),
+		filepath.Join(cwd, name),
 	}
 
-	// 2. Check next to executable/executable_bin
-	if ex, err := os.Executable(); err == nil {
-		exDir := filepath.Dir(ex)
-		p := filepath.Join(exDir, "executable_bin", name)
+	for _, p := range paths {
 		if info, err := os.Stat(p); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(p)
-			return abs
-		}
-		// Check one level up/executable_bin
-		pUp := filepath.Join(filepath.Dir(exDir), "executable_bin", name)
-		if info, err := os.Stat(pUp); err == nil && !info.IsDir() {
-			abs, _ := filepath.Abs(pUp)
 			return abs
 		}
 	}
@@ -595,10 +588,10 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
 
 	if _, err := os.Stat(ytPath); err != nil {
-		return SimpleResult{Success: false, Error: "yt-dlp.exe not found! Searched in /executable_bin directory."}, nil
+		return SimpleResult{Success: false, Error: "yt-dlp.exe nicht gefunden! Bitte in 'executable_bin' legen."}, nil
 	}
 	if _, err := os.Stat(ffmpegPath); err != nil {
-		return SimpleResult{Success: false, Error: "ffmpeg.exe not found!"}, nil
+		return SimpleResult{Success: false, Error: "ffmpeg.exe nicht gefunden!"}, nil
 	}
 
 	qualityMap := map[string]string{"best": "0", "high": "5", "standard": "9"}
