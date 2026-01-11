@@ -1272,14 +1272,15 @@ textarea {
 }
 
 .synth-sun {
-    width: 280px;
-    height: 280px;
+    width: 260px;
+    height: 260px;
     background: linear-gradient(to bottom, #ff3131 0%, #ff914d 50%, #ffde59 100%);
     border-radius: 50%;
     position: relative;
     box-shadow: 0 0 60px rgba(255, 145, 77, 0.5);
     z-index: 1;
     overflow: hidden;
+    margin-bottom: 30px;
 }
 
 .synth-sun::after {
@@ -1292,36 +1293,36 @@ textarea {
     background: linear-gradient(
         to bottom,
         transparent 0%,
-        transparent 50%,
-        rgba(31, 11, 46, 1) 50%,
-        rgba(31, 11, 46, 1) 52%,
-        transparent 52%,
-        transparent 62%,
-        rgba(31, 11, 46, 1) 62%,
-        rgba(31, 11, 46, 1) 65%,
-        transparent 65%,
-        transparent 75%,
-        rgba(31, 11, 46, 1) 75%,
-        rgba(31, 11, 46, 1) 79%,
-        transparent 79%,
-        transparent 89%,
-        rgba(31, 11, 46, 1) 89%,
-        rgba(31, 11, 46, 1) 94%,
-        transparent 94%
+        transparent 45%,
+        rgba(31, 11, 46, 1) 45%,
+        rgba(31, 11, 46, 1) 47%,
+        transparent 47%,
+        transparent 55%,
+        rgba(31, 11, 46, 1) 55%,
+        rgba(31, 11, 46, 1) 58%,
+        transparent 58%,
+        transparent 68%,
+        rgba(31, 11, 46, 1) 68%,
+        rgba(31, 11, 46, 1) 72%,
+        transparent 72%,
+        transparent 84%,
+        rgba(31, 11, 46, 1) 84%,
+        rgba(31, 11, 46, 1) 90%,
+        transparent 90%
     );
 }
 
 .synth-grid {
     position: absolute;
-    bottom: 0;
+    bottom: -20px;
     left: -50%;
     width: 200%;
-    height: 60%;
+    height: 65%;
     background-image:
-        linear-gradient(rgba(236, 72, 153, 0.5) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(236, 72, 153, 0.5) 1px, transparent 1px);
-    background-size: 50px 50px;
-    transform: perspective(300px) rotateX(65deg);
+        linear-gradient(rgba(236, 72, 153, 0.6) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(236, 72, 153, 0.6) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(250px) rotateX(65deg);
     transform-origin: bottom center;
     animation: grid-scroll 2s linear infinite;
     z-index: 0;
@@ -1329,7 +1330,7 @@ textarea {
 
 @keyframes grid-scroll {
     0% { background-position: 0 0; }
-    100% { background-position: 0 80px; }
+    100% { background-position: 0 60px; }
 }
 
 .synth-title {
@@ -1339,7 +1340,7 @@ textarea {
     letter-spacing: 8px;
     text-transform: uppercase;
     text-shadow: 4px 4px 0px #db2777, 0 0 30px #f97316;
-    margin-top: -80px;
+    margin-top: -60px;
     z-index: 2;
     font-style: italic;
     transform: skewX(-10deg);
@@ -3566,10 +3567,11 @@ body.is-mini .volume-control-area {
     justify-self: end !important;
     align-self: center !important;
     width: auto !important;
-    padding: 4px 10px !important;
-    background: rgba(0,0,0,0.2) !important;
+    padding: 4px 12px !important;
+    background: rgba(0, 0, 0, 0.4) !important;
     border-radius: 20px !important;
-    z-index: 10 !important;
+    z-index: 15 !important;
+    margin-right: -5px !important;
 }
 
 body.is-mini .volume-icon {

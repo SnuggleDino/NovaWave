@@ -2253,9 +2253,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('ready');
         }
 
+        // Start loading settings and folder in background (don't await yet)
+        const loadSettingsPromise = loadSettings();
+
         try {
-            await loadSettings();
+            await loadSettingsPromise; // Wait for settings to be ready
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
+            if (settings.theme) localStorage.setItem('theme', settings.theme);
 
             // Apply Theme Packs after settings are loaded
             if (settings.snuggleTimeEnabled) {
