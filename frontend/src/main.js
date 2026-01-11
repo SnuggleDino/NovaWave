@@ -2122,11 +2122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     autoLoadLastFolderToggle = $('#toggle-auto-load-last-folder'); toggleMiniMode = $('#toggle-mini-mode');
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
 
-    const devModalOverlay = $('#dev-modal-overlay');
-    const devModalCloseBtn = $('#dev-modal-close-btn');
-    if (devModalCloseBtn && devModalOverlay) {
-        devModalCloseBtn.addEventListener('click', () => devModalOverlay.classList.remove('visible'));
-    }
+
 
     loadAppMeta(); // Load version info
 
