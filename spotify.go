@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type SpotifyTrack struct {
@@ -26,18 +27,24 @@ func (s *SpotifyService) IsSpotifyUrl(url string) bool {
 }
 
 func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
+	if strings.Contains(url, "spotify.com/playlist/") {
+		return nil, fmt.Errorf("Playlists werden aktuell noch nicht unterstützt. Bitte geben Sie einen Song-Link an.")
+	}
 	if !strings.Contains(url, "spotify.com/track/") {
 		return nil, fmt.Errorf("ungültiger Spotify-Track-Link")
 	}
 
-	resp, err := http.Get(url)
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Get(url)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("verbindung zu Spotify fehlgeschlagen: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("spotify Seite konnte nicht geladen werden: %d", resp.StatusCode)
+		return nil, fmt.Errorf("spotify Seite konnte nicht geladen werden (Code %d)", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -48,21 +55,24 @@ func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 	html := string(body)
 	track := &SpotifyTrack{}
 
+	// Robust Title Extraction
 	titleTag := "<meta property=\"og:title\" content=\""
 	if idx := strings.Index(html, titleTag); idx != -1 {
 		start := idx + len(titleTag)
 		end := strings.Index(html[start:], "\"")
 		if end != -1 {
-			track.Title = html[start : start+end]
+			track.Title = strings.TrimSuffix(html[start:start+end], " | Spotify")
 		}
 	}
 
+	// Robust Artist Extraction
 	descTag := "<meta property=\"og:description\" content=\""
 	if idx := strings.Index(html, descTag); idx != -1 {
 		start := idx + len(descTag)
 		end := strings.Index(html[start:], "\"")
 		if end != -1 {
 			desc := html[start : start+end]
+			// Artist is usually the first part before the dot separator
 			parts := strings.Split(desc, " · ")
 			if len(parts) > 0 {
 				track.Artist = parts[0]
@@ -71,7 +81,7 @@ func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 	}
 
 	if track.Title == "" {
-		return nil, fmt.Errorf("metadaten konnten nicht gefunden werden")
+		return nil, fmt.Errorf("song-Titel konnte auf Spotify nicht gefunden werden")
 	}
 
 	return track, nil

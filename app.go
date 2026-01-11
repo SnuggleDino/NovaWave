@@ -308,15 +308,25 @@ func (a *App) SelectMusicFolder() FolderResult {
 	return a.RefreshMusicFolder(path)
 }
 
-// Helper to get the directory of the executable
-func getExecutableDir() string {
-	ex, err := os.Executable()
-	if err != nil {
-		// Fallback to working directory if executable path fails
-		cwd, _ := os.Getwd()
-		return cwd
+// getBinaryPath checks for a binary in the executable directory and the working directory
+func (a *App) getBinaryPath(name string) string {
+	// 1. Executable dir
+	ex, _ := os.Executable()
+	if ex != "" {
+		p := filepath.Join(filepath.Dir(ex), name)
+		if _, err := os.Stat(p); err == nil {
+			return p
+		}
 	}
-	return filepath.Dir(ex)
+	// 2. Working dir
+	cwd, _ := os.Getwd()
+	if cwd != "" {
+		p := filepath.Join(cwd, name)
+		if _, err := os.Stat(p); err == nil {
+			return p
+		}
+	}
+	return name // Fallback to PATH
 }
 
 // getMP3Duration reads MP3 duration natively without external tools
@@ -378,9 +388,8 @@ func (a *App) RefreshMusicFolder(path string) FolderResult {
 
 		// Fallback to ffprobe for other formats or if native failed
 		if currentTrack.Duration == 0 {
-			execDir := getExecutableDir()
-			ffprobePath := filepath.Join(execDir, "ffprobe.exe")
-			if _, err := os.Stat(ffprobePath); err == nil {
+			ffprobePath := a.getBinaryPath("ffprobe.exe")
+			if info, err := os.Stat(ffprobePath); err == nil && !info.IsDir() {
 				cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path)
 				cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 				out, err := cmd.Output()
@@ -413,10 +422,9 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 		return nil, err
 	}
 
-	execDir := getExecutableDir()
-	ffprobePath := filepath.Join(execDir, "ffprobe.exe")
+	ffprobePath := a.getBinaryPath("ffprobe.exe")
 	hasFFprobe := false
-	if _, err := os.Stat(ffprobePath); err == nil {
+	if info, err := os.Stat(ffprobePath); err == nil && !info.IsDir() {
 		hasFFprobe = true
 	}
 
@@ -535,10 +543,9 @@ func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
 }
 
 func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
-	execDir := getExecutableDir()
-	ffmpegPath := filepath.Join(execDir, "ffmpeg.exe")
-	if _, err := os.Stat(ffmpegPath); os.IsNotExist(err) {
-		return SimpleResult{Success: false, Error: "ffmpeg.exe not found in " + execDir}
+	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
+	if info, err := os.Stat(ffmpegPath); err != nil || info.IsDir() {
+		return SimpleResult{Success: false, Error: "ffmpeg.exe not found"}
 	}
 
 	ext := filepath.Ext(pathStr)
@@ -571,14 +578,12 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	cfg := a.LoadConfig()
 	folderPath := cfg.DownloadFolder
 	if folderPath == "" {
-		folderPath = getExecutableDir()
+		cwd, _ := os.Getwd()
+		folderPath = cwd
 	}
 
-	fmt.Println("DEBUG: Downloading to:", folderPath)
-
-	execDir := getExecutableDir()
-	ytPath := filepath.Join(execDir, "yt-dlp.exe")
-	ffmpegPath := filepath.Join(execDir, "ffmpeg.exe")
+	ytPath := a.getBinaryPath("yt-dlp.exe")
+	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
 
 	if _, err := os.Stat(ytPath); os.IsNotExist(err) {
 		return SimpleResult{Success: false, Error: "yt-dlp.exe not found!"}, nil
@@ -608,7 +613,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	args := []string{
 		opts.Url, "-x", "--audio-format", "mp3", "--audio-quality", qVal,
 		"--embed-thumbnail", "--add-metadata",
-		"--ffmpeg-location", execDir,
+		"--ffmpeg-location", filepath.Dir(ffmpegPath),
 		"-P", folderPath, "-o", outputTemplate,
 	}
 
