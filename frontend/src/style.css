@@ -207,7 +207,7 @@ body.is-mini #toggle-playlist-btn {
     --accent-soft: rgba(252, 238, 10, 0.2);
     --text-main: #00f0ff;
     --text-muted: #ff003c;
-    --border-soft: #00f0ff;
+    --border-soft: #ff003c;
 }
 :root[data-theme="cyberpunk"] body {
     background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, #111 1px, #111 3px);

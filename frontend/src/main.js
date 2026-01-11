@@ -343,6 +343,46 @@ function playNext() {
 function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else playTrack(currentIndex - 1 < 0 ? playlist.length - 1 : currentIndex - 1); }
 
 // --- UI & DOM MANIPULATION ---
+function resetToDefaultTheme() {
+    document.body.classList.remove(
+        'snuggle-time-active', 'sleeptime-active', 'cyberpunk-active',
+        'sunset-active', 'sakura-active', 'win95-active'
+    );
+    const th = settings.theme || 'blue';
+    document.documentElement.setAttribute('data-theme', th);
+    
+    if (themeSelect) { themeSelect.disabled = false; themeSelect.value = th; }
+
+    if (settings.useCustomColor && settings.customAccentColor) {
+        document.documentElement.style.setProperty('--accent', settings.customAccentColor);
+    } else {
+        document.documentElement.style.removeProperty('--accent');
+    }
+    const accentToggle = document.getElementById('toggle-use-custom-color');
+    if (accentToggle) {
+        accentToggle.disabled = false;
+        accentToggle.checked = !!settings.useCustomColor;
+        if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
+    }
+
+    if (visualizer) {
+        const style = settings.visualizerStyle || 'bars';
+        visualizer.updateSettings({ style: style });
+        if (visualizerStyleSelect) { visualizerStyleSelect.disabled = false; visualizerStyleSelect.value = style; }
+    }
+
+    const anim = settings.animationMode || 'flow';
+    applyAnimationSetting(anim);
+    if (animationSelect) { animationSelect.disabled = false; animationSelect.value = anim; }
+
+    const et = settings.coverMode || 'note';
+    updateEmoji(et, settings.customCoverEmoji);
+    if (emojiSelect) { emojiSelect.disabled = false; emojiSelect.value = et; }
+    if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';
+
+    updateCachedColor();
+}
+
 async function applyCyberpunk(enabled, showIntro = false) {
     document.body.classList.toggle('cyberpunk-active', enabled);
     const accentToggle = document.getElementById('toggle-use-custom-color');
@@ -412,39 +452,7 @@ async function applyCyberpunk(enabled, showIntro = false) {
         }
         updateCachedColor();
     } else {
-        const th = settings.theme || 'blue';
-        document.documentElement.setAttribute('data-theme', th);
-        if (themeSelect) {
-            themeSelect.value = th;
-            themeSelect.disabled = false;
-        }
-
-        currentVisualizerStyle = settings.visualizerStyle || 'bars';
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = currentVisualizerStyle;
-            visualizerStyleSelect.disabled = false;
-        }
-        applyAnimationSetting(settings.animationMode || 'flow');
-        if (animationSelect) {
-            animationSelect.value = settings.animationMode || 'flow';
-            animationSelect.disabled = false;
-        }
-        const et = settings.coverMode || 'note';
-        updateEmoji(et, settings.customCoverEmoji);
-        if (emojiSelect) {
-            emojiSelect.value = et;
-            emojiSelect.disabled = false;
-        }
-
-        if (accentToggle) {
-            accentToggle.disabled = false;
-            accentToggle.checked = !!settings.useCustomColor;
-            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
-            if (accentToggle.checked) {
-                document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
-            }
-        }
-        updateCachedColor();
+        resetToDefaultTheme();
     }
 }
 
@@ -503,27 +511,7 @@ async function applySunsetDrive(enabled, showIntro = false) {
         }
         updateCachedColor();
     } else {
-        const th = settings.theme || 'blue';
-        document.documentElement.setAttribute('data-theme', th);
-        if (themeSelect) { themeSelect.value = th; themeSelect.disabled = false; }
-
-        currentVisualizerStyle = settings.visualizerStyle || 'bars';
-        if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
-
-        applyAnimationSetting(settings.animationMode || 'flow');
-        if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
-
-        const et = settings.coverMode || 'note';
-        updateEmoji(et, settings.customCoverEmoji);
-        if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
-
-        if (accentToggle) {
-            accentToggle.disabled = false;
-            accentToggle.checked = !!settings.useCustomColor;
-            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
-            if (accentToggle.checked) document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
-        }
-        updateCachedColor();
+        resetToDefaultTheme();
     }
 }
 
@@ -662,27 +650,7 @@ async function applyNovaWave95(enabled, showIntro = false) {
         }
         updateCachedColor();
     } else {
-        const th = settings.theme || 'blue';
-        document.documentElement.setAttribute('data-theme', th);
-        if (themeSelect) { themeSelect.value = th; themeSelect.disabled = false; }
-
-        currentVisualizerStyle = settings.visualizerStyle || 'bars';
-        if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
-
-        applyAnimationSetting(settings.animationMode || 'flow');
-        if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
-
-        const et = settings.coverMode || 'note';
-        updateEmoji(et, settings.customCoverEmoji);
-        if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
-
-        if (accentToggle) {
-            accentToggle.disabled = false;
-            accentToggle.checked = !!settings.useCustomColor;
-            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
-            if (accentToggle.checked) document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
-        }
-        updateCachedColor();
+        resetToDefaultTheme();
     }
 }
 
@@ -780,39 +748,7 @@ function applySleepTime(enabled, showIntro = false) {
         }
         updateCachedColor();
     } else {
-        const th = settings.theme || 'blue';
-        document.documentElement.setAttribute('data-theme', th);
-        if (themeSelect) {
-            themeSelect.value = th;
-            themeSelect.disabled = false;
-        }
-
-        currentVisualizerStyle = settings.visualizerStyle || 'bars';
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = currentVisualizerStyle;
-            visualizerStyleSelect.disabled = false;
-        }
-        applyAnimationSetting(settings.animationMode || 'flow');
-        if (animationSelect) {
-            animationSelect.value = settings.animationMode || 'flow';
-            animationSelect.disabled = false;
-        }
-        const et = settings.coverMode || 'note';
-        updateEmoji(et, settings.customCoverEmoji);
-        if (emojiSelect) {
-            emojiSelect.value = et;
-            emojiSelect.disabled = false;
-        }
-
-        if (accentToggle) {
-            accentToggle.disabled = false;
-            accentToggle.checked = !!settings.useCustomColor;
-            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
-            if (accentToggle.checked) {
-                document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
-            }
-        }
-        updateCachedColor();
+        resetToDefaultTheme();
     }
 }
 
@@ -1158,44 +1094,7 @@ function applySnuggleTime(enabled, showIntro = false) {
         }
         updateCachedColor();
     } else {
-        const th = settings.theme || 'blue';
-        document.documentElement.setAttribute('data-theme', th);
-        if (themeSelect) {
-            themeSelect.value = th;
-            themeSelect.disabled = false;
-        }
-
-        const restoredStyle = settings.visualizerStyle || 'bars';
-        if (visualizer) {
-            visualizer.updateSettings({ style: restoredStyle });
-        }
-
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = restoredStyle;
-            visualizerStyleSelect.disabled = false;
-        }
-        applyAnimationSetting(settings.animationMode || 'flow');
-        if (animationSelect) {
-            animationSelect.value = settings.animationMode || 'flow';
-            animationSelect.disabled = false;
-        }
-        const et = settings.coverMode || 'note';
-        updateEmoji(et, settings.customCoverEmoji);
-        if (emojiSelect) {
-            emojiSelect.value = et;
-            emojiSelect.disabled = false;
-        }
-        if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';
-
-        if (accentToggle) {
-            accentToggle.disabled = false;
-            accentToggle.checked = !!settings.useCustomColor;
-            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
-            if (accentToggle.checked) {
-                document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
-            }
-        }
-        updateCachedColor();
+        resetToDefaultTheme();
     }
 }
 
