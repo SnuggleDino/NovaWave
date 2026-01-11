@@ -310,22 +310,31 @@ func (a *App) SelectMusicFolder() FolderResult {
 
 // getBinaryPath checks for a binary in the executable directory and the working directory
 func (a *App) getBinaryPath(name string) string {
-	// 1. Executable dir
-	ex, _ := os.Executable()
-	if ex != "" {
-		p := filepath.Join(filepath.Dir(ex), name)
-		if _, err := os.Stat(p); err == nil {
-			return p
-		}
-	}
-	// 2. Working dir
-	cwd, _ := os.Getwd()
-	if cwd != "" {
+	// 1. Check in CWD
+	if cwd, err := os.Getwd(); err == nil {
 		p := filepath.Join(cwd, name)
-		if _, err := os.Stat(p); err == nil {
-			return p
+		if info, err := os.Stat(p); err == nil && !info.IsDir() {
+			abs, _ := filepath.Abs(p)
+			return abs
 		}
 	}
+
+	// 2. Check next to executable
+	if ex, err := os.Executable(); err == nil {
+		exDir := filepath.Dir(ex)
+		p := filepath.Join(exDir, name)
+		if info, err := os.Stat(p); err == nil && !info.IsDir() {
+			abs, _ := filepath.Abs(p)
+			return abs
+		}
+		// Check one level up (common in Wails build structures)
+		pUp := filepath.Join(filepath.Dir(exDir), name)
+		if info, err := os.Stat(pUp); err == nil && !info.IsDir() {
+			abs, _ := filepath.Abs(pUp)
+			return abs
+		}
+	}
+
 	return name // Fallback to PATH
 }
 
@@ -585,10 +594,10 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	ytPath := a.getBinaryPath("yt-dlp.exe")
 	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
 
-	if _, err := os.Stat(ytPath); os.IsNotExist(err) {
-		return SimpleResult{Success: false, Error: "yt-dlp.exe not found!"}, nil
+	if _, err := os.Stat(ytPath); err != nil {
+		return SimpleResult{Success: false, Error: "yt-dlp.exe not found! Searched in project root and next to exe."}, nil
 	}
-	if _, err := os.Stat(ffmpegPath); os.IsNotExist(err) {
+	if _, err := os.Stat(ffmpegPath); err != nil {
 		return SimpleResult{Success: false, Error: "ffmpeg.exe not found!"}, nil
 	}
 
