@@ -3561,14 +3561,15 @@ body.is-mini .control-main {
     font-size: 1rem !important;
 }
 
+/* Mini Player Volume Fix */
 body.is-mini .volume-control-area {
     display: flex !important;
     grid-area: controls !important;
     justify-self: end !important;
     align-self: center !important;
     width: auto !important;
-    padding: 4px 12px !important;
-    background: rgba(0, 0, 0, 0.4) !important;
+    padding: 4px 0 !important;
+    background: transparent !important;
     border-radius: 20px !important;
     z-index: 15 !important;
     margin-right: -5px !important;

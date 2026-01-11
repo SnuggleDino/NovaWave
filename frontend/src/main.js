@@ -348,16 +348,19 @@ function resetToDefaultTheme() {
         'snuggle-time-active', 'sleeptime-active', 'cyberpunk-active',
         'sunset-active', 'sakura-active', 'win95-active'
     );
+    
+    document.documentElement.style.removeProperty('--accent');
+    
     const th = settings.theme || 'blue';
     document.documentElement.setAttribute('data-theme', th);
+    localStorage.setItem('theme', th);
     
     if (themeSelect) { themeSelect.disabled = false; themeSelect.value = th; }
 
     if (settings.useCustomColor && settings.customAccentColor) {
         document.documentElement.style.setProperty('--accent', settings.customAccentColor);
-    } else {
-        document.documentElement.style.removeProperty('--accent');
     }
+    
     const accentToggle = document.getElementById('toggle-use-custom-color');
     if (accentToggle) {
         accentToggle.disabled = false;
@@ -367,7 +370,7 @@ function resetToDefaultTheme() {
 
     if (visualizer) {
         const style = settings.visualizerStyle || 'bars';
-        visualizer.updateSettings({ style: style });
+        visualizer.updateSettings({ style: style, maxBars: 0 });
         if (visualizerStyleSelect) { visualizerStyleSelect.disabled = false; visualizerStyleSelect.value = style; }
     }
 
@@ -380,7 +383,10 @@ function resetToDefaultTheme() {
     if (emojiSelect) { emojiSelect.disabled = false; emojiSelect.value = et; }
     if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';
 
-    updateCachedColor();
+    setTimeout(() => {
+        updateCachedColor();
+        renderPlaylist();
+    }, 50);
 }
 
 async function applyCyberpunk(enabled, showIntro = false) {
@@ -1196,20 +1202,17 @@ async function loadSettings() {
         document.body.classList.remove('is-mini');
     }
 
-    // Auto-load last used folder
+    // Auto-load last used folder (Async background task)
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
         currentFolderPath = settings.currentFolderPath;
-        try {
-            const result = await windowApi.refreshMusicFolder(currentFolderPath);
+        windowApi.refreshMusicFolder(currentFolderPath).then(result => {
             if (result && result.tracks) {
                 basePlaylist = result.tracks;
                 playlist = [...basePlaylist];
                 sortPlaylist(sortMode);
                 updateUIForCurrentTrack();
             }
-        } catch (e) {
-            console.error("Auto-load failed:", e);
-        }
+        }).catch(e => console.error("Auto-load failed:", e));
     }
 
     if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
