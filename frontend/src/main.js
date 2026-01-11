@@ -154,6 +154,7 @@ function updateActiveFeaturesIndicator() {
 function saveSetting(key, value) {
     if (settings) settings[key] = value;
     windowApi.setSetting(key, value);
+    if (key === 'activeIntro') localStorage.setItem('activeIntro', value);
 }
 
 function updateCachedColor() {
@@ -1284,6 +1285,7 @@ async function loadSettings() {
         const et = settings.coverMode || 'note';
         emojiSelect.value = et;
         if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';
+        updateEmoji(et, settings.customCoverEmoji);
     }
 
     if (autoLoadLastFolderToggle) autoLoadLastFolderToggle.checked = settings.autoLoadLastFolder !== false;
@@ -2330,21 +2332,20 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAudioEvents(); setupEventListeners();
 
     async function initializeApp() {
+        // Fast Path: Start Intro immediately
+        const cachedIntro = localStorage.getItem('activeIntro') || 'waterdrop';
+        const startupCover = document.getElementById('startup-cover');
+        if (startupCover) startupCover.remove();
+
+        let introPromise = Promise.resolve();
+        if (cachedIntro !== 'none') {
+            const introMgr = new IntroManager({ activeIntro: cachedIntro });
+            introPromise = introMgr.play();
+        }
+
         try {
-            // Startup cover is showing (simple dark screen with logo)
-            // Load settings to determine which intro to play
             await loadSettings();
-
-            // Remove the startup cover
-            const startupCover = document.getElementById('startup-cover');
-            if (startupCover) startupCover.remove();
-
-            // Now play the appropriate intro
-            const introKey = settings.activeIntro || 'waterdrop';
-            if (introKey !== 'none') {
-                const introMgr = new IntroManager({ activeIntro: introKey });
-                await introMgr.play();
-            }
+            if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
 
             // Apply Theme Packs after settings are loaded
             if (settings.snuggleTimeEnabled) {

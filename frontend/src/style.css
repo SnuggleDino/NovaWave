@@ -183,6 +183,78 @@ body.is-mini #toggle-playlist-btn {
     background-attachment: fixed;
 }
 
+:root[data-theme="sleeptime"] {
+    --bg-main: #0a0a1f;
+    --bg-card: rgba(21, 21, 46, 0.8);
+    --bg-card-light: rgba(31, 31, 61, 0.6);
+    --accent: #7b68ee;
+    --accent-soft: rgba(123, 104, 238, 0.2);
+    --text-main: #e0e0e0;
+    --text-muted: #6b6b8e;
+    --border-soft: rgba(123, 104, 238, 0.3);
+    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+:root[data-theme="sleeptime"] body {
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    background-attachment: fixed;
+}
+
+:root[data-theme="cyberpunk"] {
+    --bg-main: #050505;
+    --bg-card: rgba(18, 18, 18, 0.95);
+    --bg-card-light: rgba(26, 26, 26, 0.9);
+    --accent: #fcee0a;
+    --accent-soft: rgba(252, 238, 10, 0.2);
+    --text-main: #00f0ff;
+    --text-muted: #ff003c;
+    --border-soft: #00f0ff;
+}
+:root[data-theme="cyberpunk"] body {
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, #111 1px, #111 3px);
+    background-color: #000;
+}
+
+:root[data-theme="novawave95"] {
+    --bg-main: #008080;
+    --bg-card: #c0c0c0;
+    --bg-card-light: #d4d0c8;
+    --accent: #000080;
+    --accent-soft: rgba(0, 0, 128, 0.2);
+    --text-main: #000000;
+    --text-muted: #555555;
+    --border-soft: #808080;
+}
+:root[data-theme="novawave95"] body {
+    background: #008080;
+}
+:root[data-theme="novawave95"] .glass-panel,
+:root[data-theme="novawave95"] .intro-card {
+    background: #c0c0c0;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    border-radius: 0;
+    box-shadow: 2px 2px 0px #000;
+}
+:root[data-theme="novawave95"] .control-btn {
+    border-radius: 0;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    background: #c0c0c0;
+    color: #000;
+}
+:root[data-theme="novawave95"] .app-header {
+    background: #000080;
+    border-bottom: 2px solid #fff;
+}
+:root[data-theme="novawave95"] .app-title-text h1,
+:root[data-theme="novawave95"] .app-title-text p {
+    color: #fff;
+}
+
 .active-features-container {
     position: absolute;
     top: -15px;
@@ -1091,9 +1163,9 @@ textarea {
 .snuggle-intro-text {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #fbcfe8;
+    color: #fffcf2;
     letter-spacing: 4px;
-    text-shadow: 0 0 20px rgba(251, 207, 232, 0.5);
+    text-shadow: 0 0 20px rgba(193, 211, 127, 0.5);
 }
 
 /* ===== CYBERPUNK INTRO ===== */
@@ -1219,9 +1291,8 @@ textarea {
     width: 200%;
     height: 50%;
     background: linear-gradient(0deg,
-            rgba(31, 11, 46, 1) 0%,
-            rgba(31, 11, 46, 0.8) 20%,
-            rgba(31, 11, 46, 0.5) 40%,
+            #1f0b2e 0%,
+            rgba(31, 11, 46, 0.6) 20%,
             transparent 100%);
 }
 
@@ -1242,7 +1313,7 @@ textarea {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 40%;
+    height: 50%;
     background:
         linear-gradient(90deg, rgba(236, 72, 153, 0.3) 1px, transparent 1px),
         linear-gradient(0deg, rgba(236, 72, 153, 0.3) 1px, transparent 1px);
@@ -1326,10 +1397,10 @@ textarea {
 .sakura-title {
     font-size: 3rem;
     font-weight: 300;
-    color: #fbcfe8;
+    color: #5c3a45;
     letter-spacing: 8px;
     margin-bottom: 10px;
-    text-shadow: 0 0 20px rgba(251, 207, 232, 0.5);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
 }
 
 .sakura-subtitle {
