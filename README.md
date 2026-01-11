@@ -109,4 +109,4 @@ Multiple visualization styles to match your mood:
 *Your Music • Your Style • Your Rules*
 
 ---
-*NovaWave is an open-source project. If you like it, feel free to give it a ⭐ on GitHub!*
+*Made with Love by SnuggleDino 🦖🦕*
