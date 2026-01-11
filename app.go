@@ -308,27 +308,27 @@ func (a *App) SelectMusicFolder() FolderResult {
 	return a.RefreshMusicFolder(path)
 }
 
-// getBinaryPath checks for a binary in the executable directory and the working directory
+// getBinaryPath checks for a binary in the bin directory
 func (a *App) getBinaryPath(name string) string {
-	// 1. Check in CWD
+	// 1. Check in CWD/bin
 	if cwd, err := os.Getwd(); err == nil {
-		p := filepath.Join(cwd, name)
+		p := filepath.Join(cwd, "bin", name)
 		if info, err := os.Stat(p); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(p)
 			return abs
 		}
 	}
 
-	// 2. Check next to executable
+	// 2. Check next to executable/bin
 	if ex, err := os.Executable(); err == nil {
 		exDir := filepath.Dir(ex)
-		p := filepath.Join(exDir, name)
+		p := filepath.Join(exDir, "bin", name)
 		if info, err := os.Stat(p); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(p)
 			return abs
 		}
-		// Check one level up (common in Wails build structures)
-		pUp := filepath.Join(filepath.Dir(exDir), name)
+		// Check one level up/bin
+		pUp := filepath.Join(filepath.Dir(exDir), "bin", name)
 		if info, err := os.Stat(pUp); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(pUp)
 			return abs
@@ -595,7 +595,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
 
 	if _, err := os.Stat(ytPath); err != nil {
-		return SimpleResult{Success: false, Error: "yt-dlp.exe not found! Searched in project root and next to exe."}, nil
+		return SimpleResult{Success: false, Error: "yt-dlp.exe not found! Searched in /bin directory."}, nil
 	}
 	if _, err := os.Stat(ffmpegPath); err != nil {
 		return SimpleResult{Success: false, Error: "ffmpeg.exe not found!"}, nil
