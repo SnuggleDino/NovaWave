@@ -308,27 +308,51 @@ func (a *App) SelectMusicFolder() FolderResult {
 	return a.RefreshMusicFolder(path)
 }
 
-// getBinaryPath checks for a binary in several locations
+// getBinaryPath searches for a binary by walking up the directory tree
 func (a *App) getBinaryPath(name string) string {
-	cwd, _ := os.Getwd()
 	ex, _ := os.Executable()
-	exDir := filepath.Dir(ex)
+	curr := filepath.Dir(ex)
 
-	paths := []string{
-		filepath.Join(cwd, "executable_bin", name),
-		filepath.Join(exDir, "executable_bin", name),
-		filepath.Join(filepath.Dir(exDir), "executable_bin", name),
-		filepath.Join(cwd, name),
-	}
+	// Search up to 10 parent directories
+	for i := 0; i < 10; i++ {
+		// 1. Check in frontend/src/executable_bin (NEW LOCATION)
+		pFrontend := filepath.Join(curr, "frontend", "src", "executable_bin", name)
+		if info, err := os.Stat(pFrontend); err == nil && !info.IsDir() {
+			abs, _ := filepath.Abs(pFrontend)
+			return abs
+		}
 
-	for _, p := range paths {
+		// 2. Check in executable_bin subfolder (LEGACY/ROOT LOCATION)
+		p := filepath.Join(curr, "executable_bin", name)
 		if info, err := os.Stat(p); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(p)
 			return abs
 		}
+
+		// 3. Check directly in folder
+		pDirect := filepath.Join(curr, name)
+		if info, err := os.Stat(pDirect); err == nil && !info.IsDir() {
+			abs, _ := filepath.Abs(pDirect)
+			return abs
+		}
+
+		// Move up
+		parent := filepath.Dir(curr)
+		if parent == curr {
+			break
+		}
+		curr = parent
 	}
 
-	return name // Fallback to PATH
+	// Try CWD as well
+	cwd, _ := os.Getwd()
+	pCwd := filepath.Join(cwd, "frontend", "src", "executable_bin", name)
+	if _, err := os.Stat(pCwd); err == nil {
+		abs, _ := filepath.Abs(pCwd)
+		return abs
+	}
+
+	return name
 }
 
 // getMP3Duration reads MP3 duration natively without external tools
