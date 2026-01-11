@@ -195,6 +195,12 @@ body.is-mini #toggle-playlist-btn {
 }
 
 .active-features-container.active {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+}
+
+.cover-art-container:hover .active-features-container.active {
     opacity: 1;
     transform: scale(1);
     pointer-events: auto;
@@ -2746,6 +2752,11 @@ input[type=range].volume-slider::-moz-range-thumb {
     opacity: 1 !important;
 }
 
+.settings-select option {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+}
+
 .settings-select:hover,
 .settings-input:hover {
     border-color: var(--accent) !important;
@@ -4027,7 +4038,7 @@ kbd {
 }
 
 .island-spinner .path {
-    stroke: #fff;
+    stroke: var(--accent);
     stroke-linecap: round;
     animation: dash 1.5s ease-in-out infinite;
 }

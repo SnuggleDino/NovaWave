@@ -4,6 +4,7 @@ import lovingDinosIco from './assets/Two_Loving_Cute_Dinos.ico';
 import { translations } from './translations.js';
 import { VisualizerEngine } from './visualizerEngine.js';
 import { IntroManager } from './intro.js';
+import { AudioExtras } from './audio_extras.js';
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
@@ -57,6 +58,7 @@ let activeDownloaderMode = 'youtube';
 
 // Visualizer State
 let visualizer; // Instance of VisualizerEngine
+let audioExtras;
 
 // DOM Elements
 let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, mainFavoriteBtn;
@@ -90,8 +92,13 @@ let isStatsLoopRunning = false;
 let warmupFrames = 0;
 
 function initVisualizerEngine() {
+    if (!audioExtras && audio) {
+        audioExtras = new AudioExtras(audio);
+        audioExtras.init();
+        updateAudioEffects();
+    }
+
     if (visualizer) return;
-    // Wait until DOM elements are ready (audio & canvas)
     if (!audio || !visualizerCanvas) return;
 
     visualizer = new VisualizerEngine(audio, visualizerCanvas, {
@@ -103,28 +110,39 @@ function initVisualizerEngine() {
         musicEmojiEl: musicEmojiEl
     });
 
-    // Initial Effects Update
-    visualizer.updateSettings({
-        bassBoostEnabled: settings.bassBoostEnabled,
-        bassBoostValue: settings.bassBoostValue,
-        trebleBoostEnabled: settings.trebleBoostEnabled,
-        trebleBoostValue: settings.trebleBoostValue,
-        reverbEnabled: settings.reverbEnabled,
-        reverbValue: settings.reverbValue
-    });
+    if (audioExtras) {
+        visualizer.setAnalyser(audioExtras.getAnalyser());
+    }
 }
 
 function updateAudioEffects() {
-    if (visualizer) {
-        visualizer.updateSettings({
-            bassBoostEnabled: settings.bassBoostEnabled,
-            bassBoostValue: settings.bassBoostValue,
-            trebleBoostEnabled: settings.trebleBoostEnabled,
-            trebleBoostValue: settings.trebleBoostValue,
-            reverbEnabled: settings.reverbEnabled,
-            reverbValue: settings.reverbValue
-        });
+    if (audioExtras) {
+        audioExtras.setBass(settings.bassBoostValue, settings.bassBoostEnabled);
+        audioExtras.setTreble(settings.trebleBoostValue, settings.trebleBoostEnabled);
+        audioExtras.setReverb(settings.reverbValue, settings.reverbEnabled);
     }
+    updateActiveFeaturesIndicator();
+}
+
+function updateActiveFeaturesIndicator() {
+    const container = document.getElementById('active-features-indicator');
+    if (!container) return;
+
+    const bass = !!settings.bassBoostEnabled;
+    const treble = !!settings.trebleBoostEnabled;
+    const reverb = !!settings.reverbEnabled;
+    const anyActive = bass || treble || reverb;
+
+    container.classList.toggle('active', anyActive);
+
+    const bassItem = document.getElementById('modal-feat-bass');
+    if (bassItem) bassItem.classList.toggle('active', bass);
+
+    const trebleItem = document.getElementById('modal-feat-crystal');
+    if (trebleItem) trebleItem.classList.toggle('active', treble);
+
+    const reverbItem = document.getElementById('modal-feat-reverb');
+    if (reverbItem) reverbItem.classList.toggle('active', reverb);
 }
 
 function saveSetting(key, value) {
@@ -301,10 +319,8 @@ function playTrack(index) {
     audio.defaultPlaybackRate = speed;
     audio.playbackRate = speed;
 
-    // Ensure Context is running (via Visualizer Engine)
-    if (visualizer && visualizer.audioContext && visualizer.audioContext.state === 'suspended') {
-        visualizer.audioContext.resume();
-    }
+    // Ensure Context is running
+    if (audioExtras) audioExtras.resume();
 
     audio.play().catch(e => console.error("Error playing audio:", e));
     isPlaying = true;

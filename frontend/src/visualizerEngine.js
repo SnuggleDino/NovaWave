@@ -1,10 +1,10 @@
 export class VisualizerEngine {
     constructor(audioElement, canvasElement, options = {}) {
-        this.audio = audioElement;
+        this.audio = audioElement; // Keep ref if needed for play state checks
         this.canvas = canvasElement;
         this.ctx = this.canvas.getContext('2d');
         
-        this.visualizerEnabled = options.enabled || true;
+        this.visualizerEnabled = options.enabled !== false;
         this.style = options.style || 'bars';
         this.sensitivity = options.sensitivity || 1.5;
         this.accentColor = options.accentColor || '#38bdf8';
@@ -12,81 +12,21 @@ export class VisualizerEngine {
         this.musicEmojiEl = options.musicEmojiEl || null; 
 
         this.isRunning = false;
-        this.audioContext = null;
         this.analyser = null;
-        this.source = null;
         this.dataArray = null;
-        
-        this.bassFilter = null;
-        this.trebleFilter = null;
-        this.reverbNode = null;
-        this.reverbGain = null;
 
         this.lastRenderTime = 0;
         this.animationFrameId = null;
         this.frameCount = 0; 
     }
 
-    init() {
-        if (this.audioContext) return;
-
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            this.audioContext = new AudioContext();
-            
-            if (!this.source) {
-                this.source = this.audioContext.createMediaElementSource(this.audio);
-            }
-
-            this.analyser = this.audioContext.createAnalyser();
-            
-            this.bassFilter = this.audioContext.createBiquadFilter();
-            this.bassFilter.type = 'lowshelf';
-            this.bassFilter.frequency.value = 120;
-            this.bassFilter.gain.value = 0;
-
-            this.trebleFilter = this.audioContext.createBiquadFilter();
-            this.trebleFilter.type = 'highshelf';
-            this.trebleFilter.frequency.value = 3000;
-            this.trebleFilter.gain.value = 0;
-
-            this.reverbNode = this.audioContext.createConvolver();
-            this.reverbNode.buffer = this.createReverbBuffer(2.0);
-            this.reverbGain = this.audioContext.createGain();
-            this.reverbGain.gain.value = 0;
-
-            this.source.connect(this.bassFilter);
-            this.bassFilter.connect(this.trebleFilter);
-            
-            this.trebleFilter.connect(this.analyser);
-            
-            this.trebleFilter.connect(this.reverbNode);
-            this.reverbNode.connect(this.reverbGain);
-            this.reverbGain.connect(this.analyser);
-
-            this.analyser.connect(this.audioContext.destination);
-
+    // AudioExtras will pass the analyser here
+    setAnalyser(analyser) {
+        this.analyser = analyser;
+        if (this.analyser) {
             this.updateAnalyserSettings();
             this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-
-        } catch (e) {
-            console.error("VisualizerEngine init error:", e);
-            this.visualizerEnabled = false;
         }
-    }
-
-    createReverbBuffer(duration) {
-        if (!this.audioContext) return null;
-        const rate = this.audioContext.sampleRate;
-        const len = rate * duration;
-        const buffer = this.audioContext.createBuffer(2, len, rate);
-        for (let c = 0; c < 2; c++) {
-            const channel = buffer.getChannelData(c);
-            for (let i = 0; i < len; i++) {
-                channel[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
-            }
-        }
-        return buffer;
     }
 
     updateSettings(newSettings) {
@@ -99,37 +39,14 @@ export class VisualizerEngine {
         if (newSettings.targetFps !== undefined) this.targetFps = newSettings.targetFps;
         if (newSettings.enabled !== undefined) this.visualizerEnabled = newSettings.enabled;
         
-        this.updateAudioEffects(newSettings);
-    }
-
-    updateAudioEffects(settings) {
-        if (!this.audioContext) return;
-        const t = this.audioContext.currentTime;
-
-        if (this.bassFilter && settings.bassBoostEnabled !== undefined) {
-            const bg = settings.bassBoostEnabled ? (parseFloat(settings.bassBoostValue) || 6) : 0;
-            this.bassFilter.gain.cancelScheduledValues(t);
-            this.bassFilter.gain.setTargetAtTime(bg, t, 0.1);
-        }
-
-        if (this.trebleFilter && settings.trebleBoostEnabled !== undefined) {
-            const tg = settings.trebleBoostEnabled ? (parseFloat(settings.trebleBoostValue) || 6) : 0;
-            this.trebleFilter.gain.cancelScheduledValues(t);
-            this.trebleFilter.gain.setTargetAtTime(tg, t, 0.1);
-        }
-
-        if (this.reverbGain && settings.reverbEnabled !== undefined) {
-            const val = parseFloat(settings.reverbValue) || 30;
-            const rg = settings.reverbEnabled ? (val / 100) : 0;
-            this.reverbGain.gain.cancelScheduledValues(t);
-            this.reverbGain.gain.setTargetAtTime(rg, t, 0.1);
-        }
+        // Audio effects are now handled by AudioExtras, ignoring them here
     }
 
     updateAnalyserSettings() {
         if (!this.analyser) return;
         this.analyser.smoothingTimeConstant = 0.6;
         this.analyser.fftSize = 512;
+        // Adjust maxDecibels based on sensitivity to "zoom" the visualization
         const dbValue = -15 - (this.sensitivity * 15);
         this.analyser.maxDecibels = dbValue;
     }
@@ -143,10 +60,6 @@ export class VisualizerEngine {
 
     start() {
         if (!this.visualizerEnabled) return;
-        if (!this.audioContext) this.init();
-        if (this.audioContext && this.audioContext.state === 'suspended') {
-            this.audioContext.resume();
-        }
         if (!this.isRunning) {
             this.isRunning = true;
             this.draw();
@@ -181,7 +94,7 @@ export class VisualizerEngine {
         const height = this.canvas.height;
         this.ctx.clearRect(0, 0, width, height);
 
-        if (!this.analyser) return;
+        if (!this.analyser || !this.dataArray) return;
         
         this.analyser.getByteFrequencyData(this.dataArray);
         const boost = 1 + (this.sensitivity * 0.1);
@@ -196,9 +109,11 @@ export class VisualizerEngine {
         else if (this.style === 'zen') this.drawZen(width, height, ac, boost);
         else if (this.style === 'moonlight') this.drawMoonlight(width, height, ac, boost);
 
-        if (this.musicEmojiEl && !this.audio.paused) {
+        // Music Emoji Bounce
+        if (this.musicEmojiEl && this.audio && !this.audio.paused) {
             const blv = (this.dataArray[0] + this.dataArray[1]) / 2;
             const fy = Math.sin(this.audio.currentTime * 2) * 10;
+            // Add a kick check
             let js = (blv > 180) ? 1 + (Math.min((blv - 180) / 50, 1) * 0.15) : 1;
             this.musicEmojiEl.style.transform = `translateY(${fy}px) scale(${js})`;
         }
