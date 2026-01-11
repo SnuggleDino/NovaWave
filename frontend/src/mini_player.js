@@ -11,8 +11,8 @@ export class MiniPlayer {
         this.isActive = true;
         document.body.classList.add('is-mini');
         
-        // Resize to Landscape Mini (e.g. 400x160)
-        this.api.setWindowSize(400, 160);
+        // Resize to Landscape Mini (e.g. 590x180)
+        this.api.setWindowSize(590, 180);
         
         // Adjust Visualizer for Mini Mode
         if (this.visualizer) {
