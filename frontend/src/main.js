@@ -344,19 +344,24 @@ function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else pla
 
 // --- UI & DOM MANIPULATION ---
 function resetToDefaultTheme() {
+    // 1. Remove all pack classes from body (robust filter)
     document.body.classList.remove(
         'snuggle-time-active', 'sleeptime-active', 'cyberpunk-active',
         'sunset-active', 'sakura-active', 'win95-active'
     );
     
+    // 2. Clear all inline styles on root that themes might set
     document.documentElement.style.removeProperty('--accent');
     
+    // 3. Restore Base Theme
     const th = settings.theme || 'blue';
     document.documentElement.setAttribute('data-theme', th);
     localStorage.setItem('theme', th);
     
+    // 4. Reset UI Elements
     if (themeSelect) { themeSelect.disabled = false; themeSelect.value = th; }
-
+    
+    // Restore Custom Color
     if (settings.useCustomColor && settings.customAccentColor) {
         document.documentElement.style.setProperty('--accent', settings.customAccentColor);
     }
@@ -368,6 +373,7 @@ function resetToDefaultTheme() {
         if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
     }
 
+    // 5. Reset Engines
     if (visualizer) {
         const style = settings.visualizerStyle || 'bars';
         visualizer.updateSettings({ style: style, maxBars: 0 });
@@ -386,7 +392,7 @@ function resetToDefaultTheme() {
     setTimeout(() => {
         updateCachedColor();
         renderPlaylist();
-    }, 50);
+    }, 100);
 }
 
 async function applyCyberpunk(enabled, showIntro = false) {
