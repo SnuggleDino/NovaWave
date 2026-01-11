@@ -55,7 +55,7 @@ func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 	html := string(body)
 	track := &SpotifyTrack{}
 
-	// Robust Title Extraction
+	// Title Extraction
 	titleTag := "<meta property=\"og:title\" content=\""
 	if idx := strings.Index(html, titleTag); idx != -1 {
 		start := idx + len(titleTag)
@@ -65,14 +65,13 @@ func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 		}
 	}
 
-	// Robust Artist Extraction
+	// Artist Extraction
 	descTag := "<meta property=\"og:description\" content=\""
 	if idx := strings.Index(html, descTag); idx != -1 {
 		start := idx + len(descTag)
 		end := strings.Index(html[start:], "\"")
 		if end != -1 {
 			desc := html[start : start+end]
-			// Artist is usually the first part before the dot separator
 			parts := strings.Split(desc, " · ")
 			if len(parts) > 0 {
 				track.Artist = parts[0]

@@ -60,7 +60,7 @@ let activeDownloaderMode = 'youtube';
 
 
 // Visualizer State
-let visualizer; // Instance of VisualizerEngine
+let visualizer;
 let audioExtras;
 let dynamicIsland;
 let miniPlayer;
@@ -77,7 +77,7 @@ let trackToDeletePath = null;
 let bassBoostToggle, bassBoostSlider, bassBoostValueEl, bassBoostContainer;
 let trebleBoostToggle, trebleBoostSlider, trebleBoostValueEl, trebleBoostContainer;
 let reverbToggle, reverbSlider, reverbValueEl, reverbContainer;
-let toggleCinemaMode, btnExportPlaylist, playlistPositionSelect, toggleGradientTitle; // Added toggleGradientTitle
+let toggleCinemaMode, btnExportPlaylist, playlistPositionSelect, toggleGradientTitle;
 let renderPlaylistRequestId = null;
 
 // Performance
@@ -118,7 +118,7 @@ function initVisualizerEngine() {
     if (audioExtras) {
         visualizer.setAnalyser(audioExtras.getAnalyser());
     }
-    
+
     if (miniPlayer) miniPlayer.setVisualizer(visualizer);
 }
 
@@ -173,7 +173,7 @@ function updatePerformanceStats() {
 
     const now = performance.now();
     const interval = 1000 / targetFps;
-    const statsInterval = 1000; // Recalculate stats every 1s
+    const statsInterval = 1000;
 
     // Throttle App Update Loop to targetFps
     const delta = now - lastStatsTime;
@@ -188,14 +188,12 @@ function updatePerformanceStats() {
     if (timeSinceLastLog >= statsInterval) {
         const appFps = Math.round((appFrameCount * 1000) / timeSinceLastLog);
 
-        // Get FPS from Engine
         let visFps = 0;
         if (visualizer) {
             visFps = Math.round((visualizer.getAndResetFrameCount() * 1000) / timeSinceLastLog);
         }
-        fps = visFps; // Update global var for stats display
+        fps = visFps;
 
-        // Rolling average for stability check
         if (isPlaying && !performanceMode && visualizerEnabled) {
             avgFps = (avgFps * 0.7) + (visFps * 0.3);
         } else {
@@ -205,7 +203,7 @@ function updatePerformanceStats() {
         const currentFrameTime = appFps > 0 ? Math.round(1000 / appFps) : 0;
 
         appFrameCount = 0;
-        frameCount = 0; // Not used anymore but kept for safety
+        frameCount = 0;
         lastFrameTime = now;
 
         if (showStatsOverlay || (avgFps < targetFps * 0.8)) {
@@ -285,7 +283,6 @@ function setPerformanceMode(enabled, silent = false) {
     if (toggle) toggle.checked = enabled;
 
     if (enabled) {
-        // If Snuggle Time was active, turn it off because they conflict
         if (settings.snuggleTimeEnabled) {
             saveSetting('snuggleTimeEnabled', false);
             const stToggle = document.getElementById('toggle-snuggle-time');
@@ -327,7 +324,6 @@ function playTrack(index) {
     audio.defaultPlaybackRate = speed;
     audio.playbackRate = speed;
 
-    // Ensure Context is running
     if (audioExtras) audioExtras.resume();
 
     audio.play().catch(e => console.error("Error playing audio:", e));
@@ -345,29 +341,23 @@ function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else pla
 
 // --- UI & DOM MANIPULATION ---
 function resetToDefaultTheme() {
-    // 1. Remove all pack classes from body (robust filter)
     document.body.classList.remove(
         'snuggle-time-active', 'sleeptime-active', 'cyberpunk-active',
         'sunset-active', 'sakura-active', 'win95-active'
     );
-    
-    // 2. Clear all inline styles on root that themes might set
+
     document.documentElement.style.removeProperty('--accent');
     document.documentElement.style.removeProperty('--bg-main');
-    
-    // 3. Restore Base Theme
+
     const th = settings.theme || 'blue';
     document.documentElement.setAttribute('data-theme', th);
     localStorage.setItem('theme', th);
-    
-    // 4. Reset UI Elements
     if (themeSelect) { themeSelect.disabled = false; themeSelect.value = th; }
-    
-    // Restore Custom Color if enabled
+
     if (settings.useCustomColor && settings.customAccentColor) {
         document.documentElement.style.setProperty('--accent', settings.customAccentColor);
     }
-    
+
     const accentToggle = document.getElementById('toggle-use-custom-color');
     if (accentToggle) {
         accentToggle.disabled = false;
@@ -375,7 +365,6 @@ function resetToDefaultTheme() {
         if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
     }
 
-    // 5. Reset Engines
     if (visualizer) {
         const style = settings.visualizerStyle || 'bars';
         visualizer.updateSettings({ style: style, maxBars: 0 });
@@ -965,10 +954,8 @@ function updateEmoji(emojiType, customEmoji) {
     }
 
     if (isImage) {
-        // Prevent flicker: if same source, do nothing
         const existingImg = musicEmojiEl.querySelector('img');
         if (existingImg) {
-            // Check if src ends with the emoji url
             if (existingImg.src.endsWith(emoji.replace(/^\./, ''))) return;
         }
 
@@ -1008,7 +995,7 @@ async function handleDownload() {
             downloadStatusEl.textContent = tr('statusSuccess');
             ytUrlInput.value = '';
             ytNameInput.value = '';
-            if (spotifyUrlInput) spotifyUrlInput.value = ''; // Clear Spotify too
+            if (spotifyUrlInput) spotifyUrlInput.value = '';
 
             if (currentFolderPath && settings.downloadFolder && currentFolderPath === settings.downloadFolder) {
                 refreshFolderBtn.click();
@@ -1025,16 +1012,6 @@ async function handleDownload() {
         downloadBtn.style.opacity = '1';
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 function applySnuggleTime(enabled, showIntro = false) {
     document.body.classList.toggle('snuggle-time-active', enabled);
@@ -1169,7 +1146,6 @@ async function loadSettings() {
 
     if (langButtons) langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
 
-    // Set active Intro cards BEFORE translations
     if (settings.activeIntro) {
         const introCards = document.querySelectorAll('.intro-card');
         introCards.forEach(c => {
@@ -1178,7 +1154,6 @@ async function loadSettings() {
         });
     }
 
-    // Apply Translations immediately
     applyTranslations();
 
     if (downloadFolderInput) downloadFolderInput.value = settings.downloadFolder || '';
@@ -1204,13 +1179,11 @@ async function loadSettings() {
 
     if (autoLoadLastFolderToggle) autoLoadLastFolderToggle.checked = settings.autoLoadLastFolder !== false;
 
-    // Ensure mini mode is reset or handled
     if (toggleMiniMode) {
         toggleMiniMode.checked = false;
         document.body.classList.remove('is-mini');
     }
 
-    // Auto-load last used folder (Async background task)
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
         currentFolderPath = settings.currentFolderPath;
         windowApi.refreshMusicFolder(currentFolderPath).then(result => {
@@ -1299,7 +1272,7 @@ async function loadSettings() {
         reverbSlider.value = settings.reverbValue !== undefined ? settings.reverbValue : 30;
         if (reverbValueEl) reverbValueEl.textContent = reverbSlider.value + '%';
     }
-    
+
     updateAudioEffects();
 }
 
@@ -1320,7 +1293,6 @@ function applyAnimationSetting(mode) {
         backgroundAnimationEl.classList.add(`type-${mode}`);
         if (mode === 'xmas') startSnowfall();
         if (mode === 'starry') {
-            // Optional: JS logic for more dynamic stars if needed
         }
     } else {
         backgroundAnimationEl.style.display = 'none';
@@ -1558,14 +1530,12 @@ function setupEventListeners() {
         const color = e.target.value;
         document.documentElement.style.setProperty('--accent', color);
         updateCachedColor();
-        // Constant saving during slide might be heavy, but required for "Custom" feel
         saveSetting('customAccentColor', color);
     });
     bind(accentColorPicker, 'change', (e) => {
         saveSetting('customAccentColor', e.target.value);
     });
 
-    // Clean Wails File Drop Handler
     if (window.runtime) {
         window.runtime.EventsOn("media-key", (key) => {
             if (key === 'playpause') {
@@ -1724,7 +1694,6 @@ function setupEventListeners() {
         const enabled = e.target.checked;
         saveSetting('snuggleTimeEnabled', enabled);
         applySnuggleTime(enabled, true);
-        // showNotification removed to suppress Island during intro
     });
 
     const toggleSleepTime = document.getElementById('toggle-sleeptime');
@@ -1880,7 +1849,6 @@ function setupEventListeners() {
 
     bind(contextMenuDelete, 'click', () => {
         if (contextTrackIndex === null || !playlist[contextTrackIndex]) return;
-        // Check if deletion is enabled
         if (!deleteSongsEnabled) {
             showNotification('Deletion is disabled in settings.');
             return;
@@ -2037,11 +2005,7 @@ document.addEventListener('DOMContentLoaded', () => {
     autoLoadLastFolderToggle = $('#toggle-auto-load-last-folder'); toggleMiniMode = $('#toggle-mini-mode');
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
 
-
-
-    loadAppMeta(); // Load version info
-
-
+    loadAppMeta();
 
     const userHelpOverlay = document.getElementById('user-help-overlay');
     const userHelpBtn = document.getElementById('user-help-btn');
@@ -2106,7 +2070,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     visualizerCanvas.height = visualizerContainer.clientHeight;
                 }
                 if (typeof updateTrackTitleScroll === 'function') updateTrackTitleScroll();
-            }, 550); // Wait for transition
+            }, 550);
         });
     }
 
@@ -2246,9 +2210,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fast Path: Start Intro and Theme immediately
         const cachedIntro = localStorage.getItem('activeIntro') || 'waterdrop';
         const cachedTheme = localStorage.getItem('theme') || 'blue';
-        
+
         document.documentElement.setAttribute('data-theme', cachedTheme);
-        
+
         const startupCover = document.getElementById('startup-cover');
         if (startupCover) startupCover.remove();
 
@@ -2256,7 +2220,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cachedIntro !== 'none') {
             const introMgr = new IntroManager({ activeIntro: cachedIntro });
             introPromise = introMgr.play();
-            // Reveal App UI before intro fades out completely
             setTimeout(() => {
                 document.body.classList.add('ready');
             }, 3200);
@@ -2264,11 +2227,10 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('ready');
         }
 
-        // Start loading settings and folder in background (don't await yet)
         const loadSettingsPromise = loadSettings();
 
         try {
-            await loadSettingsPromise; // Wait for settings to be ready
+            await loadSettingsPromise;
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
@@ -2298,7 +2260,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (nwToggle) nwToggle.checked = true;
                 applyNovaWave95(true);
             } else {
-                // Only apply standard theme if no pack is active
                 if (settings.theme) {
                     document.documentElement.setAttribute('data-theme', settings.theme);
                 }
@@ -2314,7 +2275,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (volumeSlider) volumeSlider.value = currentVolume;
             if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
 
-            // Init Visualizer NOW after settings are loaded
             initVisualizerEngine();
 
             document.body.classList.add('ready');
@@ -2328,8 +2288,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
 
     // --- FIX LOAD FOLDER & REFRESH LOGIC ---
-    // This runs after DOMContentLoaded because we are appending it, assuming this script is deferred or this block executes
-    // But we should wrap in a safe timeout or event just in case
     setTimeout(() => {
         // 1. Override Load Folder Button Logic (Direct System Dialog)
         const btn = document.getElementById('open-library-btn');
@@ -2355,7 +2313,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             updateUIForCurrentTrack();
                             showNotification('Folder Loaded: ' + path);
 
-                            // Close library modal if it was open (safety)
                             const libOverlay = document.getElementById('library-overlay');
                             if (libOverlay) libOverlay.classList.remove('visible');
                         }
@@ -2369,7 +2326,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 2. Ensure Refresh Button Works
         const refBtn = document.getElementById('refresh-folder-btn');
         if (refBtn) {
-            // Clone to strip potential bad listeners
             const newRefBtn = refBtn.cloneNode(true);
             if (refBtn.parentNode) refBtn.parentNode.replaceChild(newRefBtn, refBtn);
 
@@ -2382,7 +2338,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Spin icon?
                 newRefBtn.style.transform = 'rotate(360deg)';
                 newRefBtn.style.transition = 'transform 1s ease';
 
@@ -2400,14 +2355,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 1000);
             });
         }
-
-        // 3. Fix Help & Controls Buttons to point to settings if needed
-        // (Already handled in main block but good to ensure style)
-
-
-        // 3. Fix Help & Controls Buttons to point to settings if needed
-
-    }, 500); // 500ms delay
+    }, 500);
 
 
     // --- NEW CONTEXT MENU LOGIC ---
@@ -2439,9 +2387,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cm.classList.remove('visible');
             document.removeEventListener('click', dismiss);
         };
-        // Delay slightly so the immediate click doesn't close it? 
-        // Actually typically we bind to document click immediately effectively.
-        // Use requestAnimationFrame or setTimeout
         setTimeout(() => document.addEventListener('click', dismiss), 50);
     }
 
@@ -2479,15 +2424,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Delete
         const cmDelete = document.getElementById('cm-delete');
         if (cmDelete) cmDelete.onclick = () => {
-            // Trigger generic delete confirmation
-            // Re-using logic from main delete handler
-            // Needs to set trackToDeletePath
             if (contextTrackIndex !== null && playlist[contextTrackIndex]) {
                 trackToDeletePath = playlist[contextTrackIndex].path;
                 if (confirmDeleteOverlay) confirmDeleteOverlay.classList.add('visible');
             }
         };
-    }, 1000); // Wait for DOM
+    }, 1000);
 
 
     // --- DYNAMIC ISLAND LOGIC ---
@@ -2502,4 +2444,4 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dynamicIsland) dynamicIsland.hide();
     };
 
-}); // Close DOMContentLoaded
+});

@@ -17,13 +17,9 @@ export class AudioExtras {
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             this.audioContext = new AudioContext();
-            
+
             // Source creation
             if (!this.source) {
-                // Check if source already exists on audio element (some browsers/frameworks might attach it)
-                // For now, assume we create it. 
-                // Note: creating MediaElementSource twice on same element throws error.
-                // We rely on this class being the singleton managing audio graph.
                 this.source = this.audioContext.createMediaElementSource(this.audio);
             }
 
@@ -49,16 +45,11 @@ export class AudioExtras {
             this.reverbGain = this.audioContext.createGain();
             this.reverbGain.gain.value = 0;
 
-            // --- Graph Connection ---
-            // Audio -> Bass -> Treble -> Analyser -> Speakers
-            //                      |
-            //                      +-> Reverb -> ReverbGain -> Analyser
-
             this.source.connect(this.bassFilter);
             this.bassFilter.connect(this.trebleFilter);
-            
+
             this.trebleFilter.connect(this.analyser);
-            
+
             // Reverb Parallel Chain
             this.trebleFilter.connect(this.reverbNode);
             this.reverbNode.connect(this.reverbGain);
@@ -82,7 +73,6 @@ export class AudioExtras {
         for (let c = 0; c < 2; c++) {
             const channel = buffer.getChannelData(c);
             for (let i = 0; i < len; i++) {
-                // Simple noise impulse response with decay
                 channel[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
             }
         }
@@ -109,7 +99,7 @@ export class AudioExtras {
         if (!this.audioContext || !this.reverbGain) return;
         const now = this.audioContext.currentTime;
         const val = parseFloat(value) || 0;
-        const gain = enabled ? (val / 100) : 0; // 0.0 to 1.0 (assuming value is percentage 0-100)
+        const gain = enabled ? (val / 100) : 0;
         this.reverbGain.gain.cancelScheduledValues(now);
         this.reverbGain.gain.setTargetAtTime(gain, now, 0.1);
     }

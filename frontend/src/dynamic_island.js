@@ -26,7 +26,7 @@ export class DynamicIsland {
         // Handle types
         if (type === 'loading') {
             if (this.spinnerEl) this.spinnerEl.style.display = 'block';
-            duration = 0; // Keep open until hidden manually
+            duration = 0;
         } else if (type === 'success') {
             if (this.iconEl) {
                 this.iconEl.style.display = 'block';
@@ -48,7 +48,7 @@ export class DynamicIsland {
                             stroke-dasharray="56.5" stroke-dashoffset="0"
                             style="animation: timer-anim var(--timer-duration, 3s) linear forwards;"></circle>
                 </svg>`;
-                
+
                 const animDuration = duration > 0 ? duration : 3000;
                 this.iconEl.style.setProperty('--timer-duration', `${animDuration}ms`);
             }

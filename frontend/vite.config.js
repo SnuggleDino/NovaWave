@@ -7,7 +7,7 @@ export default defineConfig({
         emptyOutDir: true,
         cssCodeSplit: false,
         minify: 'esbuild',
-        cssMinify: false, // Disable CSS minification to preserve all styles
+        cssMinify: false,
     },
     server: {
         port: 34115,

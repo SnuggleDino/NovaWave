@@ -21,7 +21,7 @@ export class IntroManager {
         const IntroClass = this.intros[introKey];
         if (!IntroClass) {
             console.error('[Intro] Unknown intro key:', introKey, 'Available:', Object.keys(this.intros));
-            return Promise.resolve(); // Don't fallback to waterdrop!
+            return Promise.resolve();
         }
 
         this.activeIntro = new IntroClass();

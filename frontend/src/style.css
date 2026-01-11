@@ -194,6 +194,7 @@ body.is-mini #toggle-playlist-btn {
     --border-soft: rgba(123, 104, 238, 0.3);
     --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
+
 :root[data-theme="sleeptime"] body {
     background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
     background-attachment: fixed;
@@ -209,6 +210,7 @@ body.is-mini #toggle-playlist-btn {
     --text-muted: #ff003c;
     --border-soft: #ff003c;
 }
+
 :root[data-theme="cyberpunk"] body {
     background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, #111 1px, #111 3px);
     background-color: #000;
@@ -224,9 +226,11 @@ body.is-mini #toggle-playlist-btn {
     --text-muted: #555555;
     --border-soft: #808080;
 }
+
 :root[data-theme="novawave95"] body {
     background: #008080;
 }
+
 :root[data-theme="novawave95"] .glass-panel,
 :root[data-theme="novawave95"] .intro-card {
     background: #c0c0c0;
@@ -237,6 +241,7 @@ body.is-mini #toggle-playlist-btn {
     border-radius: 0;
     box-shadow: 2px 2px 0px #000;
 }
+
 :root[data-theme="novawave95"] .control-btn {
     border-radius: 0;
     border-top: 2px solid #fff;
@@ -246,14 +251,17 @@ body.is-mini #toggle-playlist-btn {
     background: #c0c0c0;
     color: #000;
 }
+
 :root[data-theme="novawave95"] .app-header {
     background: #000080;
     border-bottom: 2px solid #fff;
 }
+
 :root[data-theme="novawave95"] .app-title-text h1,
 :root[data-theme="novawave95"] .app-title-text p {
     color: #fff;
 }
+
 :root[data-theme="novawave95"] .lang-btn,
 :root[data-theme="novawave95"] .mini-mode-label,
 :root[data-theme="novawave95"] .header-item svg {
@@ -1121,8 +1129,15 @@ textarea {
 }
 
 @keyframes moon-rise {
-    0% { transform: translateY(100px) scale(0.8); opacity: 0; }
-    100% { transform: translateY(0) scale(1); opacity: 1; }
+    0% {
+        transform: translateY(100px) scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
 }
 
 .sleep-intro-text {
@@ -1138,7 +1153,9 @@ textarea {
 }
 
 @keyframes fade-in-text {
-    to { opacity: 1; }
+    to {
+        opacity: 1;
+    }
 }
 
 /* ===== SNUGGLE TIME INTRO ===== */
@@ -1183,14 +1200,15 @@ textarea {
     content: " ";
     display: block;
     position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.15),
-        rgba(0, 0, 0, 0.15) 1px,
-        transparent 1px,
-        transparent 2px
-    );
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: repeating-linear-gradient(0deg,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px);
     z-index: 10;
     pointer-events: none;
     background-size: 100% 2px;
@@ -1212,7 +1230,10 @@ textarea {
 .cyber-glitch-text::after {
     content: attr(data-text);
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: #050505;
 }
 
@@ -1231,22 +1252,49 @@ textarea {
 }
 
 @keyframes cyber-shake {
-    0% { transform: translate(1px, 1px) skewX(-1deg); }
-    20% { transform: translate(-2px, -1px) skewX(2deg); }
-    40% { transform: translate(-1px, 2px) skewX(-1deg); }
-    60% { transform: translate(2px, -1px) skewX(1deg); }
-    80% { transform: translate(-1px, -2px) skewX(-2deg); }
-    100% { transform: translate(1px, 1px) skewX(0deg); }
+    0% {
+        transform: translate(1px, 1px) skewX(-1deg);
+    }
+
+    20% {
+        transform: translate(-2px, -1px) skewX(2deg);
+    }
+
+    40% {
+        transform: translate(-1px, 2px) skewX(-1deg);
+    }
+
+    60% {
+        transform: translate(2px, -1px) skewX(1deg);
+    }
+
+    80% {
+        transform: translate(-1px, -2px) skewX(-2deg);
+    }
+
+    100% {
+        transform: translate(1px, 1px) skewX(0deg);
+    }
 }
 
 @keyframes cyber-glitch-anim-1 {
-    0% { clip: rect(20px, 9999px, 10px, 0); }
-    100% { clip: rect(80px, 9999px, 90px, 0); }
+    0% {
+        clip: rect(20px, 9999px, 10px, 0);
+    }
+
+    100% {
+        clip: rect(80px, 9999px, 90px, 0);
+    }
 }
 
 @keyframes cyber-glitch-anim-2 {
-    0% { clip: rect(90px, 9999px, 100px, 0); }
-    100% { clip: rect(10px, 9999px, 30px, 0); }
+    0% {
+        clip: rect(90px, 9999px, 100px, 0);
+    }
+
+    100% {
+        clip: rect(10px, 9999px, 30px, 0);
+    }
 }
 
 .cyber-sub-text {
@@ -1295,8 +1343,15 @@ textarea {
 }
 
 @keyframes synth-sun-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
 }
 
 .synth-grid {
@@ -1318,8 +1373,13 @@ textarea {
 }
 
 @keyframes grid-scroll {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 50px; }
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 0 50px;
+    }
 }
 
 .synth-title {
@@ -3387,7 +3447,7 @@ body.focus-active .focus-mode-btn {
     font-family: 'Consolas', monospace;
     font-size: 0.75rem;
     color: var(--accent);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
 }
 
 .help-footer-action {
@@ -3473,7 +3533,7 @@ body.is-mini .cover-art-container {
     aspect-ratio: 1 / 1 !important;
     flex-shrink: 0 !important;
     margin: auto 0 !important;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.5) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
     border-radius: 12px !important;
 }
 
@@ -3538,7 +3598,7 @@ body.is-mini .controls-area {
 body.is-mini .control-btn {
     width: 32px !important;
     height: 32px !important;
-    background: rgba(255,255,255,0.08) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
 }
 
 body.is-mini .control-main {
@@ -3547,7 +3607,6 @@ body.is-mini .control-main {
     font-size: 1rem !important;
 }
 
-/* Mini Player Volume Fix */
 body.is-mini .volume-control-area {
     display: flex !important;
     grid-area: controls !important;
@@ -3585,7 +3644,7 @@ body.is-mini .progress-area {
 
 body.is-mini .progress-bar {
     height: 6px !important;
-    background: rgba(255,255,255,0.1) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
 body.is-mini .time-labels {
@@ -3894,7 +3953,6 @@ input:checked+.slider:before {
 /* ============================================== */
 #notification-bar {
     position: fixed;
-    /* Fix: Don't push content down */
     top: 20px;
     left: 50%;
     transform: translateX(-50%) translateY(-150%);
@@ -3933,7 +3991,6 @@ input:checked+.slider:before {
     left: 10px;
     z-index: 20;
     pointer-events: none;
-    /* Let clicks pass through */
 }
 
 .features-badge-icon {
@@ -3948,7 +4005,6 @@ input:checked+.slider:before {
     color: var(--accent);
     border: 1px solid rgba(255, 255, 255, 0.15);
     pointer-events: auto;
-    /* Re-enable for hover */
     cursor: help;
     transition: all 0.2s ease;
 }
@@ -3974,7 +4030,7 @@ input:checked+.slider:before {
     transform: translateX(-10px);
     pointer-events: none;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .features-badge-icon:hover+.features-minimal-modal {
@@ -4195,20 +4251,15 @@ kbd {
     opacity: 1;
     transform: translateX(-50%) scale(1);
     padding: 0 20px 0 6px;
-    /* Space for spinner */
     min-width: 180px;
-    /* Expand width */
     height: 44px;
-    /* Slightly taller */
 }
 
-/* Spinner (The Circle that fills) */
 .island-spinner {
     width: 24px;
     height: 24px;
     margin-right: 12px;
     display: none;
-    /* Toggled by JS */
 }
 
 .island-spinner svg {
@@ -4266,6 +4317,7 @@ kbd {
     from {
         stroke-dashoffset: 56.5;
     }
+
     to {
         stroke-dashoffset: 0;
     }
@@ -4284,7 +4336,6 @@ kbd {
     color: #fff;
     opacity: 0;
     transition: opacity 0.2s 0.2s;
-    /* Delay text appear */
 }
 
 .dynamic-island.visible #island-message {

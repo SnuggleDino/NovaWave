@@ -1,16 +1,16 @@
 export class VisualizerEngine {
     constructor(audioElement, canvasElement, options = {}) {
-        this.audio = audioElement; // Keep ref if needed for play state checks
+        this.audio = audioElement;
         this.canvas = canvasElement;
         this.ctx = this.canvas.getContext('2d');
-        
+
         this.visualizerEnabled = options.enabled !== false;
         this.style = options.style || 'bars';
         this.sensitivity = options.sensitivity || 1.5;
         this.accentColor = options.accentColor || '#38bdf8';
         this.targetFps = options.targetFps || 60;
         this.maxBars = options.maxBars || 0;
-        this.musicEmojiEl = options.musicEmojiEl || null; 
+        this.musicEmojiEl = options.musicEmojiEl || null;
 
         this.isRunning = false;
         this.analyser = null;
@@ -18,10 +18,9 @@ export class VisualizerEngine {
 
         this.lastRenderTime = 0;
         this.animationFrameId = null;
-        this.frameCount = 0; 
+        this.frameCount = 0;
     }
 
-    // AudioExtras will pass the analyser here
     setAnalyser(analyser) {
         this.analyser = analyser;
         if (this.analyser) {
@@ -40,15 +39,13 @@ export class VisualizerEngine {
         if (newSettings.accentColor !== undefined) this.accentColor = newSettings.accentColor;
         if (newSettings.targetFps !== undefined) this.targetFps = newSettings.targetFps;
         if (newSettings.enabled !== undefined) this.visualizerEnabled = newSettings.enabled;
-        
-        // Audio effects are now handled by AudioExtras, ignoring them here
+
     }
 
     updateAnalyserSettings() {
         if (!this.analyser) return;
         this.analyser.smoothingTimeConstant = 0.6;
         this.analyser.fftSize = 512;
-        // Adjust maxDecibels based on sensitivity to "zoom" the visualization
         const dbValue = -15 - (this.sensitivity * 15);
         this.analyser.maxDecibels = dbValue;
     }
@@ -90,14 +87,14 @@ export class VisualizerEngine {
 
         this.lastRenderTime = now - (delta % interval);
         this.animationFrameId = requestAnimationFrame(() => this.draw());
-        this.frameCount++; 
+        this.frameCount++;
 
         const width = this.canvas.width;
         const height = this.canvas.height;
         this.ctx.clearRect(0, 0, width, height);
 
         if (!this.analyser || !this.dataArray) return;
-        
+
         this.analyser.getByteFrequencyData(this.dataArray);
         const boost = 1 + (this.sensitivity * 0.1);
         const ac = this.accentColor;
@@ -131,7 +128,7 @@ export class VisualizerEngine {
             // Data array step if maxBars is set
             let dataIdx = i;
             if (this.maxBars > 0) {
-                // Map i (0..maxBars) to data (0..length/2) roughly
+                // Map i (0..maxBars) to data (0..length/2) 
                 dataIdx = Math.floor(i * ((this.dataArray.length / 2) / this.maxBars));
             }
             const bh = (this.dataArray[dataIdx] / 255) * height * 0.8 * boost;
@@ -166,7 +163,7 @@ export class VisualizerEngine {
             this.ctx.strokeStyle = i === 0 ? ac : `${ac}44`;
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
-            
+
             const angle = (Date.now() * 0.001 * (i + 1)) % (Math.PI * 2);
             this.ctx.beginPath();
             this.ctx.arc(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius, 4, 0, Math.PI * 2);
@@ -183,7 +180,7 @@ export class VisualizerEngine {
             this.ctx.fillStyle = ac;
             this.ctx.globalAlpha = 0.8;
             this.ctx.fillRect(i * bw, height - bh, bw - 4, bh);
-            
+
             if (val > 210 && Math.random() > 0.9) {
                 this.ctx.fillStyle = "#fff";
                 this.ctx.globalAlpha = 1.0;
@@ -196,9 +193,9 @@ export class VisualizerEngine {
     drawRetro(width, height, ac, boost) {
         const targetRows = 18;
         const totalBlockHeight = height / targetRows;
-        const gapY = 1.5; 
+        const gapY = 1.5;
         const blockHeight = totalBlockHeight - gapY;
-        const blockWidth = blockHeight * 5.0; 
+        const blockWidth = blockHeight * 5.0;
         const gapX = 3;
         const totalBlockWidth = blockWidth + gapX;
         const centerX = width / 2;
@@ -206,25 +203,25 @@ export class VisualizerEngine {
         const usefulDataLimit = Math.floor(this.dataArray.length * 0.5);
 
         for (let i = 0; i < maxColumns; i++) {
-            const dataIndex = Math.floor((i / maxColumns) * usefulDataLimit); 
+            const dataIndex = Math.floor((i / maxColumns) * usefulDataLimit);
             let val = this.dataArray[dataIndex] * boost;
             const numBlocks = Math.floor((val / 255) * targetRows);
             const xRight = centerX + (i * totalBlockWidth);
             const xLeft = centerX - ((i + 1) * totalBlockWidth);
 
             for (let j = 0; j < numBlocks; j++) {
-                 if (j >= targetRows) break;
-                 const y = height - ((j + 1) * totalBlockHeight);
-                 
-                 if (j >= 16) this.ctx.fillStyle = '#ff4444';      
-                 else if (j >= 12) this.ctx.fillStyle = '#ffcc00'; 
-                 else this.ctx.fillStyle = ac;                    
+                if (j >= targetRows) break;
+                const y = height - ((j + 1) * totalBlockHeight);
 
-                 this.ctx.shadowBlur = blockHeight * 0.8; 
-                 this.ctx.shadowColor = this.ctx.fillStyle;
-                 
-                 this.ctx.fillRect(xLeft, y, blockWidth, blockHeight);
-                 this.ctx.fillRect(xRight, y, blockWidth, blockHeight);
+                if (j >= 16) this.ctx.fillStyle = '#ff4444';
+                else if (j >= 12) this.ctx.fillStyle = '#ffcc00';
+                else this.ctx.fillStyle = ac;
+
+                this.ctx.shadowBlur = blockHeight * 0.8;
+                this.ctx.shadowColor = this.ctx.fillStyle;
+
+                this.ctx.fillRect(xLeft, y, blockWidth, blockHeight);
+                this.ctx.fillRect(xRight, y, blockWidth, blockHeight);
             }
         }
         this.ctx.shadowBlur = 0;
@@ -234,7 +231,7 @@ export class VisualizerEngine {
         const centerX = width / 2, centerY = height / 2;
         const count = 12;
         const radiusBase = Math.min(width, height) / 3;
-        
+
         for (let i = 0; i < count; i++) {
             const dataIdx = Math.floor((i / count) * (this.dataArray.length * 0.5));
             const val = this.dataArray[dataIdx];
@@ -244,7 +241,7 @@ export class VisualizerEngine {
             const x = centerX + Math.cos(angle) * dist;
             const y = centerY + Math.sin(angle) * dist;
             const size = 8 + (val / 255) * 15;
-            
+
             this.ctx.save();
             this.ctx.translate(x, y);
             this.ctx.rotate(angle + (Date.now() * 0.0008));
@@ -259,7 +256,7 @@ export class VisualizerEngine {
                 this.ctx.ellipse(0, -size, size * 0.6, size, 0, 0, Math.PI * 2);
                 this.ctx.fill();
             }
-            
+
             this.ctx.beginPath();
             this.ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
             this.ctx.fillStyle = '#fda4af';
@@ -291,7 +288,7 @@ export class VisualizerEngine {
         const centerX = width / 2, centerY = height / 2, moonRadius = Math.min(width, height) / 4.5;
         const blv = (this.dataArray[0] + this.dataArray[1] + this.dataArray[2]) / 3;
         const pulse = (blv / 255) * 25 * boost;
-        
+
         this.ctx.beginPath();
         this.ctx.arc(centerX, centerY, moonRadius + pulse + 20, 0, Math.PI * 2);
         this.ctx.fillStyle = `${ac}11`;
@@ -312,7 +309,7 @@ export class VisualizerEngine {
                 const orbitDist = moonRadius + 30 + (val / 255) * (width / 4);
                 const x = centerX + Math.cos(angle) * orbitDist;
                 const y = centerY + Math.sin(angle) * orbitDist;
-                
+
                 this.ctx.beginPath();
                 this.ctx.arc(x, y, (val / 255) * 4, 0, Math.PI * 2);
                 this.ctx.fillStyle = i % 8 === 0 ? "#fff" : ac;

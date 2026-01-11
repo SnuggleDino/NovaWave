@@ -69,19 +69,18 @@ type Config struct {
 	PlaylistPosition        string   `json:"playlistPosition"`
 	PlaylistHidden          bool     `json:"playlistHidden"`
 	GradientTitleEnabled    bool     `json:"gradientTitleEnabled"`
-	ActiveIntro             string   `json:"activeIntro"`       // NEU
-	SunsetEnabled           bool     `json:"sunsetEnabled"`     // NEU
-	SakuraEnabled           bool     `json:"sakuraEnabled"`     // NEU
-	NovaWave95Enabled       bool     `json:"novaWave95Enabled"` // NEU
+	ActiveIntro             string   `json:"activeIntro"`
+	SunsetEnabled           bool     `json:"sunsetEnabled"`
+	SakuraEnabled           bool     `json:"sakuraEnabled"`
+	NovaWave95Enabled       bool     `json:"novaWave95Enabled"`
 }
 
-// Track defines a song for the frontend
 type Track struct {
 	Path     string  `json:"path"`
 	Title    string  `json:"title"`
 	Artist   string  `json:"artist"`
 	Duration int     `json:"duration"`
-	Mtime    float64 `json:"mtime"` // Modification time in ms
+	Mtime    float64 `json:"mtime"`
 }
 
 type DownloadOptions struct {
@@ -164,7 +163,6 @@ func (a *App) setupMediaKeys() {
 	}()
 }
 
-// Config speichert alle Einstellungen
 func (a *App) SetWindowSize(width int, height int) {
 	wailsRuntime.WindowSetSize(a.ctx, width, height)
 }
@@ -255,15 +253,12 @@ func (a *App) SaveConfig(config Config) string {
 	return "Gespeichert"
 }
 
-// Helper to get current config, update one field, and save
 func (a *App) SetSetting(key string, value interface{}) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
 	path := getConfigPath()
 
-	// Read existing data as map to preserve fields not in struct (if any)
-	// and to handle raw updates
 	var configMap map[string]interface{}
 	data, err := os.ReadFile(path)
 	if err == nil {
@@ -308,35 +303,29 @@ func (a *App) SelectMusicFolder() FolderResult {
 	return a.RefreshMusicFolder(path)
 }
 
-// getBinaryPath searches for a binary by walking up the directory tree
 func (a *App) getBinaryPath(name string) string {
 	ex, _ := os.Executable()
 	curr := filepath.Dir(ex)
 
-	// Search up to 10 parent directories
 	for i := 0; i < 10; i++ {
-		// 1. Check in frontend/src/executable_bin (NEW LOCATION)
 		pFrontend := filepath.Join(curr, "frontend", "src", "executable_bin", name)
 		if info, err := os.Stat(pFrontend); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(pFrontend)
 			return abs
 		}
 
-		// 2. Check in executable_bin subfolder (LEGACY/ROOT LOCATION)
 		p := filepath.Join(curr, "executable_bin", name)
 		if info, err := os.Stat(p); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(p)
 			return abs
 		}
 
-		// 3. Check directly in folder
 		pDirect := filepath.Join(curr, name)
 		if info, err := os.Stat(pDirect); err == nil && !info.IsDir() {
 			abs, _ := filepath.Abs(pDirect)
 			return abs
 		}
 
-		// Move up
 		parent := filepath.Dir(curr)
 		if parent == curr {
 			break
@@ -344,7 +333,6 @@ func (a *App) getBinaryPath(name string) string {
 		curr = parent
 	}
 
-	// Try CWD as well
 	cwd, _ := os.Getwd()
 	pCwd := filepath.Join(cwd, "frontend", "src", "executable_bin", name)
 	if _, err := os.Stat(pCwd); err == nil {
@@ -454,7 +442,6 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 		hasFFprobe = true
 	}
 
-	// Safe Slice for Concurrent Access
 	var tracks []Track
 	var mutex sync.Mutex
 
@@ -503,7 +490,6 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 				fileHandle.Close()
 			}
 
-			// Try native MP3 duration reading first
 			if strings.HasSuffix(strings.ToLower(f.Name()), ".mp3") {
 				currentTrack.Duration = getMP3Duration(fullPath)
 			}
@@ -554,7 +540,6 @@ func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
 
 	err := os.Rename(sourcePath, destPath)
 	if err != nil {
-		// Try copy and delete if rename fails (diff partitions)
 		input, err := os.ReadFile(sourcePath)
 		if err != nil {
 			return SimpleResult{Success: false, Error: err.Error()}
@@ -585,10 +570,9 @@ func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
 		return SimpleResult{Success: false, Error: "FFmpeg error: " + err.Error()}
 	}
 
-	// Swap files
 	err = os.Remove(pathStr)
 	if err != nil {
-		os.Remove(tempPath) // Clean up
+		os.Remove(tempPath)
 		return SimpleResult{Success: false, Error: "Could not remove original file"}
 	}
 	err = os.Rename(tempPath, pathStr)
@@ -626,7 +610,6 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 
 	outputTemplate := "%(title)s.%(ext)s"
 	if opts.CustomName != "" {
-		// Simple sanitize
 		safeName := strings.Map(func(r rune) rune {
 			if strings.ContainsRune("< > : \" / \\ | ? *", r) {
 				return '_'
@@ -646,10 +629,6 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	cmd := exec.Command(ytPath, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
-	// We could parse stdout for progress here if we wanted to be fancy,
-	// but for now we just wait.
-	// To send progress we'd need to read stdout pipe and emit Wails events.
-
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		outStr := string(output)
@@ -659,17 +638,10 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 		return SimpleResult{Success: false, Error: outStr}, nil
 	}
 
-	// If custom name was provided, we might want to ensure ID3 title matches using ffmpeg or NodeID3 equivalent?
-	// yt-dlp --add-metadata sets title to video title usually.
-	// If the user provided a custom name, they might expect the metadata Title to match.
-	// We can optionally fix it here if needed, similar to the legacy app.
-
 	return SimpleResult{Success: true}, nil
 }
 
 func (a *App) SendPlaybackState(isPlaying bool) {
-	// Placeholder: In Wails, we might emit an event if backend needs to know,
-	// or we just use this to trigger system media controls if implemented.
 }
 
 // --- Spotify Downloader ---
@@ -687,8 +659,6 @@ func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, err
 	if err != nil {
 		return SimpleResult{Success: false, Error: "Spotify Metadata Error: " + err.Error()}, nil
 	}
-
-	// Search on YouTube for "Artist - Title lyrics" for best results
 	searchQuery := fmt.Sprintf("ytsearch1:%s - %s lyrics", track.Artist, track.Title)
 
 	opts := DownloadOptions{
@@ -696,7 +666,5 @@ func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, err
 		CustomName: fmt.Sprintf("%s - %s", track.Artist, track.Title),
 		Quality:    quality,
 	}
-
-	// We use the existing download logic
 	return a.DownloadFromYouTube(opts)
 }

@@ -10,10 +10,10 @@ type AppMeta struct {
 }
 
 var CurrentMeta = AppMeta{
-	Version:    "2.5.8 GO",
-	BuildDate:  "11.01.2026",
-	Author:     "SnuggleDino",
-	GoVersion:  "v2.9.2 (Go 1.23)",
-	GithubUser: "SnuggleDino",
-	RepoLink:   "https://github.com/SnuggleDino/NovaWave-WAILS",
+	Version:    "2.5.9 GO",                                      // NovaWave Music Player Version
+	BuildDate:  "11.01.2026",                                    // Build Date
+	Author:     "SnuggleDino",                                   // Author
+	GoVersion:  "v2.9.2 (Go 1.23)",                              // Go Version
+	GithubUser: "SnuggleDino",                                   // Github User
+	RepoLink:   "https://github.com/SnuggleDino/NovaWave-WAILS", // Repository Link
 }
