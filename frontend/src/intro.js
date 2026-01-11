@@ -12,6 +12,7 @@ export class IntroManager {
 
     play() {
         const introKey = this.settings.activeIntro || 'waterdrop';
+        console.log('[Intro] Playing intro:', introKey);
 
         if (introKey === 'none') {
             return Promise.resolve();
@@ -19,11 +20,11 @@ export class IntroManager {
 
         const IntroClass = this.intros[introKey];
         if (!IntroClass) {
-            this.activeIntro = new WaterdropIntro();
-        } else {
-            this.activeIntro = new IntroClass();
+            console.error('[Intro] Unknown intro key:', introKey, 'Available:', Object.keys(this.intros));
+            return Promise.resolve(); // Don't fallback to waterdrop!
         }
 
+        this.activeIntro = new IntroClass();
         this.activeIntro.mount();
 
         return new Promise((resolve) => {

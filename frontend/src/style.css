@@ -1009,7 +1009,7 @@ textarea {
     width: 100%;
     height: 100%;
     z-index: 99998;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -1023,6 +1023,7 @@ textarea {
 .cyber-intro-overlay.visible,
 .sunset-intro-overlay.visible,
 .sakura-intro-overlay.visible {
+    display: flex;
     opacity: 1;
     pointer-events: auto;
 }
@@ -3568,4 +3569,53 @@ kbd {
     color: var(--text-main);
     font-size: 0.85rem;
     font-weight: 500;
+}
+
+/* ============================================== */
+/* TRACK CONTEXT MENU                             */
+/* ============================================== */
+#context-menu {
+    position: fixed;
+    display: none;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 8px 0;
+    min-width: 180px;
+    z-index: 100000;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+#context-menu.visible {
+    display: block;
+}
+
+#context-menu button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#context-menu button:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+#context-menu button svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+}
+
+#context-menu button:hover svg {
+    color: var(--accent);
 }

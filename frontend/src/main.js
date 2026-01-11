@@ -2271,36 +2271,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function initializeApp() {
         try {
-            // Mount intro IMMEDIATELY - app shell is hidden by CSS until body.ready
-            const introKey = settings.activeIntro || 'waterdrop';
-            let introMgr = null;
-
-            if (introKey !== 'none') {
-                // Pre-mount with default before settings load
-                introMgr = new IntroManager({ activeIntro: 'waterdrop' });
-                introMgr.activeIntro = new (introMgr.intros['waterdrop'] || introMgr.intros['waterdrop'])();
-                introMgr.activeIntro.mount();
-            }
-
-            // Load settings while intro is visible
+            // Startup cover is showing (simple dark screen with logo)
+            // Load settings to determine which intro to play
             await loadSettings();
 
-            // If user has different intro preference, handle it
-            const userIntroKey = settings.activeIntro || 'waterdrop';
-            if (introMgr && userIntroKey !== 'waterdrop' && userIntroKey !== 'none') {
-                // Instantly remove waterdrop (no fade) before showing user's preferred intro
-                if (introMgr.activeIntro) {
-                    introMgr.activeIntro.unmount();
-                    introMgr.activeIntro = null;
-                }
-                const userIntroMgr = new IntroManager(settings);
-                await userIntroMgr.play();
-            } else if (userIntroKey === 'none' && introMgr) {
-                await introMgr.stop();
-            } else if (introMgr) {
-                // Keep waterdrop visible then fade
-                await new Promise(r => setTimeout(r, 2500));
-                await introMgr.stop();
+            // Remove the startup cover
+            const startupCover = document.getElementById('startup-cover');
+            if (startupCover) startupCover.remove();
+
+            // Now play the appropriate intro
+            const introKey = settings.activeIntro || 'waterdrop';
+            if (introKey !== 'none') {
+                const introMgr = new IntroManager({ activeIntro: introKey });
+                await introMgr.play();
             }
 
             // Apply Theme Packs after settings are loaded
