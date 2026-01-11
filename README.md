@@ -1,5 +1,7 @@
-# 🎵 NovaWave
+# 🎵 NovaWave `v2.5.8 GO`
 **NovaWave** is a modern, high-performance desktop music player built with **Wails (Go)** and a polished **Web-based frontend**. It combines professional audio processing with a stunning visual experience and powerful downloader capabilities.
+
+[![Project Link](https://img.shields.io/badge/GitHub-NovaWave--WAILS-blue?style=for-the-badge&logo=github)](https://github.com/SnuggleDino/NovaWave-WAILS)
 
 ---
 
@@ -12,7 +14,7 @@
 
 ### 🎨 Theme Packs & Design
 NovaWave is not just a player; it's a piece of art. Choose from several handcrafted Theme Packs, each with its own unique colors, icons, and **Startup Intros**:
-*   🧸 **Snuggle Time:** Cozy vibes with loving dinos and warm colors.
+*   🦖 **Snuggle Time:** Cozy vibes with loving dinos and warm colors.
 *   🌙 **Sleep Time:** A soothing, midnight-blue atmosphere with a rising moon intro.
 *   ⚡ **Cyberpunk:** A futuristic Night City aesthetic with glitch effects and CRT scanlines.
 *   🏎️ **Sunset Drive:** Classic 80s Retrowave with a synth-sun and an animated grid floor.
@@ -42,27 +44,28 @@ Multiple visualization styles to match your mood:
 ## 🚀 Getting Started
 
 ### Prerequisites
-*   [Go](https://go.dev/) (1.21+)
+*   [Go](https://go.dev/) (1.23+ recommended)
 *   [Node.js](https://nodejs.org/) & NPM
 *   [Wails CLI](https://wails.io/docs/gettingstarted/installation)
 
 ### Installation & Build
-1.  Clone the repository:
+1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/novawave.git
-    cd novawave
+    git clone https://github.com/SnuggleDino/NovaWave-WAILS.git
+    cd NovaWave-WAILS
     ```
-2.  Install frontend dependencies:
+2.  **Install frontend dependencies:**
     ```bash
     cd frontend && npm install && cd ..
     ```
-3.  **Important:** Place `yt-dlp.exe`, `ffmpeg.exe`, and `ffprobe.exe` into the following directory:
+3.  **Setup Binaries:**
+    Place `yt-dlp.exe`, `ffmpeg.exe`, and `ffprobe.exe` into the following directory to enable downloading and metadata features:
     `frontend/src/executable_bin/`
-4.  Run in development mode:
+4.  **Run in development mode:**
     ```bash
     wails dev
     ```
-5.  Build the production executable:
+5.  **Build the production executable:**
     ```bash
     wails build
     ```
@@ -75,6 +78,15 @@ Multiple visualization styles to match your mood:
 *   **Framework:** [Wails v2](https://wails.io/)
 *   **Audio Processing:** Web Audio API
 *   **Metadata:** `dhowden/tag` (Go)
+
+---
+
+## 📊 Project Metadata
+*   **Version:** 2.5.8 GO
+*   **Build Date:** 11.01.2026
+*   **Author:** [SnuggleDino](https://github.com/SnuggleDino)
+*   **Go Version:** v2.9.2 (Go 1.23)
+*   **Repository:** [https://github.com/SnuggleDino/NovaWave-WAILS](https://github.com/SnuggleDino/NovaWave-WAILS)
 
 ---
 
