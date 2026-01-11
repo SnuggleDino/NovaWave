@@ -59,7 +59,9 @@ Multiple visualization styles to match your mood:
     ```
 2.  **Install frontend dependencies:**
     ```bash
-    cd frontend && npm install && cd ..
+    cd frontend 
+    npm install 
+    cd ..
     ```
 3.  **Setup Binaries:**
     Place `yt-dlp.exe`, `ffmpeg.exe`, and `ffprobe.exe` into the following directory to enable downloading and metadata features:
