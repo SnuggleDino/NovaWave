@@ -6,6 +6,7 @@ import { VisualizerEngine } from './visualizerEngine.js';
 import { IntroManager } from './intro.js';
 import { AudioExtras } from './audio_extras.js';
 import { DynamicIsland } from './dynamic_island.js';
+import { MiniPlayer } from './mini_player.js';
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
@@ -61,6 +62,7 @@ let activeDownloaderMode = 'youtube';
 let visualizer; // Instance of VisualizerEngine
 let audioExtras;
 let dynamicIsland;
+let miniPlayer;
 
 // DOM Elements
 let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, mainFavoriteBtn;
@@ -115,6 +117,8 @@ function initVisualizerEngine() {
     if (audioExtras) {
         visualizer.setAnalyser(audioExtras.getAnalyser());
     }
+    
+    if (miniPlayer) miniPlayer.setVisualizer(visualizer);
 }
 
 function updateAudioEffects() {
@@ -1613,12 +1617,9 @@ function setupEventListeners() {
     bind(toggleMiniMode, 'change', (e) => {
         const isMini = e.target.checked;
         saveSetting('miniMode', isMini);
-        if (isMini) {
-            document.body.classList.add('is-mini');
-            windowApi.setWindowSize(340, 600);
-        } else {
-            document.body.classList.remove('is-mini');
-            windowApi.setWindowSize(1300, 900);
+        if (miniPlayer) {
+            if (isMini) miniPlayer.enable();
+            else miniPlayer.disable();
         }
         const currentAnim = (animationSelect) ? animationSelect.value : (settings.animationMode || 'off');
         if (currentAnim === 'xmas') applyAnimationSetting('xmas');
@@ -2090,6 +2091,8 @@ async function loadAppMeta() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    miniPlayer = new MiniPlayer(windowApi, null);
+
     $ = (s) => document.querySelector(s);
     trackTitleEl = $('#track-title-large'); trackArtistEl = $('#track-artist-large'); musicEmojiEl = $('#music-emoji');
     currentTimeEl = $('#current-time'); durationEl = $('#duration'); progressBar = $('.progress-bar'); progressFill = $('.progress-fill');

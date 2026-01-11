@@ -9,6 +9,7 @@ export class VisualizerEngine {
         this.sensitivity = options.sensitivity || 1.5;
         this.accentColor = options.accentColor || '#38bdf8';
         this.targetFps = options.targetFps || 60;
+        this.maxBars = options.maxBars || 0;
         this.musicEmojiEl = options.musicEmojiEl || null; 
 
         this.isRunning = false;
@@ -31,6 +32,7 @@ export class VisualizerEngine {
 
     updateSettings(newSettings) {
         if (newSettings.style !== undefined) this.style = newSettings.style;
+        if (newSettings.maxBars !== undefined) this.maxBars = newSettings.maxBars;
         if (newSettings.sensitivity !== undefined) {
             this.sensitivity = newSettings.sensitivity;
             this.updateAnalyserSettings();
@@ -120,10 +122,19 @@ export class VisualizerEngine {
     }
 
     drawBars(width, height, ac, boost) {
-        const bl = this.dataArray.length / 2;
+        let bl = this.dataArray.length / 2;
+        if (this.maxBars > 0 && bl > this.maxBars) {
+            bl = this.maxBars;
+        }
         const bw = (width / bl) * 0.8;
         for (let i = 0; i < bl; i++) {
-            const bh = (this.dataArray[i] / 255) * height * 0.8 * boost;
+            // Data array step if maxBars is set
+            let dataIdx = i;
+            if (this.maxBars > 0) {
+                // Map i (0..maxBars) to data (0..length/2) roughly
+                dataIdx = Math.floor(i * ((this.dataArray.length / 2) / this.maxBars));
+            }
+            const bh = (this.dataArray[dataIdx] / 255) * height * 0.8 * boost;
             this.ctx.fillStyle = ac;
             this.ctx.fillRect(i * (width / bl), height - bh, bw, bh);
         }
