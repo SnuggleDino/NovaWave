@@ -1272,28 +1272,43 @@ textarea {
 }
 
 .synth-sun {
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(to bottom, #fcd34d 0%, #f97316 50%, #db2777 100%);
+    width: 280px;
+    height: 280px;
+    background: linear-gradient(to bottom, #ff3131 0%, #ff914d 50%, #ffde59 100%);
     border-radius: 50%;
     position: relative;
-    box-shadow: 0 0 100px 30px rgba(249, 115, 22, 0.7);
-    margin-bottom: 50px;
+    box-shadow: 0 0 60px rgba(255, 145, 77, 0.5);
     z-index: 1;
+    overflow: hidden;
 }
 
 .synth-sun::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
         to bottom,
         transparent 0%,
         transparent 50%,
-        rgba(31, 11, 46, 0.8) 50%,
-        rgba(31, 11, 46, 0.8) 53%
+        rgba(31, 11, 46, 1) 50%,
+        rgba(31, 11, 46, 1) 52%,
+        transparent 52%,
+        transparent 62%,
+        rgba(31, 11, 46, 1) 62%,
+        rgba(31, 11, 46, 1) 65%,
+        transparent 65%,
+        transparent 75%,
+        rgba(31, 11, 46, 1) 75%,
+        rgba(31, 11, 46, 1) 79%,
+        transparent 79%,
+        transparent 89%,
+        rgba(31, 11, 46, 1) 89%,
+        rgba(31, 11, 46, 1) 94%,
+        transparent 94%
     );
-    border-radius: 50%;
 }
 
 .synth-grid {
@@ -1301,17 +1316,15 @@ textarea {
     bottom: 0;
     left: -50%;
     width: 200%;
-    height: 50%;
+    height: 60%;
     background-image:
-        linear-gradient(rgba(236, 72, 153, 0.8) 2px, transparent 2px),
-        linear-gradient(90deg, rgba(236, 72, 153, 0.8) 2px, transparent 2px);
-    background-size: 80px 80px;
-    transform: perspective(500px) rotateX(60deg);
+        linear-gradient(rgba(236, 72, 153, 0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(236, 72, 153, 0.5) 1px, transparent 1px);
+    background-size: 50px 50px;
+    transform: perspective(300px) rotateX(65deg);
     transform-origin: bottom center;
-    animation: grid-scroll 3s linear infinite;
+    animation: grid-scroll 2s linear infinite;
     z-index: 0;
-    mask-image: linear-gradient(to top, black 20%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to top, black 20%, transparent 100%);
 }
 
 @keyframes grid-scroll {

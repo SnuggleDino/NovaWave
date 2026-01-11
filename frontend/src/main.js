@@ -154,7 +154,7 @@ function updateActiveFeaturesIndicator() {
 function saveSetting(key, value) {
     if (settings) settings[key] = value;
     windowApi.setSetting(key, value);
-    if (key === 'activeIntro') localStorage.setItem('activeIntro', value);
+    if (key === 'activeIntro' || key === 'theme') localStorage.setItem(key, value);
 }
 
 function updateCachedColor() {
@@ -2232,8 +2232,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAudioEvents(); setupEventListeners();
 
     async function initializeApp() {
-        // Fast Path: Start Intro immediately
+        // Fast Path: Start Intro and Theme immediately
         const cachedIntro = localStorage.getItem('activeIntro') || 'waterdrop';
+        const cachedTheme = localStorage.getItem('theme') || 'blue';
+        
+        document.documentElement.setAttribute('data-theme', cachedTheme);
+        
         const startupCover = document.getElementById('startup-cover');
         if (startupCover) startupCover.remove();
 
