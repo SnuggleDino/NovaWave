@@ -1104,40 +1104,41 @@ textarea {
 
 /* ===== SLEEP TIME INTRO ===== */
 .sleep-intro-overlay {
-    background: linear-gradient(180deg, #0a0a1f 0%, #1a1a3e 100%);
+    background: radial-gradient(circle at center, #1e1e2e 0%, #05050a 100%);
+    overflow: hidden;
 }
 
 .moon-glow {
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(circle, #fef3c7 0%, #fbbf24 40%, transparent 70%);
+    width: 150px;
+    height: 150px;
+    background: #fef9c3;
     border-radius: 50%;
-    box-shadow: 0 0 60px 30px rgba(251, 191, 36, 0.3), 0 0 100px 60px rgba(251, 191, 36, 0.1);
-    animation: moon-pulse 3s ease-in-out infinite;
-    margin-bottom: 30px;
+    box-shadow: 0 0 80px 20px rgba(254, 249, 195, 0.4);
+    animation: moon-rise 4s ease-out forwards;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 2;
 }
 
-@keyframes moon-pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 60px 30px rgba(251, 191, 36, 0.3);
-    }
-
-    50% {
-        transform: scale(1.1);
-        box-shadow: 0 0 80px 40px rgba(251, 191, 36, 0.4);
-    }
+@keyframes moon-rise {
+    0% { transform: translateY(100px) scale(0.8); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 .sleep-intro-text {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 300;
-    color: #fef3c7;
-    letter-spacing: 8px;
+    color: #e2e8f0;
+    letter-spacing: 10px;
     text-transform: uppercase;
-    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    z-index: 2;
+    animation: fade-in-text 2s ease-out 1s forwards;
+    opacity: 0;
+}
+
+@keyframes fade-in-text {
+    to { opacity: 1; }
 }
 
 /* ===== SNUGGLE TIME INTRO ===== */
@@ -1182,107 +1183,80 @@ textarea {
     content: " ";
     display: block;
     position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    z-index: 2;
-    background-size: 100% 2px, 3px 100%;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    z-index: 10;
     pointer-events: none;
+    background-size: 100% 2px;
 }
 
 .cyber-glitch-text {
-    font-size: 4rem;
+    font-size: 6rem;
     font-weight: 900;
-    color: #00ffff;
-    letter-spacing: 12px;
+    color: #fcee0a;
     text-transform: uppercase;
     position: relative;
-    animation: cyber-glitch 2s infinite;
-    text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+    letter-spacing: 10px;
+    text-shadow: 3px 3px 0px #00f0ff, -2px -2px 0px #ff003c;
+    animation: cyber-shake 0.4s infinite;
+    z-index: 5;
 }
 
 .cyber-glitch-text::before,
 .cyber-glitch-text::after {
     content: attr(data-text);
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #050505;
 }
 
 .cyber-glitch-text::before {
-    color: #ff00ff;
-    animation: cyber-glitch-1 0.3s infinite;
-    clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
-    transform: translate(-2px, -2px);
+    left: 2px;
+    text-shadow: -1px 0 #ff003c;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: cyber-glitch-anim-1 2.5s infinite linear alternate-reverse;
 }
 
 .cyber-glitch-text::after {
-    color: #ffff00;
-    animation: cyber-glitch-2 0.3s infinite;
-    clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
-    transform: translate(2px, 2px);
+    left: -2px;
+    text-shadow: -1px 0 #00f0ff;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: cyber-glitch-anim-2 3s infinite linear alternate-reverse;
 }
 
-@keyframes cyber-glitch {
-
-    0%,
-    90%,
-    100% {
-        opacity: 1;
-    }
-
-    92%,
-    94%,
-    96%,
-    98% {
-        opacity: 0.8;
-        transform: skewX(0deg);
-    }
-
-    91%,
-    93%,
-    95%,
-    97%,
-    99% {
-        opacity: 1;
-        transform: skewX(2deg);
-    }
+@keyframes cyber-shake {
+    0% { transform: translate(1px, 1px) skewX(-1deg); }
+    20% { transform: translate(-2px, -1px) skewX(2deg); }
+    40% { transform: translate(-1px, 2px) skewX(-1deg); }
+    60% { transform: translate(2px, -1px) skewX(1deg); }
+    80% { transform: translate(-1px, -2px) skewX(-2deg); }
+    100% { transform: translate(1px, 1px) skewX(0deg); }
 }
 
-@keyframes cyber-glitch-1 {
-
-    0%,
-    100% {
-        transform: translate(-2px, -2px);
-    }
-
-    50% {
-        transform: translate(2px, 2px);
-    }
+@keyframes cyber-glitch-anim-1 {
+    0% { clip: rect(20px, 9999px, 10px, 0); }
+    100% { clip: rect(80px, 9999px, 90px, 0); }
 }
 
-@keyframes cyber-glitch-2 {
-
-    0%,
-    100% {
-        transform: translate(2px, 2px);
-    }
-
-    50% {
-        transform: translate(-2px, -2px);
-    }
+@keyframes cyber-glitch-anim-2 {
+    0% { clip: rect(90px, 9999px, 100px, 0); }
+    100% { clip: rect(10px, 9999px, 30px, 0); }
 }
 
 .cyber-sub-text {
-    font-size: 1rem;
-    color: #ff00ff;
-    letter-spacing: 6px;
+    font-size: 1.2rem;
+    color: #00f0ff;
+    letter-spacing: 4px;
     text-transform: uppercase;
     margin-top: 20px;
+    z-index: 5;
+    font-family: monospace;
     opacity: 0.8;
 }
 
@@ -1293,73 +1267,67 @@ textarea {
 }
 
 .synth-sun {
-    width: 200px;
-    height: 200px;
-    background: linear-gradient(180deg, #fbbf24 0%, #f97316 50%, #ec4899 100%);
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(to bottom, #fcd34d 0%, #f97316 45%, #db2777 100%);
     border-radius: 50%;
     position: relative;
-    box-shadow: 0 0 60px 20px rgba(249, 115, 22, 0.5);
+    box-shadow: 0 0 80px 20px rgba(249, 115, 22, 0.6);
     animation: synth-sun-pulse 4s ease-in-out infinite;
+    z-index: 1;
 }
 
-.synth-sun::before {
+.synth-sun::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: -50%;
-    width: 200%;
-    height: 50%;
-    background: linear-gradient(0deg,
-            #1f0b2e 0%,
-            transparent 50%);
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0%,
+        transparent 40%,
+        rgba(31, 11, 46, 0.8) 40%,
+        rgba(31, 11, 46, 0.8) 43%
+    );
+    border-radius: 50%;
 }
 
 @keyframes synth-sun-pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.05);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
 }
 
 .synth-grid {
     position: absolute;
-    bottom: -20%;
-    left: 0;
-    width: 100%;
-    height: 80%;
-    background:
-        linear-gradient(90deg, rgba(236, 72, 153, 0.3) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(236, 72, 153, 0.3) 1px, transparent 1px);
-    background-size: 40px 40px;
-    transform: perspective(500px) rotateX(60deg);
-    transform-origin: center bottom;
-    animation: grid-scroll 4s linear infinite;
+    bottom: -150px;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background-image:
+        linear-gradient(rgba(236, 72, 153, 0.8) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(236, 72, 153, 0.8) 2px, transparent 2px);
+    background-size: 60px 60px;
+    transform: perspective(400px) rotateX(75deg);
+    transform-origin: bottom center;
+    animation: grid-scroll 2s linear infinite;
+    mask-image: linear-gradient(to top, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
 }
 
 @keyframes grid-scroll {
-    0% {
-        background-position: 0 0;
-    }
-
-    100% {
-        background-position: 0 40px;
-    }
+    0% { background-position: 0 0; }
+    100% { background-position: 0 60px; }
 }
 
 .synth-title {
-    font-size: 3rem;
+    font-size: 4rem;
     font-weight: 900;
-    color: #fbbf24;
-    letter-spacing: 12px;
+    color: #fcd34d;
+    letter-spacing: 8px;
     text-transform: uppercase;
-    text-shadow: 0 0 20px #f97316, 0 0 40px #ec4899;
-    margin-top: 40px;
-    z-index: 1;
+    text-shadow: 4px 4px 0px #db2777;
+    margin-top: 20px;
+    z-index: 2;
+    font-style: italic;
 }
 
 /* ===== SAKURA SPIRIT INTRO ===== */
@@ -1435,10 +1403,10 @@ textarea {
     height: 100vh;
     position: relative;
     z-index: 1;
-    transition: opacity 1s ease, transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     will-change: opacity;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
 }
 
 body.ready .app-shell {
