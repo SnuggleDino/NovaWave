@@ -1,7 +1,8 @@
 export class MiniPlayer {
-    constructor(api, visualizerInstance) {
+    constructor(api, visualizerInstance, onUpdate) {
         this.api = api;
         this.visualizer = visualizerInstance;
+        this.onUpdate = onUpdate;
         this.isActive = false;
         this.savedSettings = {};
     }
@@ -11,8 +12,11 @@ export class MiniPlayer {
         this.isActive = true;
         document.body.classList.add('is-mini');
         
-        // Resize to Landscape Mini (e.g. 590x180)
-        this.api.setWindowSize(590, 180);
+        // Resize to Landscape Mini (e.g. 600x200)
+        this.api.setWindowSize(600, 200);
+        
+        // Trigger update to refresh emoji/UI
+        if (this.onUpdate) this.onUpdate();
         
         // Adjust Visualizer for Mini Mode
         if (this.visualizer) {

@@ -2091,7 +2091,7 @@ async function loadAppMeta() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    miniPlayer = new MiniPlayer(windowApi, null);
+    miniPlayer = new MiniPlayer(windowApi, null, updateUIForCurrentTrack);
 
     $ = (s) => document.querySelector(s);
     trackTitleEl = $('#track-title-large'); trackArtistEl = $('#track-artist-large'); musicEmojiEl = $('#music-emoji');

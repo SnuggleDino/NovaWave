@@ -3339,7 +3339,7 @@ body.focus-active .focus-mode-btn {
     justify-content: center;
 }
 
-/* ================= MINI-PLAYER MODE (LANDSCAPE) ================= */
+/* ================= MINI-PLAYER MODE (LANDSCAPE FIXED) ================= */
 body.is-mini {
     overflow: hidden !important;
     background: transparent !important;
@@ -3351,17 +3351,24 @@ body.is-mini .app-shell {
     width: 100vw !important;
     height: 100vh !important;
     padding: 0 !important;
-    border-radius: 0 !important;
     background: var(--bg-main) !important;
+    border: 1px solid var(--border-soft) !important;
 }
 
 body.is-mini .app-header {
-    height: 32px !important;
-    min-height: 32px !important;
-    padding: 0 10px !important;
-    border-bottom: none !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    padding: 0 8px !important;
+    border: none !important;
     background: transparent !important;
     justify-content: flex-end !important;
+    z-index: 100 !important;
+}
+
+body.is-mini .header-right {
+    gap: 0 !important;
+    transform: scale(0.85);
+    transform-origin: right center;
 }
 
 body.is-mini .app-title-block,
@@ -3369,42 +3376,27 @@ body.is-mini .lang-switch,
 body.is-mini #user-help-btn,
 body.is-mini #toggle-playlist-btn,
 body.is-mini #toggle-downloader-btn,
-body.is-mini #settings-btn {
-    display: none !important;
-}
-
-body.is-mini .header-right {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0 !important;
-}
-
-body.is-mini .header-item {
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
+body.is-mini #settings-btn,
 body.is-mini .mini-mode-label {
     display: none !important;
 }
 
 body.is-mini .main-grid {
     display: block !important;
-    padding: 0 15px 10px 15px !important;
+    padding: 0 15px 15px 15px !important;
     flex: 1 !important;
     min-height: 0 !important;
 }
 
 body.is-mini .player-column {
     display: grid !important;
-    grid-template-columns: 70px 1fr !important;
-    grid-template-rows: auto auto auto !important;
+    grid-template-columns: 130px 1fr !important;
+    grid-template-rows: 1fr auto auto !important;
     grid-template-areas:
         "cover info"
         "cover controls"
         "cover progress";
-    gap: 2px 15px !important;
+    gap: 0 20px !important;
     width: 100% !important;
     height: 100% !important;
     padding: 0 !important;
@@ -3415,21 +3407,22 @@ body.is-mini .player-column {
 body.is-mini .cover-art-container {
     grid-area: cover !important;
     display: flex !important;
-    width: 70px !important;
-    height: 70px !important;
+    width: 130px !important;
+    height: 130px !important;
+    flex-shrink: 0 !important;
     margin: 0 !important;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important;
-    border-radius: 6px !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5) !important;
+    border-radius: 10px !important;
 }
 
 body.is-mini .cover-art-wrapper {
     width: 100% !important;
     height: 100% !important;
-    border-radius: 6px !important;
+    border-radius: 10px !important;
 }
 
 body.is-mini .music-emoji {
-    font-size: 30px !important;
+    font-size: 60px !important;
 }
 
 body.is-mini .track-info-area {
@@ -3439,11 +3432,15 @@ body.is-mini .track-info-area {
     text-align: left !important;
     align-items: flex-start !important;
     width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
     overflow: hidden !important;
-    display: block !important;
+    z-index: 5 !important;
 }
 
 body.is-mini .track-title-flex-box {
+    width: 100%;
     justify-content: flex-start !important;
     padding: 0 !important;
 }
@@ -3453,57 +3450,77 @@ body.is-mini .title-scroll-wrapper {
 }
 
 body.is-mini .track-title-large {
-    font-size: 0.95rem !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 4px !important;
     padding: 0 !important;
     text-align: left !important;
-    margin-bottom: 0 !important;
+    width: 100% !important;
 }
 
 body.is-mini .track-artist-large {
-    font-size: 0.75rem !important;
+    font-size: 0.9rem !important;
+    opacity: 0.7 !important;
     text-align: left !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
 }
 
 body.is-mini .controls-area {
     grid-area: controls !important;
     justify-content: flex-start !important;
-    gap: 12px !important;
-    padding: 2px 0 !important;
-    margin-top: 2px !important;
+    padding: 5px 0 !important;
+    gap: 15px !important;
+    margin: 0 !important;
+    z-index: 10 !important;
+    width: auto !important;
 }
 
 body.is-mini .control-btn {
-    width: 28px !important;
-    height: 28px !important;
-    background: rgba(255,255,255,0.05) !important;
+    width: 32px !important;
+    height: 32px !important;
+    background: rgba(255,255,255,0.08) !important;
 }
 
 body.is-mini .control-main {
-    width: 34px !important;
-    height: 34px !important;
-    font-size: 0.9rem !important;
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1rem !important;
 }
 
-body.is-mini #shuffle-btn,
-body.is-mini #loop-btn {
-    display: none !important;
+body.is-mini .volume-control-area {
+    display: flex !important;
+    grid-area: controls !important;
+    justify-self: end !important;
+    align-self: center !important;
+    width: auto !important;
+    padding: 4px 10px !important;
+    background: rgba(0,0,0,0.2) !important;
+    border-radius: 20px !important;
+    z-index: 10 !important;
+}
+
+body.is-mini .volume-icon {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+body.is-mini .volume-slider {
+    width: 70px !important;
+    height: 4px !important;
+    margin-left: 8px !important;
 }
 
 body.is-mini .progress-area {
     grid-area: progress !important;
-    margin: 0 !important;
+    margin: 5px 0 0 0 !important;
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     width: 100% !important;
+    z-index: 10 !important;
 }
 
 body.is-mini .progress-bar {
-    height: 4px !important;
+    height: 6px !important;
     background: rgba(255,255,255,0.1) !important;
 }
 
@@ -3514,40 +3531,27 @@ body.is-mini .time-labels {
 body.is-mini .visualizer-container {
     display: block !important;
     position: absolute !important;
-    right: 15px !important;
-    bottom: 15px !important;
-    width: 60px !important;
-    height: 25px !important;
+    top: 40px !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 160px !important;
+    width: auto !important;
+    height: auto !important;
     margin: 0 !important;
-    opacity: 0.5 !important;
+    opacity: 0.3 !important;
     pointer-events: none !important;
+    z-index: 0 !important;
+    mask-image: linear-gradient(to left, black, transparent);
+    -webkit-mask-image: linear-gradient(to left, black, transparent);
 }
 
 body.is-mini .extras-column,
 body.is-mini .app-footer,
-body.is-mini .volume-control-area,
 body.is-mini .active-features-container,
-body.is-mini #active-features-indicator {
-    display: none !important;
-}
-
-body.is-mini .playlist-panel {
-    display: none !important;
-}
-
-body.is-mini .playlist-header-area {
-    display: none !important;
-}
-
-body.is-mini .panel-title {
-    display: none !important;
-}
-
-body.is-mini .playlist-scroll-area {
-    display: none !important;
-}
-
-body.is-mini .track-row {
+body.is-mini #active-features-indicator,
+body.is-mini .playlist-panel,
+body.is-mini #shuffle-btn,
+body.is-mini #loop-btn {
     display: none !important;
 }
 
