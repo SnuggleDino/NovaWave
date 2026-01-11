@@ -816,10 +816,15 @@ function applySleepTime(enabled, showIntro = false) {
 }
 
 function updateUIForCurrentTrack() {
+    let emojiMode = settings.coverMode || 'note';
+    let customEmoji = settings.customCoverEmoji;
+    const isSnuggle = settings.snuggleTimeEnabled || document.body.classList.contains('snuggle-time-active');
+    if (isSnuggle) emojiMode = 'loving_dinos';
+
     if (currentIndex === -1 || !playlist[currentIndex]) {
         if (trackTitleEl) trackTitleEl.textContent = tr('nothingPlaying');
         if (trackArtistEl) trackArtistEl.textContent = '...';
-        if (musicEmojiEl) musicEmojiEl.textContent = '\uD83C\uDFB5'; // Note emoji
+        updateEmoji(emojiMode, customEmoji);
         updateActiveTrackInPlaylist();
         updateTrackTitleScroll();
         return;
@@ -836,13 +841,7 @@ function updateUIForCurrentTrack() {
         if (svg) svg.setAttribute('fill', isFav ? 'currentColor' : 'none');
     }
 
-    const isSnuggle = settings.snuggleTimeEnabled || document.body.classList.contains('snuggle-time-active');
-
-    if (isSnuggle) {
-        updateEmoji('loving_dinos');
-    } else {
-        updateEmoji(settings.coverMode || 'note', settings.customCoverEmoji);
-    }
+    updateEmoji(emojiMode, customEmoji);
     updateActiveTrackInPlaylist();
     updateTrackTitleScroll();
     if (isPlaying && lastNotifiedPath !== track.path) { showNotification(`${tr('nowPlaying')}: ${track.title}`); lastNotifiedPath = track.path; }
