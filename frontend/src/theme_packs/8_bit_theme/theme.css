@@ -1,29 +1,36 @@
 /* ==========================================================================
-   8-BIT THEME PACK - CORE STYLES
+   NOVAWAVE THEME PACK: 8-BIT RETRO
+   Version: 1.0.0
+   Author: NovaWave User
+   Description: A complete retro overhaul featuring neon green visuals, 
+                custom grid layouts for the mini-player, and interactive intros.
    ========================================================================== */
 
-/* --- Theme Variables --- */
+/* --------------------------------------------------------------------------
+   1. CORE VARIABLES & TYPOGRAPHY
+   Defines the neon green color palette and forces the monospace font stack.
+   -------------------------------------------------------------------------- */
 :root[data-theme="8_bit_theme"] {
     --bg-main: #000000;
     --bg-card: #000000;
     --bg-card-hover: #111111;
     --bg-card-light: #050505;
-
+    
     /* Neon Green / Terminal Green */
-    --accent: #39ff14;
+    --accent: #39ff14; 
     --accent-dim: #1a8000;
     --accent-glow: rgba(57, 255, 20, 0.4);
 
     --text-main: #39ff14;
     --text-muted: #1a8000;
-
+    
     --border-main: 4px solid #39ff14;
     --border-thin: 2px solid #39ff14;
 
     --font-stack: "Courier New", Courier, monospace;
 }
 
-/* --- Global Resets & Typography --- */
+/* Force Monospace & Uppercase for Retro Feel */
 :root[data-theme="8_bit_theme"] body {
     background-color: var(--bg-main);
     color: var(--text-main);
@@ -32,14 +39,17 @@
     text-transform: uppercase;
 }
 
-/* Make everything square! */
+/* Force Square Edges Globally */
 :root[data-theme="8_bit_theme"] * {
     border-radius: 0px !important;
 }
 
-/* --- Background Animation (Scrolling Grid) --- */
+/* --------------------------------------------------------------------------
+   2. BACKGROUND ANIMATION
+   Creates a perspective-tilted scrolling grid effect.
+   -------------------------------------------------------------------------- */
 :root[data-theme="8_bit_theme"] .background-animation {
-    background:
+    background: 
         linear-gradient(transparent 95%, rgba(57, 255, 20, 0.2) 95%),
         linear-gradient(90deg, transparent 95%, rgba(57, 255, 20, 0.2) 95%);
     background-size: 40px 40px;
@@ -51,18 +61,16 @@
 }
 
 @keyframes scrollGrid {
-    0% {
-        background-position: 0 0;
-    }
-
-    100% {
-        background-position: 0 40px;
-    }
+    0% { background-position: 0 0; }
+    100% { background-position: 0 40px; }
 }
 
-/* --- UI Components Overrides --- */
+/* --------------------------------------------------------------------------
+   3. UI COMPONENT OVERRIDES
+   Custom styling for Buttons, Inputs, Modals to match the 8-bit aesthetic.
+   -------------------------------------------------------------------------- */
 
-/* Buttons */
+/* Buttons: Black with Green Borders & Shadow */
 :root[data-theme="8_bit_theme"] button {
     background: #000 !important;
     border: var(--border-thin) !important;
@@ -82,24 +90,7 @@
     color: #000 !important;
 }
 
-/* Close Modal Button Animation */
-:root[data-theme="8_bit_theme"] .close-modal-btn {
-    transition: transform 0.3s ease !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 20px !important;
-}
-
-:root[data-theme="8_bit_theme"] .close-modal-btn:hover {
-    transform: rotate(90deg) !important;
-    background: var(--accent) !important;
-    color: #000 !important;
-}
-
-/* Panels / Cards / Modals */
+/* Modals & Panels: Heavy Borders */
 :root[data-theme="8_bit_theme"] .glass-panel,
 :root[data-theme="8_bit_theme"] .settings-modal,
 :root[data-theme="8_bit_theme"] .context-menu,
@@ -110,7 +101,7 @@
     backdrop-filter: none !important;
 }
 
-/* Inputs / Selects */
+/* Inputs */
 :root[data-theme="8_bit_theme"] input,
 :root[data-theme="8_bit_theme"] select {
     background: #000 !important;
@@ -119,7 +110,7 @@
     font-family: var(--font-stack) !important;
 }
 
-/* --- TOGGLE SWITCHES (Square Retro Style) --- */
+/* Toggle Switches: Square Design */
 :root[data-theme="8_bit_theme"] .toggle-switch {
     width: 40px !important;
     height: 20px !important;
@@ -142,26 +133,19 @@
     box-shadow: none !important;
 }
 
-:root[data-theme="8_bit_theme"] input:checked+.slider {
+:root[data-theme="8_bit_theme"] input:checked + .slider {
     background-color: #000 !important;
     border-color: var(--accent) !important;
 }
 
-:root[data-theme="8_bit_theme"] input:checked+.slider:before {
+:root[data-theme="8_bit_theme"] input:checked + .slider:before {
     background-color: var(--accent) !important;
     transform: translateX(20px) !important;
 }
 
-/* --- Player Specifics --- */
-
-/* Main Play Button */
-:root[data-theme="8_bit_theme"] .control-main {
-    width: 80px !important;
-    height: 80px !important;
-    border: var(--border-main) !important;
-    background: var(--accent) !important;
-    color: #000 !important;
-}
+/* --------------------------------------------------------------------------
+   4. PLAYER SPECIFICS (Full Size)
+   -------------------------------------------------------------------------- */
 
 /* Progress Bar */
 :root[data-theme="8_bit_theme"] .progress-bar {
@@ -175,15 +159,8 @@
     box-shadow: inset 0 0 10px var(--bg-main);
 }
 
-/* Cover Art Container */
-:root[data-theme="8_bit_theme"] .cover-art-container {
-    border: var(--border-main) !important;
-    padding: 10px !important;
-    background: #111 !important;
-    box-shadow: 8px 8px 0px var(--accent-dim) !important;
-}
-
-/* Album Cover Image (CSS Replacement) */
+/* Album Cover: CSS Image Replacement */
+/* Replaces the standard Emoji/Image with a fixed retro cover asset */
 .eight-bit-cover {
     width: 100%;
     height: 100%;
@@ -194,12 +171,7 @@
     image-rendering: pixelated;
 }
 
-/* Text Fixes */
-:root[data-theme="8_bit_theme"] .track-title-large {
-    text-shadow: 2px 2px 0px var(--accent-dim);
-}
-
-/* Settings List Overlap Fix */
+/* Settings List Fix: Prevent Text Overlap on Toggles */
 :root[data-theme="8_bit_theme"] .setting-label p {
     font-size: 0.7rem !important;
     max-width: 60%;
@@ -207,6 +179,7 @@
     opacity: 0.8;
 }
 
+/* Settings Preview Image */
 .preview-8bit-img-container {
     width: 100%;
     height: 100%;
@@ -216,7 +189,10 @@
     image-rendering: pixelated;
 }
 
-/* --- MINI PLAYER (GRID LAYOUT) --- */
+/* --------------------------------------------------------------------------
+   5. MINI PLAYER OPTIMIZATION (CLEAN GRID LAYOUT)
+   Implements a strict 2-column Grid with 5 rows to prevent element overlap.
+   -------------------------------------------------------------------------- */
 
 html[data-theme="8_bit_theme"] body.is-mini .app-shell {
     border: 4px solid var(--accent) !important;
@@ -228,139 +204,35 @@ html[data-theme="8_bit_theme"] body.is-mini .main-grid {
     padding: 15px !important;
     display: block !important;
     height: 100% !important;
+    width: 100% !important;
 }
 
+/* Grid Definition: Left Column (Cover) | Right Column (Content Stack) */
 html[data-theme="8_bit_theme"] body.is-mini .player-column {
     display: grid !important;
     width: 100% !important;
     height: 100% !important;
-    grid-template-columns: 100px 1fr auto !important;
-    grid-template-rows: 1fr 35px !important;
-    grid-template-areas:
-        "cover info controls"
-        "cover progress progress" !important;
-    gap: 5px 15px !important;
-    align-items: center !important;
-}
-
-/* 1. Cover Art (Fixed Square) */
-html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
-    grid-area: cover !important;
-    width: 100px !important;
-    height: 100px !important;
-    min-width: 100px !important;
-    aspect-ratio: 1/1 !important;
-    border: 2px solid var(--accent) !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    padding: 5px !important;
-    box-sizing: border-box !important;
-}
-
-html[data-theme="8_bit_theme"] body.is-mini .cover-art-wrapper {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0 !important;
-}
-
-/* 2. Track Info (Flexible width & Scrolling) - CONTAINER FOR VISUALIZER */
-html[data-theme="8_bit_theme"] body.is-mini .track-info-area {
-    grid-area: info !important;
-    text-align: left !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    padding: 0 10px !important;
-    margin: 0 !important;
-    overflow: hidden !important;
-    z-index: 10 !important;
-    position: relative !important;
-}
-
-/* 3. Controls (Clean, no border) */
-html[data-theme="8_bit_theme"] body.is-mini .controls-area {
-    grid-area: controls !important;
-    justify-content: flex-end !important;
-    gap: 8px !important;
-    margin: 0 !important;
-    padding: 5px 10px !important;
-    width: auto !important;
-    z-index: 30 !important;
-    background: transparent !important;
-    border-left: none !important;
-}
-
-html[data-theme="8_bit_theme"] body.is-mini .control-btn {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-width: 2px !important;
-    box-shadow: 2px 2px 0px var(--accent-dim) !important;
-}
-
-html[data-theme="8_bit_theme"] body.is-mini .control-main {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    border-width: 2px !important;
-    box-shadow: 2px 2px 0px var(--accent-dim) !important;
-    padding: 0 !important;
-    /* Ensure padding is reset */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* --- MINI PLAYER REPAIR: SAFE GRID LAYOUT --- */
-
-html[data-theme="8_bit_theme"] body.is-mini .app-shell {
-    border: 4px solid var(--accent) !important;
-    background: #000 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-}
-
-html[data-theme="8_bit_theme"] body.is-mini .main-grid {
-    padding: 10px !important;
-    display: block !important;
-    height: 100% !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-/* THE GRID */
-html[data-theme="8_bit_theme"] body.is-mini .player-column {
-    display: grid !important;
-    width: 100% !important;
-    height: 100% !important;
-    /* Col 1: Cover (130px), Col 2: Rest */
-    grid-template-columns: 130px 1fr !important;
-    /* Rows: Info | Vis | Buttons | Volume | Progress */
-    grid-template-rows: auto 30px auto auto auto !important; 
+    grid-template-columns: 140px 1fr !important;
+    /* Explicit Rows: Info | Visualizer | Controls | Volume | Progress */
+    grid-template-rows: auto 40px auto auto auto !important; 
     grid-template-areas:
         "cover info"
         "cover vis"
         "cover buttons"
         "cover volume"
         "cover progress" !important;
-    gap: 2px 15px !important;
+    gap: 5px 15px !important;
     align-items: center !important;
     padding: 0 !important;
     margin: 0 !important;
 }
 
-/* 1. COVER (Slightly smaller) */
+/* A. Left Column: Fixed Cover Art */
 html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
     grid-area: cover !important;
-    width: 130px !important;
-    height: 130px !important;
-    min-width: 130px !important;
+    width: 140px !important;
+    height: 140px !important;
+    min-width: 140px !important;
     aspect-ratio: 1/1 !important;
     border: 4px solid var(--accent) !important;
     margin: 0 !important;
@@ -368,13 +240,8 @@ html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
     background: #000 !important;
     align-self: center !important;
 }
-html[data-theme="8_bit_theme"] body.is-mini .cover-art-wrapper {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0 !important;
-}
 
-/* 2. INFO (Row 1) */
+/* B. Right Column Row 1: Track Info & Marquee Title */
 html[data-theme="8_bit_theme"] body.is-mini .track-info-area {
     grid-area: info !important;
     width: 100% !important;
@@ -389,70 +256,39 @@ html[data-theme="8_bit_theme"] body.is-mini .track-info-area {
     position: relative !important;
 }
 
-html[data-theme="8_bit_theme"] body.is-mini .track-title-flex-box {
-    display: flex !important;
-    align-items: center !important;
-    width: 100% !important;
-    gap: 10px !important;
-}
-
-html[data-theme="8_bit_theme"] body.is-mini .title-scroll-wrapper {
-    flex: 1 !important;
-    min-width: 0 !important;
-    overflow: hidden !important;
-    white-space: nowrap !important;
-    position: relative !important;
-}
-
 html[data-theme="8_bit_theme"] body.is-mini .track-title-large {
     font-size: 1.2rem !important;
     color: var(--accent) !important;
-    display: inline-block !important;
-    padding-right: 50px !important;
+    display: inline-block !important; 
+    padding-right: 50px !important; 
     white-space: nowrap !important;
-    text-overflow: clip !important;
-    animation: none;
+    text-overflow: clip !important; /* Required for Marquee */
+    animation: none; 
 }
 
-/* Marquee Animation */
+/* Scrolling Animation for Long Titles */
 html[data-theme="8_bit_theme"] body.is-mini .title-scroll-wrapper.scroll-active .track-title-large {
     animation: marquee8bit 10s linear infinite !important;
 }
 
 @keyframes marquee8bit {
-    from {
-        transform: translateX(0);
-    }
-
-    to {
-        transform: translateX(-50%);
-    }
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
 }
 
-html[data-theme="8_bit_theme"] body.is-mini #main-favorite-btn {
-    position: static !important;
-    margin: 0 !important;
-}
-
-html[data-theme="8_bit_theme"] body.is-mini .track-artist-large {
-    display: none !important;
-}
-
-/* 3. VISUALIZER (Row 2) */
+/* C. Right Column Row 2: Visualizer Strip */
 html[data-theme="8_bit_theme"] body.is-mini .visualizer-container {
     grid-area: vis !important;
     display: block !important;
     position: relative !important;
     width: 100% !important;
-    height: 100% !important;
+    height: 100% !important; 
     background: #111 !important;
     border: 1px solid var(--accent-dim) !important;
     z-index: 1 !important;
     opacity: 1 !important;
     pointer-events: none !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
+    top: auto !important; left: auto !important; right: auto !important;
 }
 
 html[data-theme="8_bit_theme"] body.is-mini canvas#visualizer-canvas {
@@ -460,13 +296,11 @@ html[data-theme="8_bit_theme"] body.is-mini canvas#visualizer-canvas {
     height: 100% !important;
 }
 
-/* 4. CONTROLS (Row 3: BUTTONS) */
+/* D. Right Column Row 3: Control Buttons */
 html[data-theme="8_bit_theme"] body.is-mini .controls-area {
     grid-area: buttons !important;
-    /* Mapped to 'buttons' area */
     display: flex !important;
-    flex-direction: row !important;
-    /* FORCE ROW */
+    flex-direction: row !important; /* Force Horizontal Layout */
     flex-wrap: nowrap !important;
     align-items: center !important;
     justify-content: flex-start !important;
@@ -495,18 +329,11 @@ html[data-theme="8_bit_theme"] body.is-mini .control-main {
     justify-content: center !important;
 }
 
-html[data-theme="8_bit_theme"] body.is-mini .control-btn:active,
-html[data-theme="8_bit_theme"] body.is-mini .control-main:active {
-    transform: translate(2px, 2px) !important;
-    box-shadow: none !important;
-}
-
-/* 5. VOLUME (Row 4: SLIDER) */
+/* E. Right Column Row 4: Volume Slider (Wide) */
 html[data-theme="8_bit_theme"] body.is-mini .volume-control-area {
     grid-area: volume !important;
-    /* Mapped to 'volume' area */
     display: flex !important;
-    width: 100% !important;
+    width: 100% !important; 
     justify-content: flex-start !important;
     align-items: center !important;
     position: relative !important;
@@ -521,24 +348,19 @@ html[data-theme="8_bit_theme"] body.is-mini .volume-slider {
     background: #111 !important;
     border: 1px solid var(--accent) !important;
     cursor: pointer !important;
-    appearance: none !important;
-    -webkit-appearance: none !important;
 }
 
-/* Custom Thumb */
 html[data-theme="8_bit_theme"] body.is-mini .volume-slider::-webkit-slider-thumb {
     -webkit-appearance: none !important;
-    appearance: none !important;
     width: 16px !important;
     height: 16px !important;
     background: var(--accent) !important;
     border: 2px solid #000 !important;
     cursor: pointer !important;
-    box-shadow: 2px 2px 0 var(--accent-dim) !important;
     margin-top: -5px !important;
 }
 
-/* 6. PROGRESS (Row 5) */
+/* F. Right Column Row 5: Progress Bar */
 html[data-theme="8_bit_theme"] body.is-mini .progress-area {
     grid-area: progress !important;
     width: 100% !important;
@@ -555,18 +377,10 @@ html[data-theme="8_bit_theme"] body.is-mini .progress-bar {
     width: 100% !important;
 }
 
-html[data-theme="8_bit_theme"] body.is-mini .progress-fill {
-    background: var(--accent) !important;
-}
-
-/* Hide unused */
-html[data-theme="8_bit_theme"] body.is-mini .time-labels,
-html[data-theme="8_bit_theme"] body.is-mini .volume-icon {
-    display: none !important;
-}
-
-
-/* --- INTRO OVERLAY --- */
+/* --------------------------------------------------------------------------
+   6. INTRO OVERLAY
+   Styles for the "Press Start" animation.
+   -------------------------------------------------------------------------- */
 .retro-intro-overlay {
     position: fixed !important;
     top: 0;
@@ -622,25 +436,11 @@ html[data-theme="8_bit_theme"] body.is-mini .volume-icon {
 }
 
 @keyframes floatLogo {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-20px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
 }
 
 @keyframes blink {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
