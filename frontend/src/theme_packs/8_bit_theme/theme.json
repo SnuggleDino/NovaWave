@@ -1,0 +1,11 @@
+{
+  "name": "8-Bit",
+  "id": "8_bit_theme",
+  "version": "1.0.0",
+  "author": "NovaWave User",
+  "description": "A retro-style 8-bit theme with pixel art visuals and custom sounds.",
+  "css": "theme.css",
+  "js": "theme.js",
+  "preview_image": "assets/preview.png",
+  "target_version": ">=1.0.0"
+}

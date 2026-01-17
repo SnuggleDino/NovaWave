@@ -8,6 +8,7 @@ import { IntroManager } from './intro.js';
 import { AudioExtras } from './audio_extras.js';
 import { DynamicIsland } from './dynamic_island.js';
 import { MiniPlayer } from './mini_player.js';
+import eightBitTheme from './theme_packs/8_bit_theme/theme.js';
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
@@ -340,6 +341,28 @@ function playNext() {
 function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else playTrack(currentIndex - 1 < 0 ? playlist.length - 1 : currentIndex - 1); }
 
 // --- UI & DOM MANIPULATION ---
+function deactivateAllThemePacks(excludeKey) {
+    const packs = [
+        { key: 'snuggleTimeEnabled', toggleId: 'toggle-snuggle-time', func: applySnuggleTime },
+        { key: 'sleepTimeEnabled', toggleId: 'toggle-sleeptime', func: applySleepTime },
+        { key: 'cyberpunkEnabled', toggleId: 'toggle-cyberpunk', func: applyCyberpunk },
+        { key: 'sunsetEnabled', toggleId: 'toggle-sunset', func: applySunsetDrive },
+        { key: 'sakuraEnabled', toggleId: 'toggle-sakura', func: applySakuraSpirit },
+        { key: 'novaWave95Enabled', toggleId: 'toggle-win95', func: applyNovaWave95 },
+        { key: 'eightBitEnabled', toggleId: 'toggle-8bit', func: applyEightBitTheme }
+    ];
+
+    packs.forEach(pack => {
+        if (pack.key !== excludeKey && settings[pack.key]) {
+            saveSetting(pack.key, false);
+            const toggle = document.getElementById(pack.toggleId);
+            if (toggle) toggle.checked = false;
+            // Disable without intro
+            pack.func(false, false);
+        }
+    });
+}
+
 function resetToDefaultTheme() {
     document.body.classList.remove(
         'snuggle-time-active', 'sleeptime-active', 'cyberpunk-active',
@@ -391,23 +414,7 @@ async function applyCyberpunk(enabled, showIntro = false) {
     const accentToggle = document.getElementById('toggle-use-custom-color');
 
     if (enabled) {
-        // Exclusive with Snuggle Time
-        if (settings.snuggleTimeEnabled) {
-            saveSetting('snuggleTimeEnabled', false);
-            const stToggle = document.getElementById('toggle-snuggle-time');
-            if (stToggle) stToggle.checked = false;
-            applySnuggleTime(false);
-        }
-        // Exclusive with Sleep Time
-        if (settings.sleepTimeEnabled) {
-            saveSetting('sleepTimeEnabled', false);
-            const slToggle = document.getElementById('toggle-sleeptime');
-            if (slToggle) slToggle.checked = false;
-            applySleepTime(false);
-        }
-        // Exclusive with Sunset & Sakura
-        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
-        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
+        deactivateAllThemePacks('cyberpunkEnabled');
 
         // Exclusive with Performance Mode
         if (performanceMode) {
@@ -464,10 +471,7 @@ async function applySunsetDrive(enabled, showIntro = false) {
     const accentToggle = document.getElementById('toggle-use-custom-color');
 
     if (enabled) {
-        if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
-        if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
-        if (settings.cyberpunkEnabled) { saveSetting('cyberpunkEnabled', false); document.getElementById('toggle-cyberpunk').checked = false; applyCyberpunk(false); }
-        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
+        deactivateAllThemePacks('sunsetEnabled');
 
         if (performanceMode) setPerformanceMode(false, true);
 
@@ -523,11 +527,7 @@ async function applySakuraSpirit(enabled, showIntro = false) {
     const accentToggle = document.getElementById('toggle-use-custom-color');
 
     if (enabled) {
-        if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
-        if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
-        if (settings.cyberpunkEnabled) { saveSetting('cyberpunkEnabled', false); document.getElementById('toggle-cyberpunk').checked = false; applyCyberpunk(false); }
-        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
-        if (settings.novaWave95Enabled) { saveSetting('novaWave95Enabled', false); document.getElementById('toggle-win95').checked = false; applyNovaWave95(false); }
+        deactivateAllThemePacks('sakuraEnabled');
 
         if (performanceMode) setPerformanceMode(false, true);
 
@@ -610,11 +610,7 @@ async function applyNovaWave95(enabled, showIntro = false) {
     const accentToggle = document.getElementById('toggle-use-custom-color');
 
     if (enabled) {
-        if (settings.snuggleTimeEnabled) { saveSetting('snuggleTimeEnabled', false); document.getElementById('toggle-snuggle-time').checked = false; applySnuggleTime(false); }
-        if (settings.sleepTimeEnabled) { saveSetting('sleepTimeEnabled', false); document.getElementById('toggle-sleeptime').checked = false; applySleepTime(false); }
-        if (settings.cyberpunkEnabled) { saveSetting('cyberpunkEnabled', false); document.getElementById('toggle-cyberpunk').checked = false; applyCyberpunk(false); }
-        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
-        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
+        deactivateAllThemePacks('novaWave95Enabled');
 
         if (performanceMode) setPerformanceMode(false, true);
 
@@ -657,6 +653,49 @@ async function applyNovaWave95(enabled, showIntro = false) {
     }
 }
 
+async function applyEightBitTheme(enabled, showIntro = false) {
+    document.body.classList.toggle('8-bit-active', enabled);
+    const accentToggle = document.getElementById('toggle-use-custom-color');
+
+    if (enabled) {
+        deactivateAllThemePacks('eightBitEnabled');
+
+        if (performanceMode) setPerformanceMode(false, true);
+
+        // Use the module
+        eightBitTheme.onEnable({ visualizer, ui: { updateEmoji } });
+
+        // Update UI Controls
+        if (themeSelect) themeSelect.disabled = true;
+        if (visualizerStyleSelect) {
+            visualizerStyleSelect.value = 'retro';
+            visualizerStyleSelect.disabled = true;
+        }
+        if (animationSelect) {
+            animationSelect.value = 'off';
+            animationSelect.disabled = true; // 8-bit usually static or specific anim
+        }
+        updateEmoji('eight_bit');
+        if (emojiSelect) {
+             emojiSelect.value = 'eight_bit';
+             emojiSelect.disabled = true;
+        }
+
+        if (accentToggle) {
+            accentToggle.checked = false;
+            accentToggle.disabled = true;
+            if (accentColorContainer) accentColorContainer.classList.add('hidden');
+            document.documentElement.style.removeProperty('--accent');
+        }
+        updateCachedColor();
+    } else {
+        eightBitTheme.onDisable({});
+        resetToDefaultTheme();
+    }
+}
+
+
+
 let sakuraInterval;
 function createSakuraPetals() {
     const container = document.getElementById('sakura-falling-container');
@@ -687,23 +726,7 @@ function applySleepTime(enabled, showIntro = false) {
     const accentToggle = document.getElementById('toggle-use-custom-color');
 
     if (enabled) {
-        // Exclusive with Snuggle Time
-        if (settings.snuggleTimeEnabled) {
-            saveSetting('snuggleTimeEnabled', false);
-            const stToggle = document.getElementById('toggle-snuggle-time');
-            if (stToggle) stToggle.checked = false;
-            applySnuggleTime(false);
-        }
-        // Exclusive with Cyberpunk
-        if (settings.cyberpunkEnabled) {
-            saveSetting('cyberpunkEnabled', false);
-            const cyToggle = document.getElementById('toggle-cyberpunk');
-            if (cyToggle) cyToggle.checked = false;
-            applyCyberpunk(false);
-        }
-        // Exclusive with Sunset & Sakura
-        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
-        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
+        deactivateAllThemePacks('sleepTimeEnabled');
 
         // Exclusive with Performance Mode
         if (performanceMode) {
@@ -909,6 +932,7 @@ function updateEmoji(emojiType, customEmoji) {
     const isSleep = settings.sleepTimeEnabled || document.body.classList.contains('sleeptime-active');
     const isSunset = settings.sunsetEnabled || document.body.classList.contains('sunset-active');
     const isSakura = settings.sakuraEnabled || document.body.classList.contains('sakura-active');
+    const isEightBit = settings.eightBitEnabled || document.body.classList.contains('8-bit-active');
 
     if (isSnuggle) {
         emojiType = 'loving_dinos';
@@ -918,6 +942,8 @@ function updateEmoji(emojiType, customEmoji) {
         emojiType = 'sunset_sun';
     } else if (isSakura) {
         emojiType = 'sakura_flower';
+    } else if (isEightBit) {
+        emojiType = 'eight_bit';
     }
 
     let emoji = '🎵';
@@ -935,6 +961,10 @@ function updateEmoji(emojiType, customEmoji) {
     else if (emojiType === 'sakura_flower') {
         emoji = '<div class="sakura-cover">🌸</div>';
         isHtml = true;
+    }
+    else if (emojiType === 'eight_bit') {
+        emoji = '/src/theme_packs/8_bit_theme/assets/intro_icon.png';
+        isImage = true;
     }
     else if (emojiType === 'loving_dinos') {
         emoji = lovingDinosImg;
@@ -1018,23 +1048,7 @@ function applySnuggleTime(enabled, showIntro = false) {
     const accentToggle = document.getElementById('toggle-use-custom-color');
 
     if (enabled) {
-        // Exclusive with Sleep Time
-        if (settings.sleepTimeEnabled) {
-            saveSetting('sleepTimeEnabled', false);
-            const slToggle = document.getElementById('toggle-sleeptime');
-            if (slToggle) slToggle.checked = false;
-            applySleepTime(false);
-        }
-        // Exclusive with Cyberpunk
-        if (settings.cyberpunkEnabled) {
-            saveSetting('cyberpunkEnabled', false);
-            const cyToggle = document.getElementById('toggle-cyberpunk');
-            if (cyToggle) cyToggle.checked = false;
-            applyCyberpunk(false);
-        }
-        // Exclusive with Sunset & Sakura
-        if (settings.sunsetEnabled) { saveSetting('sunsetEnabled', false); document.getElementById('toggle-sunset').checked = false; applySunsetDrive(false); }
-        if (settings.sakuraEnabled) { saveSetting('sakuraEnabled', false); document.getElementById('toggle-sakura').checked = false; applySakuraSpirit(false); }
+        deactivateAllThemePacks('snuggleTimeEnabled');
 
         // Automatically disable Performance Mode if Snuggle Pack is turned on
         if (performanceMode) {
@@ -1729,6 +1743,13 @@ function setupEventListeners() {
         const enabled = e.target.checked;
         saveSetting('novaWave95Enabled', enabled);
         applyNovaWave95(enabled, true);
+    });
+
+    const toggle8Bit = document.getElementById('toggle-8bit');
+    bind(toggle8Bit, 'change', (e) => {
+        const enabled = e.target.checked;
+        saveSetting('eightBitEnabled', enabled);
+        applyEightBitTheme(enabled, true);
     });
 
     const fpsIn = document.getElementById('fps-input');
