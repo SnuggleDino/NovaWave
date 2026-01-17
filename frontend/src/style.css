@@ -216,58 +216,6 @@ body.is-mini #toggle-playlist-btn {
     background-color: #000;
 }
 
-:root[data-theme="novawave95"] {
-    --bg-main: #008080;
-    --bg-card: #c0c0c0;
-    --bg-card-light: #d4d0c8;
-    --accent: #000080;
-    --accent-soft: rgba(0, 0, 128, 0.2);
-    --text-main: #000000;
-    --text-muted: #555555;
-    --border-soft: #808080;
-}
-
-:root[data-theme="novawave95"] body {
-    background: #008080;
-}
-
-:root[data-theme="novawave95"] .glass-panel,
-:root[data-theme="novawave95"] .intro-card {
-    background: #c0c0c0;
-    border-top: 2px solid #fff;
-    border-left: 2px solid #fff;
-    border-right: 2px solid #000;
-    border-bottom: 2px solid #000;
-    border-radius: 0;
-    box-shadow: 2px 2px 0px #000;
-}
-
-:root[data-theme="novawave95"] .control-btn {
-    border-radius: 0;
-    border-top: 2px solid #fff;
-    border-left: 2px solid #fff;
-    border-right: 2px solid #000;
-    border-bottom: 2px solid #000;
-    background: #c0c0c0;
-    color: #000;
-}
-
-:root[data-theme="novawave95"] .app-header {
-    background: #000080;
-    border-bottom: 2px solid #fff;
-}
-
-:root[data-theme="novawave95"] .app-title-text h1,
-:root[data-theme="novawave95"] .app-title-text p {
-    color: #fff;
-}
-
-:root[data-theme="novawave95"] .lang-btn,
-:root[data-theme="novawave95"] .mini-mode-label,
-:root[data-theme="novawave95"] .header-item svg {
-    color: #000000 !important;
-}
-
 .active-features-container {
     position: absolute;
     top: -15px;
@@ -811,273 +759,7 @@ textarea {
 }
 
 /* ============================================== */
-/* NOVAWAVE 95 INTRO - Windows 95 Style           */
-/* ============================================== */
-.splash-overlay.type-95 {
-    background: #008080;
-    font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, sans-serif;
-}
-
-.win95-window {
-    background: #c0c0c0;
-    border: 2px solid;
-    border-color: #ffffff #808080 #808080 #ffffff;
-    box-shadow:
-        inset 1px 1px 0 #dfdfdf,
-        inset -1px -1px 0 #0a0a0a,
-        4px 4px 10px rgba(0, 0, 0, 0.5);
-    padding: 2px;
-    min-width: 380px;
-    animation: win95-appear 0.3s ease-out;
-}
-
-@keyframes win95-appear {
-    0% {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.win95-title-bar {
-    background: linear-gradient(90deg, #000080, #1084d0);
-    padding: 3px 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2px;
-}
-
-.win95-title-text {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 12px;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
-}
-
-.win95-mini-icon {
-    width: 16px;
-    height: 16px;
-}
-
-.win95-title-controls {
-    display: flex;
-    gap: 2px;
-}
-
-.win95-btn-small {
-    width: 16px;
-    height: 14px;
-    background: #c0c0c0;
-    border: 1px solid;
-    border-color: #ffffff #808080 #808080 #ffffff;
-    font-size: 9px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000000;
-    padding: 0;
-    line-height: 1;
-}
-
-.win95-btn-small:active {
-    border-color: #808080 #ffffff #ffffff #808080;
-}
-
-.win95-body {
-    background: #c0c0c0;
-    padding: 20px;
-}
-
-.win95-upper {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.win95-main-logo {
-    width: 64px;
-    height: 64px;
-    flex-shrink: 0;
-}
-
-.win95-text-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.win95-text-info strong {
-    font-size: 14px;
-    color: #000000;
-    margin-bottom: 4px;
-}
-
-.win95-text-info p {
-    font-size: 11px;
-    color: #000000;
-    margin: 0;
-    line-height: 1.4;
-}
-
-.win95-progress-section {
-    border-top: 1px solid #808080;
-    padding-top: 15px;
-    margin-top: 10px;
-}
-
-.win95-status {
-    font-size: 11px;
-    color: #000000;
-    margin: 0 0 8px 0;
-}
-
-.win95-progress-container {
-    background: #ffffff;
-    border: 1px solid;
-    border-color: #808080 #ffffff #ffffff #808080;
-    padding: 2px;
-    height: 20px;
-}
-
-.win95-progress-fill {
-    height: 100%;
-    display: flex;
-    gap: 2px;
-    animation: win95-progress 3s steps(25) forwards;
-}
-
-.win95-progress-fill span {
-    width: 12px;
-    height: 100%;
-    background: #000080;
-    opacity: 0;
-    animation: win95-block 0.1s steps(1) forwards;
-}
-
-.win95-progress-fill span:nth-child(1) {
-    animation-delay: 0.12s;
-}
-
-.win95-progress-fill span:nth-child(2) {
-    animation-delay: 0.24s;
-}
-
-.win95-progress-fill span:nth-child(3) {
-    animation-delay: 0.36s;
-}
-
-.win95-progress-fill span:nth-child(4) {
-    animation-delay: 0.48s;
-}
-
-.win95-progress-fill span:nth-child(5) {
-    animation-delay: 0.60s;
-}
-
-.win95-progress-fill span:nth-child(6) {
-    animation-delay: 0.72s;
-}
-
-.win95-progress-fill span:nth-child(7) {
-    animation-delay: 0.84s;
-}
-
-.win95-progress-fill span:nth-child(8) {
-    animation-delay: 0.96s;
-}
-
-.win95-progress-fill span:nth-child(9) {
-    animation-delay: 1.08s;
-}
-
-.win95-progress-fill span:nth-child(10) {
-    animation-delay: 1.20s;
-}
-
-.win95-progress-fill span:nth-child(11) {
-    animation-delay: 1.32s;
-}
-
-.win95-progress-fill span:nth-child(12) {
-    animation-delay: 1.44s;
-}
-
-.win95-progress-fill span:nth-child(13) {
-    animation-delay: 1.56s;
-}
-
-.win95-progress-fill span:nth-child(14) {
-    animation-delay: 1.68s;
-}
-
-.win95-progress-fill span:nth-child(15) {
-    animation-delay: 1.80s;
-}
-
-.win95-progress-fill span:nth-child(16) {
-    animation-delay: 1.92s;
-}
-
-.win95-progress-fill span:nth-child(17) {
-    animation-delay: 2.04s;
-}
-
-.win95-progress-fill span:nth-child(18) {
-    animation-delay: 2.16s;
-}
-
-.win95-progress-fill span:nth-child(19) {
-    animation-delay: 2.28s;
-}
-
-.win95-progress-fill span:nth-child(20) {
-    animation-delay: 2.40s;
-}
-
-.win95-progress-fill span:nth-child(21) {
-    animation-delay: 2.52s;
-}
-
-.win95-progress-fill span:nth-child(22) {
-    animation-delay: 2.64s;
-}
-
-.win95-progress-fill span:nth-child(23) {
-    animation-delay: 2.76s;
-}
-
-.win95-progress-fill span:nth-child(24) {
-    animation-delay: 2.88s;
-}
-
-.win95-progress-fill span:nth-child(25) {
-    animation-delay: 3.00s;
-}
-
-@keyframes win95-block {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
-/* ============================================== */
 /* THEME PACK INTROS                              */
-/* ============================================== */
 
 /* Base overlay styles for all theme intros */
 .sleep-intro-overlay,
@@ -1992,8 +1674,7 @@ body.sunset-active .music-emoji img {
 .snuggle-intro-overlay,
 .cyber-intro-overlay,
 .sunset-intro-overlay,
-.sakura-intro-overlay,
-.win95-intro-overlay {
+.sakura-intro-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -2012,8 +1693,7 @@ body.sunset-active .music-emoji img {
 .snuggle-intro-overlay.visible,
 .cyber-intro-overlay.visible,
 .sunset-intro-overlay.visible,
-.sakura-intro-overlay.visible,
-.win95-intro-overlay.visible {
+.sakura-intro-overlay.visible {
     display: flex;
     opacity: 1;
 }
@@ -2037,10 +1717,6 @@ body.sunset-active .music-emoji img {
 
 .sakura-intro-overlay {
     background: linear-gradient(to bottom, #ffb7c5 0%, #ffd6e0 50%, #fff0f3 100%);
-}
-
-.win95-intro-overlay {
-    background: #008080;
 }
 
 
@@ -4136,35 +3812,6 @@ body.theme-sakura .control-btn,
 body.theme-sakura .nav-btn {
     background: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(255, 182, 193, 0.5);
-}
-
-/* NovaWave 95 */
-body.theme-win95 {
-    --bg-main: #008080;
-    --bg-card: #c0c0c0;
-    --bg-card-hover: #d4d0c8;
-    --text-main: #000000;
-    --text-muted: #555555;
-    --accent: #000080;
-    --border-soft: #808080;
-    font-family: 'Tahoma', 'Segoe UI', sans-serif;
-}
-
-body.theme-win95 .glass-panel,
-body.theme-win95 .intro-card,
-body.theme-win95 .track-row:hover {
-    background: #c0c0c0;
-    border-top: 2px solid #fff;
-    border-left: 2px solid #fff;
-    border-right: 2px solid #808080;
-    border-bottom: 2px solid #808080;
-    box-shadow: none;
-    border-radius: 0;
-}
-
-body.theme-win95 .app-header {
-    background: #c0c0c0;
-    border-bottom: 2px solid #808080;
 }
 
 /* Sleep Time */

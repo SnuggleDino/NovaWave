@@ -1,4 +1,4 @@
-import { WaterdropIntro, NovaWave95Intro, EightBitIntro } from './introEngine.js';
+import { WaterdropIntro, EightBitIntro } from './introEngine.js';
 
 export class IntroManager {
     constructor(settings) {
@@ -6,7 +6,6 @@ export class IntroManager {
         this.activeIntro = null;
         this.intros = {
             'waterdrop': WaterdropIntro,
-            'novawave95': NovaWave95Intro,
             '8bit': EightBitIntro
         };
     }

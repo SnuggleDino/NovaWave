@@ -1,0 +1,11 @@
+{
+  "name": "Sleep Time",
+  "id": "sleep_time",
+  "version": "1.0",
+  "author": "NovaWave",
+  "description": "Calm colors and moon vibes.",
+  "css": "theme.css",
+  "js": "theme.js",
+  "preview_emoji": "🌙",
+  "preview_bg": "#1a1a2e"
+}

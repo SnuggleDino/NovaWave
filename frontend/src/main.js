@@ -8,7 +8,7 @@ import { IntroManager } from './intro.js';
 import { AudioExtras } from './audio_extras.js';
 import { DynamicIsland } from './dynamic_island.js';
 import { MiniPlayer } from './mini_player.js';
-import eightBitTheme from './theme_packs/8_bit_theme/theme.js';
+import { ThemePackListener } from './theme_packs/theme_pack_listener.js';
 
 // --- SHIM FOR COMPATIBILITY ---
 const windowApi = {
@@ -161,7 +161,11 @@ function saveSetting(key, value) {
 
 function updateCachedColor() {
     cachedAccentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38bdf8';
-    if (visualizer) {
+    
+    // Only update visualizer color from global CSS if NO theme pack is active.
+    // Theme packs handle their own specific visualizer colors.
+    const activePack = localStorage.getItem('activeThemePack');
+    if (visualizer && (!activePack || activePack === '')) {
         visualizer.updateSettings({ accentColor: cachedAccentColor });
     }
 }
@@ -284,12 +288,8 @@ function setPerformanceMode(enabled, silent = false) {
     if (toggle) toggle.checked = enabled;
 
     if (enabled) {
-        if (settings.snuggleTimeEnabled) {
-            saveSetting('snuggleTimeEnabled', false);
-            const stToggle = document.getElementById('toggle-snuggle-time');
-            if (stToggle) stToggle.checked = false;
-            applySnuggleTime(false);
-        }
+        // Deactivate any active theme pack for performance
+        ThemePackListener.deactivateActivePack();
 
         if (visualizer) visualizer.stop();
         applyAnimationSetting('off');
@@ -343,13 +343,6 @@ function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else pla
 // --- UI & DOM MANIPULATION ---
 function deactivateAllThemePacks(excludeKey) {
     const packs = [
-        { key: 'snuggleTimeEnabled', toggleId: 'toggle-snuggle-time', func: applySnuggleTime },
-        { key: 'sleepTimeEnabled', toggleId: 'toggle-sleeptime', func: applySleepTime },
-        { key: 'cyberpunkEnabled', toggleId: 'toggle-cyberpunk', func: applyCyberpunk },
-        { key: 'sunsetEnabled', toggleId: 'toggle-sunset', func: applySunsetDrive },
-        { key: 'sakuraEnabled', toggleId: 'toggle-sakura', func: applySakuraSpirit },
-        { key: 'novaWave95Enabled', toggleId: 'toggle-win95', func: applyNovaWave95 },
-        { key: 'eightBitEnabled', toggleId: 'toggle-8bit', func: applyEightBitTheme }
     ];
 
     packs.forEach(pack => {
@@ -357,8 +350,6 @@ function deactivateAllThemePacks(excludeKey) {
             saveSetting(pack.key, false);
             const toggle = document.getElementById(pack.toggleId);
             if (toggle) toggle.checked = false;
-            // Disable without intro
-            pack.func(false, false);
         }
     });
 }
@@ -366,7 +357,7 @@ function deactivateAllThemePacks(excludeKey) {
 function resetToDefaultTheme() {
     document.body.classList.remove(
         'snuggle-time-active', 'sleeptime-active', 'cyberpunk-active',
-        'sunset-active', 'sakura-active', 'win95-active'
+        'sunset-active', 'sakura-active'
     );
 
     document.documentElement.style.removeProperty('--accent');
@@ -407,375 +398,6 @@ function resetToDefaultTheme() {
         updateCachedColor();
         renderPlaylist();
     }, 100);
-}
-
-async function applyCyberpunk(enabled, showIntro = false) {
-    document.body.classList.toggle('cyberpunk-active', enabled);
-    const accentToggle = document.getElementById('toggle-use-custom-color');
-
-    if (enabled) {
-        deactivateAllThemePacks('cyberpunkEnabled');
-
-        // Exclusive with Performance Mode
-        if (performanceMode) {
-            setPerformanceMode(false, true);
-        }
-
-        if (showIntro) {
-            const intro = document.getElementById('cyberpunk-intro');
-            if (intro) {
-                intro.classList.add('visible');
-                setTimeout(() => intro.classList.remove('visible'), 2500);
-            }
-        }
-
-        document.documentElement.setAttribute('data-theme', 'cyberpunk');
-        visualizerEnabled = true;
-        if (visualizerToggle) visualizerToggle.checked = true;
-        saveSetting('visualizerEnabled', true);
-        if (isPlaying) startVisualizer();
-
-        currentVisualizerStyle = 'glitch';
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = 'glitch';
-            visualizerStyleSelect.disabled = true;
-        }
-        applyAnimationSetting('off');
-        if (animationSelect) {
-            animationSelect.value = 'off';
-            animationSelect.disabled = true;
-        }
-        updateEmoji('cyber');
-        if (emojiSelect) {
-            emojiSelect.value = 'cyber';
-            emojiSelect.disabled = true;
-        }
-        if (themeSelect) themeSelect.disabled = true;
-
-        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
-
-        if (accentToggle) {
-            accentToggle.checked = false;
-            accentToggle.disabled = true;
-            if (accentColorContainer) accentColorContainer.classList.add('hidden');
-            document.documentElement.style.removeProperty('--accent');
-        }
-        updateCachedColor();
-    } else {
-        resetToDefaultTheme();
-    }
-}
-
-async function applySunsetDrive(enabled, showIntro = false) {
-    document.body.classList.toggle('sunset-active', enabled);
-    const accentToggle = document.getElementById('toggle-use-custom-color');
-
-    if (enabled) {
-        deactivateAllThemePacks('sunsetEnabled');
-
-        if (performanceMode) setPerformanceMode(false, true);
-
-        if (showIntro) {
-            const intro = document.getElementById('sunset-intro');
-            if (intro) {
-                intro.classList.add('visible');
-                setTimeout(() => intro.classList.remove('visible'), 3500);
-            }
-        }
-
-        document.documentElement.setAttribute('data-theme', 'sunset');
-        visualizerEnabled = true;
-        if (visualizerToggle) visualizerToggle.checked = true;
-        saveSetting('visualizerEnabled', true);
-        if (isPlaying) startVisualizer();
-
-        currentVisualizerStyle = 'retro';
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = 'retro';
-            visualizerStyleSelect.disabled = true;
-        }
-
-        applyAnimationSetting('flow');
-        if (animationSelect) {
-            animationSelect.value = 'flow';
-            animationSelect.disabled = true;
-        }
-
-        updateEmoji('sunset_sun');
-        if (emojiSelect) {
-            emojiSelect.value = 'sunset_sun';
-            emojiSelect.disabled = true;
-        }
-        if (themeSelect) themeSelect.disabled = true;
-
-        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
-
-        if (accentToggle) {
-            accentToggle.checked = false;
-            accentToggle.disabled = true;
-            if (accentColorContainer) accentColorContainer.classList.add('hidden');
-            document.documentElement.style.removeProperty('--accent');
-        }
-        updateCachedColor();
-    } else {
-        resetToDefaultTheme();
-    }
-}
-
-async function applySakuraSpirit(enabled, showIntro = false) {
-    document.body.classList.toggle('sakura-active', enabled);
-    const accentToggle = document.getElementById('toggle-use-custom-color');
-
-    if (enabled) {
-        deactivateAllThemePacks('sakuraEnabled');
-
-        if (performanceMode) setPerformanceMode(false, true);
-
-        if (showIntro) {
-            const intro = document.getElementById('sakura-intro');
-            if (intro) {
-                intro.classList.add('visible');
-                createSakuraPetals();
-                setTimeout(() => {
-                    intro.classList.remove('visible');
-                    stopSakuraPetals();
-                }, 4000);
-            }
-        }
-
-        document.documentElement.setAttribute('data-theme', 'sakura');
-        visualizerEnabled = true;
-        if (visualizerToggle) visualizerToggle.checked = true;
-        saveSetting('visualizerEnabled', true);
-        if (isPlaying) startVisualizer();
-
-        currentVisualizerStyle = 'sakura_bloom';
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = 'sakura_bloom';
-            visualizerStyleSelect.disabled = true;
-        }
-
-        applyAnimationSetting('off');
-        if (animationSelect) {
-            animationSelect.value = 'off';
-            animationSelect.disabled = true;
-        }
-
-        updateEmoji('sakura_flower');
-        if (emojiSelect) {
-            emojiSelect.value = 'sakura_flower';
-            emojiSelect.disabled = true;
-        }
-        if (themeSelect) themeSelect.disabled = true;
-
-        if (customEmojiContainer) {
-            customEmojiContainer.style.display = 'flex';
-            if (customEmojiInput) customEmojiInput.value = '🌸';
-        }
-
-        if (accentToggle) {
-            accentToggle.checked = false;
-            accentToggle.disabled = true;
-            if (accentColorContainer) accentColorContainer.classList.add('hidden');
-            document.documentElement.style.removeProperty('--accent');
-        }
-        updateCachedColor();
-    } else {
-        const th = settings.theme || 'blue';
-        document.documentElement.setAttribute('data-theme', th);
-        if (themeSelect) { themeSelect.value = th; themeSelect.disabled = false; }
-
-        currentVisualizerStyle = settings.visualizerStyle || 'bars';
-        if (visualizerStyleSelect) { visualizerStyleSelect.value = currentVisualizerStyle; visualizerStyleSelect.disabled = false; }
-
-        applyAnimationSetting(settings.animationMode || 'flow');
-        if (animationSelect) { animationSelect.value = settings.animationMode || 'flow'; animationSelect.disabled = false; }
-
-        const et = settings.coverMode || 'note';
-        updateEmoji(et, settings.customCoverEmoji);
-        if (emojiSelect) { emojiSelect.value = et; emojiSelect.disabled = false; }
-
-        if (accentToggle) {
-            accentToggle.disabled = false;
-            accentToggle.checked = !!settings.useCustomColor;
-            if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !accentToggle.checked);
-            if (accentToggle.checked) document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
-        }
-        updateCachedColor();
-    }
-}
-
-async function applyNovaWave95(enabled, showIntro = false) {
-    document.body.classList.toggle('win95-active', enabled);
-    const accentToggle = document.getElementById('toggle-use-custom-color');
-
-    if (enabled) {
-        deactivateAllThemePacks('novaWave95Enabled');
-
-        if (performanceMode) setPerformanceMode(false, true);
-
-        document.documentElement.setAttribute('data-theme', 'novawave95');
-        visualizerEnabled = true;
-        if (visualizerToggle) visualizerToggle.checked = true;
-        saveSetting('visualizerEnabled', true);
-        if (isPlaying) startVisualizer();
-
-        currentVisualizerStyle = 'retro';
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = 'retro';
-            visualizerStyleSelect.disabled = true;
-        }
-
-        applyAnimationSetting('off');
-        if (animationSelect) {
-            animationSelect.value = 'off';
-            animationSelect.disabled = true;
-        }
-
-        updateEmoji('note');
-        if (emojiSelect) {
-            emojiSelect.value = 'note';
-            emojiSelect.disabled = true;
-        }
-        if (themeSelect) themeSelect.disabled = true;
-
-        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
-
-        if (accentToggle) {
-            accentToggle.checked = false;
-            accentToggle.disabled = true;
-            if (accentColorContainer) accentColorContainer.classList.add('hidden');
-            document.documentElement.style.removeProperty('--accent');
-        }
-        updateCachedColor();
-    } else {
-        resetToDefaultTheme();
-    }
-}
-
-async function applyEightBitTheme(enabled, showIntro = false) {
-    document.body.classList.toggle('8-bit-active', enabled);
-    const accentToggle = document.getElementById('toggle-use-custom-color');
-
-    if (enabled) {
-        deactivateAllThemePacks('eightBitEnabled');
-
-        if (performanceMode) setPerformanceMode(false, true);
-
-        // Use the module
-        eightBitTheme.onEnable({ visualizer, ui: { updateEmoji } });
-
-        // Update UI Controls
-        if (themeSelect) themeSelect.disabled = true;
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = 'retro';
-            visualizerStyleSelect.disabled = true;
-        }
-        if (animationSelect) {
-            animationSelect.value = 'off';
-            animationSelect.disabled = true; // 8-bit usually static or specific anim
-        }
-        updateEmoji('eight_bit');
-        if (emojiSelect) {
-             emojiSelect.value = 'eight_bit';
-             emojiSelect.disabled = true;
-        }
-
-        if (accentToggle) {
-            accentToggle.checked = false;
-            accentToggle.disabled = true;
-            if (accentColorContainer) accentColorContainer.classList.add('hidden');
-            document.documentElement.style.removeProperty('--accent');
-        }
-        updateCachedColor();
-    } else {
-        eightBitTheme.onDisable({});
-        resetToDefaultTheme();
-    }
-}
-
-
-
-let sakuraInterval;
-function createSakuraPetals() {
-    const container = document.getElementById('sakura-falling-container');
-    if (!container) return;
-    container.innerHTML = '';
-    sakuraInterval = setInterval(() => {
-        const petal = document.createElement('div');
-        petal.classList.add('falling-petal');
-        petal.textContent = '🌸';
-        petal.style.left = Math.random() * 100 + '%';
-        petal.style.animationDuration = (Math.random() * 3 + 2) + 's';
-        petal.style.opacity = Math.random();
-        petal.style.fontSize = (Math.random() * 10 + 15) + 'px';
-        container.appendChild(petal);
-        setTimeout(() => petal.remove(), 5000);
-    }, 300);
-}
-
-function stopSakuraPetals() {
-    if (sakuraInterval) clearInterval(sakuraInterval);
-    const container = document.getElementById('sakura-falling-container');
-    if (container) container.innerHTML = '';
-}
-
-function applySleepTime(enabled, showIntro = false) {
-
-    document.body.classList.toggle('sleeptime-active', enabled);
-    const accentToggle = document.getElementById('toggle-use-custom-color');
-
-    if (enabled) {
-        deactivateAllThemePacks('sleepTimeEnabled');
-
-        // Exclusive with Performance Mode
-        if (performanceMode) {
-            setPerformanceMode(false, true);
-        }
-
-        if (showIntro) {
-            const intro = document.getElementById('sleep-intro');
-            if (intro) {
-                intro.classList.add('visible');
-                setTimeout(() => intro.classList.remove('visible'), 3500);
-            }
-        }
-
-        document.documentElement.setAttribute('data-theme', 'sleeptime');
-        visualizerEnabled = true;
-        if (visualizerToggle) visualizerToggle.checked = true;
-        saveSetting('visualizerEnabled', true);
-        if (isPlaying) startVisualizer();
-
-        currentVisualizerStyle = 'moonlight';
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = 'moonlight';
-            visualizerStyleSelect.disabled = true;
-        }
-        applyAnimationSetting('starry');
-        if (animationSelect) {
-            animationSelect.value = 'starry';
-            animationSelect.disabled = true;
-        }
-        updateEmoji('moon');
-        if (emojiSelect) {
-            emojiSelect.value = 'moon';
-            emojiSelect.disabled = true;
-        }
-        if (themeSelect) themeSelect.disabled = true;
-
-        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
-
-        if (accentToggle) {
-            accentToggle.checked = false;
-            accentToggle.disabled = true;
-            if (accentColorContainer) accentColorContainer.classList.add('hidden');
-            document.documentElement.style.removeProperty('--accent');
-        }
-        updateCachedColor();
-    } else {
-        resetToDefaultTheme();
-    }
 }
 
 function updateUIForCurrentTrack() {
@@ -1042,66 +664,6 @@ async function handleDownload() {
     } finally {
         downloadBtn.disabled = false;
         downloadBtn.style.opacity = '1';
-    }
-}
-
-function applySnuggleTime(enabled, showIntro = false) {
-    document.body.classList.toggle('snuggle-time-active', enabled);
-    const accentToggle = document.getElementById('toggle-use-custom-color');
-
-    if (enabled) {
-        deactivateAllThemePacks('snuggleTimeEnabled');
-
-        // Automatically disable Performance Mode if Snuggle Pack is turned on
-        if (performanceMode) {
-            setPerformanceMode(false, true);
-        }
-
-        if (showIntro) {
-            const intro = document.getElementById('snuggle-intro');
-            if (intro) {
-                intro.classList.add('visible');
-                setTimeout(() => intro.classList.remove('visible'), 3000);
-            }
-        }
-
-        document.documentElement.setAttribute('data-theme', 'dinolove');
-
-        if (visualizerToggle) visualizerToggle.checked = true;
-        windowApi.setSetting('visualizerEnabled', true);
-
-        if (visualizer) {
-            visualizer.updateSettings({ enabled: true, style: 'retro' });
-            if (isPlaying) visualizer.start();
-        }
-
-        if (visualizerStyleSelect) {
-            visualizerStyleSelect.value = 'retro';
-            visualizerStyleSelect.disabled = true;
-        }
-        applyAnimationSetting('xmas');
-        if (animationSelect) {
-            animationSelect.value = 'xmas';
-            animationSelect.disabled = true;
-        }
-        updateEmoji('loving_dinos');
-        if (emojiSelect) {
-            emojiSelect.value = 'loving_dinos';
-            emojiSelect.disabled = true;
-        }
-        if (themeSelect) themeSelect.disabled = true;
-
-        if (customEmojiContainer) customEmojiContainer.style.display = 'none';
-
-        if (accentToggle) {
-            accentToggle.checked = false;
-            accentToggle.disabled = true;
-            if (accentColorContainer) accentColorContainer.classList.add('hidden');
-            document.documentElement.style.removeProperty('--accent');
-        }
-        updateCachedColor();
-    } else {
-        resetToDefaultTheme();
     }
 }
 
@@ -1705,55 +1267,6 @@ function setupEventListeners() {
         if (overlay) overlay.classList.toggle('hidden', !showStatsOverlay);
     });
 
-    const toggleSnuggleTime = document.getElementById('toggle-snuggle-time');
-    bind(toggleSnuggleTime, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('snuggleTimeEnabled', enabled);
-        applySnuggleTime(enabled, true);
-    });
-
-    const toggleSleepTime = document.getElementById('toggle-sleeptime');
-    bind(toggleSleepTime, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('sleepTimeEnabled', enabled);
-        applySleepTime(enabled, true);
-    });
-
-    const toggleCyberpunk = document.getElementById('toggle-cyberpunk');
-    bind(toggleCyberpunk, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('cyberpunkEnabled', enabled);
-        applyCyberpunk(enabled, true);
-    });
-
-    const toggleSunset = document.getElementById('toggle-sunset');
-    bind(toggleSunset, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('sunsetEnabled', enabled);
-        applySunsetDrive(enabled, true);
-    });
-
-    const toggleSakura = document.getElementById('toggle-sakura');
-    bind(toggleSakura, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('sakuraEnabled', enabled);
-        applySakuraSpirit(enabled, true);
-    });
-
-    const toggleWin95 = document.getElementById('toggle-win95');
-    bind(toggleWin95, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('novaWave95Enabled', enabled);
-        applyNovaWave95(enabled, true);
-    });
-
-    const toggle8Bit = document.getElementById('toggle-8bit');
-    bind(toggle8Bit, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('eightBitEnabled', enabled);
-        applyEightBitTheme(enabled, true);
-    });
-
     const fpsIn = document.getElementById('fps-input');
     const updateFps = (val) => {
         let v = parseInt(val);
@@ -2257,39 +1770,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
-            // Apply Theme Packs after settings are loaded
-            if (settings.snuggleTimeEnabled) {
-                const stToggle = document.getElementById('toggle-snuggle-time');
-                if (stToggle) stToggle.checked = true;
-                applySnuggleTime(true);
-            } else if (settings.sleepTimeEnabled) {
-                const slToggle = document.getElementById('toggle-sleeptime');
-                if (slToggle) slToggle.checked = true;
-                applySleepTime(true);
-            } else if (settings.cyberpunkEnabled) {
-                const cyToggle = document.getElementById('toggle-cyberpunk');
-                if (cyToggle) cyToggle.checked = true;
-                applyCyberpunk(true);
-            } else if (settings.sunsetEnabled) {
-                const suToggle = document.getElementById('toggle-sunset');
-                if (suToggle) suToggle.checked = true;
-                applySunsetDrive(true);
-            } else if (settings.sakuraEnabled) {
-                const saToggle = document.getElementById('toggle-sakura');
-                if (saToggle) saToggle.checked = true;
-                applySakuraSpirit(true);
-            } else if (settings.novaWave95Enabled) {
-                const nwToggle = document.getElementById('toggle-win95');
-                if (nwToggle) nwToggle.checked = true;
-                applyNovaWave95(true);
-            } else {
-                if (settings.theme) {
-                    document.documentElement.setAttribute('data-theme', settings.theme);
-                }
-                if (settings.useCustomColor && settings.customAccentColor) {
-                    document.documentElement.style.setProperty('--accent', settings.customAccentColor);
-                    if (accentColorPicker) accentColorPicker.value = settings.customAccentColor;
-                }
+            // Initialize Dynamic Theme Packs
+            ThemePackListener.init({ visualizer, ui: { updateEmoji }, settings });
+            
+            if (settings.theme) {
+                document.documentElement.setAttribute('data-theme', settings.theme);
+            }
+            if (settings.useCustomColor && settings.customAccentColor) {
+                document.documentElement.style.setProperty('--accent', settings.customAccentColor);
+                if (accentColorPicker) accentColorPicker.value = settings.customAccentColor;
             }
 
             updateCachedColor();
@@ -2299,6 +1788,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
 
             initVisualizerEngine();
+
+            // Restore active theme pack if any
+            if (settings.activeThemePack) {
+                // Small delay to ensure DOM is ready and listeners bound
+                setTimeout(() => {
+                    ThemePackListener.restoreState(settings.activeThemePack, { visualizer, ui: { updateEmoji }, settings });
+                }, 500);
+            }
 
             document.body.classList.add('ready');
 

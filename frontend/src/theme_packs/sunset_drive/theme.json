@@ -1,0 +1,11 @@
+{
+  "name": "Sunset Drive",
+  "id": "sunset_drive",
+  "version": "1.0",
+  "author": "NovaWave",
+  "description": "Synthwave aesthetics.",
+  "css": "theme.css",
+  "js": "theme.js",
+  "preview_emoji": "🏎️",
+  "preview_bg": "#b30062"
+}

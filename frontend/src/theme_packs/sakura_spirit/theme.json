@@ -1,0 +1,11 @@
+{
+  "name": "Sakura Spirit",
+  "id": "sakura_spirit",
+  "version": "1.0",
+  "author": "NovaWave",
+  "description": "Peaceful cherry blossoms.",
+  "css": "theme.css",
+  "js": "theme.js",
+  "preview_emoji": "🌸",
+  "preview_bg": "#ffb7b2"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Snuggle Time",
+  "id": "snuggle_time",
+  "version": "1.0",
+  "author": "NovaWave",
+  "description": "Experience pure comfort with the exclusive SnuggleDino design.",
+  "css": "theme.css",
+  "js": "theme.js",
+  "preview_emoji": "✨",
+  "preview_bg": "#d4e09b"
+}

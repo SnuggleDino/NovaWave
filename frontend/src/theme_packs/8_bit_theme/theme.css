@@ -159,8 +159,19 @@
     box-shadow: inset 0 0 10px var(--bg-main);
 }
 
-/* Album Cover: CSS Image Replacement */
-/* Replaces the standard Emoji/Image with a fixed retro cover asset */
+/* Cover Art Container (Normal Player) */
+:root[data-theme="8_bit_theme"] body:not(.is-mini) .cover-art-container {
+    border: var(--border-main) !important;
+    padding: 10px !important;
+    background: #111 !important;
+    box-shadow: 8px 8px 0px var(--accent-dim) !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1/1 !important;
+}
+
+/* Album Cover Image (CSS Replacement) */
 .eight-bit-cover {
     width: 100%;
     height: 100%;
@@ -169,6 +180,7 @@
     background-repeat: no-repeat;
     background-position: center;
     image-rendering: pixelated;
+    display: block !important;
 }
 
 /* Settings List Fix: Prevent Text Overlap on Toggles */

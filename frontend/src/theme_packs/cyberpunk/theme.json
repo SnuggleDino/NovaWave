@@ -1,0 +1,11 @@
+{
+  "name": "Cyberpunk",
+  "id": "cyberpunk",
+  "version": "1.0",
+  "author": "NovaWave",
+  "description": "High tech, low life. Neon visuals.",
+  "css": "theme.css",
+  "js": "theme.js",
+  "preview_emoji": "⚡",
+  "preview_bg": "#fcee0a"
+}

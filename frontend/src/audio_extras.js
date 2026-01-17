@@ -58,10 +58,10 @@ export class AudioExtras {
             this.analyser.connect(this.audioContext.destination);
 
             this.initialized = true;
-            console.log("AudioExtras initialized successfully.");
+            console.log("[AudioExtras] initialized successfully.");
 
         } catch (e) {
-            console.error("AudioExtras init failed:", e);
+            console.error("[AudioExtras] init failed:", e);
         }
     }
 

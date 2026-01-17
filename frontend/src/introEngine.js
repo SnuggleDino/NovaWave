@@ -48,51 +48,6 @@ export class WaterdropIntro extends Intro {
     }
 }
 
-export class NovaWave95Intro extends Intro {
-    constructor() {
-        super('splash-95');
-    }
-
-    mount() {
-        const overlay = document.createElement('div');
-        overlay.id = this.containerId;
-        overlay.className = 'splash-overlay type-95';
-        overlay.innerHTML = `
-            <div class="win95-window">
-                <div class="win95-title-bar">
-                    <div class="win95-title-text">
-                        <img src="${iconPng}" class="win95-mini-icon">
-                        ${getIntroTr('introWin95Title')}
-                    </div>
-                    <div class="win95-title-controls">
-                        <button class="win95-btn-small">_</button>
-                        <button class="win95-btn-small">X</button>
-                    </div>
-                </div>
-                <div class="win95-body">
-                    <div class="win95-upper">
-                        <img src="${iconPng}" class="win95-main-logo">
-                        <div class="win95-text-info">
-                            <strong>NovaWave Player</strong>
-                            <p>${getIntroTr('introWin95Version')}</p>
-                            <p>${getIntroTr('introWin95CreatedBy')}</p>
-                        </div>
-                    </div>
-                    <div class="win95-progress-section">
-                        <p class="win95-status">${getIntroTr('introWin95Status')}</p>
-                        <div class="win95-progress-container">
-                            <div class="win95-progress-fill">
-                                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-    }
-}
-
 export class EightBitIntro extends Intro {
     constructor() {
         super('splash-8bit');
