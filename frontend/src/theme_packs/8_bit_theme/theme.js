@@ -38,30 +38,30 @@ function playStartSound() {
 export default {
     onEnable: (app) => {
         console.log("8-BIT THEME ACTIVATED");
-        
+
         document.documentElement.setAttribute('data-theme', '8_bit_theme');
         document.body.classList.add('8-bit-active');
 
-        // 2. Force Visualizer Style & Color
+        // 2. Visualizer Style & Color
         if (app.visualizer) {
-            app.visualizer.updateSettings({ 
-                style: 'retro', 
-                accentColor: '#39ff14' // Force Neon Green
+            app.visualizer.updateSettings({
+                style: 'retro',
+                accentColor: '#39ff14' // Neon Green
             });
         }
-        
-        // 3. Lock Conflicting Settings (Timeout to ensure UI is ready/not overwritten)
+
+        // 3. Lock Conflicting Settings
         setTimeout(() => {
             const elementsToLock = [
-                'visualizer-style-select', 
-                'emoji-select', 
-                'theme-select', 
+                'visualizer-style-select',
+                'emoji-select',
+                'theme-select',
                 'animation-select',
                 'toggle-use-custom-color',
                 'toggle-gradient-title',
                 'accent-color-picker'
             ];
-            
+
             elementsToLock.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.disabled = true;
@@ -78,9 +78,8 @@ export default {
         const overlay = document.createElement('div');
         overlay.id = 'retro-intro-layer';
         overlay.className = 'retro-intro-overlay';
-        // Explicit styles to ensure visibility
         overlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center;';
-        
+
         overlay.innerHTML = `
             <div class="retro-logo"></div>
             <div class="retro-text">NOVAWAVE 8-BIT</div>
@@ -98,15 +97,14 @@ export default {
                 setTimeout(() => overlay.remove(), 500);
             };
         } else {
-            // Fallback if button not found (should not happen)
             setTimeout(() => overlay.remove(), 3000);
         }
-        
-        // Force background animation class
+
+        // Background animation class
         const bgAnim = document.querySelector('.background-animation');
         if (bgAnim) {
-            bgAnim.className = 'background-animation'; // Reset
-            bgAnim.classList.add('type-8bit'); // Add specific class if needed by logic
+            bgAnim.className = 'background-animation';
+            bgAnim.classList.add('type-8bit');
         }
     },
 
@@ -116,22 +114,20 @@ export default {
         document.body.classList.remove('8-bit-active');
 
         if (app.visualizer) {
-            // Restore default color (Blue) or let main.js handle it via resetToDefaultTheme
-            // We set it to default here to be safe
-            app.visualizer.updateSettings({ accentColor: '#38bdf8' }); 
+            app.visualizer.updateSettings({ accentColor: '#38bdf8' });
         }
 
         // Unlock
         const elementsToLock = [
-            'visualizer-style-select', 
-            'emoji-select', 
-            'theme-select', 
+            'visualizer-style-select',
+            'emoji-select',
+            'theme-select',
             'animation-select',
             'toggle-use-custom-color',
             'toggle-gradient-title',
             'accent-color-picker'
         ];
-        
+
         elementsToLock.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.disabled = false;
