@@ -31,6 +31,7 @@ export default {
         document.body.classList.add('sakura-active');
         document.documentElement.setAttribute('data-theme', 'sakura');
         document.documentElement.style.setProperty('--accent', '#ffb7b2');
+        if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
         
         const intro = document.getElementById('sakura-intro');
         if (intro) { 

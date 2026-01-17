@@ -1574,17 +1574,16 @@ body.sunset-active .music-emoji img {
     width: 100%;
     min-width: 0;
     position: relative;
-    padding: 0 10px; /* Reduced padding since button is now in flow */
-    gap: 10px; /* Space between title and heart */
+    padding: 0 40px; /* Leave space for absolute button */
 }
 
 #main-favorite-btn {
-    position: relative; /* Changed from absolute */
-    right: auto;
-    top: auto;
-    transform: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 10;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
 }
 
 .title-scroll-wrapper {

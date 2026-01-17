@@ -160,12 +160,20 @@ function saveSetting(key, value) {
 }
 
 function updateCachedColor() {
-    cachedAccentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38bdf8';
+    let color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
     
-    // Only update visualizer color from global CSS if NO theme pack is active.
-    // Theme packs handle their own specific visualizer colors.
-    const activePack = localStorage.getItem('activeThemePack');
-    if (visualizer && (!activePack || activePack === '')) {
+    // Hardcoded overrides for known theme packs to be 100% sure they don't use fallbacks
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    if (currentTheme === 'dinolove') color = '#c1d37f';
+    else if (currentTheme === 'cyberpunk') color = '#fcee0a';
+    else if (currentTheme === 'sleeptime') color = '#7b68ee';
+    else if (currentTheme === 'sakura') color = '#ffb7b2';
+    else if (currentTheme === 'sunset') color = '#f97316';
+    else if (currentTheme === '8_bit_theme') color = '#39ff14';
+    
+    cachedAccentColor = color || '#38bdf8';
+    
+    if (visualizer) {
         visualizer.updateSettings({ accentColor: cachedAccentColor });
     }
 }
@@ -1771,7 +1779,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
             // Initialize Dynamic Theme Packs
-            ThemePackListener.init({ visualizer, ui: { updateEmoji }, settings });
+            ThemePackListener.init({ visualizer, ui: { updateEmoji, updateCachedColor, resetToDefaultTheme }, settings });
             
             if (settings.theme) {
                 document.documentElement.setAttribute('data-theme', settings.theme);

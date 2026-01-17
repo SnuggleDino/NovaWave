@@ -3,6 +3,7 @@ export default {
         document.body.classList.add('sleeptime-active');
         document.documentElement.setAttribute('data-theme', 'sleeptime');
         document.documentElement.style.setProperty('--accent', '#7b68ee');
+        if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
         const intro = document.getElementById('sleep-intro');
         if (intro) { intro.classList.add('visible'); setTimeout(() => intro.classList.remove('visible'), 3500); }
         if (app.visualizer) app.visualizer.updateSettings({ style: 'moonlight', accentColor: '#7b68ee' });

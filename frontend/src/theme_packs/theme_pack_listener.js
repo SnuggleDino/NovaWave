@@ -208,7 +208,12 @@ export const ThemePackListener = {
             loadedThemes[id].onDisable(app);
         }
         
-        // Restore Defaults (Global Cleanup)
+        // Restore Defaults via App UI helper if available
+        if (app.ui && app.ui.resetToDefaultTheme) {
+            app.ui.resetToDefaultTheme();
+        }
+        
+        // Specific cleanup if needed (e.g. Emoji)
         if (app.settings && app.ui && app.ui.updateEmoji) {
             const defaultEmoji = app.settings.coverMode || 'note';
             // Restore custom emoji if mode is custom

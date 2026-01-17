@@ -42,6 +42,7 @@ export default {
         document.documentElement.setAttribute('data-theme', '8_bit_theme');
         document.body.classList.add('8-bit-active');
         document.documentElement.style.setProperty('--accent', '#39ff14');
+        if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
 
         // 2. Visualizer Style & Color
         if (app.visualizer) {
