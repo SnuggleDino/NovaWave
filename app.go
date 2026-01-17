@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"embed"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -18,6 +20,9 @@ import (
 	"github.com/tcolgate/mp3"
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
+
+//go:embed bin/*.exe
+var embeddedBinaries embed.FS
 
 type App struct {
 	ctx            context.Context
@@ -109,7 +114,41 @@ func NewApp() *App {
 
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	a.ensureBinaries()
 	a.setupMediaKeys()
+}
+
+// ensureBinaries extracts ffmpeg, ffprobe and yt-dlp to a stable system path
+func (a *App) ensureBinaries() {
+	configDir, _ := os.UserConfigDir()
+	destDir := filepath.Join(configDir, "NovaWave", "bin")
+	os.MkdirAll(destDir, 0755)
+
+	files := []string{"ffmpeg.exe", "ffprobe.exe", "yt-dlp.exe"}
+
+	for _, name := range files {
+		destPath := filepath.Join(destDir, name)
+
+		// Only extract if not already exists
+		if _, err := os.Stat(destPath); err != nil {
+			srcFile, err := embeddedBinaries.Open("bin/" + name)
+			if err != nil {
+				continue
+			}
+			defer srcFile.Close()
+
+			dstFile, err := os.Create(destPath)
+			if err != nil {
+				continue
+			}
+			defer dstFile.Close()
+
+			if _, err := io.Copy(dstFile, srcFile); err != nil {
+				continue
+			}
+			os.Chmod(destPath, 0755)
+		}
+	}
 }
 
 func (a *App) setupMediaKeys() {
@@ -304,40 +343,28 @@ func (a *App) SelectMusicFolder() FolderResult {
 }
 
 func (a *App) getBinaryPath(name string) string {
-	ex, _ := os.Executable()
-	curr := filepath.Dir(ex)
-
-	for i := 0; i < 10; i++ {
-		pFrontend := filepath.Join(curr, "frontend", "src", "executable_bin", name)
-		if info, err := os.Stat(pFrontend); err == nil && !info.IsDir() {
-			abs, _ := filepath.Abs(pFrontend)
-			return abs
-		}
-
-		p := filepath.Join(curr, "executable_bin", name)
-		if info, err := os.Stat(p); err == nil && !info.IsDir() {
-			abs, _ := filepath.Abs(p)
-			return abs
-		}
-
-		pDirect := filepath.Join(curr, name)
-		if info, err := os.Stat(pDirect); err == nil && !info.IsDir() {
-			abs, _ := filepath.Abs(pDirect)
-			return abs
-		}
-
-		parent := filepath.Dir(curr)
-		if parent == curr {
-			break
-		}
-		curr = parent
+	configDir, _ := os.UserConfigDir()
+	// Priority 1: Extracted binaries in AppData (the self-contained way)
+	appDataPath := filepath.Join(configDir, "NovaWave", "bin", name)
+	if info, err := os.Stat(appDataPath); err == nil && !info.IsDir() {
+		return appDataPath
 	}
 
-	cwd, _ := os.Getwd()
-	pCwd := filepath.Join(cwd, "frontend", "src", "executable_bin", name)
-	if _, err := os.Stat(pCwd); err == nil {
-		abs, _ := filepath.Abs(pCwd)
-		return abs
+	// Priority 2: Local bin folder (for development)
+	ex, _ := os.Executable()
+	curr := filepath.Dir(ex)
+	searchPaths := []string{
+		curr,
+		filepath.Join(curr, "bin"),
+		"bin",
+	}
+
+	for _, p := range searchPaths {
+		fullPath := filepath.Join(p, name)
+		if info, err := os.Stat(fullPath); err == nil && !info.IsDir() {
+			abs, _ := filepath.Abs(fullPath)
+			return abs
+		}
 	}
 
 	return name
@@ -596,10 +623,10 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
 
 	if _, err := os.Stat(ytPath); err != nil {
-		return SimpleResult{Success: false, Error: "yt-dlp.exe nicht gefunden! Bitte in 'executable_bin' legen."}, nil
+		return SimpleResult{Success: false, Error: "yt-dlp.exe nicht gefunden! Bitte in den 'bin' Ordner neben der App legen."}, nil
 	}
 	if _, err := os.Stat(ffmpegPath); err != nil {
-		return SimpleResult{Success: false, Error: "ffmpeg.exe nicht gefunden!"}, nil
+		return SimpleResult{Success: false, Error: "ffmpeg.exe nicht gefunden! Bitte in den 'bin' Ordner neben der App legen."}, nil
 	}
 
 	qualityMap := map[string]string{"best": "0", "high": "5", "standard": "9"}
