@@ -10,7 +10,7 @@ import { DynamicIsland } from './dynamic_island.js';
 import { MiniPlayer } from './mini_player.js';
 import { ThemePackListener } from './theme_packs/theme_pack_listener.js';
 
-// --- SHIM FOR COMPATIBILITY ---
+// Wails API Mapping
 const windowApi = {
     getSettings: App.GetSettings,
     getAppMeta: App.GetAppMeta,
@@ -26,14 +26,14 @@ const windowApi = {
     showInFolder: App.ShowInFolder,
     moveFile: App.MoveFile,
     setWindowSize: App.SetWindowSize,
-    onMediaControl: (cb) => { /* Not fully implemented in Wails yet */ },
-    onDownloadProgress: (cb) => { /* Not fully implemented via Events yet */ },
+    onMediaControl: (cb) => { /* Not implemented */ },
+    onDownloadProgress: (cb) => { /* Not implemented */ },
     sendPlaybackState: App.SendPlaybackState
 };
 
 window.api = windowApi;
 
-// --- STATE & GLOBALS ---
+// App State
 let playlist = [];
 let basePlaylist = [];
 let currentIndex = -1;
@@ -317,7 +317,7 @@ function tr(key, ...args) {
     return typeof text === 'function' ? text(...args) : text;
 }
 
-// --- CORE PLAYER LOGIC ---
+// Player Logic
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
     currentIndex = index;
@@ -493,11 +493,10 @@ function renderPlaylist() {
 
 function applyTranslations() {
     document.querySelectorAll('[data-lang-key]').forEach(el => {
-        // Logic for intro buttons: change key based on active state
         if (el.classList.contains('apply-intro-btn')) {
             const card = el.closest('.intro-card');
             if (card) {
-                const isActive = card.classList.contains('active');
+                const isActive = card.contains('active');
                 el.dataset.langKey = isActive ? 'introActiveBtn' : 'introApplyBtn';
             }
         }
@@ -1389,12 +1388,10 @@ function setupEventListeners() {
         }
     });
 
-    let contextMenuDelete = $('#context-menu-delete');
-
     bind(contextMenuDelete, 'click', () => {
         if (contextTrackIndex === null || !playlist[contextTrackIndex]) return;
         if (!deleteSongsEnabled) {
-            showNotification('Deletion is disabled in settings.');
+            showNotification(tr('deletionDisabled'));
             return;
         }
         handleDeleteTrack(playlist[contextTrackIndex].path);
@@ -1656,7 +1653,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Downloader Tabs Logic (Correctly Placed) ---
+    // Downloader Tabs
+    const ytUrlInput = document.getElementById('youtube-url-input');
     if (tabYtBtn && tabSpotifyBtn) {
         // Init default state
         if (activeDownloaderMode === 'youtube') {
@@ -1728,7 +1726,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Intro Settings Logic ---
+    // Intro Settings
     const introCards = document.querySelectorAll('.intro-card');
     introCards.forEach(card => {
         const btn = card.querySelector('.apply-intro-btn');
@@ -1815,9 +1813,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 
-    // --- FIX LOAD FOLDER & REFRESH LOGIC ---
+    // Load Folder and Refresh
     setTimeout(() => {
-        // 1. Override Load Folder Button Logic (Direct System Dialog)
         const btn = document.getElementById('open-library-btn');
         if (btn) {
             // Remove old listeners by cloning
@@ -1839,7 +1836,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             sortPlaylist(sortMode);
                             renderPlaylist();
                             updateUIForCurrentTrack();
-                            showNotification('Folder Loaded: ' + path);
+                            showNotification(tr('folderLoaded', path));
 
                             const libOverlay = document.getElementById('library-overlay');
                             if (libOverlay) libOverlay.classList.remove('visible');
@@ -1874,7 +1871,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     basePlaylist = res.tracks;
                     sortPlaylist(sortMode);
                     renderPlaylist();
-                    showNotification('Folder Refreshed');
+                    showNotification(tr('folderRefreshed'));
                 }
 
                 setTimeout(() => {
@@ -1886,7 +1883,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 
 
-    // --- NEW CONTEXT MENU LOGIC ---
+    // Context Menu
     let cmTimeout;
     function showContextMenu(e, index) {
         e.preventDefault();
@@ -1960,7 +1957,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
 
 
-    // --- DYNAMIC ISLAND LOGIC ---
+    // Dynamic Island
     dynamicIsland = new DynamicIsland();
 
     // Global showNotification wrapper

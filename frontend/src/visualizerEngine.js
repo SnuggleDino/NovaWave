@@ -15,7 +15,6 @@ export class VisualizerEngine {
         this.isRunning = false;
         this.analyser = null;
         this.dataArray = null;
-
         this.lastRenderTime = 0;
         this.animationFrameId = null;
         this.frameCount = 0;
@@ -39,15 +38,13 @@ export class VisualizerEngine {
         if (newSettings.accentColor !== undefined) this.accentColor = newSettings.accentColor;
         if (newSettings.targetFps !== undefined) this.targetFps = newSettings.targetFps;
         if (newSettings.enabled !== undefined) this.visualizerEnabled = newSettings.enabled;
-
     }
 
     updateAnalyserSettings() {
         if (!this.analyser) return;
         this.analyser.smoothingTimeConstant = 0.6;
         this.analyser.fftSize = 512;
-        const dbValue = -15 - (this.sensitivity * 15);
-        this.analyser.maxDecibels = dbValue;
+        this.analyser.maxDecibels = -15 - (this.sensitivity * 15);
     }
 
     resize() {
@@ -108,11 +105,9 @@ export class VisualizerEngine {
         else if (this.style === 'zen') this.drawZen(width, height, ac, boost);
         else if (this.style === 'moonlight') this.drawMoonlight(width, height, ac, boost);
 
-        // Music Emoji Bounce
         if (this.musicEmojiEl && this.audio && !this.audio.paused) {
             const blv = (this.dataArray[0] + this.dataArray[1]) / 2;
             const fy = Math.sin(this.audio.currentTime * 2) * 10;
-            // Add a kick check
             let js = (blv > 180) ? 1 + (Math.min((blv - 180) / 50, 1) * 0.15) : 1;
             this.musicEmojiEl.style.transform = `translateY(${fy}px) scale(${js})`;
         }
@@ -120,17 +115,11 @@ export class VisualizerEngine {
 
     drawBars(width, height, ac, boost) {
         let bl = this.dataArray.length / 2;
-        if (this.maxBars > 0 && bl > this.maxBars) {
-            bl = this.maxBars;
-        }
+        if (this.maxBars > 0 && bl > this.maxBars) bl = this.maxBars;
         const bw = (width / bl) * 0.8;
         for (let i = 0; i < bl; i++) {
-            // Data array step if maxBars is set
             let dataIdx = i;
-            if (this.maxBars > 0) {
-                // Map i (0..maxBars) to data (0..length/2) 
-                dataIdx = Math.floor(i * ((this.dataArray.length / 2) / this.maxBars));
-            }
+            if (this.maxBars > 0) dataIdx = Math.floor(i * ((this.dataArray.length / 2) / this.maxBars));
             const bh = (this.dataArray[dataIdx] / 255) * height * 0.8 * boost;
             this.ctx.fillStyle = ac;
             this.ctx.fillRect(i * (width / bl), height - bh, bw, bh);
@@ -180,7 +169,6 @@ export class VisualizerEngine {
             this.ctx.fillStyle = ac;
             this.ctx.globalAlpha = 0.8;
             this.ctx.fillRect(i * bw, height - bh, bw - 4, bh);
-
             if (val > 210 && Math.random() > 0.9) {
                 this.ctx.fillStyle = "#fff";
                 this.ctx.globalAlpha = 1.0;
@@ -212,14 +200,11 @@ export class VisualizerEngine {
             for (let j = 0; j < numBlocks; j++) {
                 if (j >= targetRows) break;
                 const y = height - ((j + 1) * totalBlockHeight);
-
                 if (j >= 16) this.ctx.fillStyle = '#ff4444';
                 else if (j >= 12) this.ctx.fillStyle = '#ffcc00';
                 else this.ctx.fillStyle = ac;
-
                 this.ctx.shadowBlur = blockHeight * 0.8;
                 this.ctx.shadowColor = this.ctx.fillStyle;
-
                 this.ctx.fillRect(xLeft, y, blockWidth, blockHeight);
                 this.ctx.fillRect(xRight, y, blockWidth, blockHeight);
             }
@@ -231,7 +216,6 @@ export class VisualizerEngine {
         const centerX = width / 2, centerY = height / 2;
         const count = 12;
         const radiusBase = Math.min(width, height) / 3;
-
         for (let i = 0; i < count; i++) {
             const dataIdx = Math.floor((i / count) * (this.dataArray.length * 0.5));
             const val = this.dataArray[dataIdx];
@@ -241,7 +225,6 @@ export class VisualizerEngine {
             const x = centerX + Math.cos(angle) * dist;
             const y = centerY + Math.sin(angle) * dist;
             const size = 8 + (val / 255) * 15;
-
             this.ctx.save();
             this.ctx.translate(x, y);
             this.ctx.rotate(angle + (Date.now() * 0.0008));
@@ -249,14 +232,12 @@ export class VisualizerEngine {
             this.ctx.shadowBlur = 15;
             this.ctx.shadowColor = '#fbcfe8';
             this.ctx.globalAlpha = 0.6 + (val / 255) * 0.4;
-
             for (let p = 0; p < 5; p++) {
                 this.ctx.rotate((Math.PI * 2) / 5);
                 this.ctx.beginPath();
                 this.ctx.ellipse(0, -size, size * 0.6, size, 0, 0, Math.PI * 2);
                 this.ctx.fill();
             }
-
             this.ctx.beginPath();
             this.ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
             this.ctx.fillStyle = '#fda4af';
@@ -288,12 +269,10 @@ export class VisualizerEngine {
         const centerX = width / 2, centerY = height / 2, moonRadius = Math.min(width, height) / 4.5;
         const blv = (this.dataArray[0] + this.dataArray[1] + this.dataArray[2]) / 3;
         const pulse = (blv / 255) * 25 * boost;
-
         this.ctx.beginPath();
         this.ctx.arc(centerX, centerY, moonRadius + pulse + 20, 0, Math.PI * 2);
         this.ctx.fillStyle = `${ac}11`;
         this.ctx.fill();
-
         this.ctx.beginPath();
         this.ctx.arc(centerX, centerY, moonRadius + (pulse * 0.5), 0, Math.PI * 2);
         this.ctx.fillStyle = ac;
@@ -301,7 +280,6 @@ export class VisualizerEngine {
         this.ctx.shadowColor = ac;
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
-
         for (let i = 0; i < this.dataArray.length; i += 4) {
             const val = this.dataArray[i];
             if (val > 80) {
@@ -309,7 +287,6 @@ export class VisualizerEngine {
                 const orbitDist = moonRadius + 30 + (val / 255) * (width / 4);
                 const x = centerX + Math.cos(angle) * orbitDist;
                 const y = centerY + Math.sin(angle) * orbitDist;
-
                 this.ctx.beginPath();
                 this.ctx.arc(x, y, (val / 255) * 4, 0, Math.PI * 2);
                 this.ctx.fillStyle = i % 8 === 0 ? "#fff" : ac;

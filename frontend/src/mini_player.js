@@ -12,14 +12,11 @@ export class MiniPlayer {
         this.isActive = true;
         document.body.classList.add('is-mini');
 
-        // Resize to Landscape Mini
-        // For 8-bit theme, more space due to thick borders
         const isEightBit = document.body.classList.contains('8-bit-active');
         const w = isEightBit ? 630 : 600;
         const h = isEightBit ? 230 : 200;
         this.api.setWindowSize(w, h);
 
-        // Trigger update to refresh emoji/UI
         if (this.onUpdate) this.onUpdate();
 
         if (this.visualizer) {
@@ -36,7 +33,6 @@ export class MiniPlayer {
         this.isActive = false;
         document.body.classList.remove('is-mini');
 
-        // Restore Size
         this.api.setWindowSize(1300, 900);
 
         if (this.visualizer) {

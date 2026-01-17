@@ -1,4 +1,3 @@
-
 import './theme.css';
 
 let audioCtx = null;
@@ -19,8 +18,8 @@ function playStartSound() {
         const gain = ctx.createGain();
 
         osc.type = 'square';
-        osc.frequency.setValueAtTime(440, ctx.currentTime); // A4
-        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1); // A5
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
 
         gain.gain.setValueAtTime(0.1, ctx.currentTime);
         gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.1);
@@ -31,52 +30,42 @@ function playStartSound() {
         osc.start();
         osc.stop(ctx.currentTime + 0.6);
     } catch (e) {
-        console.error("Audio Error:", e);
+        console.error("Audio engine error:", e);
     }
 }
 
 export default {
     onEnable: (app) => {
-        console.log("8-BIT THEME ACTIVATED");
-
         document.documentElement.setAttribute('data-theme', '8_bit_theme');
         document.body.classList.add('8-bit-active');
         document.documentElement.style.setProperty('--accent', '#39ff14');
+        
+        // Sync visualizer with theme color
         if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
 
-        // 2. Visualizer Style & Color
         if (app.visualizer) {
             app.visualizer.updateSettings({
                 style: 'retro',
-                accentColor: '#39ff14' // Neon Green
+                accentColor: '#39ff14'
             });
         }
 
-        // 3. Lock Conflicting Settings
+        // Lock UI to prevent theme conflicts
         setTimeout(() => {
-            const elementsToLock = [
-                'visualizer-style-select',
-                'emoji-select',
-                'theme-select',
-                'animation-select',
-                'toggle-use-custom-color',
-                'toggle-gradient-title',
-                'accent-color-picker'
+            const elements = [
+                'visualizer-style-select', 'emoji-select', 'theme-select',
+                'animation-select', 'toggle-use-custom-color',
+                'toggle-gradient-title', 'accent-color-picker'
             ];
-
-            elementsToLock.forEach(id => {
+            elements.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.disabled = true;
             });
-
-            // Ensure "Custom Color" toggle is off
             const colorToggle = document.getElementById('toggle-use-custom-color');
-            if (colorToggle && colorToggle.checked) {
-                colorToggle.checked = false;
-            }
+            if (colorToggle) colorToggle.checked = false;
         }, 100);
 
-        // 4. Create Intro
+        // Theme Intro Overlay
         const overlay = document.createElement('div');
         overlay.id = 'retro-intro-layer';
         overlay.className = 'retro-intro-overlay';
@@ -102,7 +91,6 @@ export default {
             setTimeout(() => overlay.remove(), 3000);
         }
 
-        // Background animation class
         const bgAnim = document.querySelector('.background-animation');
         if (bgAnim) {
             bgAnim.className = 'background-animation';
@@ -111,7 +99,6 @@ export default {
     },
 
     onDisable: (app) => {
-        console.log("8-BIT THEME DEACTIVATED");
         document.documentElement.removeAttribute('data-theme');
         document.body.classList.remove('8-bit-active');
 
@@ -119,18 +106,12 @@ export default {
             app.visualizer.updateSettings({ accentColor: '#38bdf8' });
         }
 
-        // Unlock
-        const elementsToLock = [
-            'visualizer-style-select',
-            'emoji-select',
-            'theme-select',
-            'animation-select',
-            'toggle-use-custom-color',
-            'toggle-gradient-title',
-            'accent-color-picker'
+        const elements = [
+            'visualizer-style-select', 'emoji-select', 'theme-select',
+            'animation-select', 'toggle-use-custom-color',
+            'toggle-gradient-title', 'accent-color-picker'
         ];
-
-        elementsToLock.forEach(id => {
+        elements.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.disabled = false;
         });

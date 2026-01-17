@@ -1574,7 +1574,7 @@ body.sunset-active .music-emoji img {
     width: 100%;
     min-width: 0;
     position: relative;
-    padding: 0 40px; /* Leave space for absolute button */
+    padding: 0 40px;
 }
 
 #main-favorite-btn {

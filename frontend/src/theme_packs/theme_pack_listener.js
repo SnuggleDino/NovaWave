@@ -1,24 +1,19 @@
 /**
  * THEME PACK LISTENER
- * -------------------
- * This module automatically detects, registers, and manages Theme Packs.
- * Optimized for Vite and Wails build process.
+ * Handles automatic detection and management of theme packs via Vite glob imports.
  */
 
-// 1. Auto-Detect all theme.json files (Eager load to get metadata immediately)
+// Detect theme configurations and logic modules
 const themeConfigs = import.meta.glob('./*/theme.json', { eager: true });
-
-// 2. Auto-Detect all theme.js files (Eager load to ensure all CSS/Assets are bundled)
 const themeModules = import.meta.glob('./*/theme.js', { eager: true });
 
-// 3. Auto-Detect all assets in all subfolders to ensure they are tracked by Vite
+// Track all available assets for bundling
 const themeAssets = import.meta.glob('./**/*.{png,jpg,jpeg,svg,ico,mp3,wav}', { eager: true, as: 'url' });
 
-// State
 let activeThemeId = null;
 let loadedThemes = {}; 
 
-// Pre-fill loadedThemes since we use eager loading
+// Populate theme modules cache
 for (const path in themeModules) {
     const dir = path.split('/')[1];
     loadedThemes[dir] = themeModules[path].default;
@@ -26,20 +21,12 @@ for (const path in themeModules) {
 
 export const ThemePackListener = {
     
-    /**
-     * Initializes the Theme Pack System.
-     */
     init: function(appInstance) {
-        console.log('[ThemeListener] Scanning for Theme Packs...');
         const container = document.getElementById('theme-pack-grid');
-        if (!container) {
-            console.error('[ThemeListener] Container #theme-pack-grid not found in HTML!');
-            return;
-        }
+        if (!container) return;
 
         container.innerHTML = '';
 
-        // Define specific sort order
         const sortOrder = [
             'snuggle_time',
             'cyberpunk',
@@ -52,7 +39,7 @@ export const ThemePackListener = {
         const themes = Object.keys(themeConfigs).map(key => {
             const conf = themeConfigs[key].default || themeConfigs[key];
             
-            // Resolve the real preview URL from our assets glob
+            // Resolve preview image URL via Vite asset map
             if (conf.preview_image) {
                 const dir = key.split('/')[1];
                 const possiblePaths = [
@@ -70,6 +57,7 @@ export const ThemePackListener = {
             return conf;
         });
 
+        // Apply custom sort order
         themes.sort((a, b) => {
             const indexA = sortOrder.indexOf(a.id);
             const indexB = sortOrder.indexOf(b.id);
@@ -113,9 +101,9 @@ export const ThemePackListener = {
     },
 
     enableTheme: function(id, app) {
-        console.log(`[ThemeListener] Enabling ${id}...`);
         if (activeThemeId && activeThemeId !== id) this.disableTheme(activeThemeId, app);
 
+        // Sync UI toggles
         const allToggles = document.querySelectorAll('.theme-action-box input[type="checkbox"]');
         allToggles.forEach(t => { if (t.id !== `toggle-${id}`) t.checked = false; });
 
@@ -127,18 +115,18 @@ export const ThemePackListener = {
                 if (window.api && window.api.setSetting) window.api.setSetting('activeThemePack', id);
             }
         } catch (err) {
-            console.error(`[ThemeListener] Failed to activate theme ${id}:`, err);
+            console.error(`[ThemeListener] Activation failed for ${id}:`, err);
         }
     },
 
     disableTheme: function(id, app) {
-        console.log(`[ThemeListener] Disabling ${id}...`);
         if (loadedThemes[id] && loadedThemes[id].onDisable) loadedThemes[id].onDisable(app);
+        
+        // Return to standard app state
         if (app.ui && app.ui.resetToDefaultTheme) app.ui.resetToDefaultTheme();
         
         if (app.settings && app.ui && app.ui.updateEmoji) {
-            const defaultEmoji = app.settings.coverMode || 'note';
-            app.ui.updateEmoji(defaultEmoji, app.settings.customCoverEmoji || '');
+            app.ui.updateEmoji(app.settings.coverMode || 'note', app.settings.customCoverEmoji || '');
         }
 
         if (activeThemeId === id) {

@@ -97,7 +97,7 @@ export class EightBitIntro extends Intro {
         btn.onclick = () => {
             this.playSound();
         };
-        // Also play sound on mount for effect? No, just silence then press start.
+        // Audio context requires user interaction to resume
     }
 
     playSound() {

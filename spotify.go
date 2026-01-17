@@ -28,10 +28,10 @@ func (s *SpotifyService) IsSpotifyUrl(url string) bool {
 
 func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 	if strings.Contains(url, "spotify.com/playlist/") {
-		return nil, fmt.Errorf("Playlists werden aktuell noch nicht unterstützt. Bitte geben Sie einen Song-Link an.")
+		return nil, fmt.Errorf("playlists are not supported yet. please provide a single track link")
 	}
 	if !strings.Contains(url, "spotify.com/track/") {
-		return nil, fmt.Errorf("ungültiger Spotify-Track-Link")
+		return nil, fmt.Errorf("invalid spotify track link")
 	}
 
 	client := &http.Client{
@@ -39,12 +39,12 @@ func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 	}
 	resp, err := client.Get(url)
 	if err != nil {
-		return nil, fmt.Errorf("verbindung zu Spotify fehlgeschlagen: %v", err)
+		return nil, fmt.Errorf("failed to connect to spotify: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("spotify Seite konnte nicht geladen werden (Code %d)", resp.StatusCode)
+		return nil, fmt.Errorf("could not load spotify page (code %d)", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -80,7 +80,7 @@ func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 	}
 
 	if track.Title == "" {
-		return nil, fmt.Errorf("song-Titel konnte auf Spotify nicht gefunden werden")
+		return nil, fmt.Errorf("could not find track title on spotify")
 	}
 
 	return track, nil

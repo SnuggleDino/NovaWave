@@ -2,9 +2,8 @@ let sakuraInterval;
 
 function createSakuraPetals() {
     const container = document.getElementById('sakura-falling-container');
-    if (!container) return; // Or create it if missing
+    if (!container) return; 
     
-    // Create logic
     container.innerHTML = '';
     sakuraInterval = setInterval(() => {
         const petal = document.createElement('div');

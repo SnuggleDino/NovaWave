@@ -5,7 +5,6 @@ export default {
         document.documentElement.style.setProperty('--accent', '#c1d37f');
         if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
 
-        // Play Intro (assuming HTML exists in index.html, else inject)
         const intro = document.getElementById('snuggle-intro');
         if (intro) {
             intro.classList.add('visible');

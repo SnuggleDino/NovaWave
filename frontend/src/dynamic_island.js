@@ -10,20 +10,13 @@ export class DynamicIsland {
     show(message, type = 'info', duration = 3000) {
         if (!this.element || !this.messageEl) return;
 
-        // Clear existing timeout
-        if (this.timeoutId) {
-            clearTimeout(this.timeoutId);
-            this.timeoutId = null;
-        }
+        if (this.timeoutId) clearTimeout(this.timeoutId);
 
-        // Set content
         this.messageEl.textContent = message;
 
-        // Reset state
         if (this.spinnerEl) this.spinnerEl.style.display = 'none';
         if (this.iconEl) this.iconEl.style.display = 'none';
 
-        // Handle types
         if (type === 'loading') {
             if (this.spinnerEl) this.spinnerEl.style.display = 'block';
             duration = 0;
@@ -38,7 +31,6 @@ export class DynamicIsland {
                 this.iconEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #ef4444;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
             }
         } else {
-            // Info / Default - Timer Circle
             if (this.iconEl) {
                 this.iconEl.style.display = 'block';
                 this.iconEl.innerHTML = `
@@ -48,31 +40,20 @@ export class DynamicIsland {
                             stroke-dasharray="56.5" stroke-dashoffset="0"
                             style="animation: timer-anim var(--timer-duration, 3s) linear forwards;"></circle>
                 </svg>`;
-
-                const animDuration = duration > 0 ? duration : 3000;
-                this.iconEl.style.setProperty('--timer-duration', `${animDuration}ms`);
+                this.iconEl.style.setProperty('--timer-duration', `${duration > 0 ? duration : 3000}ms`);
             }
         }
 
-        // Show animation
         this.element.classList.add('visible');
 
-        // Auto hide
         if (duration > 0) {
-            this.timeoutId = setTimeout(() => {
-                this.hide();
-            }, duration);
+            this.timeoutId = setTimeout(() => this.hide(), duration);
         }
     }
 
     hide() {
-        if (this.element) {
-            this.element.classList.remove('visible');
-        }
-        if (this.timeoutId) {
-            clearTimeout(this.timeoutId);
-            this.timeoutId = null;
-        }
+        if (this.element) this.element.classList.remove('visible');
+        if (this.timeoutId) clearTimeout(this.timeoutId);
     }
 
     showLoading(message) {
