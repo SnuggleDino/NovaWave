@@ -339,28 +339,28 @@ html[data-theme="8_bit_theme"] body.is-mini .player-column {
     display: grid !important;
     width: 100% !important;
     height: 100% !important;
-    /* Col 1: Cover (140px), Col 2: Rest */
-    grid-template-columns: 140px 1fr !important;
+    /* Col 1: Cover (130px), Col 2: Rest */
+    grid-template-columns: 130px 1fr !important;
     /* Rows: Info | Vis | Buttons | Volume | Progress */
-    grid-template-rows: auto 40px auto auto auto !important;
+    grid-template-rows: auto 30px auto auto auto !important; 
     grid-template-areas:
         "cover info"
         "cover vis"
         "cover buttons"
         "cover volume"
         "cover progress" !important;
-    gap: 5px 15px !important;
+    gap: 2px 15px !important;
     align-items: center !important;
     padding: 0 !important;
     margin: 0 !important;
 }
 
-/* 1. COVER (Left) */
+/* 1. COVER (Slightly smaller) */
 html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
     grid-area: cover !important;
-    width: 140px !important;
-    height: 140px !important;
-    min-width: 140px !important;
+    width: 130px !important;
+    height: 130px !important;
+    min-width: 130px !important;
     aspect-ratio: 1/1 !important;
     border: 4px solid var(--accent) !important;
     margin: 0 !important;
@@ -368,7 +368,6 @@ html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
     background: #000 !important;
     align-self: center !important;
 }
-
 html[data-theme="8_bit_theme"] body.is-mini .cover-art-wrapper {
     width: 100% !important;
     height: 100% !important;
