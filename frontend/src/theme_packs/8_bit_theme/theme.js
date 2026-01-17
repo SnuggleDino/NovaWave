@@ -1,159 +1,151 @@
 
-let persistentCtx = null;
+import './theme.css';
 
-// Helper to create or get context
-const getCtx = () => {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return null;
-    
-    if (!persistentCtx || persistentCtx.state === 'closed') {
-        persistentCtx = new AudioContext();
+let audioCtx = null;
+
+function getAudioCtx() {
+    if (!audioCtx || audioCtx.state === 'closed') {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
-    return persistentCtx;
-};
+    return audioCtx;
+}
 
-// Helper for 8-bit sounds using shared context
-const playTone = (freq, type, duration) => {
+function playStartSound() {
     try {
-        const ctx = getCtx();
-        if (!ctx) return;
-        
-        // Ensure running
+        const ctx = getAudioCtx();
         if (ctx.state === 'suspended') ctx.resume();
 
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
 
-        osc.type = type || 'square';
-        osc.frequency.value = freq;
-        
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        const now = ctx.currentTime;
-        gain.gain.setValueAtTime(0.05, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-        osc.start(now);
-        osc.stop(now + duration);
-        
-        // No closing here, we keep it open while theme is active
-
-    } catch (e) {
-        console.error('8-Bit Sound Error:', e);
-    }
-};
-
-const playCoinSound = () => {
-    try {
-        const ctx = getCtx();
-        if (!ctx) return;
-        if (ctx.state === 'suspended') ctx.resume();
-
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
         osc.type = 'square';
+        osc.frequency.setValueAtTime(440, ctx.currentTime); // A4
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.1); // A5
+
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+
         osc.connect(gain);
         gain.connect(ctx.destination);
-
-        const now = ctx.currentTime;
-        // E5
-        osc.frequency.setValueAtTime(659.25, now);
-        gain.gain.setValueAtTime(0.1, now);
-        // B5
-        osc.frequency.setValueAtTime(987.77, now + 0.1);
-        gain.gain.setValueAtTime(0.1, now + 0.1);
-        
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-        
-        osc.start(now);
-        osc.stop(now + 0.5);
-
+        osc.start();
+        osc.stop(ctx.currentTime + 0.6);
     } catch (e) {
-        console.error('8-Bit Intro Sound Error:', e);
+        console.error("Audio Error:", e);
     }
-};
-
-const clickHandler = (e) => {
-    // Play a small 'tick' for clicks on interactive elements
-    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) {
-        playTone(400, 'square', 0.1);
-    }
-};
+}
 
 export default {
-    /**
-     * @function onEnable
-     * Called when the user selects the 8-Bit theme.
-     * @param {Object} app - The NovaWave application instance.
-     */
     onEnable: (app) => {
-        console.log('Applying theme: 8-Bit');
-
-        // 1. Activate CSS Variables
+        console.log("8-BIT THEME ACTIVATED");
+        
         document.documentElement.setAttribute('data-theme', '8_bit_theme');
+        document.body.classList.add('8-bit-active');
 
-        // 2. Force Retro Visualizer Style
+        // 2. Force Visualizer Style & Color
         if (app.visualizer) {
-            // Save previous style to restore later if needed (optional)
-            app.visualizer.setStyle('retro');
+            app.visualizer.updateSettings({ 
+                style: 'retro', 
+                accentColor: '#39ff14' // Force Neon Green
+            });
         }
-
-        // 3. Play Intro Animation & Sound
-        const introElement = document.getElementById('8_bit_theme-intro');
-        if (introElement) {
-            introElement.classList.add('visible');
+        
+        // 3. Lock Conflicting Settings (Timeout to ensure UI is ready/not overwritten)
+        setTimeout(() => {
+            const elementsToLock = [
+                'visualizer-style-select', 
+                'emoji-select', 
+                'theme-select', 
+                'animation-select',
+                'toggle-use-custom-color',
+                'toggle-gradient-title',
+                'accent-color-picker'
+            ];
             
-            // Play Intro Sound
-            playCoinSound();
+            elementsToLock.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.disabled = true;
+            });
 
-            // Remove the overlay after 3 seconds
-            setTimeout(() => {
-                introElement.classList.remove('visible');
-            }, 3000);
+            // Ensure "Custom Color" toggle is off
+            const colorToggle = document.getElementById('toggle-use-custom-color');
+            if (colorToggle && colorToggle.checked) {
+                colorToggle.checked = false;
+            }
+        }, 100);
+
+        // 4. Create Intro
+        const overlay = document.createElement('div');
+        overlay.id = 'retro-intro-layer';
+        overlay.className = 'retro-intro-overlay';
+        // Explicit styles to ensure visibility
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        
+        overlay.innerHTML = `
+            <div class="retro-logo"></div>
+            <div class="retro-text">NOVAWAVE 8-BIT</div>
+            <button id="retro-start-btn" class="retro-btn">PRESS START</button>
+        `;
+
+        document.body.appendChild(overlay);
+
+        const btn = overlay.querySelector('#retro-start-btn');
+        if (btn) {
+            btn.onclick = () => {
+                playStartSound();
+                overlay.style.transition = 'opacity 0.5s';
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.remove(), 500);
+            };
+        } else {
+            // Fallback if button not found (should not happen)
+            setTimeout(() => overlay.remove(), 3000);
         }
-
-        // 4. Set Background Animation
+        
+        // Force background animation class
         const bgAnim = document.querySelector('.background-animation');
         if (bgAnim) {
-            // Remove other types
-            bgAnim.className = 'background-animation';
-            bgAnim.style.display = 'block';
-            bgAnim.classList.add('type-8bit');
+            bgAnim.className = 'background-animation'; // Reset
+            bgAnim.classList.add('type-8bit'); // Add specific class if needed by logic
         }
-
-        // 5. Add Global Click Sound Listener
-        window.addEventListener('click', clickHandler);
     },
 
-    /**
-     * @function onDisable
-     * Called when the user switches to another theme.
-     */
     onDisable: (app) => {
-        // 1. Remove the theme attribute
+        console.log("8-BIT THEME DEACTIVATED");
         document.documentElement.removeAttribute('data-theme');
+        document.body.classList.remove('8-bit-active');
+
+        if (app.visualizer) {
+            // Restore default color (Blue) or let main.js handle it via resetToDefaultTheme
+            // We set it to default here to be safe
+            app.visualizer.updateSettings({ accentColor: '#38bdf8' }); 
+        }
+
+        // Unlock
+        const elementsToLock = [
+            'visualizer-style-select', 
+            'emoji-select', 
+            'theme-select', 
+            'animation-select',
+            'toggle-use-custom-color',
+            'toggle-gradient-title',
+            'accent-color-picker'
+        ];
         
-        // 2. Hide Intro if still active
-        const introElement = document.getElementById('8_bit_theme-intro');
-        if (introElement) {
-            introElement.classList.remove('visible');
-        }
+        elementsToLock.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.disabled = false;
+        });
 
-        // 3. Remove Background Animation
+        const overlay = document.getElementById('retro-intro-layer');
+        if (overlay) overlay.remove();
+
         const bgAnim = document.querySelector('.background-animation');
-        if (bgAnim) {
-            bgAnim.classList.remove('type-8bit');
-        }
+        if (bgAnim) bgAnim.classList.remove('type-8bit');
 
-        // 4. Remove Global Click Sound Listener
-        window.removeEventListener('click', clickHandler);
-
-        // 5. Cleanup Audio Context
-        if (persistentCtx && persistentCtx.state !== 'closed') {
-            persistentCtx.close().then(() => {
-                persistentCtx = null;
-            });
+        if (audioCtx) {
+            audioCtx.close();
+            audioCtx = null;
         }
     }
 };

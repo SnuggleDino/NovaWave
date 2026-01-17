@@ -963,8 +963,8 @@ function updateEmoji(emojiType, customEmoji) {
         isHtml = true;
     }
     else if (emojiType === 'eight_bit') {
-        emoji = '/src/theme_packs/8_bit_theme/assets/intro_icon.png';
-        isImage = true;
+        emoji = '<div class="eight-bit-cover"></div>';
+        isHtml = true;
     }
     else if (emojiType === 'loving_dinos') {
         emoji = lovingDinosImg;
@@ -976,7 +976,9 @@ function updateEmoji(emojiType, customEmoji) {
     if (emojiType === 'auto' || emojiType === undefined) {
         if (currentTrackPath) {
             let rawPath = currentTrackPath.replace(/\\/g, '/');
-            let safeUrlPath = encodeURI(rawPath).replace(/#/g, '%23');
+            // encodeURI preserves colons (C:) and slashes, but we must manually escape # and ? 
+            // because they have special meaning in URLs and would truncate the path.
+            let safeUrlPath = encodeURI(rawPath).replace(/#/g, '%23').replace(/\?/g, '%3F');
             const coverUrl = '/cover/' + safeUrlPath;
             isImage = true;
             emoji = coverUrl;

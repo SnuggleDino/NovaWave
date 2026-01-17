@@ -8,7 +8,6 @@
     <!-- Use direct paths relative to index.html -->
     <link rel="icon" type="image/png" href="/src/assets/icon.png">
     <link rel="stylesheet" href="/src/style.css">
-    <link rel="stylesheet" href="/src/theme_packs/8_bit_theme/theme.css">
 
     <!-- Fix for Wails: ensure context menu disabling if needed or drag regions -->
     <style>
@@ -59,12 +58,6 @@
             <h2 class="sakura-title">Sakura Spirit</h2>
             <p class="sakura-subtitle">Find your inner peace</p>
         </div>
-    </div>
-
-    <!-- 8-Bit Intro -->
-    <div id="8_bit_theme-intro" class="theme-8_bit-intro-overlay">
-        <img src="/src/theme_packs/8_bit_theme/assets/intro_icon.png" class="theme-8_bit-intro-img" alt="8-Bit Logo">
-        <div class="theme-8_bit-intro-text">PRESS START</div>
     </div>
 
     <div class="background-animation"></div>
@@ -1042,8 +1035,8 @@
                             </div>
 
                             <div class="theme-card" id="8bit-pack-item">
-                                <div class="theme-preview-box preview-8bit" style="background: #000;">
-                                    <span class="preview-emoji">👾</span>
+                                <div class="theme-preview-box preview-8bit" style="background: #000; overflow: hidden;">
+                                    <div class="preview-8bit-img-container"></div>
                                 </div>
                                 <div class="theme-info-box">
                                     <strong>8-Bit</strong>

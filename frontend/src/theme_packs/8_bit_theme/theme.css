@@ -1,270 +1,585 @@
-/* =========================================
-   1. CORE VARIABLES - 8-Bit Retro Style
-   ========================================= */
+/* ==========================================================================
+   8-BIT THEME PACK - CORE STYLES
+   ========================================================================== */
 
+/* --- Theme Variables --- */
 :root[data-theme="8_bit_theme"] {
-    /* Backgrounds: Deep Black & Dark Gray */
     --bg-main: #000000;
-    --bg-card: #202020;
-    --bg-card-light: #404040;
+    --bg-card: #000000;
+    --bg-card-hover: #111111;
+    --bg-card-light: #050505;
     
-    /* Accents: Retro Green & Hot Pink */
-    --accent: #39ff14; /* Neon Green */
-    --accent-soft: rgba(57, 255, 20, 0.2);
-    
-    /* Text: White & Pixel Green */
-    --text-main: #ffffff;
-    --text-muted: #39ff14;
-    
-    /* Borders & Shadows: Sharp hard edges */
-    --border-soft: #39ff14;
-    --shadow-soft: 4px 4px 0px rgba(57, 255, 20, 0.5); /* Hard block shadow */
-    
-    /* Radius: No rounded corners */
-    --radius-lg: 0px;
-    --radius-md: 0px;
-    --radius-sm: 0px;
+    /* Neon Green / Terminal Green */
+    --accent: #39ff14; 
+    --accent-dim: #1a8000;
+    --accent-glow: rgba(57, 255, 20, 0.4);
 
-    /* Font Family - Attempt to use pixel fonts or monospace */
-    --font-main: "Courier New", Courier, monospace;
+    --text-main: #39ff14;
+    --text-muted: #1a8000;
+    
+    --border-main: 4px solid #39ff14;
+    --border-thin: 2px solid #39ff14;
+
+    --font-stack: "Courier New", Courier, monospace;
 }
 
-/* =========================================
-   2. GLOBAL OVERRIDES
-   ========================================= */
-
+/* --- Global Resets & Typography --- */
 :root[data-theme="8_bit_theme"] body {
-    background-color: #000000;
-    background-image: radial-gradient(circle at center, #111111 0%, #000000 100%);
-    font-family: "Courier New", Courier, monospace;
-    letter-spacing: -0.5px;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-stack) !important;
+    letter-spacing: -1px;
+    text-transform: uppercase;
 }
 
-/* Force hard edges on everything */
+/* Make everything square! */
 :root[data-theme="8_bit_theme"] * {
     border-radius: 0px !important;
 }
 
-/* Player Controls */
-:root[data-theme="8_bit_theme"] .control-main {
-    background: var(--accent);
-    color: #000000;
-    border: 2px solid #ffffff;
-    box-shadow: 4px 4px 0px #ffffff;
+/* --- Background Animation (Scrolling Grid) --- */
+:root[data-theme="8_bit_theme"] .background-animation {
+    background: 
+        linear-gradient(transparent 95%, rgba(57, 255, 20, 0.2) 95%),
+        linear-gradient(90deg, transparent 95%, rgba(57, 255, 20, 0.2) 95%);
+    background-size: 40px 40px;
+    background-position: center top;
+    transform: perspective(500px) rotateX(20deg) scale(1.5);
+    opacity: 0.5;
+    z-index: -1;
+    animation: scrollGrid 5s linear infinite;
 }
 
-:root[data-theme="8_bit_theme"] .control-main:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px #ffffff;
+@keyframes scrollGrid {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 40px; }
 }
 
-/* Progress Bar */
-:root[data-theme="8_bit_theme"] .progress-fill {
-    background: var(--accent);
+/* --- UI Components Overrides --- */
+
+/* Buttons */
+:root[data-theme="8_bit_theme"] button {
+    background: #000 !important;
+    border: var(--border-thin) !important;
+    color: var(--text-main) !important;
+    box-shadow: 4px 4px 0px var(--accent-dim) !important;
+    transition: transform 0.1s !important;
+    text-transform: uppercase;
 }
 
-/* Sidebar / Nav */
-:root[data-theme="8_bit_theme"] .nav-btn.active {
-    background: var(--bg-card-light);
-    border-left: 4px solid var(--accent);
-    color: var(--accent);
+:root[data-theme="8_bit_theme"] button:active {
+    transform: translate(4px, 4px) !important;
+    box-shadow: none !important;
 }
 
-/* =========================================
-   3. INTRO ANIMATION (Theme Apply)
-   ========================================= */
-
-.theme-8_bit-intro-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 999999;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #000000;
-    font-family: "Courier New", Courier, monospace;
+:root[data-theme="8_bit_theme"] button:hover {
+    background: var(--text-main) !important;
+    color: #000 !important;
 }
 
-.theme-8_bit-intro-overlay.visible {
+/* Close Modal Button Animation */
+:root[data-theme="8_bit_theme"] .close-modal-btn {
+    transition: transform 0.3s ease !important;
     display: flex !important;
-    animation: flash-bg 0.5s steps(2, start);
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 20px !important;
 }
 
-.theme-8_bit-intro-text {
-    font-size: 48px;
-    color: #39ff14;
-    text-shadow: 4px 4px 0px #ffffff;
-    margin-top: 20px;
-    animation: blink-text 0.8s infinite;
+:root[data-theme="8_bit_theme"] .close-modal-btn:hover {
+    transform: rotate(90deg) !important;
+    background: var(--accent) !important;
+    color: #000 !important;
 }
 
-.theme-8_bit-intro-img {
-    width: 128px;
-    height: 128px;
-    image-rendering: pixelated;
-    animation: bounce 1s infinite steps(2);
+/* Panels / Cards / Modals */
+:root[data-theme="8_bit_theme"] .glass-panel,
+:root[data-theme="8_bit_theme"] .settings-modal,
+:root[data-theme="8_bit_theme"] .context-menu,
+:root[data-theme="8_bit_theme"] .dynamic-island-hint {
+    background: #000 !important;
+    border: var(--border-main) !important;
+    box-shadow: 10px 10px 0px var(--accent-dim) !important;
+    backdrop-filter: none !important;
 }
 
-@keyframes flash-bg {
-    0% { background: #ffffff; }
-    50% { background: #000000; }
-    100% { background: #000000; }
+/* Inputs / Selects */
+:root[data-theme="8_bit_theme"] input,
+:root[data-theme="8_bit_theme"] select {
+    background: #000 !important;
+    border: var(--border-thin) !important;
+    color: var(--text-main) !important;
+    font-family: var(--font-stack) !important;
 }
 
-@keyframes blink-text {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-}
-
-/* =========================================
-   4. TOGGLE SWITCH OVERRIDES (Retro Style)
-   ========================================= */
-
+/* --- TOGGLE SWITCHES (Square Retro Style) --- */
 :root[data-theme="8_bit_theme"] .toggle-switch {
-    width: 48px;
-    height: 24px;
+    width: 40px !important;
+    height: 20px !important;
+    border-radius: 0px !important;
 }
 
 :root[data-theme="8_bit_theme"] .slider {
-    background-color: #202020;
-    border: 2px solid #ffffff;
+    background-color: #000 !important;
+    border: 2px solid var(--text-main) !important;
     border-radius: 0px !important;
 }
 
 :root[data-theme="8_bit_theme"] .slider:before {
-    background-color: #ffffff;
     border-radius: 0px !important;
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    box-shadow: none;
-    transition: none; /* Instant movement */
+    background-color: var(--text-main) !important;
+    height: 12px !important;
+    width: 12px !important;
+    left: 2px !important;
+    bottom: 2px !important;
+    box-shadow: none !important;
 }
 
 :root[data-theme="8_bit_theme"] input:checked + .slider {
-    background-color: #202020;
-    border-color: var(--accent);
+    background-color: #000 !important;
+    border-color: var(--accent) !important;
 }
 
 :root[data-theme="8_bit_theme"] input:checked + .slider:before {
-    transform: translateX(24px);
-    background-color: var(--accent);
+    background-color: var(--accent) !important;
+    transform: translateX(20px) !important;
 }
 
-/* =========================================
-   5. MINI-INTRO (Settings Preview)
-   ========================================= */
+/* --- Player Specifics --- */
 
-/* The box itself */
-.preview-8bit {
-    position: relative;
-    background: #000 !important;
-    overflow: hidden;
-    border: 2px solid #fff;
+/* Main Play Button */
+:root[data-theme="8_bit_theme"] .control-main {
+    width: 80px !important;
+    height: 80px !important;
+    border: var(--border-main) !important;
+    background: var(--accent) !important;
+    color: #000 !important;
+}
+
+/* Progress Bar */
+:root[data-theme="8_bit_theme"] .progress-bar {
+    background: #111 !important;
+    border: 2px solid var(--accent);
+    height: 20px !important;
+}
+
+:root[data-theme="8_bit_theme"] .progress-fill {
+    background: var(--accent) !important;
+    box-shadow: inset 0 0 10px var(--bg-main);
+}
+
+/* Cover Art Container */
+:root[data-theme="8_bit_theme"] .cover-art-container {
+    border: var(--border-main) !important;
+    padding: 10px !important;
+    background: #111 !important;
+    box-shadow: 8px 8px 0px var(--accent-dim) !important;
+}
+
+/* Album Cover Image (CSS Replacement) */
+.eight-bit-cover {
+    width: 100%;
+    height: 100%;
+    background-image: url('./assets/8bit_album_cover.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     image-rendering: pixelated;
 }
 
-/* Hide the default static emoji */
-.preview-8bit .preview-emoji {
-    display: none;
+/* Text Fixes */
+:root[data-theme="8_bit_theme"] .track-title-large {
+    text-shadow: 2px 2px 0px var(--accent-dim);
 }
 
-/* Create a pixel ghost/invader using CSS box-shadow */
-.preview-8bit::after {
-    content: '';
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: transparent;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--accent);
-    box-shadow: 
-        -4px -6px, 0px -6px, 4px -6px,
-        -6px -2px, -4px -2px, -2px -2px, 0px -2px, 2px -2px, 4px -2px, 6px -2px,
-        -6px 2px, -4px 2px, -2px 2px, 0px 2px, 2px 2px, 4px 2px, 6px 2px,
-        -6px 6px, -2px 6px, 2px 6px, 6px 6px; 
-    animation: invader-move 2s steps(4) infinite alternate;
+/* Settings List Overlap Fix */
+:root[data-theme="8_bit_theme"] .setting-label p {
+    font-size: 0.7rem !important;
+    max-width: 60%;
+    margin-right: 15px;
+    opacity: 0.8;
 }
 
-@keyframes invader-move {
-    0% { transform: translate(-70%, -50%); color: var(--accent); }
-    100% { transform: translate(-30%, -50%); color: #fff; }
-}
-
-
-/* =========================================
-   6. 8-BIT BACKGROUND ANIMATION & CRT EFFECT
-   ========================================= */
-
-/* Add this class to .background-animation when 8-bit theme is active */
-.background-animation.type-8bit::before {
-    content: '';
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background-image: 
-        linear-gradient(transparent 95%, var(--accent-soft) 95%),
-        linear-gradient(90deg, transparent 95%, var(--accent-soft) 95%);
-    background-size: 40px 40px;
-    top: -50%;
-    left: -50%;
-    transform: perspective(300px) rotateX(60deg);
-    animation: grid-move 5s linear infinite;
-    opacity: 0.4;
-}
-
-/* Distant Stars */
-.background-animation.type-8bit::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Settings Preview Image (Fix for Build) */
+.preview-8bit-img-container {
     width: 100%;
     height: 100%;
-    background-image: 
-        radial-gradient(2px 2px at 20px 30px, #fff, transparent),
-        radial-gradient(2px 2px at 40px 70px, #fff, transparent),
-        radial-gradient(2px 2px at 50px 160px, #fff, transparent),
-        radial-gradient(2px 2px at 90px 40px, #fff, transparent),
-        radial-gradient(2px 2px at 130px 80px, #fff, transparent);
-    background-size: 200px 200px;
-    animation: stars-move 10s linear infinite;
-    opacity: 0.5;
+    background-image: url('./assets/8bit_themepack_icon.png');
+    background-size: cover;
+    background-position: center;
+    image-rendering: pixelated;
 }
 
-/* CRT Scanline Overlay - only active when 8bit theme is on */
-:root[data-theme="8_bit_theme"] body::after {
-    content: " ";
-    display: block;
-    position: absolute;
+/* --- MINI PLAYER OPTIMIZATION (GRID LAYOUT) --- */
+
+html[data-theme="8_bit_theme"] body.is-mini .app-shell {
+    border: 4px solid var(--accent) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .main-grid {
+    padding: 15px !important;
+    display: block !important;
+    height: 100% !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .player-column {
+    display: grid !important;
+    width: 100% !important;
+    height: 100% !important;
+    grid-template-columns: 100px 1fr auto !important;
+    grid-template-rows: 1fr 35px !important; /* Fixed height for progress area */
+    grid-template-areas:
+        "cover info controls"
+        "cover progress progress" !important;
+    gap: 5px 15px !important;
+    align-items: center !important;
+}
+
+/* 1. Cover Art (Fixed Square) */
+html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
+    grid-area: cover !important;
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    aspect-ratio: 1/1 !important;
+    border: 2px solid var(--accent) !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 5px !important;
+    box-sizing: border-box !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .cover-art-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+}
+
+/* 2. Track Info (Flexible width & Scrolling) - CONTAINER FOR VISUALIZER */
+html[data-theme="8_bit_theme"] body.is-mini .track-info-area {
+    grid-area: info !important;
+    text-align: left !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 0 10px !important; 
+    margin: 0 !important;
+    overflow: hidden !important; /* CRITICAL: Clips visualizer */
+    z-index: 10 !important;
+    position: relative !important; /* Context for absolute visualizer */
+}
+
+/* ... (Title styles kept same) ... */
+
+/* 3. Controls (Clean, no border) */
+html[data-theme="8_bit_theme"] body.is-mini .controls-area {
+    grid-area: controls !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 5px 10px !important;
+    width: auto !important;
+    z-index: 30 !important; 
+    background: transparent !important; /* No background needed if clipped correctly */
+    border-left: none !important; /* Remove unwanted divider */
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .control-btn {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-width: 2px !important;
+    box-shadow: 2px 2px 0px var(--accent-dim) !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .control-main {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    border-width: 2px !important;
+    box-shadow: 2px 2px 0px var(--accent-dim) !important;
+    padding: 0 !important; /* Ensure padding is reset */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* --- MINI PLAYER REPAIR: SAFE GRID LAYOUT --- */
+
+html[data-theme="8_bit_theme"] body.is-mini .app-shell {
+    border: 4px solid var(--accent) !important;
+    background: #000 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .main-grid {
+    padding: 10px !important;
+    display: block !important;
+    height: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* THE GRID */
+html[data-theme="8_bit_theme"] body.is-mini .player-column {
+    display: grid !important;
+    width: 100% !important;
+    height: 100% !important;
+    /* Col 1: Cover (140px), Col 2: Rest */
+    grid-template-columns: 140px 1fr !important;
+    /* Rows: Info | Vis | Controls | Progress */
+    grid-template-rows: auto 40px 1fr auto !important; 
+    grid-template-areas:
+        "cover info"
+        "cover vis"
+        "cover controls"
+        "cover progress" !important;
+    gap: 5px 15px !important; /* Vertical Gap 5px, Horizontal 15px */
+    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* 1. COVER (Left, spans all rows) */
+html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
+    grid-area: cover !important;
+    width: 140px !important;
+    height: 140px !important;
+    min-width: 140px !important;
+    aspect-ratio: 1/1 !important;
+    border: 4px solid var(--accent) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #000 !important;
+    align-self: center !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .cover-art-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+}
+
+/* 2. INFO (Row 1) */
+html[data-theme="8_bit_theme"] body.is-mini .track-info-area {
+    grid-area: info !important;
+    width: 100% !important;
+    min-width: 0 !important; /* Critical for grid text overflow */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .track-title-flex-box {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .track-title-large {
+    font-size: 1.2rem !important;
+    color: var(--accent) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important; /* Safer than clip */
+    margin: 0 !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini #main-favorite-btn {
+    position: static !important;
+    margin: 0 !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .track-artist-large {
+    display: none !important; /* Hide artist for cleaner look, or enable if space allows */
+}
+
+/* 3. VISUALIZER (Row 2) */
+html[data-theme="8_bit_theme"] body.is-mini .visualizer-container {
+    grid-area: vis !important;
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important; /* Fill the 40px row */
+    background: #111 !important;
+    border: 1px solid var(--accent-dim) !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    top: auto !important; left: auto !important; right: auto !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini canvas#visualizer-canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* 4. CONTROLS (Row 3) */
+html[data-theme="8_bit_theme"] body.is-mini .controls-area {
+    grid-area: controls !important;
+    display: flex !important;
+    flex-direction: row !important; /* Force row */
+    flex-wrap: nowrap !important; /* NEVER WRAP */
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .control-btn,
+html[data-theme="8_bit_theme"] body.is-mini .control-main {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    flex-shrink: 0 !important; /* Don't shrink buttons */
+    background: #000 !important;
+    border: 2px solid var(--accent) !important;
+    color: var(--accent) !important;
+    box-shadow: 2px 2px 0 var(--accent-dim) !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .control-btn:active {
+    transform: translate(2px, 2px) !important;
+    box-shadow: none !important;
+}
+
+/* Volume (Next to buttons in Row 3) */
+html[data-theme="8_bit_theme"] body.is-mini .volume-control-area {
+    /* Since we can't put it in the same grid cell easily with controls without wrapping div,
+       we position it absolute to the right of the control cell area, OR we assume Controls Area is wide enough */
+    grid-area: controls !important;
+    justify-self: end !important; /* Push to right side of cell */
+    display: flex !important;
+    width: 80px !important;
+    align-items: center !important;
+    position: relative !important;
+    z-index: 20 !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .volume-slider {
+    height: 6px !important;
+    background: #111 !important;
+    border: 1px solid var(--accent) !important;
+    width: 100% !important;
+}
+
+/* 5. PROGRESS (Row 4) */
+html[data-theme="8_bit_theme"] body.is-mini .progress-area {
+    grid-area: progress !important;
+    width: 100% !important;
+    height: 10px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    align-self: end !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .progress-bar {
+    height: 8px !important;
+    background: #111 !important;
+    border: 1px solid var(--accent) !important;
+    width: 100% !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .progress-fill {
+    background: var(--accent) !important;
+}
+
+/* Cleanups */
+html[data-theme="8_bit_theme"] body.is-mini .time-labels,
+html[data-theme="8_bit_theme"] body.is-mini .volume-icon {
+    display: none !important;
+}
+
+html[data-theme="8_bit_theme"] body.is-mini .app-shell,
+html[data-theme="8_bit_theme"] body.is-mini .main-grid {
+    overflow: hidden !important; /* Ensure nothing sticks out */
+}
+
+/* --- INTRO OVERLAY --- */
+.retro-intro-overlay {
+    position: fixed !important;
     top: 0;
     left: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    z-index: 999998; /* Below intro overlay (999999) but above everything else */
-    background-size: 100% 2px, 3px 100%;
-    pointer-events: none;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 2147483647;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #39ff14;
 }
 
-@keyframes grid-move {
-    0% { transform: perspective(300px) rotateX(60deg) translateY(0); }
-    100% { transform: perspective(300px) rotateX(60deg) translateY(40px); }
+.retro-logo {
+    width: 500px;
+    height: 500px;
+    background-image: url('./assets/8bit_intro_icon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+    margin-bottom: 40px;
+    animation: floatLogo 3s ease-in-out infinite;
 }
 
-@keyframes stars-move {
-    from { background-position: 0 0; }
-    to { background-position: 0 200px; }
+.retro-text {
+    font-family: "Courier New", monospace;
+    font-size: 48px;
+    font-weight: bold;
+    text-shadow: 4px 4px 0 #1a8000;
+    margin-bottom: 60px;
+    letter-spacing: 5px;
+}
+
+.retro-btn {
+    background: transparent;
+    border: 4px solid #39ff14;
+    color: #39ff14;
+    padding: 20px 50px;
+    font-size: 32px;
+    font-family: "Courier New", monospace;
+    cursor: pointer;
+    box-shadow: 8px 8px 0 #1a8000;
+    animation: blink 1s steps(2, start) infinite;
+    text-transform: uppercase;
+}
+
+.retro-btn:hover {
+    background: #39ff14;
+    color: #000;
+}
+
+@keyframes floatLogo {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
