@@ -1168,15 +1168,7 @@
         </div>
     </div>
 
-    <!-- ================= CONTEXT MENU ================= -->
-    <div id="context-menu" class="context-menu">
-        <ul>
-            <li id="context-menu-edit-title" data-lang-key="editTitle"></li>
-            <li id="context-menu-favorite" data-lang-key="toggleFavorite"></li>
-            <li id="context-menu-show-folder" data-lang-key="showInFolder"></li>
-            <li id="context-menu-delete" data-lang-key="deleteSong" style="color: #ef4444;"></li>
-        </ul>
-    </div>
+
 
     <!-- ================= EDIT TITLE MODAL ================= -->
     <div id="edit-title-overlay" class="overlay-container">
@@ -1190,34 +1182,29 @@
                     </svg> <span data-lang-key="editTitle"></span></h3>
                 <button id="edit-title-close-btn" class="close-modal-btn" data-lang-title="close">&times;</button>
             </div>
-            <div class="settings-content">
-                <div class="setting-item" style="flex-direction: column; align-items: flex-start;">
-                    <div class="setting-label" style="margin-bottom: 10px;">
-                        <strong data-lang-key="editTitle"></strong>
-                        <p data-lang-key="editTitleDesc"></p>
+            <div class="settings-content edit-track-content">
+                <div class="edit-field-group">
+                    <label for="edit-title-input" class="edit-label">Track Title</label>
+                    <input type="text" id="edit-title-input" class="edit-input-modern" placeholder="Enter new title..." autocomplete="off">
+                </div>
+
+                <div class="comparison-visualizer">
+                    <div class="comp-item old">
+                        <span class="comp-label">Original</span>
+                        <div id="original-title-preview" class="comp-text text-muted">...</div>
                     </div>
-                    <div class="setting-control" style="width: 100%;">
-                        <input type="text" id="edit-title-input" class="settings-input"
-                            data-lang-placeholder="editTitleInputPlaceholder" placeholder="Titel eingeben...">
+                    <div class="comp-arrow">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                    </div>
+                    <div class="comp-item new">
+                        <span class="comp-label">Preview</span>
+                        <div id="new-title-preview" class="comp-text text-accent">...</div>
                     </div>
                 </div>
 
-                <div class="edit-preview-box">
-                    <div class="edit-preview-item">
-                        <span class="edit-preview-label" data-lang-key="currentTitle"></span>
-                        <span id="original-title-preview" class="edit-preview-text"></span>
-                    </div>
-                    <div style="height: 1px; background: var(--border-soft); margin: 10px 0;"></div>
-                    <div class="edit-preview-item">
-                        <span class="edit-preview-label" data-lang-key="previewTitle"></span>
-                        <span id="new-title-preview" class="edit-preview-text" style="color: var(--accent);"></span>
-                    </div>
-                </div>
-
-                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px;">
-                    <button id="edit-title-cancel-btn" class="settings-button" data-lang-key="cancelBtn"></button>
-                    <button id="edit-title-save-btn" class="settings-button primary-btn"
-                        data-lang-key="saveBtn"></button>
+                <div class="modal-actions">
+                    <button id="edit-title-cancel-btn" class="modal-btn secondary">Cancel</button>
+                    <button id="edit-title-save-btn" class="modal-btn primary">Save Changes</button>
                 </div>
             </div>
         </div>

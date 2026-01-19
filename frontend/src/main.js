@@ -496,7 +496,7 @@ function applyTranslations() {
         if (el.classList.contains('apply-intro-btn')) {
             const card = el.closest('.intro-card');
             if (card) {
-                const isActive = card.contains('active');
+                const isActive = card.classList.contains('active');
                 el.dataset.langKey = isActive ? 'introActiveBtn' : 'introApplyBtn';
             }
         }
@@ -1388,27 +1388,12 @@ function setupEventListeners() {
         }
     });
 
-    bind(contextMenuDelete, 'click', () => {
-        if (contextTrackIndex === null || !playlist[contextTrackIndex]) return;
-        if (!deleteSongsEnabled) {
-            showNotification(tr('deletionDisabled'));
-            return;
-        }
-        handleDeleteTrack(playlist[contextTrackIndex].path);
-    });
-
-    bind(contextMenuFavorite, 'click', () => {
-        if (contextTrackIndex === null || !playlist[contextTrackIndex]) return;
-        toggleFavorite(playlist[contextTrackIndex].path);
-    });
-
     bind(mainFavoriteBtn, 'click', () => {
         if (currentIndex === -1 || !playlist[currentIndex]) return;
         toggleFavorite(playlist[currentIndex].path);
         updateUIForCurrentTrack();
     });
     bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
-    bind(contextMenuEditTitle, 'click', () => { if (contextTrackIndex === null) return; const t = playlist[contextTrackIndex]; if (originalTitlePreview) originalTitlePreview.textContent = t.title; if (newTitlePreview) newTitlePreview.textContent = t.title; if (editTitleInput) editTitleInput.value = t.title; editTitleOverlay.classList.add('visible'); });
     bind(editTitleInput, 'input', () => { if (newTitlePreview) newTitlePreview.textContent = editTitleInput.value; });
     bind(editTitleCancelBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleCloseBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
@@ -1654,7 +1639,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Downloader Tabs
-    const ytUrlInput = document.getElementById('youtube-url-input');
     if (tabYtBtn && tabSpotifyBtn) {
         // Init default state
         if (activeDownloaderMode === 'youtube') {
@@ -1749,29 +1733,29 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAudioEvents(); setupEventListeners();
 
     async function initializeApp() {
-        // Fast Path: Start Intro and Theme immediately
-        const cachedIntro = localStorage.getItem('activeIntro') || 'waterdrop';
-        const cachedTheme = localStorage.getItem('theme') || 'blue';
-
-        document.documentElement.setAttribute('data-theme', cachedTheme);
-
-        const startupCover = document.getElementById('startup-cover');
-        if (startupCover) startupCover.remove();
-
-        let introPromise = Promise.resolve();
-        if (cachedIntro !== 'none') {
-            const introMgr = new IntroManager({ activeIntro: cachedIntro });
-            introPromise = introMgr.play();
-            setTimeout(() => {
-                document.body.classList.add('ready');
-            }, 3200);
-        } else {
-            document.body.classList.add('ready');
-        }
-
-        const loadSettingsPromise = loadSettings();
-
         try {
+            // Fast Path: Start Intro and Theme immediately
+            const cachedIntro = localStorage.getItem('activeIntro') || 'waterdrop';
+            const cachedTheme = localStorage.getItem('theme') || 'blue';
+
+            document.documentElement.setAttribute('data-theme', cachedTheme);
+
+            const startupCover = document.getElementById('startup-cover');
+            if (startupCover) startupCover.remove();
+
+            let introPromise = Promise.resolve();
+            if (cachedIntro !== 'none') {
+                const introMgr = new IntroManager({ activeIntro: cachedIntro });
+                introPromise = introMgr.play();
+                setTimeout(() => {
+                    document.body.classList.add('ready');
+                }, 3200);
+            } else {
+                document.body.classList.add('ready');
+            }
+
+            const loadSettingsPromise = loadSettings();
+
             await loadSettingsPromise;
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
@@ -1807,6 +1791,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (err) {
             console.error("Initialization failed:", err);
+            const startupCover = document.getElementById('startup-cover');
+            if (startupCover) startupCover.remove();
             document.body.classList.add('ready');
         }
     }
@@ -1824,23 +1810,21 @@ document.addEventListener('DOMContentLoaded', () => {
             newBtn.addEventListener('click', async () => {
                 try {
                     // Direct call to system dialog
-                    const path = await windowApi.selectMusicFolder();
-                    if (path && typeof path === 'string') {
-                        saveSetting('currentFolderPath', path);
-                        currentFolderPath = path;
+                    const res = await windowApi.selectMusicFolder();
+                    if (res && res.tracks) {
+                        saveSetting('currentFolderPath', res.folderPath);
+                        currentFolderPath = res.folderPath;
 
                         // Refresh the folder
-                        const res = await windowApi.refreshMusicFolder(path);
-                        if (res && res.tracks) {
-                            basePlaylist = res.tracks;
-                            sortPlaylist(sortMode);
-                            renderPlaylist();
-                            updateUIForCurrentTrack();
-                            showNotification(tr('folderLoaded', path));
+                        basePlaylist = res.tracks;
+                        playlist = [...basePlaylist];
+                        sortPlaylist(sortMode);
+                        renderPlaylist();
+                        updateUIForCurrentTrack();
+                        showNotification(tr('folderLoaded', res.folderPath));
 
-                            const libOverlay = document.getElementById('library-overlay');
-                            if (libOverlay) libOverlay.classList.remove('visible');
-                        }
+                        const libOverlay = document.getElementById('library-overlay');
+                        if (libOverlay) libOverlay.classList.remove('visible');
                     }
                 } catch (e) {
                     console.error("Load folder failed:", e);
@@ -1863,21 +1847,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                newRefBtn.style.transform = 'rotate(360deg)';
-                newRefBtn.style.transition = 'transform 1s ease';
-
                 const res = await windowApi.refreshMusicFolder(path);
                 if (res && res.tracks) {
+                    currentFolderPath = res.folderPath;
+                    saveSetting('currentFolderPath', currentFolderPath);
                     basePlaylist = res.tracks;
+                    playlist = [...basePlaylist];
                     sortPlaylist(sortMode);
                     renderPlaylist();
                     showNotification(tr('folderRefreshed'));
                 }
-
-                setTimeout(() => {
-                    newRefBtn.style.transform = 'none';
-                    newRefBtn.style.transition = 'none';
-                }, 1000);
             });
         }
     }, 500);
@@ -1928,9 +1907,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cmEdit) cmEdit.onclick = () => {
             if (contextTrackIndex === null) return;
             const t = playlist[contextTrackIndex];
+            
+            // Ensure elements exist before accessing
             if (originalTitlePreview) originalTitlePreview.textContent = t.title;
             if (newTitlePreview) newTitlePreview.textContent = t.title;
             if (editTitleInput) editTitleInput.value = t.title;
+            
             if (editTitleOverlay) editTitleOverlay.classList.add('visible');
         };
 

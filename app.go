@@ -508,8 +508,16 @@ func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
 	err := cmd.Run()
 	if err != nil { return SimpleResult{Success: false, Error: err.Error()} }
 
-	os.Remove(pathStr)
-	os.Rename(tempPath, pathStr)
+	err = os.Remove(pathStr)
+	if err != nil {
+		os.Remove(tempPath)
+		return SimpleResult{Success: false, Error: "File locked or read-only: " + err.Error()}
+	}
+	
+	err = os.Rename(tempPath, pathStr)
+	if err != nil {
+		return SimpleResult{Success: false, Error: "Rename failed: " + err.Error()}
+	}
 	return SimpleResult{Success: true}
 }
 
