@@ -42,6 +42,10 @@ export function RefreshMusicFolder(arg1) {
   return window['go']['main']['App']['RefreshMusicFolder'](arg1);
 }
 
+export function ResetConfig() {
+  return window['go']['main']['App']['ResetConfig']();
+}
+
 export function SaveConfig(arg1) {
   return window['go']['main']['App']['SaveConfig'](arg1);
 }

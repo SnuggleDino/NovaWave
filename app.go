@@ -263,6 +263,48 @@ cwd, _ := os.Getwd()
 	return loadedConf
 }
 
+func (a *App) ResetConfig() SimpleResult {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	defaultConf := Config{
+		Theme:                   "midnight",
+		Volume:                  0.2,
+		Language:                "de",
+		CoverMode:               "note",
+		CustomCoverEmoji:        "🎵",
+		AnimationMode:           "flow",
+		VisualizerEnabled:       true,
+		VisualizerStyle:         "bars",
+		VisSensitivity:          1.5,
+		AutoLoadLastFolder:      true,
+		EnableFocusMode:         true,
+		EnableDragAndDrop:       true,
+		CustomAccentColor:       "#38bdf8",
+		TargetFps:               60,
+		BassBoostValue:          6,
+		TrebleBoostValue:        6,
+		ReverbValue:             30,
+		PlaybackSpeed:           1.0,
+		EnableFavoritesPlaylist: true,
+		AudioQuality:            "best",
+		ActiveIntro:             "waterdrop",
+	}
+
+	cwd, _ := os.Getwd()
+	defaultConf.DownloadFolder = cwd
+
+	path := getConfigPath()
+	os.MkdirAll(filepath.Dir(path), 0755)
+
+	data, _ := json.MarshalIndent(defaultConf, "", "  ")
+	err := os.WriteFile(path, data, 0644)
+	if err != nil {
+		return SimpleResult{Success: false, Error: "Reset failed: " + err.Error()}
+	}
+	return SimpleResult{Success: true}
+}
+
 func (a *App) SaveConfig(config Config) string {
 	path := getConfigPath()
 	os.MkdirAll(filepath.Dir(path), 0755)

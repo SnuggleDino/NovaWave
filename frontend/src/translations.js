@@ -181,6 +181,11 @@ export const translations = {
         cmFav: 'Favorit',
         cmFolder: 'Im Ordner anzeigen',
         cmDelete: 'Löschen',
+        sectionReset: 'App Zurücksetzen',
+        resetDescription: 'Setzt alle Einstellungen (Theme, Lautstärke, Favoriten) auf den Standard zurück. Ihre Musikdateien bleiben erhalten.',
+        warningTitle: 'Warnung',
+        resetWarning: 'Dieser Vorgang kann nicht rückgängig gemacht werden. Die App wird neu gestartet.',
+        resetButton: 'App Zurücksetzen',
     },
     en: {
         appTitle: 'NovaWave - Music Player', appSubtitle: 'Your Music \u2022 Your Style \u2022 Your Rules',
@@ -364,5 +369,10 @@ export const translations = {
         cmFav: 'Favorite',
         cmFolder: 'Show in Folder',
         cmDelete: 'Delete',
+        sectionReset: 'Reset App',
+        resetDescription: 'Resets all settings (theme, volume, favorites) to default. Your music files will remain untouched.',
+        warningTitle: 'Warning',
+        resetWarning: 'This action cannot be undone. The app will restart.',
+        resetButton: 'RESET APP',
     }
 };

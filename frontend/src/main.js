@@ -28,6 +28,7 @@ const windowApi = {
     showInFolder: App.ShowInFolder,
     moveFile: App.MoveFile,
     setWindowSize: App.SetWindowSize,
+    resetConfig: App.ResetConfig,
     onMediaControl: (cb) => { /* Not implemented */ },
     onDownloadProgress: (cb) => { /* Not implemented */ },
     sendPlaybackState: App.SendPlaybackState
@@ -1266,6 +1267,28 @@ function setupEventListeners() {
         URL.revokeObjectURL(url);
         showNotification(tr('exportSuccess'));
     });
+
+    const btnResetApp = document.getElementById('btn-reset-app');
+    bind(btnResetApp, 'click', async () => {
+        if (confirm(tr('resetWarning'))) {
+            try {
+                const res = await windowApi.resetConfig();
+                if (res.success) {
+                    localStorage.clear();
+                    showNotification("Reset complete. Restarting...", "success");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification("Reset failed: " + res.error, "error");
+                }
+            } catch (e) {
+                console.error("Reset error:", e);
+                showNotification("Reset error", "error");
+            }
+        }
+    });
+
     bind(toggleUseCustomColor, 'change', (e) => {
         saveSetting('useCustomColor', e.target.checked);
         accentColorContainer.classList.toggle('hidden', !e.target.checked);
