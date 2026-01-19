@@ -12,6 +12,7 @@ const themeAssets = import.meta.glob('./**/*.{png,jpg,jpeg,svg,ico,mp3,wav}', { 
 
 let activeThemeId = null;
 let loadedThemes = {}; 
+let currentAppInstance = null;
 
 // Populate theme modules cache
 for (const path in themeModules) {
@@ -22,6 +23,7 @@ for (const path in themeModules) {
 export const ThemePackListener = {
     
     init: function(appInstance) {
+        currentAppInstance = appInstance;
         const container = document.getElementById('theme-pack-grid');
         if (!container) return;
 
@@ -141,6 +143,15 @@ export const ThemePackListener = {
         if (toggle) {
             toggle.checked = true;
             this.enableTheme(savedThemeId, app);
+        }
+    },
+
+    deactivateActivePack: function() {
+        if (activeThemeId && currentAppInstance) {
+            this.disableTheme(activeThemeId, currentAppInstance);
+            // Also uncheck the toggle
+            const toggle = document.getElementById(`toggle-${activeThemeId}`);
+            if (toggle) toggle.checked = false;
         }
     }
 };

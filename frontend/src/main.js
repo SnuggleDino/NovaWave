@@ -70,7 +70,7 @@ let dynamicIsland;
 let miniPlayer;
 
 // DOM Elements
-let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, mainFavoriteBtn;
+let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption;
 // Spotify & Tabs
 let spotifyUrlInput, tabYtBtn, tabSpotifyBtn, viewYt, viewSpotify;
 let favorites = [];
@@ -429,14 +429,6 @@ function updateUIForCurrentTrack() {
     if (trackTitleEl) trackTitleEl.textContent = track.title;
     if (trackArtistEl) trackArtistEl.textContent = track.artist || tr('unknownArtist');
 
-    if (mainFavoriteBtn) {
-        const isFav = favoritesSet.has(track.path);
-        mainFavoriteBtn.style.display = 'flex';
-        mainFavoriteBtn.style.color = isFav ? '#fbbf24' : 'var(--text-muted)';
-        const svg = mainFavoriteBtn.querySelector('svg');
-        if (svg) svg.setAttribute('fill', isFav ? 'currentColor' : 'none');
-    }
-
     updateEmoji(emojiMode, customEmoji);
     updateActiveTrackInPlaylist();
     updateTrackTitleScroll();
@@ -774,14 +766,17 @@ async function loadSettings() {
 
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
         currentFolderPath = settings.currentFolderPath;
-        windowApi.refreshMusicFolder(currentFolderPath).then(result => {
-            if (result && result.tracks) {
-                basePlaylist = result.tracks;
+        try {
+            const result = await windowApi.refreshMusicFolder(currentFolderPath);
+            if (result && result.folderPath) {
+                basePlaylist = result.tracks || [];
                 playlist = [...basePlaylist];
                 sortPlaylist(sortMode);
                 updateUIForCurrentTrack();
             }
-        }).catch(e => console.error("Auto-load failed:", e));
+        } catch (e) {
+            console.error("Auto-load failed:", e);
+        }
     }
 
     if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
@@ -1372,11 +1367,6 @@ function setupEventListeners() {
         }
     });
 
-    bind(mainFavoriteBtn, 'click', () => {
-        if (currentIndex === -1 || !playlist[currentIndex]) return;
-        toggleFavorite(playlist[currentIndex].path);
-        updateUIForCurrentTrack();
-    });
     bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
     bind(editTitleInput, 'input', () => { if (newTitlePreview) newTitlePreview.textContent = editTitleInput.value; });
     bind(editTitleCancelBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
@@ -1509,8 +1499,6 @@ document.addEventListener('DOMContentLoaded', () => {
     newTitlePreview = $('#new-title-preview'); editTitleCancelBtn = $('#edit-title-cancel-btn'); editTitleSaveBtn = $('#edit-title-save-btn');
     editTitleCloseBtn = $('#edit-title-close-btn');
     toggleFavoritesBtn = $('#toggle-favorites-btn'); toggleFavoritesOption = $('#toggle-favorites-option');
-    mainFavoriteBtn = $('#main-favorite-btn');
-    confirmDeleteOverlay = $('#confirm-delete-overlay'); confirmDeleteBtn = $('#confirm-delete-btn'); confirmDeleteCancelBtn = $('#confirm-delete-cancel-btn');
     confirmDeleteCloseBtn = $('#confirm-delete-close-btn');
     autoLoadLastFolderToggle = $('#toggle-auto-load-last-folder'); toggleMiniMode = $('#toggle-mini-mode');
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
