@@ -12,8 +12,6 @@ export function GetAppMeta():Promise<main.AppMeta>;
 
 export function GetSettings():Promise<main.Config>;
 
-export function GetSpotifyMetadata(arg1:string):Promise<main.SpotifyTrack>;
-
 export function GetTracks(arg1:string):Promise<Array<main.Track>>;
 
 export function IsSpotifyUrl(arg1:string):Promise<boolean>;
@@ -27,8 +25,6 @@ export function RefreshMusicFolder(arg1:string):Promise<main.FolderResult>;
 export function SaveConfig(arg1:main.Config):Promise<string>;
 
 export function SelectFolder():Promise<string>;
-
-export function SelectFolderDialog():Promise<string>;
 
 export function SelectMusicFolder():Promise<main.FolderResult>;
 

@@ -22,10 +22,6 @@ export function GetSettings() {
   return window['go']['main']['App']['GetSettings']();
 }
 
-export function GetSpotifyMetadata(arg1) {
-  return window['go']['main']['App']['GetSpotifyMetadata'](arg1);
-}
-
 export function GetTracks(arg1) {
   return window['go']['main']['App']['GetTracks'](arg1);
 }
@@ -52,10 +48,6 @@ export function SaveConfig(arg1) {
 
 export function SelectFolder() {
   return window['go']['main']['App']['SelectFolder']();
-}
-
-export function SelectFolderDialog() {
-  return window['go']['main']['App']['SelectFolderDialog']();
 }
 
 export function SelectMusicFolder() {
