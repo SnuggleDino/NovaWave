@@ -417,7 +417,7 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 	if err != nil { return nil, err }
 
 	ffprobePath := a.getBinaryPath("ffprobe.exe")
-	var tracks []Track
+	tracks := make([]Track, 0)
 	var mutex sync.Mutex
 	sem := make(chan struct{}, 10)
 	var wg sync.WaitGroup

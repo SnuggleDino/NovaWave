@@ -1010,8 +1010,8 @@ function setupEventListeners() {
     bind(libraryCloseBtn, 'click', () => { libraryOverlay.classList.remove('visible'); });
     bind(loadFolderBtn, 'click', async () => {
         const r = await windowApi.selectMusicFolder();
-        if (r && r.tracks) {
-            basePlaylist = r.tracks;
+        if (r && r.folderPath) {
+            basePlaylist = r.tracks || [];
             playlist = [...basePlaylist];
             currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
             renderPlaylist();
@@ -1811,12 +1811,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     // Direct call to system dialog
                     const res = await windowApi.selectMusicFolder();
-                    if (res && res.tracks) {
+                    if (res && res.folderPath) {
                         saveSetting('currentFolderPath', res.folderPath);
                         currentFolderPath = res.folderPath;
 
                         // Refresh the folder
-                        basePlaylist = res.tracks;
+                        basePlaylist = res.tracks || [];
                         playlist = [...basePlaylist];
                         sortPlaylist(sortMode);
                         renderPlaylist();

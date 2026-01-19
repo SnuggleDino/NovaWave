@@ -10,8 +10,8 @@ type AppMeta struct {
 }
 
 var CurrentMeta = AppMeta{
-	Version:    "2.5.10 GO",                                     // NovaWave Music Player Version
-	BuildDate:  "17.01.2026",                                    // Build Date
+	Version:    "2.5.11 GO",                                     // NovaWave Music Player Version
+	BuildDate:  "20.01.2026",                                    // Build Date
 	Author:     "SnuggleDino",                                   // Author
 	GoVersion:  "v2.9.2 (Go 1.23)",                              // Go Version
 	GithubUser: "SnuggleDino",                                   // Github User
