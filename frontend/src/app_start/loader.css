@@ -1,0 +1,71 @@
+#app-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #050505;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease;
+}
+
+#app-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader-logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 40px;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
+    animation: loader-pulse 2s infinite ease-in-out;
+}
+
+@keyframes loader-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+.loader-progress-container {
+    width: 300px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.loader-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent, #38bdf8);
+    border-radius: 10px;
+    transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 0 15px var(--accent, #38bdf8);
+}
+
+.loader-status {
+    margin-top: 15px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    min-height: 1.2em;
+    font-weight: 600;
+}

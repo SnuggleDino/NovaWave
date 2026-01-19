@@ -63,8 +63,7 @@ export class EightBitIntro extends Intro {
             font-family: 'Courier New', monospace; color: white;
             image-rendering: pixelated;
         `;
-        
-        // Inject keyframes
+
         const style = document.createElement('style');
         style.innerHTML = `
             @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -97,11 +96,10 @@ export class EightBitIntro extends Intro {
         btn.onclick = () => {
             this.playSound();
         };
-        // Audio context requires user interaction to resume
     }
 
     playSound() {
-         try {
+        try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -114,7 +112,7 @@ export class EightBitIntro extends Intro {
             gain.connect(ctx.destination);
             osc.start();
             osc.stop(ctx.currentTime + 0.5);
-        } catch(e) {}
+        } catch (e) { }
     }
 
     unmount() {

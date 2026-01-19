@@ -11,6 +11,7 @@ import { MiniPlayer } from './mini_player.js';
 import { ThemePackListener } from './theme_packs/theme_pack_listener.js';
 import { ThemeListener } from './app_themes/theme_listener.js';
 import { BackgroundAnimListener } from './background_animations/background_anim_listener.js';
+import { AppLoader } from './app_start/app_loader.js';
 
 // Wails API Mapping
 const windowApi = {
@@ -159,7 +160,7 @@ function updateActiveFeaturesIndicator() {
 function saveSetting(key, value) {
     if (settings) settings[key] = value;
     windowApi.setSetting(key, value);
-    if (key === 'activeIntro' || key === 'theme') localStorage.setItem(key, value);
+    if (key === 'activeIntro' || key === 'theme' || key === 'language') localStorage.setItem(key, value);
 }
 
 function updateCachedColor() {
@@ -704,6 +705,7 @@ async function loadSettings() {
         currentLanguage = 'de';
     }
     document.documentElement.lang = currentLanguage;
+    localStorage.setItem('language', currentLanguage);
 
     // Restore Favorites
     if (settings.favorites) {
@@ -765,6 +767,7 @@ async function loadSettings() {
     }
 
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
+        AppLoader.update(50, tr('loaderLoadingLibrary'));
         currentFolderPath = settings.currentFolderPath;
         try {
             const result = await windowApi.refreshMusicFolder(currentFolderPath);
@@ -1706,39 +1709,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function initializeApp() {
         try {
-            // Fast Path: Start Intro and Theme immediately
-            const cachedIntro = localStorage.getItem('activeIntro') || 'waterdrop';
-            const cachedTheme = localStorage.getItem('theme') || 'midnight';
-
-            document.documentElement.setAttribute('data-theme', cachedTheme);
-
-            const startupCover = document.getElementById('startup-cover');
-            if (startupCover) startupCover.remove();
-
-            let introPromise = Promise.resolve();
-            if (cachedIntro !== 'none') {
-                const introMgr = new IntroManager({ activeIntro: cachedIntro });
-                introPromise = introMgr.play();
-                setTimeout(() => {
-                    document.body.classList.add('ready');
-                }, 3200);
-            } else {
-                document.body.classList.add('ready');
+            // Pre-detect language for loader
+            const savedLang = localStorage.getItem('language');
+            if (savedLang) {
+                currentLanguage = savedLang;
+                document.documentElement.lang = currentLanguage;
             }
 
-            const loadSettingsPromise = loadSettings();
+            AppLoader.init();
+            AppLoader.update(5, tr('loaderBooting'));
 
-            await loadSettingsPromise;
+            // Fast Path: Apply cached theme
+            const cachedTheme = localStorage.getItem('theme') || 'midnight';
+            document.documentElement.setAttribute('data-theme', cachedTheme);
+            
+            AppLoader.update(20, tr('loaderModules'));
+            // Initialize Dynamic Themes & Animations
+            ThemeListener.init();
+            BackgroundAnimListener.init();
+
+            AppLoader.update(30, tr('loaderLoadingSettings'));
+            // Load Settings (includes folder scan)
+            await loadSettings();
+
+            AppLoader.update(70, tr('loaderApplying'));
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
-            // Initialize Dynamic Themes
-            ThemeListener.init();
-            
-            // Initialize Background Animations
-            BackgroundAnimListener.init();
-
-            // Initialize Dynamic Theme Packs
+            // Initialize Theme Packs
             ThemePackListener.init({ visualizer, ui: { updateEmoji, updateCachedColor, resetToDefaultTheme }, settings });
             
             if (settings.theme) {
@@ -1755,23 +1753,39 @@ document.addEventListener('DOMContentLoaded', () => {
             if (volumeSlider) volumeSlider.value = currentVolume;
             if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
 
+            AppLoader.update(90, tr('loaderAudio'));
             initVisualizerEngine();
 
-            // Restore active theme pack if any
             if (settings.activeThemePack) {
-                // Small delay to ensure DOM is ready and listeners bound
                 setTimeout(() => {
                     ThemePackListener.restoreState(settings.activeThemePack, { visualizer, ui: { updateEmoji }, settings });
                 }, 500);
             }
 
-            document.body.classList.add('ready');
+            AppLoader.update(100, tr('loaderReady'));
+            AppLoader.finish();
+
+            // Start Intro or Show App
+            const activeIntro = settings.activeIntro || 'waterdrop';
+            if (activeIntro !== 'none') {
+                setTimeout(() => {
+                    const introMgr = new IntroManager({ activeIntro: activeIntro });
+                    introMgr.play().then(() => {
+                        document.body.classList.add('ready');
+                    });
+                }, 600); // Wait for loader to fade
+            } else {
+                setTimeout(() => document.body.classList.add('ready'), 500);
+            }
 
         } catch (err) {
             console.error("Initialization failed:", err);
-            const startupCover = document.getElementById('startup-cover');
-            if (startupCover) startupCover.remove();
+            const loader = document.getElementById('app-loader');
+            if (loader) loader.remove();
+            const cover = document.getElementById('startup-cover');
+            if (cover) cover.remove();
             document.body.classList.add('ready');
+            alert("Init Error: " + err.message);
         }
     }
 

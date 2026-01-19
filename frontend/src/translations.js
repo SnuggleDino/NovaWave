@@ -1,4 +1,7 @@
 export const translations = {
+    //
+    // DEUTSCH TRANSLATION
+    //
     de: {
         appTitle: 'NovaWave - Musik Player', appSubtitle: 'Deine Musik \u2022 Dein Style \u2022 Deine Regeln',
         nothingPlaying: 'Nichts spielt', unknownArtist: 'Unbekannter K\u00FCnstler',
@@ -186,7 +189,18 @@ export const translations = {
         warningTitle: 'Warnung',
         resetWarning: 'Dieser Vorgang kann nicht rückgängig gemacht werden. Die App wird neu gestartet.',
         resetButton: 'App Zurücksetzen',
+        loaderBooting: 'System wird gestartet...',
+        loaderModules: 'Module werden geladen...',
+        loaderLoadingSettings: 'Lade Einstellungen...',
+        loaderLoadingLibrary: 'Lade Bibliothek...',
+        loaderApplying: 'Konfiguration wird angewendet...',
+        loaderAudio: 'Audio-Engine wird initialisiert...',
+        loaderReady: 'Startbereit',
     },
+
+    //
+    // ENGLISH TRANSLATIONS
+    //
     en: {
         appTitle: 'NovaWave - Music Player', appSubtitle: 'Your Music \u2022 Your Style \u2022 Your Rules',
         nothingPlaying: 'Nothing Playing', unknownArtist: 'Unknown Artist',
@@ -374,5 +388,12 @@ export const translations = {
         warningTitle: 'Warning',
         resetWarning: 'This action cannot be undone. The app will restart.',
         resetButton: 'RESET APP',
+        loaderBooting: 'Booting System...',
+        loaderModules: 'Loading Modules...',
+        loaderLoadingSettings: 'Loading Settings...',
+        loaderLoadingLibrary: 'Loading Library...',
+        loaderApplying: 'Applying Configuration...',
+        loaderAudio: 'Initializing Audio Engine...',
+        loaderReady: 'Ready to Start',
     }
 };
