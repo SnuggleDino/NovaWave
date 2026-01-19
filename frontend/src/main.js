@@ -10,6 +10,7 @@ import { DynamicIsland } from './dynamic_island.js';
 import { MiniPlayer } from './mini_player.js';
 import { ThemePackListener } from './theme_packs/theme_pack_listener.js';
 import { ThemeListener } from './app_themes/theme_listener.js';
+import { BackgroundAnimListener } from './background_animations/background_anim_listener.js';
 
 // Wails API Mapping
 const windowApi = {
@@ -869,50 +870,9 @@ function updateLoopIcon() {
 }
 
 function applyAnimationSetting(mode) {
-    if (!backgroundAnimationEl) return;
-    backgroundAnimationEl.className = 'background-animation';
-    backgroundAnimationEl.innerHTML = '';
-    if (snowInterval) clearInterval(snowInterval);
-
-    if (mode && mode !== 'off') {
-        backgroundAnimationEl.style.display = 'block';
-        backgroundAnimationEl.classList.add(`type-${mode}`);
-        if (mode === 'xmas') startSnowfall();
-        if (mode === 'starry') {
-        }
-    } else {
-        backgroundAnimationEl.style.display = 'none';
-    }
+    BackgroundAnimListener.setAnimation(mode);
 }
 
-function startSnowfall() {
-    const isMini = document.body.classList.contains('is-mini');
-    const interval = isMini ? 800 : 400;
-
-    const createSnowflake = () => {
-        if (!backgroundAnimationEl) return;
-        const flake = document.createElement('span');
-        const duration = Math.random() * 5 + 8;
-
-        flake.style.left = Math.random() * 100 + 'vw';
-        flake.style.animationDuration = duration + 's';
-        flake.style.opacity = isMini ? (Math.random() * 0.4 + 0.2) : (Math.random() * 0.7 + 0.3);
-        flake.style.fontSize = isMini ? (Math.random() * 6 + 8) + 'px' : (Math.random() * 10 + 12) + 'px';
-        flake.innerHTML = '\u2744';
-        flake.style.position = 'absolute';
-        flake.style.top = '-20px';
-        flake.style.color = 'white';
-        flake.style.pointerEvents = 'none';
-        flake.style.animationName = 'snowfall';
-        flake.style.animationTimingFunction = 'linear';
-        flake.style.animationIterationCount = 'infinite';
-        flake.style.filter = 'blur(1px)';
-        backgroundAnimationEl.appendChild(flake);
-
-        setTimeout(() => { flake.remove(); }, (duration * 1000) + 100);
-    };
-    snowInterval = setInterval(createSnowflake, interval);
-}
 function formatTime(s) { if (isNaN(s)) return '0:00'; const m = Math.floor(s / 60), sc = Math.floor(s % 60).toString().padStart(2, '0'); return `${m}:${sc}`; }
 
 function updateDebugSize() {
@@ -1763,6 +1723,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Initialize Dynamic Themes
             ThemeListener.init();
+            
+            // Initialize Background Animations
+            BackgroundAnimListener.init();
 
             // Initialize Dynamic Theme Packs
             ThemePackListener.init({ visualizer, ui: { updateEmoji, updateCachedColor, resetToDefaultTheme }, settings });

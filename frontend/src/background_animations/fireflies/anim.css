@@ -1,0 +1,21 @@
+.background-animation.type-fireflies {
+    overflow: hidden;
+    background: radial-gradient(circle at bottom, #0f172a, #000);
+}
+
+.firefly {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fbbf24;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #fbbf24;
+    animation: fly 10s ease-in-out infinite alternate;
+}
+
+@keyframes fly {
+    0% { transform: translate(0, 0); opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translate(var(--mx), var(--my)); opacity: 0; }
+}

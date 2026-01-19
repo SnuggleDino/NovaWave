@@ -1,0 +1,38 @@
+.background-animation.type-plasma {
+    background: #0f172a;
+    overflow: hidden;
+}
+
+.background-animation.type-plasma::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        from 0deg,
+        #4f46e5,
+        #9333ea,
+        #c026d3,
+        #4f46e5
+    );
+    animation: plasma-spin 20s linear infinite;
+    opacity: 0.4;
+    filter: blur(100px);
+}
+
+.background-animation.type-plasma::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 30%, #0f172a 100%);
+}
+
+@keyframes plasma-spin {
+    from { transform: rotate(0deg) scale(1.5); }
+    to { transform: rotate(360deg) scale(1.5); }
+}

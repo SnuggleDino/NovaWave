@@ -1,0 +1,36 @@
+.background-animation.type-aurora {
+    background: #020617;
+    overflow: hidden;
+}
+
+.background-animation.type-aurora::before,
+.background-animation.type-aurora::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    filter: blur(80px);
+    opacity: 0.4;
+    border-radius: 40%;
+}
+
+.background-animation.type-aurora::before {
+    background: radial-gradient(circle, #22d3ee, transparent 60%);
+    animation: aurora-drift 15s ease-in-out infinite;
+}
+
+.background-animation.type-aurora::after {
+    background: radial-gradient(circle, #a855f7, transparent 60%);
+    animation: aurora-drift 20s ease-in-out infinite reverse;
+    top: -30%;
+    left: -30%;
+}
+
+@keyframes aurora-drift {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(5%, 5%) rotate(120deg); }
+    66% { transform: translate(-5%, 2%) rotate(240deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}

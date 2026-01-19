@@ -1,0 +1,21 @@
+.background-animation.type-matrix {
+    overflow: hidden;
+    background: #000;
+}
+
+.matrix-col {
+    position: absolute;
+    top: -100%;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 14px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    white-space: nowrap;
+    animation: matrix-fall 5s linear infinite;
+    opacity: 0.7;
+}
+
+@keyframes matrix-fall {
+    to { transform: translateY(200vh); }
+}
