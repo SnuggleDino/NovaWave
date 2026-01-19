@@ -74,6 +74,10 @@ export function ShowInFolder(arg1) {
   return window['go']['main']['App']['ShowInFolder'](arg1);
 }
 
+export function ShutdownApp() {
+  return window['go']['main']['App']['ShutdownApp']();
+}
+
 export function UpdateTitle(arg1, arg2) {
   return window['go']['main']['App']['UpdateTitle'](arg1, arg2);
 }

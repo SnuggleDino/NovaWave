@@ -660,6 +660,13 @@
                         </svg>
                         <span data-lang-key="sectionReset">Reset</span>
                     </button>
+                    <button class="settings-nav-btn danger-zone-btn" data-target="tab-shutdown" style="color: #f87171;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                            <line x1="12" y1="2" x2="12" y2="12"></line>
+                        </svg>
+                        <span data-lang-key="sectionShutdown">Shutdown</span>
+                    </button>
                 </div>
 
                 <!-- CONTENT AREA -->
@@ -1168,6 +1175,21 @@
                             <button id="btn-reset-app" class="settings-button primary-btn"
                                 style="background: #ef4444; color: white; width: 100%; padding: 12px;">
                                 <span data-lang-key="resetButton">RESET APP</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB: SHUTDOWN -->
+                    <div id="tab-shutdown" class="settings-tab-content">
+                        <h4 class="settings-section-title" style="color: #f87171;"><span data-lang-key="sectionShutdown">Shutdown</span></h4>
+                        
+                        <div class="setting-item" style="display: block;">
+                            <p style="color: var(--text-main); margin-bottom: 15px; line-height: 1.5;">
+                                <span data-lang-key="shutdownDescription"></span>
+                            </p>
+                            
+                            <button id="btn-shutdown-app" class="settings-button primary-btn" style="background: #f87171; color: white; width: 100%; padding: 12px;">
+                                <span data-lang-key="shutdownButton">SHUTDOWN APP</span>
                             </button>
                         </div>
                     </div>

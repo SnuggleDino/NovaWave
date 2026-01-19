@@ -617,3 +617,7 @@ func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, err
 		Quality: quality,
 	})
 }
+
+func (a *App) ShutdownApp() {
+	wailsRuntime.Quit(a.ctx)
+}

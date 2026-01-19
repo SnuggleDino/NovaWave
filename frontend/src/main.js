@@ -12,6 +12,7 @@ import { ThemePackListener } from './theme_packs/theme_pack_listener.js';
 import { ThemeListener } from './app_themes/theme_listener.js';
 import { BackgroundAnimListener } from './background_animations/background_anim_listener.js';
 import { AppLoader } from './app_start/app_loader.js';
+import { AppShutdown } from './app_shutdown/shutdown.js';
 
 // Wails API Mapping
 const windowApi = {
@@ -1285,6 +1286,11 @@ function setupEventListeners() {
                 showNotification("Reset error", "error");
             }
         }
+    });
+
+    const btnShutdown = document.getElementById('btn-shutdown-app');
+    bind(btnShutdown, 'click', () => {
+        AppShutdown.shutdown();
     });
 
     bind(toggleUseCustomColor, 'change', (e) => {

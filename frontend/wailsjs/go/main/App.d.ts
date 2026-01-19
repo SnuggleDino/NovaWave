@@ -38,4 +38,6 @@ export function SetWindowSize(arg1:number,arg2:number):Promise<void>;
 
 export function ShowInFolder(arg1:string):Promise<void>;
 
+export function ShutdownApp():Promise<void>;
+
 export function UpdateTitle(arg1:string,arg2:string):Promise<main.SimpleResult>;
