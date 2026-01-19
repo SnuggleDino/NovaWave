@@ -1,0 +1,10 @@
+:root[data-theme="slate"] {
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-light: #334155;
+    --accent: #94a3b8;
+    --accent-soft: rgba(148, 163, 184, 0.15);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border-soft: #334155;
+}

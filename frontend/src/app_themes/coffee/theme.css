@@ -1,0 +1,10 @@
+:root[data-theme="coffee"] {
+    --bg-main: #1c1917;
+    --bg-card: #292524;
+    --bg-card-light: #44403c;
+    --accent: #d6d3d1;
+    --accent-soft: rgba(214, 211, 209, 0.15);
+    --text-main: #fafaf9;
+    --text-muted: #a8a29e;
+    --border-soft: #57534e;
+}

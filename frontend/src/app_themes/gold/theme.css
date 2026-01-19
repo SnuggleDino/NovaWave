@@ -1,0 +1,10 @@
+:root[data-theme="gold"] {
+    --bg-main: #0f0f0f;
+    --bg-card: #1c1917;
+    --bg-card-light: #292524;
+    --accent: #fbbf24;
+    --accent-soft: rgba(251, 191, 36, 0.15);
+    --text-main: #fffbeb;
+    --text-muted: #fde68a;
+    --border-soft: #78350f;
+}

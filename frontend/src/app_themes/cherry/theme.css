@@ -1,0 +1,10 @@
+:root[data-theme="cherry"] {
+    --bg-main: #2a0a12;
+    --bg-card: #4c0519;
+    --bg-card-light: #881337;
+    --accent: #fb7185;
+    --accent-soft: rgba(251, 113, 133, 0.15);
+    --text-main: #fff1f2;
+    --text-muted: #fecdd3;
+    --border-soft: #9f1239;
+}

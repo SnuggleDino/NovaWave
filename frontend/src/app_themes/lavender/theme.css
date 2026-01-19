@@ -1,0 +1,15 @@
+:root[data-theme="lavender"] {
+    --bg-main: #faf5ff;
+    --bg-card: #ffffff;
+    --bg-card-light: #f3e8ff;
+    --accent: #a855f7;
+    --accent-soft: rgba(168, 85, 247, 0.1);
+    --text-main: #3b0764;
+    --text-muted: #7e22ce;
+    --border-soft: #e9d5ff;
+}
+
+:root[data-theme="lavender"] .glass-panel,
+:root[data-theme="lavender"] .settings-modal {
+    box-shadow: 0 10px 30px rgba(107, 33, 168, 0.1);
+}

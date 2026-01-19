@@ -1,0 +1,10 @@
+:root[data-theme="forest"] {
+    --bg-main: #022c22;
+    --bg-card: #064e3b;
+    --bg-card-light: #065f46;
+    --accent: #34d399;
+    --accent-soft: rgba(52, 211, 153, 0.15);
+    --text-main: #d1fae5;
+    --text-muted: #6ee7b7;
+    --border-soft: #059669;
+}

@@ -9,8 +9,8 @@ const themeConfigs = import.meta.glob('./*/theme.json', { eager: true });
 const themeStyles = import.meta.glob('./*/theme.css', { eager: true });
 
 export const ThemeListener = {
-    
-    init: function() {
+
+    init: function () {
         const select = document.getElementById('theme-select');
         if (!select) return;
 
@@ -25,8 +25,8 @@ export const ThemeListener = {
             return themeConfigs[key].default || themeConfigs[key];
         });
 
-        // Define a sort order
-        const sortOrder = ['midnight', 'violet', 'rose', 'ocean', 'emerald', 'holiday'];
+        // Define sort order
+        const sortOrder = ['midnight', 'slate', 'ocean', 'forest', 'cherry', 'electric_violet', 'gold', 'coffee', 'glacier', 'lavender'];
 
         themes.sort((a, b) => {
             const indexA = sortOrder.indexOf(a.id);
@@ -42,13 +42,9 @@ export const ThemeListener = {
             const option = document.createElement('option');
             option.value = theme.id;
             option.textContent = theme.name;
-            // Optionally add translation key support if needed in future
-            // option.setAttribute('data-lang-key', `theme${theme.name.replace(' ', '')}`); 
             select.appendChild(option);
         });
 
-        // Restore selection or default to midnight
-        // Check if currentVal exists in new options
         const exists = themes.find(t => t.id === currentVal);
         if (exists) {
             select.value = currentVal;

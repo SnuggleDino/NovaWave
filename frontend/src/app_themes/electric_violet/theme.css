@@ -1,0 +1,10 @@
+:root[data-theme="electric_violet"] {
+    --bg-main: #1e1b4b;
+    --bg-card: #2e1065;
+    --bg-card-light: #4c1d95;
+    --accent: #d8b4fe;
+    --accent-soft: rgba(216, 180, 254, 0.15);
+    --text-main: #faf5ff;
+    --text-muted: #c084fc;
+    --border-soft: #5b21b6;
+}
