@@ -215,7 +215,7 @@ func (a *App) LoadConfig() Config {
 	data, err := os.ReadFile(path)
 
 	defaultConf := Config{
-		Theme:                   "blue",
+		Theme:                   "midnight",
 		Volume:                  0.2,
 		Language:                "de",
 		CoverMode:               "note",

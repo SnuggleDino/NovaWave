@@ -1,0 +1,10 @@
+:root[data-theme="midnight"] {
+    --bg-main: #000000;
+    --bg-card: #121212;
+    --bg-card-light: #1e1e1e;
+    --accent: #8b5cf6;
+    --accent-soft: rgba(139, 92, 246, 0.15);
+    --text-main: #ffffff;
+    --text-muted: #b0b0b0;
+    --border-soft: #333333;
+}

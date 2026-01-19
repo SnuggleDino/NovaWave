@@ -9,6 +9,7 @@ import { AudioExtras } from './audio_extras.js';
 import { DynamicIsland } from './dynamic_island.js';
 import { MiniPlayer } from './mini_player.js';
 import { ThemePackListener } from './theme_packs/theme_pack_listener.js';
+import { ThemeListener } from './app_themes/theme_listener.js';
 
 // Wails API Mapping
 const windowApi = {
@@ -371,7 +372,7 @@ function resetToDefaultTheme() {
     document.documentElement.style.removeProperty('--accent');
     document.documentElement.style.removeProperty('--bg-main');
 
-    const th = settings.theme || 'blue';
+    const th = settings.theme || 'midnight';
     document.documentElement.setAttribute('data-theme', th);
     localStorage.setItem('theme', th);
     if (themeSelect) { themeSelect.disabled = false; themeSelect.value = th; }
@@ -750,7 +751,7 @@ async function loadSettings() {
         applyAnimationSetting(mode);
     }
 
-    if (themeSelect) themeSelect.value = settings.theme || 'blue';
+    if (themeSelect) themeSelect.value = settings.theme || 'midnight';
     if (visualizerToggle) { visualizerToggle.checked = settings.visualizerEnabled !== false; visualizerEnabled = settings.visualizerEnabled !== false; }
     if (visualizerStyleSelect) { currentVisualizerStyle = settings.visualizerStyle || 'bars'; visualizerStyleSelect.value = currentVisualizerStyle; }
     if (visualizerSensitivity) { visSensitivity = settings.visSensitivity || 1.5; visualizerSensitivity.value = visSensitivity; }
@@ -1736,7 +1737,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // Fast Path: Start Intro and Theme immediately
             const cachedIntro = localStorage.getItem('activeIntro') || 'waterdrop';
-            const cachedTheme = localStorage.getItem('theme') || 'blue';
+            const cachedTheme = localStorage.getItem('theme') || 'midnight';
 
             document.documentElement.setAttribute('data-theme', cachedTheme);
 
@@ -1759,6 +1760,9 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadSettingsPromise;
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
+
+            // Initialize Dynamic Themes
+            ThemeListener.init();
 
             // Initialize Dynamic Theme Packs
             ThemePackListener.init({ visualizer, ui: { updateEmoji, updateCachedColor, resetToDefaultTheme }, settings });

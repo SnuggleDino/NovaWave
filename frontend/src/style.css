@@ -55,32 +55,6 @@ body.is-mini #toggle-playlist-btn {
     display: none !important;
 }
 
-:root {
-    --bg-main: #0a0e1b;
-    --bg-card: rgba(20, 26, 47, 0.8);
-    --bg-card-light: rgba(36, 45, 82, 0.6);
-    --accent: #38bdf8;
-    --accent-soft: rgba(56, 189, 248, 0.15);
-    --text-main: #e5e7eb;
-    --text-muted: #8a93a2;
-    --border-soft: rgba(148, 163, 184, 0.2);
-    --radius-lg: 18px;
-    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.3);
-    --transition-fast: 0.2s ease-out;
-    --transition-med: 0.3s ease-out;
-}
-
-:root[data-theme="dark"] {
-    --bg-main: #000000;
-    --bg-card: #121212;
-    --bg-card-light: #1e1e1e;
-    --accent: #8b5cf6;
-    --accent-soft: rgba(139, 92, 246, 0.15);
-    --text-main: #ffffff;
-    --text-muted: #b0b0b0;
-    --border-soft: #333333;
-}
-
 :root[data-theme="dinolove"] {
     --bg-main: #0d1a0f;
     --bg-card: rgba(30, 46, 34, 0.8);
@@ -111,42 +85,6 @@ body.is-mini #toggle-playlist-btn {
 :root[data-theme="dinolove"] .active-features-container .features-badge-icon {
     border-color: #f2cc8f;
     color: #f2cc8f;
-}
-
-:root[data-theme="blurple"] {
-    --bg-main: #1e1f2e;
-    --bg-card: #2c2f48;
-    --bg-card-light: #3a3d5f;
-    --accent: #7289da;
-    --accent-soft: rgba(114, 137, 218, 0.15);
-    --text-main: #dbdee1;
-    --text-muted: #9fa3ac;
-    --border-soft: rgba(114, 137, 218, 0.2);
-    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.3);
-}
-
-:root[data-theme="darkrose"] {
-    --bg-main: #100f10;
-    --bg-card: #1c1b1c;
-    --bg-card-light: #282728;
-    --accent: #e04f99;
-    --accent-soft: rgba(224, 79, 153, 0.15);
-    --text-main: #f2f2f2;
-    --text-muted: #a3a3a3;
-    --border-soft: rgba(224, 79, 153, 0.2);
-    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.3);
-}
-
-:root[data-theme="xmas"] {
-    --bg-main: #05110a;
-    --bg-card: rgba(20, 45, 30, 0.9);
-    --bg-card-light: rgba(30, 70, 45, 0.6);
-    --accent: #ef4444;
-    --accent-soft: rgba(239, 68, 68, 0.2);
-    --text-main: #fefce8;
-    --text-muted: #86efac;
-    --border-soft: rgba(234, 179, 8, 0.3);
-    --shadow-soft: 0 20px 50px rgba(0, 30, 10, 0.6);
 }
 
 :root[data-theme="sunset"] {
