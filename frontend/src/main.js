@@ -14,6 +14,7 @@ import { BackgroundAnimListener } from './background_animations/background_anim_
 import { AppLoader } from './app_start/app_loader.js';
 import { AppShutdown } from './app_shutdown/shutdown.js';
 import { AppSettings } from './app_settings/app_settings.js';
+import { UpdateManager } from './app_updates/update_manager.js';
 
 // Wails API Mapping
 const windowApi = {
@@ -1547,11 +1548,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
-            // Initialize Theme Packs
-            ThemePackListener.init({ visualizer, ui: { updateEmoji, updateCachedColor, resetToDefaultTheme }, settings });
-
-            if (settings.theme) {
-                document.documentElement.setAttribute('data-theme', settings.theme);
+                        // Initialize Theme Packs
+                        ThemePackListener.init({ visualizer, ui: { updateEmoji, updateCachedColor, resetToDefaultTheme }, settings });
+                        
+                        // Check for Updates / Changelog
+                        UpdateManager.init(windowApi);
+                        
+                        if (settings.theme) {                document.documentElement.setAttribute('data-theme', settings.theme);
             }
             if (settings.useCustomColor && settings.customAccentColor) {
                 document.documentElement.style.setProperty('--accent', settings.customAccentColor);

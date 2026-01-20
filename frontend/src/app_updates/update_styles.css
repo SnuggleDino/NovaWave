@@ -1,0 +1,199 @@
+/* UPDATE MODAL & ANIMATIONS */
+
+/* === Footer Update Button === */
+.footer-update-btn {
+    background: transparent;
+    border: 1px solid var(--border-soft);
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    padding: 2px 12px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.footer-update-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.footer-update-btn.has-update {
+    border-color: #4ade80;
+    color: #4ade80;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.2);
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* === Update Modal === */
+.update-modal {
+    max-width: 500px !important;
+    background: linear-gradient(145deg, var(--bg-card), rgba(20, 20, 30, 0.95)) !important;
+    border: 1px solid var(--border-soft) !important;
+}
+
+.update-header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(to bottom, var(--accent-soft), transparent);
+    z-index: 0;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.update-content-wrapper {
+    position: relative;
+    z-index: 1;
+    padding: 10px;
+}
+
+.rocket-icon {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 20px var(--accent));
+    animation: rocket-float 3s ease-in-out infinite alternate;
+}
+
+@keyframes rocket-float {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+}
+
+.update-title-box {
+    text-align: center;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.update-title-box h2 {
+    font-size: 1.8rem;
+    color: var(--text-main);
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+.update-version-badge {
+    background: rgba(255,255,255,0.1);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--accent);
+    border: 1px solid var(--accent-soft);
+    margin-bottom: 5px;
+}
+
+.update-title-box p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.changelog-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid var(--border-soft);
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.changelog-entry {
+    margin-bottom: 15px;
+}
+
+.changelog-entry:last-child {
+    margin-bottom: 0;
+}
+
+.changelog-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 4px;
+}
+
+.changelog-ver {
+    font-weight: bold;
+    color: var(--text-main);
+}
+
+.changelog-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.changelog-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.changelog-list li {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.changelog-list li:last-child {
+    margin-bottom: 0;
+}
+
+.feature-title {
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.feature-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    padding-left: 2px;
+}
+
+/* === Wave Animation (Moved from style.css) === */
+.new-badge-dancing span {
+    display: inline-block;
+    animation: wave-text 1.5s ease-in-out infinite;
+}
+
+.new-badge-dancing span:nth-child(1) { animation-delay: 0.0s; }
+.new-badge-dancing span:nth-child(2) { animation-delay: 0.1s; }
+.new-badge-dancing span:nth-child(3) { animation-delay: 0.2s; }
+.new-badge-dancing span:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes wave-text {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}

@@ -7,6 +7,7 @@
     <title data-lang-key="appTitle">NovaWave</title>
     <link rel="icon" type="image/png" href="/src/assets/icon.png">
     <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" href="/src/app_updates/update_styles.css">
 
     <style>
         body {
@@ -325,10 +326,38 @@
 
         <footer class="app-footer">
             <button id="open-dev-btn" class="footer-info-btn">NW DEV</button>
+            <button id="footer-update-btn" class="footer-update-btn">UPDATE</button>
             <div class="footer-right" style="margin-left: auto;">
                 <button id="project-info-btn" class="footer-info-btn">INFO</button>
             </div>
         </footer>
+    </div>
+
+    <!-- ================= UPDATE INFO MODAL ================= -->
+    <div id="update-info-overlay" class="overlay-container">
+        <div class="glass-panel settings-modal update-modal">
+            <div class="update-header-bg"></div>
+            <div class="settings-header" style="z-index: 2;">
+                <h3><span data-lang-key="updateTitle">What's New</span></h3>
+                <button id="update-info-close-btn" class="close-modal-btn">&times;</button>
+            </div>
+            <div class="settings-content update-content-wrapper">
+                <div class="rocket-icon">🚀</div>
+                <div class="update-title-box">
+                    <h2>NovaWave</h2>
+                    <div class="update-version-badge"><span id="update-modal-version">...</span></div>
+                    <p>Ready for takeoff!</p>
+                </div>
+                
+                <div id="changelog-content" class="changelog-container">
+                    <!-- Dynamic Content via JS -->
+                </div>
+
+                <button id="update-info-ok-btn" class="settings-button primary-btn" style="width: 100%; padding: 12px;" data-lang-key="updateOkBtn">
+                    Kuschelig!
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- ================= PROJECT INFO MODAL ================= -->

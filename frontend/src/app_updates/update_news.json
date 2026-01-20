@@ -1,0 +1,44 @@
+{
+    "version": "2.6.0",
+    "date": "January 2026",
+    "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
+    "subTitle": {
+        "de": "Kuschelig eingepackt mit neuen Funktionen!",
+        "en": "Snuggled up with new features!"
+    },
+    "changes": [
+        {
+            "icon": "🔧",
+            "title": {
+                "de": "Einstellungen überarbeitet",
+                "en": "Settings Overhaul"
+            },
+            "desc": {
+                "de": "Das Einstellungsmenü wurde komplett neu organisiert. Jede Funktion befindet sich nun in ihrem passenden Reiter für mehr Übersichtlichkeit.",
+                "en": "Completely reorganized settings menu. Each function is now in its corresponding tab for better clarity."
+            }
+        },
+        {
+            "icon": "📥",
+            "title": {
+                "de": "Downloader Fixes",
+                "en": "Downloader Fixes"
+            },
+            "desc": {
+                "de": "Verbesserte Stabilität für YouTube- und Spotify-Downloads. Metadaten werden nun zuverlässiger geladen.",
+                "en": "Improved stability for both YouTube and Spotify downloads. Metadata loading is now more reliable."
+            }
+        },
+        {
+            "icon": "🛑",
+            "title": {
+                "de": "Reset & Shutdown",
+                "en": "Reset & Shutdown"
+            },
+            "desc": {
+                "de": "Neue Optionen im 'System'-Tab, um die App sicher zurückzusetzen oder vollständig zu beenden.",
+                "en": "Dedicated options in the 'System' tab to safely reset the app config or shutdown completely."
+            }
+        }
+    ]
+}
