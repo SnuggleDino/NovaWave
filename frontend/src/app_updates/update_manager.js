@@ -1,4 +1,5 @@
 import updateData from './update_news.json';
+import dinoImg from '../assets/Two_Loving_Cute_Dinos.png';
 
 /**
  * UPDATE MANAGER
@@ -112,12 +113,9 @@ export const UpdateManager = {
         // Replace rocket with dino image dynamically if not already there
         const iconContainer = document.querySelector('.rocket-icon');
         if(iconContainer) {
-            // Check if we need to update image (e.g. if JSON changed image path)
-            const currentImg = iconContainer.querySelector('img');
-            if(!currentImg || !currentImg.src.includes(updateData.headerImage)) {
-                 iconContainer.innerHTML = `<img src="${updateData.headerImage}" alt="Update Icon" style="width: 120px; height: auto; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));">`;
-                 iconContainer.style.animation = 'none';
-            }
+             // Always update to ensure correct asset path from import
+             iconContainer.innerHTML = `<img src="${dinoImg}" alt="Update Icon" style="width: 120px; height: auto; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));">`;
+             iconContainer.style.animation = 'none';
         }
         
         // Update sub-text

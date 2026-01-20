@@ -576,7 +576,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	qualityMap := map[string]string{"best": "0", "high": "5", "standard": "9"}
 	qVal := qualityMap[opts.Quality]
 
-	outputTemplate := "% (title)s.%(ext)s"
+	outputTemplate := "%(title)s.%(ext)s"
 	if opts.CustomName != "" {
 		safeName := strings.Map(func(r rune) rune {
 			if strings.ContainsRune("< > : \" / \\ | ? *", r) { return '_' }
@@ -619,5 +619,15 @@ func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, err
 }
 
 func (a *App) ShutdownApp() {
+	wailsRuntime.Quit(a.ctx)
+}
+
+func (a *App) RestartApp() {
+	self, err := os.Executable()
+	if err != nil {
+		return
+	}
+	cmd := exec.Command(self)
+	cmd.Start()
 	wailsRuntime.Quit(a.ctx)
 }

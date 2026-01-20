@@ -427,6 +427,13 @@ export const AppSettings = {
         }
 
         // --- RESET & SHUTDOWN TAB ---
+        const btnRestartApp = $('btn-restart-app');
+        if (btnRestartApp) {
+            btnRestartApp.addEventListener('click', () => {
+                if(this.callbacks.onRestartApp) this.callbacks.onRestartApp();
+            });
+        }
+
         const btnResetApp = $('btn-reset-app');
         if (btnResetApp) {
             btnResetApp.addEventListener('click', () => {

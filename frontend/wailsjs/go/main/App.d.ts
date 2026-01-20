@@ -24,6 +24,8 @@ export function RefreshMusicFolder(arg1:string):Promise<main.FolderResult>;
 
 export function ResetConfig():Promise<main.SimpleResult>;
 
+export function RestartApp():Promise<void>;
+
 export function SaveConfig(arg1:main.Config):Promise<string>;
 
 export function SelectFolder():Promise<string>;

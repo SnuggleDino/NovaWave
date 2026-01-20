@@ -33,6 +33,7 @@ const windowApi = {
     moveFile: App.MoveFile,
     setWindowSize: App.SetWindowSize,
     resetConfig: App.ResetConfig,
+    restartApp: App.RestartApp,
     onMediaControl: (cb) => { /* Not implemented */ },
     onDownloadProgress: (cb) => { /* Not implemented */ },
     sendPlaybackState: App.SendPlaybackState
@@ -143,21 +144,30 @@ function updateActiveFeaturesIndicator() {
     const container = document.getElementById('active-features-indicator');
     if (!container) return;
 
-    const bass = !!settings.bassBoostEnabled;
-    const treble = !!settings.trebleBoostEnabled;
-    const reverb = !!settings.reverbEnabled;
+    const bass = settings.bassBoostEnabled === true;
+    const treble = settings.trebleBoostEnabled === true;
+    const reverb = settings.reverbEnabled === true;
     const anyActive = bass || treble || reverb;
 
     container.classList.toggle('active', anyActive);
 
     const bassItem = document.getElementById('modal-feat-bass');
-    if (bassItem) bassItem.classList.toggle('active', bass);
+    if (bassItem) {
+        bassItem.classList.toggle('active', bass);
+        bassItem.style.display = bass ? 'flex' : 'none';
+    }
 
     const trebleItem = document.getElementById('modal-feat-crystal');
-    if (trebleItem) trebleItem.classList.toggle('active', treble);
+    if (trebleItem) {
+        trebleItem.classList.toggle('active', treble);
+        trebleItem.style.display = treble ? 'flex' : 'none';
+    }
 
     const reverbItem = document.getElementById('modal-feat-reverb');
-    if (reverbItem) reverbItem.classList.toggle('active', reverb);
+    if (reverbItem) {
+        reverbItem.classList.toggle('active', reverb);
+        reverbItem.style.display = reverb ? 'flex' : 'none';
+    }
 }
 
 function saveSetting(key, value) {
@@ -876,6 +886,13 @@ function showContextMenu(e, idx) {
         const isFav = favorites.includes(playlist[idx].path);
         contextMenuFavorite.textContent = isFav ? tr('removeFromFavorites') : tr('addToFavorites');
     }
+    
+    // Toggle delete button visibility based on settings
+    const deleteBtn = document.getElementById('cm-delete');
+    if (deleteBtn) {
+        deleteBtn.style.display = deleteSongsEnabled ? 'flex' : 'none';
+    }
+
     contextMenu.style.top = `${e.clientY}px`;
     contextMenu.style.left = `${e.clientX}px`;
     contextMenu.style.display = 'block';
@@ -1190,24 +1207,26 @@ function initSettingsLogic() {
             URL.revokeObjectURL(url);
             showNotification(tr('exportSuccess'));
         },
-        onResetApp: async () => {
-            if (confirm(tr('resetWarning'))) {
-                try {
-                    const res = await windowApi.resetConfig();
-                    if (res.success) {
-                        localStorage.clear();
-                        showNotification("Reset complete. Restarting...", "success");
-                        setTimeout(() => window.location.reload(), 1500);
-                    } else {
-                        showNotification("Reset failed: " + res.error, "error");
+                onResetApp: async () => {
+                     if (confirm(tr('resetWarning'))) {
+                        try {
+                            const res = await windowApi.resetConfig();
+                            if (res.success) {
+                                localStorage.clear();
+                                showNotification("Reset complete. Restarting...", "success");
+                                setTimeout(() => windowApi.restartApp(), 1500); // Use restartApp here too!
+                            } else {
+                                showNotification("Reset failed: " + res.error, "error");
+                            }
+                        } catch (e) {
+                            console.error("Reset error:", e);
+                        }
                     }
-                } catch (e) {
-                    console.error("Reset error:", e);
-                }
-            }
-        },
-        onShutdownApp: () => {
-            AppShutdown.shutdown();
+                },
+                onRestartApp: () => {
+                     windowApi.restartApp();
+                },
+                onShutdownApp: () => {            AppShutdown.shutdown();
         },
         onAnimationChange: (val) => {
             applyAnimationSetting(val);
@@ -1667,37 +1686,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 
 
-    // Context Menu
-    let cmTimeout;
-    function showContextMenu(e, index) {
-        e.preventDefault();
-        const cm = document.getElementById('context-menu');
-        if (!cm) return;
+    // Context Menu logic is handled by global showContextMenu
 
-        // Store index globally
-        contextTrackIndex = index;
-
-        // Calculate position (keep in bounds)
-        let x = e.clientX;
-        let y = e.clientY;
-
-        const w = cm.offsetWidth || 200;
-        const h = cm.offsetHeight || 250;
-
-        if (x + w > window.innerWidth) x = window.innerWidth - w - 10;
-        if (y + h > window.innerHeight) y = window.innerHeight - h - 10;
-
-        cm.style.left = x + 'px';
-        cm.style.top = y + 'px';
-        cm.classList.add('visible');
-
-        // Setup dismiss
-        const dismiss = () => {
-            cm.classList.remove('visible');
-            document.removeEventListener('click', dismiss);
-        };
-        setTimeout(() => document.addEventListener('click', dismiss), 50);
-    }
 
     // Bind Context Menu Actions (Running once at end of file)
     setTimeout(() => {
