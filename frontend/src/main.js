@@ -4,7 +4,7 @@ import sunsetSunImg from './assets/sunset_drive_retrowave_sun.png';
 import lovingDinosIco from './assets/Two_Loving_Cute_Dinos.ico';
 import { translations } from './translations.js';
 import { VisualizerEngine } from './visualizerEngine.js';
-import { IntroManager } from './intro.js';
+import { IntroManager } from './app_intros/intro_manager.js';
 import { AudioExtras } from './audio_extras.js';
 import { DynamicIsland } from './dynamic_island.js';
 import { MiniPlayer } from './mini_player.js';
