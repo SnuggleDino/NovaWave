@@ -2,6 +2,7 @@ import { Intro } from './intro_base.js';
 
 /**
  * Adapter for intros that already exist in index.html and only need to be toggled via CSS class.
+ * Automatically resolves after a timeout (handled by manager usually, but we can add hooks here).
  */
 export class CssBasedIntro extends Intro {
     constructor(elementId) {
@@ -22,6 +23,46 @@ export class CssBasedIntro extends Intro {
         if (el) {
             el.classList.remove('visible');
         }
-        // NOTE: We do NOT remove() the element from DOM as it is static in index.html
+    }
+}
+
+/**
+ * An intro that waits for user interaction (button click) before finishing.
+ */
+export class InteractiveIntro extends CssBasedIntro {
+    constructor(elementId, buttonId) {
+        super(elementId);
+        this.buttonId = buttonId;
+        this.resolveFn = null;
+        this.boundClickHandler = this.handleClick.bind(this);
+    }
+
+    mount() {
+        super.mount();
+        const btn = document.getElementById(this.buttonId);
+        if (btn) {
+            btn.addEventListener('click', this.boundClickHandler);
+            btn.focus(); // Focus for Enter key support
+        }
+    }
+
+    handleClick() {
+        if (this.resolveFn) {
+            this.resolveFn();
+        }
+    }
+
+    waitForFinish() {
+        return new Promise((resolve) => {
+            this.resolveFn = resolve;
+        });
+    }
+
+    unmount() {
+        const btn = document.getElementById(this.buttonId);
+        if (btn) {
+            btn.removeEventListener('click', this.boundClickHandler);
+        }
+        super.unmount();
     }
 }

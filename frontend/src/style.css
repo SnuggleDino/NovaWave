@@ -4302,3 +4302,112 @@ kbd {
     50% { transform: translateY(-5px); }
 }
 
+
+/* ===== 8-BIT INTRO ===== */
+.intro-overlay-8bit {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200000;
+    background-color: #000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    font-family: 'Courier New', monospace;
+    overflow: hidden;
+}
+
+.intro-overlay-8bit.visible {
+    display: flex;
+    opacity: 1;
+}
+
+.scanlines {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%;
+    z-index: 2;
+    pointer-events: none;
+    animation: scanline-move 10s linear infinite;
+}
+
+.arcade-content {
+    text-align: center;
+    z-index: 5;
+    transform: scale(1.5);
+}
+
+.pixel-title {
+    font-size: 4rem;
+    color: #39ff14;
+    text-shadow: 4px 4px 0px #000, 0 0 20px rgba(57, 255, 20, 0.5);
+    margin-bottom: 20px;
+    letter-spacing: -2px;
+    animation: pixel-bounce 0.5s steps(2, end) infinite;
+}
+
+.pixel-subtitle {
+    font-size: 1.5rem;
+    color: #fff;
+    animation: blink-text 0.8s steps(1, start) infinite;
+}
+
+.preview-8bit {
+    width: 50px; height: 50px;
+    background: #000;
+    border: 2px solid #39ff14;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    box-shadow: 0 0 5px #39ff14;
+}
+
+@keyframes scanline-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100%; }
+}
+
+@keyframes pixel-bounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes blink-text {
+    50% { opacity: 0; }
+}
+
+
+/* 8-Bit Start Button */
+.pixel-start-btn {
+    background: transparent;
+    border: 4px solid #39ff14;
+    color: #39ff14;
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 15px 30px;
+    cursor: pointer;
+    text-transform: uppercase;
+    animation: blink-border 1s step-end infinite;
+    box-shadow: 0 0 10px #39ff14, inset 0 0 10px #39ff14;
+    transition: all 0.1s;
+}
+
+.pixel-start-btn:hover {
+    background: #39ff14;
+    color: #000;
+    box-shadow: 0 0 20px #39ff14;
+}
+
+.pixel-start-btn:active {
+    transform: translateY(4px);
+}
+
+@keyframes blink-border {
+    50% { border-color: transparent; box-shadow: none; }
+}
+

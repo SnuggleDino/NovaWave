@@ -80,6 +80,15 @@
         <h2 class="rocket-title">NovaWave</h2>
     </div>
 
+    <!-- 8-Bit Arcade Intro -->
+    <div id="8bit-intro" class="intro-overlay-8bit">
+        <div class="scanlines"></div>
+        <div class="arcade-content">
+            <h1 class="pixel-title">NOVAWAVE</h1>
+            <button id="btn-8bit-start" class="pixel-start-btn">PRESS START</button>
+        </div>
+    </div>
+
     <div class="background-animation"></div>
 
     <!-- Performance Hint (Dynamic Island Style) -->
@@ -1162,6 +1171,21 @@
                                 </div>
                                 <div class="intro-actions">
                                     <button class="settings-button primary-btn apply-intro-btn" data-intro="rocket"
+                                        data-lang-key="introApplyBtn">Apply</button>
+                                </div>
+                            </div>
+
+                            <!-- 8-Bit Intro Card -->
+                            <div class="intro-card" data-intro="8bit">
+                                <div class="intro-preview">
+                                    <div class="preview-8bit" style="font-family: monospace; font-weight: bold; color: #39ff14;">8BIT</div>
+                                </div>
+                                <div class="intro-info">
+                                    <strong class="intro-title">8-Bit Arcade</strong>
+                                    <p class="intro-desc" data-lang-key="intro8BitDesc">Retro gaming vibe with CRT scanlines.</p>
+                                </div>
+                                <div class="intro-actions">
+                                    <button class="settings-button primary-btn apply-intro-btn" data-intro="8bit"
                                         data-lang-key="introApplyBtn">Apply</button>
                                 </div>
                             </div>

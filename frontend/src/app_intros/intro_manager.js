@@ -1,5 +1,5 @@
 import { WaterdropIntro } from './intro_waterdrop.js';
-import { CssBasedIntro } from './intro_css_adapter.js';
+import { CssBasedIntro, InteractiveIntro } from './intro_css_adapter.js';
 
 export class IntroManager {
     constructor(settings) {
@@ -9,19 +9,20 @@ export class IntroManager {
         // Registry of available intros
         this.intros = {
             'waterdrop': WaterdropIntro,
-            // 8bit removed
             
             // Factory functions for CSS-based intros (Static HTML)
             'dino_love': () => new CssBasedIntro('dino-intro'),
             'rocket': () => new CssBasedIntro('rocket-intro'),
+            // 8bit is now interactive!
+            '8bit': () => new InteractiveIntro('8bit-intro', 'btn-8bit-start'),
+            
             'sleep': () => new CssBasedIntro('sleep-intro'),
             'snuggle': () => new CssBasedIntro('snuggle-intro'),
             'cyberpunk': () => new CssBasedIntro('cyberpunk-intro'),
             'sunset': () => new CssBasedIntro('sunset-intro'),
             'sakura': () => new CssBasedIntro('sakura-intro'),
             
-            // Fallback / Rename handling
-            'novawave95': WaterdropIntro // Placeholder if Win95 Logic is missing or we map it to standard for now
+            'novawave95': WaterdropIntro 
         };
     }
 
@@ -35,32 +36,34 @@ export class IntroManager {
 
         let IntroClassOrFactory = this.intros[introKey];
         
-        // Fallback for intros not yet in the map but existing in HTML (legacy support logic)
         if (!IntroClassOrFactory) {
-             // Try to map key to ID convention (e.g. 'snuggle' -> 'snuggle-intro')
              const potentialId = introKey.endsWith('-intro') ? introKey : introKey + '-intro';
              if (document.getElementById(potentialId)) {
                  IntroClassOrFactory = () => new CssBasedIntro(potentialId);
              } else {
                  console.error('[IntroManager] Unknown intro key:', introKey);
-                 // Fallback to Waterdrop instead of nothing, feels safer
                  IntroClassOrFactory = WaterdropIntro; 
              }
         }
 
         // Instantiate
         if (typeof IntroClassOrFactory === 'function' && !(IntroClassOrFactory.prototype instanceof Object)) {
-            // It's a factory function (arrow func)
             this.activeIntro = IntroClassOrFactory();
         } else {
-            // It's a class constructor
             this.activeIntro = new IntroClassOrFactory();
         }
 
         this.activeIntro.mount();
 
+        // Check if it's an interactive intro that controls its own timing
+        if (this.activeIntro instanceof InteractiveIntro) {
+            return this.activeIntro.waitForFinish().then(() => {
+                return this.stop();
+            });
+        }
+
+        // Standard timeout for passive intros
         return new Promise((resolve) => {
-            // Default duration 4.5s
             setTimeout(() => {
                 this.stop();
                 resolve();
