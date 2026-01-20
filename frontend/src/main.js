@@ -13,6 +13,7 @@ import { ThemeListener } from './app_themes/theme_listener.js';
 import { BackgroundAnimListener } from './background_animations/background_anim_listener.js';
 import { AppLoader } from './app_start/app_loader.js';
 import { AppShutdown } from './app_shutdown/shutdown.js';
+import { AppSettings } from './app_settings/app_settings.js';
 
 // Wails API Mapping
 const windowApi = {
@@ -166,7 +167,7 @@ function saveSetting(key, value) {
 
 function updateCachedColor() {
     let color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-    
+
     // Hardcoded overrides for known theme packs to be 100% sure they don't use fallbacks
     const currentTheme = document.documentElement.getAttribute('data-theme');
     if (currentTheme === 'dinolove') color = '#c1d37f';
@@ -175,9 +176,9 @@ function updateCachedColor() {
     else if (currentTheme === 'sakura') color = '#ffb7b2';
     else if (currentTheme === 'sunset') color = '#f97316';
     else if (currentTheme === '8_bit_theme') color = '#39ff14';
-    
+
     cachedAccentColor = color || '#38bdf8';
-    
+
     if (visualizer) {
         visualizer.updateSettings({ accentColor: cachedAccentColor });
     }
@@ -334,7 +335,7 @@ function playTrack(index) {
 
     audio.src = safeUrl;
 
-    const speed = speedSlider ? parseFloat(speedSlider.value) : 1.0;
+    const speed = settings.playbackSpeed || 1.0;
     audio.defaultPlaybackRate = speed;
     audio.playbackRate = speed;
 
@@ -656,7 +657,11 @@ async function handleDownload() {
             if (spotifyUrlInput) spotifyUrlInput.value = '';
 
             if (currentFolderPath && settings.downloadFolder && currentFolderPath === settings.downloadFolder) {
-                refreshFolderBtn.click();
+                // Refresh folder triggered via event listener on refresh btn, but here we can't trigger click easily if we decoupled.
+                // But wait, refresh logic is available via windowApi.refreshMusicFolder
+                // For simplicity, we just trigger the button click if it exists, or call the logic.
+                const btn = document.getElementById('refresh-folder-btn');
+                if (btn) btn.click();
             }
         } else {
             downloadStatusEl.textContent = `${tr('statusError')}: ${result.error}`;
@@ -729,44 +734,57 @@ async function loadSettings() {
 
     if (langButtons) langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLanguage));
 
-    if (settings.activeIntro) {
-        const introCards = document.querySelectorAll('.intro-card');
-        introCards.forEach(c => {
-            const isActive = c.dataset.intro === settings.activeIntro;
-            c.classList.toggle('active', isActive);
-        });
-    }
-
     applyTranslations();
 
-    if (downloadFolderInput) downloadFolderInput.value = settings.downloadFolder || '';
-    if (qualitySelect) qualitySelect.value = settings.audioQuality || 'best';
+    // AppSettings will handle UI restoration for settings modal!
+    AppSettings.restoreUIState();
 
-    if (animationSelect) {
-        let mode = settings.animationMode || 'flow';
-        animationSelect.value = mode;
-        applyAnimationSetting(mode);
+    if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
+    if (loopBtn) { loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); }
+
+    if (settings.deleteSongsEnabled) deleteSongsEnabled = settings.deleteSongsEnabled;
+
+    if (toggleEnableFocus) toggleEnableFocus.checked = settings.enableFocusMode !== false;
+    if (toggleEnableDrag) toggleEnableDrag.checked = settings.enableDragAndDrop !== false;
+
+    // We still need to apply some things that affect global state immediately
+    if (settings.useCustomColor) {
+        document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
     }
 
-    if (themeSelect) themeSelect.value = settings.theme || 'midnight';
-    if (visualizerToggle) { visualizerToggle.checked = settings.visualizerEnabled !== false; visualizerEnabled = settings.visualizerEnabled !== false; }
-    if (visualizerStyleSelect) { currentVisualizerStyle = settings.visualizerStyle || 'bars'; visualizerStyleSelect.value = currentVisualizerStyle; }
-    if (visualizerSensitivity) { visSensitivity = settings.visSensitivity || 1.5; visualizerSensitivity.value = visSensitivity; }
-
-    if (emojiSelect) {
-        const et = settings.coverMode || 'note';
-        emojiSelect.value = et;
-        if (customEmojiContainer) customEmojiContainer.style.display = et === 'custom' ? 'flex' : 'none';
-        updateEmoji(et, settings.customCoverEmoji);
+    if (settings.gradientTitleEnabled) {
+        document.body.classList.add('gradient-title-active');
     }
 
-    if (autoLoadLastFolderToggle) autoLoadLastFolderToggle.checked = settings.autoLoadLastFolder !== false;
-
-    if (toggleMiniMode) {
-        toggleMiniMode.checked = false;
-        document.body.classList.remove('is-mini');
+    if (settings.cinemaMode) {
+        document.body.classList.add('cinema-mode');
     }
 
+    if (settings.playlistPosition === 'left') {
+        document.body.classList.add('playlist-left');
+    }
+
+    if (settings.playlistHidden) {
+        document.body.classList.add('playlist-hidden');
+    }
+
+    // Performance Mode
+    if (settings.performanceMode) {
+        setPerformanceMode(true, true);
+    }
+
+    // Stats Overlay
+    showStatsOverlay = !!settings.showStatsOverlay;
+    const statsOverlay = document.getElementById('stats-overlay');
+    if (statsOverlay) statsOverlay.classList.toggle('hidden', !showStatsOverlay);
+
+    if (settings.targetFps) targetFps = settings.targetFps;
+
+
+    // Restore Audio Extras Logic (AudioNodes)
+    updateAudioEffects();
+
+    // Auto Load Folder
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
         AppLoader.update(50, tr('loaderLoadingLibrary'));
         currentFolderPath = settings.currentFolderPath;
@@ -782,85 +800,6 @@ async function loadSettings() {
             console.error("Auto-load failed:", e);
         }
     }
-
-    if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
-    if (loopBtn) { loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); }
-
-    if (toggleFavoritesOption) {
-        toggleFavoritesOption.checked = settings.enableFavoritesPlaylist || false;
-        if (toggleFavoritesBtn) toggleFavoritesBtn.style.display = settings.enableFavoritesPlaylist ? 'flex' : 'none';
-    }
-
-    if (toggleDeleteSongs) {
-        toggleDeleteSongs.checked = settings.deleteSongsEnabled || false;
-        deleteSongsEnabled = settings.deleteSongsEnabled || false;
-    }
-
-    if (toggleEnableFocus) toggleEnableFocus.checked = settings.enableFocusMode !== false;
-    if (toggleEnableDrag) toggleEnableDrag.checked = settings.enableDragAndDrop !== false;
-
-    if (toggleUseCustomColor) {
-        toggleUseCustomColor.checked = !!settings.useCustomColor;
-        if (accentColorContainer) accentColorContainer.classList.toggle('hidden', !settings.useCustomColor);
-        if (settings.useCustomColor) {
-            document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
-        }
-    }
-
-    if (toggleGradientTitle) {
-        toggleGradientTitle.checked = !!settings.gradientTitleEnabled;
-        document.body.classList.toggle('gradient-title-active', !!settings.gradientTitleEnabled);
-    }
-
-    if (toggleCinemaMode) {
-        toggleCinemaMode.checked = settings.cinemaMode || false;
-        document.body.classList.toggle('cinema-mode', settings.cinemaMode || false);
-    }
-
-    if (playlistPositionSelect) {
-        playlistPositionSelect.value = settings.playlistPosition || 'right';
-        if (settings.playlistPosition === 'left') {
-            document.body.classList.add('playlist-left');
-        } else {
-            document.body.classList.remove('playlist-left');
-        }
-    }
-
-    if (settings.playlistHidden) {
-        document.body.classList.add('playlist-hidden');
-    } else {
-        document.body.classList.remove('playlist-hidden');
-    }
-
-    // Restore Audio Extras UI
-    if (bassBoostToggle) {
-        bassBoostToggle.checked = settings.bassBoostEnabled || false;
-        if (bassBoostContainer) bassBoostContainer.style.display = settings.bassBoostEnabled ? 'flex' : 'none';
-    }
-    if (bassBoostSlider) {
-        bassBoostSlider.value = settings.bassBoostValue !== undefined ? settings.bassBoostValue : 6;
-        if (bassBoostValueEl) bassBoostValueEl.textContent = bassBoostSlider.value + 'dB';
-    }
-
-    if (trebleBoostToggle) {
-        trebleBoostToggle.checked = settings.trebleBoostEnabled || false;
-        if (trebleBoostContainer) trebleBoostContainer.style.display = settings.trebleBoostEnabled ? 'flex' : 'none';
-    }
-    if (trebleBoostSlider) {
-        trebleBoostSlider.value = settings.trebleBoostValue !== undefined ? settings.trebleBoostValue : 6;
-        if (trebleBoostValueEl) trebleBoostValueEl.textContent = trebleBoostSlider.value + 'dB';
-    }
-
-    if (reverbToggle) {
-        reverbToggle.checked = settings.reverbEnabled || false;
-        if (reverbContainer) reverbContainer.style.display = settings.reverbEnabled ? 'flex' : 'none';
-    }
-    if (reverbSlider) {
-        reverbSlider.value = settings.reverbValue !== undefined ? settings.reverbValue : 30;
-        if (reverbValueEl) reverbValueEl.textContent = reverbSlider.value + '%';
-    }
-
-    updateAudioEffects();
 }
 
 function updateLoopIcon() {
@@ -946,19 +885,7 @@ function showContextMenu(e, idx) {
 function handleDeleteTrack(fp) { trackToDeletePath = fp; confirmDeleteOverlay.classList.add('visible'); let c = 5; confirmDeleteBtn.disabled = true; confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; const ci = setInterval(() => { c--; if (c > 0) confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; else { clearInterval(ci); confirmDeleteBtn.textContent = tr('confirmDeleteButton'); confirmDeleteBtn.disabled = false; } }, 1000); }
 
 function setupEventListeners() {
-    const settingTabs = document.querySelectorAll('.settings-nav-btn');
-    const settingContents = document.querySelectorAll('.settings-tab-content');
-
-    settingTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            settingTabs.forEach(t => t.classList.remove('active'));
-            settingContents.forEach(c => c.classList.remove('active'));
-            tab.classList.add('active');
-            const targetId = tab.dataset.target;
-            const targetContent = document.getElementById(targetId);
-            if (targetContent) targetContent.classList.add('active');
-        });
-    });
+    // Only Main App Listeners here. Settings logic moved to AppSettings via initSettingsLogic().
 
     const bind = (el, ev, h) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, h); };
     bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) audio.pause(); else (currentIndex === -1) ? playTrack(0) : audio.play(); });
@@ -982,20 +909,10 @@ function setupEventListeners() {
             libraryOverlay.classList.remove('visible');
         }
     });
-    bind(refreshFolderBtn, 'click', async () => {
-        let path = currentFolderPath || settings.currentFolderPath;
-        if (!path) return;
-        const r = await windowApi.refreshMusicFolder(path);
-        if (r && r.tracks) {
-            currentFolderPath = r.folderPath;
-            saveSetting('currentFolderPath', currentFolderPath);
-            basePlaylist = r.tracks;
-            sortPlaylist(sortMode);
-            if (currentTrackPath) currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
-            updateUIForCurrentTrack();
-            settingsOverlay.classList.remove('visible');
-        }
-    });
+    // refreshFolderBtn logic is also handled in AppSettings callback for standard refresh, 
+    // but the button might exist in multiple places (header/modal). 
+    // Actually, AppSettings handles the modal one. The header one is not existent in current HTML.
+
     let st; bind(searchInput, 'input', (e) => { clearTimeout(st); st = setTimeout(() => { filterPlaylist(e.target.value); }, 250); });
 
     window.addEventListener('keydown', (e) => {
@@ -1066,21 +983,6 @@ function setupEventListeners() {
             saveSetting('language', currentLanguage);
         });
     });
-    bind(themeSelect, 'change', (e) => {
-        const th = e.target.value;
-        document.documentElement.setAttribute('data-theme', th);
-        saveSetting('theme', th);
-        setTimeout(updateCachedColor, 100);
-    });
-    bind(accentColorPicker, 'input', (e) => {
-        const color = e.target.value;
-        document.documentElement.style.setProperty('--accent', color);
-        updateCachedColor();
-        saveSetting('customAccentColor', color);
-    });
-    bind(accentColorPicker, 'change', (e) => {
-        saveSetting('customAccentColor', e.target.value);
-    });
 
     if (window.runtime) {
         window.runtime.EventsOn("media-key", (key) => {
@@ -1101,229 +1003,19 @@ function setupEventListeners() {
         });
     }
 
-
-
     bind(sortSelect, 'change', (e) => { sortMode = e.target.value; saveSetting('sortMode', sortMode); sortPlaylist(sortMode); });
-    bind(settingsBtn, 'click', () => { settingsOverlay.classList.add('visible'); });
-    bind(settingsCloseBtn, 'click', () => { settingsOverlay.classList.remove('visible'); });
-    bind(changeFolderBtn, 'click', async () => { const nf = await windowApi.selectFolder(); if (nf) { if (downloadFolderInput) downloadFolderInput.value = nf; saveSetting('downloadFolder', nf); } });
-    bind(qualitySelect, 'change', (e) => saveSetting('audioQuality', e.target.value));
-    bind(visualizerToggle, 'change', (e) => {
-        saveSetting('visualizerEnabled', e.target.checked);
-        if (visualizer) {
-            visualizer.updateSettings({ enabled: e.target.checked });
-            if (e.target.checked) visualizer.start(); else visualizer.stop();
-        }
-    });
-    bind(visualizerStyleSelect, 'change', (e) => {
-        saveSetting('visualizerStyle', e.target.value);
-        if (visualizer) visualizer.updateSettings({ style: e.target.value });
-    });
-    bind(visualizerSensitivity, 'input', (e) => {
-        const val = parseFloat(e.target.value);
-        saveSetting('visSensitivity', val);
-        if (visualizer) visualizer.updateSettings({ sensitivity: val });
-    });
-    bind($('#visualizer-sensitivity-reset-btn'), 'click', () => {
-        const def = 1.5;
-        if (visualizerSensitivity) visualizerSensitivity.value = def;
-        saveSetting('visSensitivity', def);
-        if (visualizer) visualizer.updateSettings({ sensitivity: def });
-    });
-    bind(sleepTimerSelect, 'change', (e) => { const mins = parseInt(e.target.value); if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; } if (mins > 0) { sleepTimerId = setTimeout(() => { audio.pause(); isPlaying = false; updatePlayPauseUI(); showNotification(tr('sleepTimerStopped')); sleepTimerSelect.value = "0"; sleepTimerId = null; }, mins * 60000); showNotification(tr('sleepTimerNotify', mins)); } });
-    bind(animationSelect, 'change', (e) => { const m = e.target.value; saveSetting('animationMode', m); applyAnimationSetting(m); });
-    bind(autoLoadLastFolderToggle, 'change', (e) => { saveSetting('autoLoadLastFolder', e.target.checked); if (e.target.checked && currentFolderPath) saveSetting('currentFolderPath', currentFolderPath); });
-    bind(toggleEnableFocus, 'change', (e) => { saveSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });
+
+    // Bind "Focus Mode" Button (Player UI)
     bind(toggleFocusModeBtn, 'click', () => {
         document.body.classList.toggle('focus-active');
         if (document.body.classList.contains('focus-active')) showNotification(tr('focusActiveNotify'));
     });
+
+    // Legacy / Orphaned Binds Check
+    bind(toggleEnableFocus, 'change', (e) => { saveSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });
     bind(toggleEnableDrag, 'change', (e) => { saveSetting('enableDragAndDrop', e.target.checked); });
-    bind(speedSlider, 'input', (e) => {
-        const v = parseFloat(e.target.value);
-        audio.defaultPlaybackRate = v;
-        audio.playbackRate = v;
-        if (speedValue) speedValue.textContent = v.toFixed(1) + 'x';
-        saveSetting('playbackSpeed', v);
-    });
-    bind($('#speed-reset-btn'), 'click', () => {
-        const def = 1.0;
-        if (speedSlider) speedSlider.value = def;
-        audio.defaultPlaybackRate = def;
-        audio.playbackRate = def;
-        if (speedValue) speedValue.textContent = def.toFixed(1) + 'x';
-        saveSetting('playbackSpeed', def);
-    });
 
-    bind(bassBoostToggle, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('bassBoostEnabled', enabled);
-        if (bassBoostContainer) bassBoostContainer.style.display = enabled ? 'flex' : 'none';
-        updateAudioEffects();
-    });
-    bind(bassBoostSlider, 'input', (e) => {
-        const val = parseFloat(e.target.value);
-        saveSetting('bassBoostValue', val);
-        if (bassBoostValueEl) bassBoostValueEl.textContent = val + 'dB';
-        updateAudioEffects();
-    });
 
-    bind(trebleBoostToggle, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('trebleBoostEnabled', enabled);
-        if (trebleBoostContainer) trebleBoostContainer.style.display = enabled ? 'flex' : 'none';
-        updateAudioEffects();
-    });
-    bind(trebleBoostSlider, 'input', (e) => {
-        const val = parseFloat(e.target.value);
-        saveSetting('trebleBoostValue', val);
-        if (trebleBoostValueEl) trebleBoostValueEl.textContent = val + 'dB';
-        updateAudioEffects();
-    });
-
-    bind(reverbToggle, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('reverbEnabled', enabled);
-        if (reverbContainer) reverbContainer.style.display = enabled ? 'flex' : 'none';
-        updateAudioEffects();
-    });
-    bind($('#reverb-slider'), 'input', (e) => {
-        const val = parseFloat(e.target.value);
-        saveSetting('reverbValue', val);
-        if (reverbValueEl) reverbValueEl.textContent = val + '%';
-        updateAudioEffects();
-    });
-
-    bind($('#bass-boost-reset-btn'), 'click', () => {
-        const def = 6;
-        if (bassBoostSlider) bassBoostSlider.value = def;
-        if (bassBoostValueEl) bassBoostValueEl.textContent = def + 'dB';
-        saveSetting('bassBoostValue', def);
-        updateAudioEffects();
-    });
-
-    bind($('#treble-boost-reset-btn'), 'click', () => {
-        const def = 6;
-        if (trebleBoostSlider) trebleBoostSlider.value = def;
-        if (trebleBoostValueEl) trebleBoostValueEl.textContent = def + 'dB';
-        saveSetting('trebleBoostValue', def);
-        updateAudioEffects();
-    });
-
-    bind($('#reverb-reset-btn'), 'click', () => {
-        const def = 30;
-        if (reverbSlider) reverbSlider.value = def;
-        if (reverbValueEl) reverbValueEl.textContent = def + '%';
-        saveSetting('reverbValue', def);
-        updateAudioEffects();
-    });
-
-    bind(toggleCinemaMode, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('cinemaMode', enabled);
-        document.body.classList.toggle('cinema-mode', enabled);
-    });
-
-    bind(document.getElementById('toggle-performance-mode'), 'change', (e) => {
-        setPerformanceMode(e.target.checked);
-    });
-
-    bind(document.getElementById('toggle-show-stats'), 'change', (e) => {
-        showStatsOverlay = e.target.checked;
-        saveSetting('showStatsOverlay', showStatsOverlay);
-        const overlay = document.getElementById('stats-overlay');
-        if (overlay) overlay.classList.toggle('hidden', !showStatsOverlay);
-    });
-
-    const fpsIn = document.getElementById('fps-input');
-    const updateFps = (val) => {
-        let v = parseInt(val);
-        if (isNaN(v)) return;
-        let clamped = Math.max(15, Math.min(120, v));
-        targetFps = clamped;
-        saveSetting('targetFps', clamped);
-    };
-    bind(fpsIn, 'input', (e) => updateFps(e.target.value));
-    bind(fpsIn, 'blur', (e) => {
-        updateFps(e.target.value);
-        if (fpsIn) fpsIn.value = targetFps;
-    });
-
-    bind(document.getElementById('enable-perf-mode-btn'), 'click', () => {
-        setPerformanceMode(true);
-        document.getElementById('performance-hint').classList.remove('visible');
-    });
-
-    bind(btnExportPlaylist, 'click', () => {
-        if (!playlist || playlist.length === 0) { showNotification(tr('emptyPlaylist')); return; }
-        const content = playlist.map((t, i) => `${i + 1}. ${t.artist || 'Unknown'} - ${t.title}`).join('\n');
-        const blob = new Blob([content], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'playlist_export.txt';
-        a.click();
-        URL.revokeObjectURL(url);
-        showNotification(tr('exportSuccess'));
-    });
-
-    const btnResetApp = document.getElementById('btn-reset-app');
-    bind(btnResetApp, 'click', async () => {
-        if (confirm(tr('resetWarning'))) {
-            try {
-                const res = await windowApi.resetConfig();
-                if (res.success) {
-                    localStorage.clear();
-                    showNotification("Reset complete. Restarting...", "success");
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                } else {
-                    showNotification("Reset failed: " + res.error, "error");
-                }
-            } catch (e) {
-                console.error("Reset error:", e);
-                showNotification("Reset error", "error");
-            }
-        }
-    });
-
-    const btnShutdown = document.getElementById('btn-shutdown-app');
-    bind(btnShutdown, 'click', () => {
-        AppShutdown.shutdown();
-    });
-
-    bind(toggleUseCustomColor, 'change', (e) => {
-        saveSetting('useCustomColor', e.target.checked);
-        accentColorContainer.classList.toggle('hidden', !e.target.checked);
-        if (e.target.checked) {
-            document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
-        } else {
-            document.documentElement.style.removeProperty('--accent');
-        }
-        updateCachedColor();
-    });
-
-    bind(toggleGradientTitle, 'change', (e) => {
-        saveSetting('gradientTitleEnabled', e.target.checked);
-        document.body.classList.toggle('gradient-title-active', e.target.checked);
-    });
-    bind(emojiSelect, 'change', (e) => {
-        const v = e.target.value;
-        if (customEmojiContainer) customEmojiContainer.style.display = v === 'custom' ? 'flex' : 'none';
-        saveSetting('coverMode', v);
-        updateEmoji(v, customEmojiInput ? customEmojiInput.value : '');
-    });
-    bind(customEmojiInput, 'input', (e) => {
-        const v = e.target.value;
-        saveSetting('customCoverEmoji', v);
-        updateEmoji('custom', v);
-    });
-    bind(toggleDeleteSongs, 'change', (e) => {
-        deleteSongsEnabled = e.target.checked;
-        saveSetting('deleteSongsEnabled', deleteSongsEnabled);
-        renderPlaylist();
-    });
     bind(playlistEl, 'click', (e) => {
         const db = e.target.closest('.delete-track-btn');
         if (db) { e.stopPropagation(); handleDeleteTrack(db.dataset.path); return; }
@@ -1364,17 +1056,7 @@ function setupEventListeners() {
         toggleFavoritesBtn.style.color = showingFavoritesOnly ? 'var(--accent)' : 'var(--text-main)';
         filterPlaylist(searchInput ? searchInput.value : '');
     });
-
-    bind(toggleFavoritesOption, 'change', (e) => {
-        const enabled = e.target.checked;
-        saveSetting('enableFavoritesPlaylist', enabled);
-        if (toggleFavoritesBtn) toggleFavoritesBtn.style.display = enabled ? 'flex' : 'none';
-        if (!enabled && showingFavoritesOnly) {
-            showingFavoritesOnly = false;
-            if (toggleFavoritesBtn) toggleFavoritesBtn.classList.remove('active');
-            filterPlaylist(searchInput ? searchInput.value : '');
-        }
-    });
+    // toggleFavoritesOption is in AppSettings, handled there.
 
     bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
     bind(editTitleInput, 'input', () => { if (newTitlePreview) newTitlePreview.textContent = editTitleInput.value; });
@@ -1412,7 +1094,127 @@ function setupEventListeners() {
     });
 }
 
+function initSettingsLogic() {
+    const callbacks = {
+        onThemeChange: (val) => {
+            saveSetting('theme', val);
+            setTimeout(updateCachedColor, 100);
+        },
+        onAccentColorChange: () => {
+            updateCachedColor();
+        },
+        onVisualizerToggle: (enabled) => {
+            visualizerEnabled = enabled;
+            if (visualizer) {
+                visualizer.updateSettings({ enabled: enabled });
+                if (enabled) visualizer.start(); else visualizer.stop();
+            }
+        },
+        onVisualizerStyleChange: (val) => {
+            if (visualizer) visualizer.updateSettings({ style: val });
+        },
+        onVisualizerSensitivityChange: (val) => {
+            if (visualizer) visualizer.updateSettings({ sensitivity: val });
+        },
+        onEmojiChange: (mode, customVal) => {
+            updateEmoji(mode, customVal);
+        },
+        onSleepTimerChange: (mins) => {
+            if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; }
+            if (mins > 0) {
+                sleepTimerId = setTimeout(() => {
+                    audio.pause(); isPlaying = false; updatePlayPauseUI();
+                    showNotification(tr('sleepTimerStopped'));
+                    sleepTimerId = null;
+                }, mins * 60000);
+                showNotification(tr('sleepTimerNotify', mins));
+            }
+        },
+        onSpeedChange: (val) => {
+            audio.defaultPlaybackRate = val;
+            audio.playbackRate = val;
+        },
+        onDeleteSongsToggle: (enabled) => {
+            deleteSongsEnabled = enabled;
+            renderPlaylist(); // Update playlist to show/hide delete buttons
+        },
+        onRefreshFolder: async () => {
+            let path = currentFolderPath || settings.currentFolderPath;
+            if (!path) return;
+            const r = await windowApi.refreshMusicFolder(path);
+            if (r && r.tracks) {
+                currentFolderPath = r.folderPath;
+                saveSetting('currentFolderPath', currentFolderPath);
+                basePlaylist = r.tracks;
+                playlist = [...basePlaylist];
+                sortPlaylist(sortMode);
+                if (currentTrackPath) currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
+                updateUIForCurrentTrack();
+                showNotification(tr('folderRefreshed'));
+            }
+        },
+        onAudioEffectChange: () => {
+            updateAudioEffects();
+        },
+        onLangUpdate: () => {
+            applyTranslations();
+        },
+        onPerformanceModeChange: (enabled) => {
+            setPerformanceMode(enabled);
+        },
+        onStatsToggle: (enabled) => {
+            showStatsOverlay = enabled;
+        },
+        onFavoritesOptionToggle: (enabled) => {
+            if (toggleFavoritesBtn) toggleFavoritesBtn.style.display = enabled ? 'flex' : 'none';
+            if (!enabled && showingFavoritesOnly) {
+                showingFavoritesOnly = false;
+                if (toggleFavoritesBtn) toggleFavoritesBtn.classList.remove('active');
+                filterPlaylist(searchInput ? searchInput.value : '');
+            }
+        },
+        onFpsChange: (val) => {
+            targetFps = val;
+            saveSetting('targetFps', val);
+        },
+        onExportPlaylist: () => {
+            if (!playlist || playlist.length === 0) { showNotification(tr('emptyPlaylist')); return; }
+            const content = playlist.map((t, i) => `${i + 1}. ${t.artist || 'Unknown'} - ${t.title}`).join('\n');
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'playlist_export.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification(tr('exportSuccess'));
+        },
+        onResetApp: async () => {
+            if (confirm(tr('resetWarning'))) {
+                try {
+                    const res = await windowApi.resetConfig();
+                    if (res.success) {
+                        localStorage.clear();
+                        showNotification("Reset complete. Restarting...", "success");
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        showNotification("Reset failed: " + res.error, "error");
+                    }
+                } catch (e) {
+                    console.error("Reset error:", e);
+                }
+            }
+        },
+        onShutdownApp: () => {
+            AppShutdown.shutdown();
+        },
+        onAnimationChange: (val) => {
+            applyAnimationSetting(val);
+        }
+    };
 
+    AppSettings.init(windowApi, settings, callbacks);
+}
 
 function makeDraggable(modal, handle) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -1728,7 +1530,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Fast Path: Apply cached theme
             const cachedTheme = localStorage.getItem('theme') || 'midnight';
             document.documentElement.setAttribute('data-theme', cachedTheme);
-            
+
             AppLoader.update(20, tr('loaderModules'));
             // Initialize Dynamic Themes & Animations
             ThemeListener.init();
@@ -1738,13 +1540,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Load Settings (includes folder scan)
             await loadSettings();
 
+            // INIT APP SETTINGS LOGIC
+            initSettingsLogic();
+
             AppLoader.update(70, tr('loaderApplying'));
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
             // Initialize Theme Packs
             ThemePackListener.init({ visualizer, ui: { updateEmoji, updateCachedColor, resetToDefaultTheme }, settings });
-            
+
             if (settings.theme) {
                 document.documentElement.setAttribute('data-theme', settings.theme);
             }
@@ -1779,7 +1584,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     introMgr.play().then(() => {
                         document.body.classList.add('ready');
                     });
-                }, 600); // Wait for loader to fade
+                }, 600);
             } else {
                 setTimeout(() => document.body.classList.add('ready'), 500);
             }
@@ -1839,7 +1644,6 @@ document.addEventListener('DOMContentLoaded', () => {
             newRefBtn.addEventListener('click', async () => {
                 let path = currentFolderPath || settings.currentFolderPath;
                 if (!path) {
-                    // If no path, ask to select one
                     const btn = document.getElementById('open-library-btn');
                     if (btn) btn.click();
                     return;
@@ -1905,12 +1709,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cmEdit) cmEdit.onclick = () => {
             if (contextTrackIndex === null) return;
             const t = playlist[contextTrackIndex];
-            
+
             // Ensure elements exist before accessing
             if (originalTitlePreview) originalTitlePreview.textContent = t.title;
             if (newTitlePreview) newTitlePreview.textContent = t.title;
             if (editTitleInput) editTitleInput.value = t.title;
-            
+
             if (editTitleOverlay) editTitleOverlay.classList.add('visible');
         };
 

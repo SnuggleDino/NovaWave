@@ -735,43 +735,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- TAB 2: PLAYER -->
-                    <div id="tab-player" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionPlayer"></span></h4>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="sleepTimer"></strong>
-                                <p data-lang-key="sleepTimerDesc"></p>
-                            </div>
-                            <div class="setting-control">
-                                <select id="sleep-timer-select" class="settings-select">
-                                    <option value="0" data-lang-key="timerOff"></option>
-                                    <option value="15">15 Min</option>
-                                    <option value="30">30 Min</option>
-                                    <option value="60">60 Min</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="playbackSpeed">Playback Speed</strong>
-                                <p data-lang-key="playbackSpeedDesc">Adjust playback rate (0.5x - 2.0x)</p>
-                            </div>
-                            <div class="setting-control">
-                                <div class="action-group">
-                                    <span id="speed-value"
-                                        style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">1.0x</span>
-                                    <input type="range" id="speed-slider" class="settings-range" min="0.5" max="2.0"
-                                        step="0.1" value="1.0">
-                                    <button id="speed-reset-btn" class="settings-button"
-                                        title="Reset Speed">&#8634;</button>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="setting-item">
                             <div class="setting-label">
@@ -843,6 +806,43 @@
                             <div class="setting-control">
                                 <input type="text" id="custom-emoji-input" class="settings-input"
                                     placeholder="&#127925;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: PLAYER -->
+                    <div id="tab-player" class="settings-tab-content">
+                        <h4 class="settings-section-title"><span data-lang-key="sectionPlayer"></span></h4>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="sleepTimer"></strong>
+                                <p data-lang-key="sleepTimerDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <select id="sleep-timer-select" class="settings-select">
+                                    <option value="0" data-lang-key="timerOff"></option>
+                                    <option value="15">15 Min</option>
+                                    <option value="30">30 Min</option>
+                                    <option value="60">60 Min</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="playbackSpeed">Playback Speed</strong>
+                                <p data-lang-key="playbackSpeedDesc">Adjust playback rate (0.5x - 2.0x)</p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <span id="speed-value"
+                                        style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">1.0x</span>
+                                    <input type="range" id="speed-slider" class="settings-range" min="0.5" max="2.0"
+                                        step="0.1" value="1.0">
+                                    <button id="speed-reset-btn" class="settings-button"
+                                        title="Reset Speed">&#8634;</button>
+                                </div>
                             </div>
                         </div>
 
