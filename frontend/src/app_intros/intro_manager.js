@@ -1,5 +1,6 @@
 import { WaterdropIntro } from './intro_waterdrop.js';
 import { CssBasedIntro, InteractiveIntro } from './intro_css_adapter.js';
+import { RocketIntro } from './intro_rocket.js';
 
 export class IntroManager {
     constructor(settings) {
@@ -12,7 +13,10 @@ export class IntroManager {
             
             // Factory functions for CSS-based intros (Static HTML)
             'dino_love': () => new CssBasedIntro('dino-intro'),
-            'rocket': () => new CssBasedIntro('rocket-intro'),
+            
+            // Rocket uses custom class now
+            'rocket': () => new RocketIntro(),
+            
             // 8bit is now interactive!
             '8bit': () => new InteractiveIntro('8bit-intro', 'btn-8bit-start'),
             

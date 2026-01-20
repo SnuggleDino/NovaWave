@@ -4413,3 +4413,26 @@ kbd {
     50% { border-color: transparent; box-shadow: none; }
 }
 
+
+/* Rocket Intro Dynamic Stars */
+.star-field {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.rocket-star {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: star-fly-down linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes star-fly-down {
+    from { transform: translateY(-100px); opacity: 0; }
+    10% { opacity: 1; }
+    to { transform: translateY(110vh); opacity: 0.5; }
+}
+
