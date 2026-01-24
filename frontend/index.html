@@ -318,17 +318,25 @@
                     <div class="playlist-header-area">
                         <div class="playlist-top-row">
                             <h2 class="panel-title" style="margin:0; border:none;" data-lang-key="playlistTitle"></h2>
-                            <button id="open-library-btn" class="load-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" style="margin-right:5px;">
-                                    <path
-                                        d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
-                                    </path>
-                                </svg>
-                                <span data-lang-key="loadFolder"></span>
-                            </button>
-
+                            <div class="playlist-header-actions" style="display: flex; gap: 8px; align-items: center;">
+                                <button id="add-folder-btn" class="add-folder-btn" data-lang-title="folderModalTitleCreate">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                        <line x1="12" y1="11" x2="12" y2="17"></line>
+                                        <line x1="9" y1="14" x2="15" y2="14"></line>
+                                    </svg>
+                                </button>
+                                <button id="open-library-btn" class="load-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" style="margin-right:5px;">
+                                        <path
+                                            d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z">
+                                        </path>
+                                    </svg>
+                                    <span data-lang-key="loadFolder"></span>
+                                </button>
+                            </div>
                         </div>
                         <div class="playlist-toolbar">
                             <button id="toggle-favorites-btn" class="extras-button"
@@ -487,6 +495,20 @@
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
             <span data-lang-key="cmDelete">Delete</span>
+        </button>
+    </div>
+
+    <!-- ================= FOLDER CONTEXT MENU ================= -->
+    <div id="context-menu-folder" class="glass-context-menu">
+        <div class="context-header">Folder Options</div>
+        <button id="cm-folder-rename" class="cm-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span data-lang-key="cmFolderRename">Rename</span>
+        </button>
+        <div class="context-divider"></div>
+        <button id="cm-folder-delete" class="cm-item danger">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span data-lang-key="cmFolderDelete">Delete</span>
         </button>
     </div>
 
@@ -1377,6 +1399,39 @@
                 <div class="modal-actions">
                     <button id="edit-title-cancel-btn" class="modal-btn secondary">Cancel</button>
                     <button id="edit-title-save-btn" class="modal-btn primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FOLDER MODAL ================= -->
+    <div id="folder-modal-overlay" class="overlay-container">
+        <div class="glass-panel settings-modal" style="max-width: 400px;">
+            <div class="settings-header">
+                <h3 id="folder-modal-title">Create Folder</h3>
+                <button id="folder-modal-close-btn" class="close-modal-btn">&times;</button>
+            </div>
+            <div class="settings-content">
+                <div class="edit-field-group">
+                    <label class="edit-label" data-lang-key="folderNamePlaceholder"></label>
+                    <input type="text" id="folder-input" class="edit-input-modern" placeholder="..." autocomplete="off">
+                </div>
+                <div class="edit-field-group" style="margin-top: 15px;">
+                    <label class="edit-label" data-lang-key="folderColorLabel"></label>
+                    <div id="folder-color-palette" class="color-palette">
+                        <div class="color-swatch active" data-color="#38bdf8" style="background: #38bdf8;"></div>
+                        <div class="color-swatch" data-color="#f87171" style="background: #f87171;"></div>
+                        <div class="color-swatch" data-color="#4ade80" style="background: #4ade80;"></div>
+                        <div class="color-swatch" data-color="#fbbf24" style="background: #fbbf24;"></div>
+                        <div class="color-swatch" data-color="#a855f7" style="background: #a855f7;"></div>
+                        <div class="color-swatch" data-color="#ec4899" style="background: #ec4899;"></div>
+                        <div class="color-swatch" data-color="#f97316" style="background: #f97316;"></div>
+                        <div class="color-swatch" data-color="#94a3b8" style="background: #94a3b8;"></div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button id="folder-cancel-btn" class="modal-btn secondary">Cancel</button>
+                    <button id="folder-save-btn" class="modal-btn primary">Save</button>
                 </div>
             </div>
         </div>

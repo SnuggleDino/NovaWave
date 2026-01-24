@@ -1885,11 +1885,23 @@ input[type=range].volume-slider::-moz-range-thumb {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px; /* Add gap */
 }
 
 .playlist-header-area .panel-title {
     margin-bottom: 0;
     border: none;
+    flex: 1; /* Allow title to grow/shrink */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playlist-header-actions {
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 .load-btn {
@@ -2036,10 +2048,67 @@ input[type=range].volume-slider::-moz-range-thumb {
     border-left-color: var(--text-muted);
 }
 
+.track-row.is-folder {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent);
+    font-weight: 700;
+    color: var(--accent);
+    padding-left: 10px;
+    border-left: 4px solid var(--accent);
+    margin-top: 10px; /* More spacing above folders */
+    margin-bottom: 0;
+    border-radius: 6px 6px 0 0; /* Tab look */
+}
+
+.track-row.indent {
+    margin-left: 0;
+    padding-left: 35px;
+    border-left: 3px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.15); /* Darker background for "boxed" feel */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
 .track-row.active {
-    background: linear-gradient(90deg, var(--accent-soft), transparent);
+    background: linear-gradient(90deg, var(--accent-soft), transparent) !important;
+    border-left: 4px solid var(--accent) !important;
+    color: var(--text-main) !important;
+    opacity: 1 !important;
+}
+
+/* Dynamic Accent support for folder styles */
+[data-theme] .track-row.is-folder {
     border-left-color: var(--accent);
-    border-bottom-color: transparent;
+    background: linear-gradient(90deg, var(--accent-soft), transparent);
+}
+
+[data-theme] .track-row.indent {
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+.add-folder-btn {
+    background: transparent;
+    border: 1px solid var(--border-soft);
+    color: var(--text-muted);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.add-folder-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.track-row.is-folder.drag-over {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    transform: scale(1.02);
 }
 
 .track-index {
@@ -4056,7 +4125,51 @@ kbd {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin-top: 10px;
+    margin-top: 25px;
+}
+
+/* === Folder Color Palette === */
+.color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.color-swatch {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.active {
+    border-color: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* === Delete Modal Refinement === */
+#confirm-delete-overlay .settings-modal {
+    text-align: center;
+}
+
+#confirm-delete-overlay .confirm-message {
+    padding: 20px;
+    line-height: 1.6;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+#confirm-delete-overlay .modal-actions {
+    justify-content: center;
+    padding-bottom: 10px;
 }
 
 .modal-btn {

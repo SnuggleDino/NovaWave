@@ -15,6 +15,7 @@ import { AppLoader } from './app_start/app_loader.js';
 import { AppShutdown } from './app_shutdown/shutdown.js';
 import { AppSettings } from './app_settings/app_settings.js';
 import { UpdateManager } from './app_updates/update_manager.js';
+import { PlaylistManager } from './playlist/playlist_manager.js';
 
 // Wails API Mapping
 const windowApi = {
@@ -104,6 +105,122 @@ let lastStatsTime = performance.now();
 let cachedAccentColor = '#38bdf8';
 let isStatsLoopRunning = false;
 let warmupFrames = 0;
+
+// --- Helper Functions & Variables (Module Scope) ---
+
+let activeFolderId = null;
+let selectedFolderColor = '#38bdf8'; // Default
+let folderModal = null;
+let folderInput = null;
+let folderModalTitle = null;
+let contextMenuFolder = null;
+let contextFolderId = null;
+let deleteMode = 'track';
+
+// We need to initialize these DOM elements after DOMContentLoaded
+function initUIHelpers() {
+    folderModal = $('#folder-modal-overlay');
+    folderInput = $('#folder-input');
+    folderModalTitle = $('#folder-modal-title');
+    contextMenuFolder = $('#context-menu-folder');
+
+    // Setup Palette Listener (Event Delegation)
+    const palette = $('#folder-color-palette');
+    if (palette) {
+        palette.addEventListener('click', (e) => {
+            const swatch = e.target.closest('.color-swatch');
+            if (swatch) {
+                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+                swatch.classList.add('active');
+                selectedFolderColor = swatch.dataset.color;
+            }
+        });
+    }
+}
+
+function openFolderModal(mode, folderId = null) {
+    activeFolderId = folderId;
+    if (folderModal) folderModal.classList.add('visible');
+    
+    const folder = folderId ? PlaylistManager.items.find(i => i.id === folderId) : null;
+    if (folderInput) {
+        folderInput.value = mode === 'rename' ? folder?.name || '' : '';
+        folderInput.placeholder = tr('folderNamePlaceholder');
+        folderInput.focus();
+    }
+    
+    const titleKey = mode === 'rename' ? 'folderModalTitleRename' : 'folderModalTitleCreate';
+    if (folderModalTitle) folderModalTitle.textContent = tr(titleKey);
+
+    // Reset Palette
+    selectedFolderColor = (mode === 'rename' && folder) ? folder.color : '#38bdf8';
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.classList.toggle('active', swatch.dataset.color === selectedFolderColor);
+    });
+}
+
+    function showFolderContextMenu(e, folderId) {
+    e.preventDefault();
+    e.stopPropagation(); 
+    contextFolderId = folderId;
+    
+    if (contextMenu) contextMenu.style.display = 'none';
+    
+    if (contextMenuFolder) {
+        contextMenuFolder.style.top = `${e.clientY}px`;
+        contextMenuFolder.style.left = `${e.clientX}px`;
+        contextMenuFolder.style.display = 'block';
+        
+        const closeCm = () => { 
+            contextMenuFolder.style.display = 'none'; 
+            window.removeEventListener('click', closeCm); 
+        };
+        window.addEventListener('click', closeCm);
+    }
+}
+
+function showDeleteConfirmation(mode, id) {
+    deleteMode = mode;
+    if (confirmDeleteOverlay) {
+        const msgEl = confirmDeleteOverlay.querySelector('.confirm-message');
+        const titleEl = confirmDeleteOverlay.querySelector('h3');
+        
+        // Reset Button State
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.disabled = false;
+            confirmDeleteBtn.textContent = tr('confirmDeleteButton');
+        }
+
+        if (mode === 'track') {
+            trackToDeletePath = id;
+            if (titleEl) titleEl.textContent = tr('confirmDeleteTitle');
+            if (msgEl) msgEl.textContent = tr('confirmDeleteMessage');
+        } else {
+            contextFolderId = id;
+            if (titleEl) titleEl.textContent = tr('cmFolderDelete');
+            if (msgEl) msgEl.textContent = tr('cmFolderDeleteConfirm');
+        }
+        confirmDeleteOverlay.classList.add('visible');
+    }
+}
+function handleDeleteTrack(fp) { 
+    showDeleteConfirmation('track', fp);
+    let c = 5; 
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.disabled = true; 
+        confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; 
+        const ci = setInterval(() => { 
+            c--; 
+            if (c > 0) {
+                confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; 
+            } else { 
+                clearInterval(ci); 
+                confirmDeleteBtn.textContent = tr('confirmDeleteButton'); 
+                confirmDeleteBtn.disabled = false; 
+            } 
+        }, 1000); 
+    }
+}
 
 function initVisualizerEngine() {
     if (!audioExtras && audio) {
@@ -483,29 +600,120 @@ function renderPlaylist() {
     if (!playlistEl) return;
     if (renderPlaylistRequestId) cancelAnimationFrame(renderPlaylistRequestId);
     playlistEl.innerHTML = '';
-    if (playlist.length === 0) {
+    
+    // Get items to render from Manager
+    const renderItems = PlaylistManager.getRenderList(searchInput ? searchInput.value : '');
+    
+    if (renderItems.length === 0) {
         const msg = showingFavoritesOnly ? tr('noFavoritesFound') : tr('emptyPlaylist');
         playlistEl.innerHTML = `<div class="empty-state">${msg}</div>`;
-        if (playlistInfoBar) playlistInfoBar.textContent = `0 ${tr('tracks')}`;
+        if (playlistInfoBar) playlistInfoBar.textContent = `0 items`;
         return;
     }
+    
+    // Update flat playlist for audio navigation
+    playlist = PlaylistManager.getAllTracks(); 
+    
     if (playlistInfoBar) playlistInfoBar.textContent = `${playlist.length} ${playlist.length === 1 ? tr('track') : tr('tracks')}`;
+    
     let renderIndex = 0; const CHUNK_SIZE = 50;
+    
     function renderChunk() {
-        const fragment = document.createDocumentFragment(); const limit = Math.min(renderIndex + CHUNK_SIZE, playlist.length);
+        const fragment = document.createDocumentFragment(); 
+        const limit = Math.min(renderIndex + CHUNK_SIZE, renderItems.length);
+        
         for (let i = renderIndex; i < limit; i++) {
-            const track = playlist[i], row = document.createElement('div');
-            row.className = 'track-row'; row.dataset.index = i; if (i === currentIndex) row.classList.add('active');
-            const pi = `<div class="playing-bars"><span></span><span></span><span></span></div>`;
-            const isFav = favoritesSet.has(track.path);
-            const favFill = isFav ? 'currentColor' : 'none';
-            const favColor = isFav ? '#fbbf24' : 'var(--text-muted)';
-            const favBtn = `<button class="fav-track-btn" data-path="${track.path}" title="${tr('toggleFavorite')}" style="color: ${favColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="${favFill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>`;
-            row.innerHTML = `<div class="track-index">${(isPlaying && i === currentIndex) ? pi : (i + 1)}</div><div class="track-info-block"><div class="track-title-small">${track.title}</div><div class="track-artist-small">${track.artist || tr('unknownArtist')}</div></div>${favBtn}<div class="track-duration">${formatTime(track.duration)}</div>`;
-            fragment.appendChild(row);
+            const item = renderItems[i];
+            
+            if (item.type === 'folder') {
+                // RENDER FOLDER
+                const row = document.createElement('div');
+                row.className = 'track-row is-folder';
+                row.dataset.id = item.id;
+                
+                // Apply dynamic color
+                const color = item.color || '#38bdf8';
+                row.style.setProperty('--folder-color', color);
+                row.style.setProperty('--folder-color-soft', color + '26'); // 15% opacity
+                row.style.borderLeftColor = color;
+                row.style.color = color;
+                row.style.background = `linear-gradient(90deg, ${color}26, transparent)`;
+                
+                const arrow = item.collapsed ? '▶' : '▼';
+                row.innerHTML = `<div class="track-index" style="width:30px;">${arrow}</div><div class="track-info-block" style="font-size:0.9rem;">${item.name}</div>`;
+                
+                row.onclick = () => {
+                    PlaylistManager.toggleFolder(item.id);
+                    renderPlaylist();
+                };
+                
+                row.oncontextmenu = (e) => showFolderContextMenu(e, item.id);
+
+                // Drop Zone Logic
+                row.ondragover = (e) => {
+                    e.preventDefault();
+                    row.classList.add('drag-over');
+                };
+                row.ondragleave = () => row.classList.remove('drag-over');
+                row.ondrop = (e) => {
+                    e.preventDefault();
+                    row.classList.remove('drag-over');
+                    const trackId = e.dataTransfer.getData('text/plain');
+                    if (trackId) {
+                        PlaylistManager.moveItemToFolder(trackId, item.id);
+                        renderPlaylist();
+                        showNotification(tr('folderRefreshed')); // Use existing key or generic success
+                    }
+                };
+                
+                fragment.appendChild(row);
+                
+            } else {
+                // RENDER TRACK
+                const track = item.data;
+                // Find global index for playing
+                const globalIndex = playlist.findIndex(t => t.path === track.path);
+                
+                const row = document.createElement('div');
+                row.className = 'track-row';
+                row.draggable = true; // Enable Drag
+                
+                row.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                    e.dataTransfer.effectAllowed = 'move';
+                };
+
+                // Check indentation
+                if (!searchInput.value && item.groupId) {
+                    row.classList.add('indent');
+                    // Apply parent folder color to the guide line
+                    const parentFolder = PlaylistManager.items.find(i => i.id === item.groupId);
+                    if (parentFolder) {
+                        row.style.borderLeftColor = parentFolder.color + '66'; // 40% opacity
+                    }
+                }
+                
+                row.dataset.index = globalIndex; 
+                if (globalIndex === currentIndex) row.classList.add('active');
+                
+                const pi = `<div class="playing-bars"><span></span><span></span><span></span></div>`;
+                const isFav = favoritesSet.has(track.path);
+                const favFill = isFav ? 'currentColor' : 'none';
+                const favColor = isFav ? '#fbbf24' : 'var(--text-muted)';
+                const favBtn = `<button class="fav-track-btn" data-path="${track.path}" title="${tr('toggleFavorite')}" style="color: ${favColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="${favFill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>`;
+                
+                // Display Index: Use global Index + 1 (Audio Playlist Order) instead of Render List Index
+                const displayIdx = (isPlaying && globalIndex === currentIndex) ? pi : (globalIndex + 1);
+                
+                // Add visual indicator for nested tracks
+                const titlePrefix = (!searchInput.value && item.groupId) ? '<span style="opacity:0.6; margin-right:5px;">↳</span> ' : '';
+                
+                row.innerHTML = `<div class="track-index">${displayIdx}</div><div class="track-info-block"><div class="track-title-small">${titlePrefix}${track.title}</div><div class="track-artist-small">${track.artist || tr('unknownArtist')}</div></div>${favBtn}<div class="track-duration">${formatTime(track.duration)}</div>`;
+                fragment.appendChild(row);
+            }
         }
         playlistEl.appendChild(fragment); renderIndex = limit;
-        if (renderIndex < playlist.length) renderPlaylistRequestId = requestAnimationFrame(renderChunk);
+        if (renderIndex < renderItems.length) renderPlaylistRequestId = requestAnimationFrame(renderChunk);
     }
     renderChunk();
 }
@@ -813,8 +1021,10 @@ async function loadSettings() {
             const result = await windowApi.refreshMusicFolder(currentFolderPath);
             if (result && result.folderPath) {
                 basePlaylist = result.tracks || [];
-                playlist = [...basePlaylist];
-                sortPlaylist(sortMode);
+                PlaylistManager.loadTracks(basePlaylist); // Load into Manager
+                playlist = PlaylistManager.getAllTracks();
+                
+                sortPlaylist(sortMode); // Note: Sort currently only sorts basePlaylist, we might need to update Manager sort later
                 updateUIForCurrentTrack();
             }
         } catch (e) {
@@ -881,12 +1091,9 @@ function filterPlaylist(q) {
 }
 
 function sortPlaylist(m) {
-    const srt = [...basePlaylist];
-    if (m === 'name') srt.sort((a, b) => a.title.localeCompare(b.title, 'de', { numeric: true }));
-    else if (m === 'nameDesc') srt.sort((a, b) => b.title.localeCompare(a.title, 'de', { numeric: true }));
-    else if (m === 'newest') srt.sort((a, b) => (b.mtime || 0) - (a.mtime || 0));
-    basePlaylist = srt;
-    filterPlaylist(searchInput ? searchInput.value : '');
+    // basePlaylist is legacy, now we use Manager
+    PlaylistManager.sortItems(m);
+    renderPlaylist(); // Manager handles sorting order in getRenderList
 }
 
 function showContextMenu(e, idx) {
@@ -910,10 +1117,10 @@ function showContextMenu(e, idx) {
     window.addEventListener('click', hcm);
 }
 
-function handleDeleteTrack(fp) { trackToDeletePath = fp; confirmDeleteOverlay.classList.add('visible'); let c = 5; confirmDeleteBtn.disabled = true; confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; const ci = setInterval(() => { c--; if (c > 0) confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; else { clearInterval(ci); confirmDeleteBtn.textContent = tr('confirmDeleteButton'); confirmDeleteBtn.disabled = false; } }, 1000); }
-
 function setupEventListeners() {
     // Only Main App Listeners here. Settings logic moved to AppSettings via initSettingsLogic().
+    
+    initUIHelpers(); // Initialize UI references for helpers
 
     const bind = (el, ev, h) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, h); };
     bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) audio.pause(); else (currentIndex === -1) ? playTrack(0) : audio.play(); });
@@ -928,7 +1135,9 @@ function setupEventListeners() {
         const r = await windowApi.selectMusicFolder();
         if (r && r.folderPath) {
             basePlaylist = r.tracks || [];
-            playlist = [...basePlaylist];
+            PlaylistManager.loadTracks(basePlaylist); // Load into Manager
+            playlist = PlaylistManager.getAllTracks(); // Keep flat list for audio engine
+            
             currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
             renderPlaylist();
             updateUIForCurrentTrack();
@@ -1050,9 +1259,19 @@ function setupEventListeners() {
         const fb = e.target.closest('.fav-track-btn');
         if (fb) { e.stopPropagation(); toggleFavorite(fb.dataset.path); return; }
         const row = e.target.closest('.track-row');
-        if (row) playTrack(parseInt(row.dataset.index, 10));
+        if (row && !row.classList.contains('is-folder')) playTrack(parseInt(row.dataset.index, 10));
     });
-    bind(playlistEl, 'contextmenu', (e) => { const r = e.target.closest('.track-row'); if (r) { e.preventDefault(); showContextMenu(e, parseInt(r.dataset.index, 10)); } });
+    bind(playlistEl, 'contextmenu', (e) => { 
+        const r = e.target.closest('.track-row'); 
+        if (r) { 
+            e.preventDefault(); 
+            if (r.classList.contains('is-folder')) {
+                showFolderContextMenu(e, r.dataset.id);
+            } else {
+                showContextMenu(e, parseInt(r.dataset.index, 10)); 
+            }
+        } 
+    });
     bind($('#context-menu-show-folder'), 'click', () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; windowApi.showInFolder(playlist[contextTrackIndex].path); });
     const toggleDownloaderBtn = document.getElementById('toggle-downloader-btn');
     bind(toggleDownloaderBtn, 'click', () => {
@@ -1078,12 +1297,87 @@ function setupEventListeners() {
         }
     }
 
+    // --- End Helper Functions ---
+
     bind(toggleFavoritesBtn, 'click', () => {
         showingFavoritesOnly = !showingFavoritesOnly;
         toggleFavoritesBtn.classList.toggle('active', showingFavoritesOnly);
         toggleFavoritesBtn.style.color = showingFavoritesOnly ? 'var(--accent)' : 'var(--text-main)';
         filterPlaylist(searchInput ? searchInput.value : '');
     });
+    
+    // Event Bindings for Folders & Delete
+    bind($('#add-folder-btn'), 'click', () => openFolderModal('create'));
+    bind($('#folder-cancel-btn'), 'click', () => folderModal.classList.remove('visible'));
+    bind($('#folder-modal-close-btn'), 'click', () => folderModal.classList.remove('visible'));
+    
+    bind($('#folder-save-btn'), 'click', () => {
+        const name = folderInput.value.trim();
+        if (!name) return;
+        
+        if (activeFolderId) {
+            PlaylistManager.renameFolder(activeFolderId, name, selectedFolderColor);
+        } else {
+            PlaylistManager.addFolder(name, selectedFolderColor);
+        }
+        renderPlaylist();
+        folderModal.classList.remove('visible');
+    });
+
+    bind($('#cm-folder-rename'), 'click', () => openFolderModal('rename', contextFolderId));
+    bind($('#cm-folder-delete'), 'click', () => showDeleteConfirmation('folder', contextFolderId));
+
+    bind(confirmDeleteCancelBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
+    bind(confirmDeleteCloseBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
+    
+    bind(confirmDeleteBtn, 'click', async () => {
+        // Folder Delete Logic (Synchronous)
+        if (deleteMode === 'folder') {
+            if (contextFolderId) {
+                PlaylistManager.deleteFolder(contextFolderId);
+                renderPlaylist();
+                showNotification(tr('folderDeleted'));
+            }
+            confirmDeleteOverlay.classList.remove('visible');
+            return;
+        }
+        
+        // Track Delete Logic (Async)
+        if (!trackToDeletePath) return; 
+        
+        // Disable button to prevent double-click
+        confirmDeleteBtn.disabled = true;
+        
+        const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null; 
+        const r = await windowApi.deleteTrack(trackToDeletePath); 
+        
+        confirmDeleteBtn.disabled = false; // Re-enable
+        
+        if (r.success) {
+            basePlaylist = basePlaylist.filter(x => x.path !== trackToDeletePath);
+            PlaylistManager.items = PlaylistManager.items.filter(i => !(i.type === 'track' && i.id === trackToDeletePath));
+            playlist = PlaylistManager.getAllTracks();
+            
+            const favIdx = favorites.indexOf(trackToDeletePath);
+            if (favIdx !== -1) {
+                favorites.splice(favIdx, 1);
+                windowApi.setSetting('favorites', favorites);
+            }
+            if (ctp) { 
+                if (trackToDeletePath === ctp) { 
+                    audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI(); 
+                } else { 
+                    currentIndex = playlist.findIndex(x => x.path === ctp); 
+                } 
+            }
+            renderPlaylist(); 
+            updateUIForCurrentTrack(); 
+            confirmDeleteOverlay.classList.remove('visible'); 
+            trackToDeletePath = null; 
+            showNotification(tr('songDeleted'));
+        }
+    });
+
     // toggleFavoritesOption is in AppSettings, handled there.
 
     bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
@@ -1091,21 +1385,6 @@ function setupEventListeners() {
     bind(editTitleCancelBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleCloseBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleSaveBtn, 'click', async () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; const t = playlist[contextTrackIndex]; const nt = editTitleInput.value.trim(); if (!nt) return; const r = await windowApi.updateTitle(t.path, nt); if (r.success) { t.title = nt; const bt = basePlaylist.find(x => x.path === t.path); if (bt) bt.title = nt; renderPlaylist(); updateUIForCurrentTrack(); editTitleOverlay.classList.remove('visible'); showNotification(tr('titleUpdated')); } });
-    bind(confirmDeleteCancelBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
-    bind(confirmDeleteCloseBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
-    bind(confirmDeleteBtn, 'click', async () => {
-        if (!trackToDeletePath) return; const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null; const r = await windowApi.deleteTrack(trackToDeletePath); if (r.success) {
-            basePlaylist = basePlaylist.filter(x => x.path !== trackToDeletePath);
-            playlist = playlist.filter(x => x.path !== trackToDeletePath);
-            const favIdx = favorites.indexOf(trackToDeletePath);
-            if (favIdx !== -1) {
-                favorites.splice(favIdx, 1);
-                windowApi.setSetting('favorites', favorites);
-            }
-            if (ctp) { if (trackToDeletePath === ctp) { audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI(); } else { currentIndex = playlist.findIndex(x => x.path === ctp); } }
-            renderPlaylist(); updateUIForCurrentTrack(); confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; showNotification(tr('songDeleted'));
-        }
-    });
     let resTimeout; new ResizeObserver(() => { if (visualizerCanvas && visualizerContainer) { visualizerCanvas.width = visualizerContainer.clientWidth; visualizerCanvas.height = visualizerContainer.clientHeight; } }).observe(visualizerContainer);
     window.addEventListener('resize', () => {
         clearTimeout(resTimeout);
@@ -1342,7 +1621,10 @@ document.addEventListener('DOMContentLoaded', () => {
     editTitleOverlay = $('#edit-title-overlay'); editTitleInput = $('#edit-title-input'); originalTitlePreview = $('#original-title-preview');
     newTitlePreview = $('#new-title-preview'); editTitleCancelBtn = $('#edit-title-cancel-btn'); editTitleSaveBtn = $('#edit-title-save-btn');
     editTitleCloseBtn = $('#edit-title-close-btn');
+    confirmDeleteOverlay = $('#confirm-delete-overlay'); // Init overlay
     toggleFavoritesBtn = $('#toggle-favorites-btn'); toggleFavoritesOption = $('#toggle-favorites-option');
+    confirmDeleteBtn = $('#confirm-delete-btn');
+    confirmDeleteCancelBtn = $('#confirm-delete-cancel-btn');
     confirmDeleteCloseBtn = $('#confirm-delete-close-btn');
     autoLoadLastFolderToggle = $('#toggle-auto-load-last-folder'); toggleMiniMode = $('#toggle-mini-mode');
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
