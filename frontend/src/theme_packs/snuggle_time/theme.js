@@ -11,28 +11,30 @@ export default {
             setTimeout(() => intro.classList.remove('visible'), 3000);
         }
 
-        // Settings
-        if (app.visualizer) {
-            app.visualizer.updateSettings({ 
-                enabled: true, 
-                style: 'retro',
-                accentColor: '#c1d37f' 
-            });
-        }
+                    // Settings
+                if (app.visualizer) {
+                    app.visualizer.updateSettings({ 
+                        enabled: true, 
+                        style: 'retro',
+                        accentColor: '#c1d37f' 
+                    });
+                }
         
-        // Lock
-        setTimeout(() => {
-            const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color'];
-            elements.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.disabled = true;
-            });
-            const anim = document.getElementById('animation-select');
-            if (anim) anim.value = 'xmas';
-            
-            // Emoji
-            const emojiSelect = document.getElementById('emoji-select');
-            if (emojiSelect) {
+                // --- Sector: Animation ---
+                if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('snowfall');
+                
+                // Lock
+                setTimeout(() => {
+                    const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color'];
+                    elements.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.disabled = true;
+                    });
+                    const anim = document.getElementById('animation-select');
+                    if (anim) anim.value = 'snowfall';
+                    
+                    // Emoji
+                    const emojiSelect = document.getElementById('emoji-select');            if (emojiSelect) {
                 emojiSelect.value = 'loving_dinos';
                 emojiSelect.disabled = true;
                 if (app.ui && app.ui.updateEmoji) app.ui.updateEmoji('loving_dinos');

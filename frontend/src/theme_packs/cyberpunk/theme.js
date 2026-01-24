@@ -8,6 +8,9 @@ export default {
         if (intro) { intro.classList.add('visible'); setTimeout(() => intro.classList.remove('visible'), 2500); }
         if (app.visualizer) app.visualizer.updateSettings({ style: 'glitch', accentColor: '#fcee0a' });
         if (app.ui && app.ui.updateEmoji) app.ui.updateEmoji('cyber');
+        
+        // --- Sector: Animation ---
+        if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('matrix');
     },
     onDisable: (app) => {
         document.body.classList.remove('cyberpunk-active');

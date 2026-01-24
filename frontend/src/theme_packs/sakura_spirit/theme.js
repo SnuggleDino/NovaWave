@@ -41,6 +41,9 @@ export default {
         if (app.visualizer) app.visualizer.updateSettings({ style: 'sakura_bloom', accentColor: '#ffb7b2' });
         if (app.ui && app.ui.updateEmoji) app.ui.updateEmoji('sakura_flower');
         
+        // --- Sector: Animation ---
+        if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('off');
+
         createSakuraPetals();
     },
     onDisable: (app) => {

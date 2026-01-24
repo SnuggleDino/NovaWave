@@ -1567,13 +1567,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
-                        // Initialize Theme Packs
-                        ThemePackListener.init({ visualizer, ui: { updateEmoji, updateCachedColor, resetToDefaultTheme }, settings });
-                        
-                        // Check for Updates / Changelog
-                        UpdateManager.init(windowApi);
-                        
-                        if (settings.theme) {                document.documentElement.setAttribute('data-theme', settings.theme);
+            // --- Sector: Animation Init ---
+            const initialAnim = settings.animationMode || 'flow';
+            applyAnimationSetting(initialAnim);
+            if (animationSelect) animationSelect.value = initialAnim;
+
+            // Initialize Theme Packs
+            ThemePackListener.init({ 
+                visualizer, 
+                ui: { 
+                    updateEmoji, 
+                    updateCachedColor, 
+                    resetToDefaultTheme,
+                    applyAnimationSetting // Inject function
+                }, 
+                settings 
+            });
+            
+            // Check for Updates / Changelog
+            UpdateManager.init(windowApi);
+            
+            if (settings.theme) {
+                document.documentElement.setAttribute('data-theme', settings.theme);
             }
             if (settings.useCustomColor && settings.customAccentColor) {
                 document.documentElement.style.setProperty('--accent', settings.customAccentColor);
@@ -1591,7 +1606,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (settings.activeThemePack) {
                 setTimeout(() => {
-                    ThemePackListener.restoreState(settings.activeThemePack, { visualizer, ui: { updateEmoji }, settings });
+                    ThemePackListener.restoreState(settings.activeThemePack, { 
+                        visualizer, 
+                        ui: { 
+                            updateEmoji, 
+                            applyAnimationSetting 
+                        }, 
+                        settings 
+                    });
                 }, 500);
             }
 
