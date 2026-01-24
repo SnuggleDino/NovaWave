@@ -121,6 +121,7 @@ function initVisualizerEngine() {
         sensitivity: settings.visSensitivity,
         accentColor: cachedAccentColor,
         targetFps: settings.targetFps,
+        maxBars: settings.visualizerBars || 64, // Fix: Pass stored setting
         musicEmojiEl: musicEmojiEl
     });
 
@@ -406,8 +407,17 @@ function resetToDefaultTheme() {
 
     if (visualizer) {
         const style = settings.visualizerStyle || 'bars';
-        visualizer.updateSettings({ style: style, maxBars: 0 });
+        const bars = settings.visualizerBars || 64;
+        visualizer.updateSettings({ style: style, maxBars: bars });
         if (visualizerStyleSelect) { visualizerStyleSelect.disabled = false; visualizerStyleSelect.value = style; }
+        
+        const barsInput = document.getElementById('visualizer-bars-input');
+        const barsValue = document.getElementById('visualizer-bars-value');
+        if (barsInput) {
+            barsInput.disabled = false;
+            barsInput.value = bars;
+            if (barsValue) barsValue.value = bars;
+        }
     }
 
     const anim = settings.animationMode || 'flow';
@@ -1133,6 +1143,9 @@ function initSettingsLogic() {
         },
         onVisualizerSensitivityChange: (val) => {
             if (visualizer) visualizer.updateSettings({ sensitivity: val });
+        },
+        onVisualizerBarsChange: (val) => {
+            if (visualizer) visualizer.updateSettings({ maxBars: val });
         },
         onEmojiChange: (mode, customVal) => {
             updateEmoji(mode, customVal);

@@ -173,6 +173,27 @@ export const AppSettings = {
             });
         }
 
+        // Visualizer Bars
+        const visualizerBarsSelect = $('visualizer-bars-select');
+        const visualizerBarsResetBtn = $('visualizer-bars-reset-btn');
+
+        if (visualizerBarsSelect) {
+            visualizerBarsSelect.addEventListener('change', (e) => {
+                const val = parseInt(e.target.value);
+                this.saveSetting('visualizerBars', val);
+                if (this.callbacks.onVisualizerBarsChange) this.callbacks.onVisualizerBarsChange(val);
+            });
+        }
+
+        if (visualizerBarsResetBtn) {
+            visualizerBarsResetBtn.addEventListener('click', () => {
+                const def = 64;
+                if (visualizerBarsSelect) visualizerBarsSelect.value = def;
+                this.saveSetting('visualizerBars', def);
+                if (this.callbacks.onVisualizerBarsChange) this.callbacks.onVisualizerBarsChange(def);
+            });
+        }
+
         // Cover Emoji
         const emojiSelect = $('emoji-select');
         const customEmojiContainer = $('custom-emoji-container');
@@ -487,6 +508,11 @@ export const AppSettings = {
 
         const visualizerSensitivity = $('visualizer-sensitivity');
         if (visualizerSensitivity && s.visSensitivity) visualizerSensitivity.value = s.visSensitivity;
+
+        const visualizerBarsSelect = $('visualizer-bars-select');
+        if (visualizerBarsSelect) {
+            visualizerBarsSelect.value = s.visualizerBars || 64;
+        }
 
         const emojiSelect = $('emoji-select');
         const customEmojiContainer = $('custom-emoji-container');

@@ -25,7 +25,7 @@ export default {
                 
                 // Lock
                 setTimeout(() => {
-                    const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color'];
+                    const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'visualizer-bars-input'];
                     elements.forEach(id => {
                         const el = document.getElementById(id);
                         if (el) el.disabled = true;
@@ -51,7 +51,7 @@ export default {
         }
 
         // Unlock
-        const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'emoji-select'];
+        const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'emoji-select', 'visualizer-bars-input'];
         elements.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.disabled = false;

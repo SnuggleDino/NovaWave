@@ -55,7 +55,7 @@ export default {
             const elements = [
                 'visualizer-style-select', 'emoji-select', 'theme-select',
                 'animation-select', 'toggle-use-custom-color',
-                'toggle-gradient-title', 'accent-color-picker'
+                'toggle-gradient-title', 'accent-color-picker', 'visualizer-bars-input'
             ];
             elements.forEach(id => {
                 const el = document.getElementById(id);
@@ -106,10 +106,11 @@ export default {
             app.visualizer.updateSettings({ accentColor: '#38bdf8' });
         }
 
+        // Unlock
         const elements = [
             'visualizer-style-select', 'emoji-select', 'theme-select',
             'animation-select', 'toggle-use-custom-color',
-            'toggle-gradient-title', 'accent-color-picker'
+            'toggle-gradient-title', 'accent-color-picker', 'visualizer-bars-input'
         ];
         elements.forEach(id => {
             const el = document.getElementById(id);

@@ -183,11 +183,21 @@ export class VisualizerEngine {
         const totalBlockHeight = height / targetRows;
         const gapY = 1.5;
         const blockHeight = totalBlockHeight - gapY;
-        const blockWidth = blockHeight * 5.0;
+        const blockWidth = blockHeight * 5.0; // Initial guess
         const gapX = 3;
-        const totalBlockWidth = blockWidth + gapX;
+        
+        let maxColumns = Math.ceil((width / 2) / (blockWidth + gapX)) + 1;
+        
+        // --- Respect maxBars Setting ---
+        if (this.maxBars > 0) {
+            maxColumns = Math.floor(this.maxBars / 2); // Split across center
+        }
+        
+        // Recalculate block width based on maxColumns to fit
+        const totalBlockWidth = (width / 2) / maxColumns;
+        const calculatedBlockWidth = totalBlockWidth - gapX;
+
         const centerX = width / 2;
-        const maxColumns = Math.ceil(centerX / totalBlockWidth) + 1;
         const usefulDataLimit = Math.floor(this.dataArray.length * 0.5);
 
         for (let i = 0; i < maxColumns; i++) {
@@ -205,8 +215,8 @@ export class VisualizerEngine {
                 else this.ctx.fillStyle = ac;
                 this.ctx.shadowBlur = blockHeight * 0.8;
                 this.ctx.shadowColor = this.ctx.fillStyle;
-                this.ctx.fillRect(xLeft, y, blockWidth, blockHeight);
-                this.ctx.fillRect(xRight, y, blockWidth, blockHeight);
+                this.ctx.fillRect(xLeft, y, calculatedBlockWidth, blockHeight);
+                this.ctx.fillRect(xRight, y, calculatedBlockWidth, blockHeight);
             }
         }
         this.ctx.shadowBlur = 0;
