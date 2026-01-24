@@ -70,6 +70,8 @@ export namespace main {
 	    sakuraEnabled: boolean;
 	    novaWave95Enabled: boolean;
 	    playlistStructure: any[];
+	    eqEnabled: boolean;
+	    eqValues: number[];
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -124,6 +126,8 @@ export namespace main {
 	        this.sakuraEnabled = source["sakuraEnabled"];
 	        this.novaWave95Enabled = source["novaWave95Enabled"];
 	        this.playlistStructure = source["playlistStructure"];
+	        this.eqEnabled = source["eqEnabled"];
+	        this.eqValues = source["eqValues"];
 	    }
 	}
 	export class DownloadOptions {

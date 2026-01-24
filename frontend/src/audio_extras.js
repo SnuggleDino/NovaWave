@@ -8,6 +8,7 @@ export class AudioExtras {
         this.trebleFilter = null;
         this.reverbNode = null;
         this.reverbGain = null;
+        this.eqFilters = [];
         this.initialized = false;
     }
 
@@ -36,14 +37,33 @@ export class AudioExtras {
             this.trebleFilter.frequency.value = 3000;
             this.trebleFilter.gain.value = 0;
 
+            // --- 5 BiquadFilterNode ---
+            const eqFrequencies = [60, 230, 910, 4000, 14000];
+            this.eqFilters = eqFrequencies.map(freq => {
+                const filter = this.audioContext.createBiquadFilter();
+                filter.type = 'peaking';
+                filter.frequency.value = freq;
+                filter.Q.value = 1.0;
+                filter.gain.value = 0;
+                return filter;
+            });
+
             this.reverbNode = this.audioContext.createConvolver();
             this.reverbNode.buffer = this.createReverbBuffer(2.0);
             this.reverbGain = this.audioContext.createGain();
             this.reverbGain.gain.value = 0;
 
+            // --- Audio Chain ---
             this.source.connect(this.bassFilter);
             this.bassFilter.connect(this.trebleFilter);
-            this.trebleFilter.connect(this.analyser);
+
+            let lastNode = this.trebleFilter;
+            this.eqFilters.forEach(filter => {
+                lastNode.connect(filter);
+                lastNode = filter;
+            });
+
+            lastNode.connect(this.analyser);
 
             this.trebleFilter.connect(this.reverbNode);
             this.reverbNode.connect(this.reverbGain);
@@ -82,6 +102,16 @@ export class AudioExtras {
         const now = this.audioContext.currentTime;
         const gain = enabled ? (parseFloat(value) || 0) : 0;
         this.trebleFilter.gain.setTargetAtTime(gain, now, 0.1);
+    }
+
+    // --- 5 BiquadFilterNode ---
+    setEq(values, enabled) {
+        if (!this.audioContext || !this.eqFilters.length) return;
+        const now = this.audioContext.currentTime;
+        this.eqFilters.forEach((filter, i) => {
+            const val = enabled ? (parseFloat(values[i]) || 0) : 0;
+            filter.gain.setTargetAtTime(val, now, 0.1);
+        });
     }
 
     setReverb(value, enabled) {

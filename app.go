@@ -76,11 +76,14 @@ type Config struct {
 	ActiveIntro             string        `json:"activeIntro"`
 	SunsetEnabled           bool          `json:"sunsetEnabled"`
 	SakuraEnabled           bool          `json:"sakuraEnabled"`
-	NovaWave95Enabled       bool          `json:"novaWave95Enabled"`
-	PlaylistStructure       []interface{} `json:"playlistStructure"`
-}
-
-type Track struct {
+		NovaWave95Enabled       bool     `json:"novaWave95Enabled"`
+		PlaylistStructure       []interface{} `json:"playlistStructure"`
+		// --- 5 BiquadFilterNode ---
+		EqEnabled               bool      `json:"eqEnabled"`
+		EqValues                []float64 `json:"eqValues"`
+	}
+	
+	type Track struct {
 	Path     string  `json:"path"`
 	Title    string  `json:"title"`
 	Artist   string  `json:"artist"`

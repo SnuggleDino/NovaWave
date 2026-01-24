@@ -225,6 +225,10 @@
                                     </svg>
                                     <span data-lang-key="reverb">Reverb</span>
                                 </div>
+                                <div id="modal-feat-eq" class="modal-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20v-8"></path><path d="M9 20v-5"></path><path d="M15 20v-9"></path><path d="M21 20v-3"></path><circle cx="3" cy="12" r="2"></circle><circle cx="9" cy="15" r="2"></circle><circle cx="15" cy="11" r="2"></circle><circle cx="21" cy="17" r="2"></circle></svg>
+                                    <span data-lang-key="equalizer">Equalizer</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1170,6 +1174,51 @@
                                         title="Reset Reverb">&#8634;</button>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- --- 5 BiquadFilterNode --- -->
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="equalizer">Equalizer</strong>
+                                <p data-lang-key="equalizerDesc">Passe den Klang detailliert an.</p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-equalizer">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item" id="eq-sliders-container" style="display: none; flex-direction: column; align-items: stretch;">
+                            <div class="eq-grid" style="display: flex; justify-content: space-between; gap: 10px; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px;">
+                                <div class="eq-band" style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
+                                    <span style="font-size: 0.65rem; color: var(--text-muted);">60Hz</span>
+                                    <input type="range" class="eq-slider" data-band="0" min="-12" max="12" step="1" value="0" style="writing-mode: vertical-lr; direction: rtl; width: 8px; height: 80px;">
+                                    <span class="eq-value" style="font-size: 0.65rem; color: var(--accent);">0dB</span>
+                                </div>
+                                <div class="eq-band" style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
+                                    <span style="font-size: 0.65rem; color: var(--text-muted);">230Hz</span>
+                                    <input type="range" class="eq-slider" data-band="1" min="-12" max="12" step="1" value="0" style="writing-mode: vertical-lr; direction: rtl; width: 8px; height: 80px;">
+                                    <span class="eq-value" style="font-size: 0.65rem; color: var(--accent);">0dB</span>
+                                </div>
+                                <div class="eq-band" style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
+                                    <span style="font-size: 0.65rem; color: var(--text-muted);">910Hz</span>
+                                    <input type="range" class="eq-slider" data-band="2" min="-12" max="12" step="1" value="0" style="writing-mode: vertical-lr; direction: rtl; width: 8px; height: 80px;">
+                                    <span class="eq-value" style="font-size: 0.65rem; color: var(--accent);">0dB</span>
+                                </div>
+                                <div class="eq-band" style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
+                                    <span style="font-size: 0.65rem; color: var(--text-muted);">4kHz</span>
+                                    <input type="range" class="eq-slider" data-band="3" min="-12" max="12" step="1" value="0" style="writing-mode: vertical-lr; direction: rtl; width: 8px; height: 80px;">
+                                    <span class="eq-value" style="font-size: 0.65rem; color: var(--accent);">0dB</span>
+                                </div>
+                                <div class="eq-band" style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
+                                    <span style="font-size: 0.65rem; color: var(--text-muted);">14kHz</span>
+                                    <input type="range" class="eq-slider" data-band="4" min="-12" max="12" step="1" value="0" style="writing-mode: vertical-lr; direction: rtl; width: 8px; height: 80px;">
+                                    <span class="eq-value" style="font-size: 0.65rem; color: var(--accent);">0dB</span>
+                                </div>
+                            </div>
+                            <button id="eq-reset-btn" class="settings-button" style="margin-top: 10px; align-self: flex-end; width: auto;" title="Reset Equalizer">&#8634;</button>
                         </div>
                     </div>
 

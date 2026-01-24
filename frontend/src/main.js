@@ -261,6 +261,10 @@ function updateAudioEffects() {
         audioExtras.setBass(settings.bassBoostValue, settings.bassBoostEnabled);
         audioExtras.setTreble(settings.trebleBoostValue, settings.trebleBoostEnabled);
         audioExtras.setReverb(settings.reverbValue, settings.reverbEnabled);
+        // --- 5 BiquadFilterNode ---
+        if (settings.eqValues) {
+            audioExtras.setEq(settings.eqValues, settings.eqEnabled);
+        }
     }
     updateActiveFeaturesIndicator();
 }
@@ -272,7 +276,8 @@ function updateActiveFeaturesIndicator() {
     const bass = settings.bassBoostEnabled === true;
     const treble = settings.trebleBoostEnabled === true;
     const reverb = settings.reverbEnabled === true;
-    const anyActive = bass || treble || reverb;
+    const eq = settings.eqEnabled === true;
+    const anyActive = bass || treble || reverb || eq;
 
     container.classList.toggle('active', anyActive);
 
@@ -292,6 +297,12 @@ function updateActiveFeaturesIndicator() {
     if (reverbItem) {
         reverbItem.classList.toggle('active', reverb);
         reverbItem.style.display = reverb ? 'flex' : 'none';
+    }
+
+    const eqItem = document.getElementById('modal-feat-eq');
+    if (eqItem) {
+        eqItem.classList.toggle('active', eq);
+        eqItem.style.display = eq ? 'flex' : 'none';
     }
 }
 

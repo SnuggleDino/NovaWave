@@ -375,6 +375,48 @@ export const AppSettings = {
         resetAudio('treble-boost-reset-btn', 'treble-boost-slider', 'treble-boost-value', 'trebleBoostValue', 6);
         resetAudio('reverb-reset-btn', 'reverb-slider', 'reverb-value', 'reverbValue', 30);
 
+        // --- 5 BiquadFilterNode ---
+        const toggleEq = $('toggle-equalizer');
+        const eqContainer = $('eq-sliders-container');
+        if (toggleEq) {
+            toggleEq.addEventListener('change', (e) => {
+                const enabled = e.target.checked;
+                this.saveSetting('eqEnabled', enabled);
+                if (eqContainer) eqContainer.style.display = enabled ? 'flex' : 'none';
+                if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+            });
+        }
+
+        const eqSliders = document.querySelectorAll('.eq-slider');
+        eqSliders.forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const band = parseInt(e.target.dataset.band);
+                const val = parseFloat(e.target.value);
+                if (!this.settings.eqValues) this.settings.eqValues = [0, 0, 0, 0, 0];
+                this.settings.eqValues[band] = val;
+                
+                const valueDisplay = slider.parentElement.querySelector('.eq-value');
+                if (valueDisplay) valueDisplay.textContent = val + 'dB';
+                
+                this.saveSetting('eqValues', this.settings.eqValues);
+                if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+            });
+        });
+
+        const eqResetBtn = $('eq-reset-btn');
+        if (eqResetBtn) {
+            eqResetBtn.addEventListener('click', () => {
+                const defValues = [0, 0, 0, 0, 0];
+                this.saveSetting('eqValues', defValues);
+                eqSliders.forEach((s, i) => {
+                    s.value = 0;
+                    const valDisp = s.parentElement.querySelector('.eq-value');
+                    if (valDisp) valDisp.textContent = '0dB';
+                });
+                if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+            });
+        }
+
 
         // --- INTROS TAB ---
         const introCards = document.querySelectorAll('.intro-card');
@@ -583,6 +625,23 @@ export const AppSettings = {
         restoreAudio('toggle-bass-boost', 'bass-boost-slider-container', 'bass-boost-slider', 'bass-boost-value', 'bassBoostEnabled', 'bassBoostValue', 'dB');
         restoreAudio('toggle-treble-boost', 'treble-boost-slider-container', 'treble-boost-slider', 'treble-boost-value', 'trebleBoostEnabled', 'trebleBoostValue', 'dB');
         restoreAudio('toggle-reverb', 'reverb-slider-container', 'reverb-slider', 'reverb-value', 'reverbEnabled', 'reverbValue', '%');
+
+        // --- 5 BiquadFilterNode ---
+        const toggleEq = $('toggle-equalizer');
+        const eqContainer = $('eq-sliders-container');
+        if (toggleEq) {
+            toggleEq.checked = !!s.eqEnabled;
+            if (eqContainer) eqContainer.style.display = s.eqEnabled ? 'flex' : 'none';
+        }
+        if (s.eqValues) {
+            const eqSliders = document.querySelectorAll('.eq-slider');
+            eqSliders.forEach((slider, i) => {
+                const val = s.eqValues[i] || 0;
+                slider.value = val;
+                const valDisp = slider.parentElement.querySelector('.eq-value');
+                if (valDisp) valDisp.textContent = val + 'dB';
+            });
+        }
 
 
         // Intros
