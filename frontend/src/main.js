@@ -17,6 +17,7 @@ import { AppSettings } from './app_settings/app_settings.js';
 import { UpdateManager } from './app_updates/update_manager.js';
 import { PlaylistManager } from './playlist/playlist_manager.js';
 import { LyricsManager } from './lyrics/lyrics_manager.js';
+import { AppPerformance } from './app_performance.js';
 
 // Wails API Mapping
 const windowApi = {
@@ -113,7 +114,7 @@ let warmupFrames = 0;
 // --- Helper Functions & Variables (Module Scope) ---
 
 let activeFolderId = null;
-let selectedFolderColor = '#38bdf8'; // Default
+let selectedFolderColor = '#38bdf8';
 let folderModal = null;
 let folderInput = null;
 let folderModalTitle = null;
@@ -121,14 +122,12 @@ let contextMenuFolder = null;
 let contextFolderId = null;
 let deleteMode = 'track';
 
-// We need to initialize these DOM elements after DOMContentLoaded
 function initUIHelpers() {
     folderModal = $('#folder-modal-overlay');
     folderInput = $('#folder-input');
     folderModalTitle = $('#folder-modal-title');
     contextMenuFolder = $('#context-menu-folder');
 
-    // Setup Palette Listener (Event Delegation)
     const palette = $('#folder-color-palette');
     if (palette) {
         palette.addEventListener('click', (e) => {
@@ -226,11 +225,12 @@ function handleDeleteTrack(fp) {
     }
 }
 
-// Helper to save structure
 function savePlaylistState() {
     const structure = PlaylistManager.exportStructure();
     windowApi.setSetting('playlistStructure', structure);
 }
+
+const pressedKeys = new Set();
 
 function initVisualizerEngine() {
     if (!audioExtras && audio) {
@@ -284,29 +284,17 @@ function updateActiveFeaturesIndicator() {
 
     container.classList.toggle('active', anyActive);
 
-    const bassItem = document.getElementById('modal-feat-bass');
-    if (bassItem) {
-        bassItem.classList.toggle('active', bass);
-        bassItem.style.display = bass ? 'flex' : 'none';
-    }
+    const bassBadge = document.getElementById('modal-feat-bass');
+    if (bassBadge) bassBadge.classList.toggle('active', bass);
 
-    const trebleItem = document.getElementById('modal-feat-crystal');
-    if (trebleItem) {
-        trebleItem.classList.toggle('active', treble);
-        trebleItem.style.display = treble ? 'flex' : 'none';
-    }
+    const trebleBadge = document.getElementById('modal-feat-crystal');
+    if (trebleBadge) trebleBadge.classList.toggle('active', treble);
 
-    const reverbItem = document.getElementById('modal-feat-reverb');
-    if (reverbItem) {
-        reverbItem.classList.toggle('active', reverb);
-        reverbItem.style.display = reverb ? 'flex' : 'none';
-    }
+    const reverbBadge = document.getElementById('modal-feat-reverb');
+    if (reverbBadge) reverbBadge.classList.toggle('active', reverb);
 
-    const eqItem = document.getElementById('modal-feat-eq');
-    if (eqItem) {
-        eqItem.classList.toggle('active', eq);
-        eqItem.style.display = eq ? 'flex' : 'none';
-    }
+    const eqBadge = document.getElementById('modal-feat-eq');
+    if (eqBadge) eqBadge.classList.toggle('active', eq);
 }
 
 function saveSetting(key, value) {
@@ -333,135 +321,7 @@ function updateCachedColor() {
     }
 }
 
-function updatePerformanceStats() {
-    if (document.hidden) {
-        requestAnimationFrame(updatePerformanceStats);
-        return;
-    }
-
-    const now = performance.now();
-    const interval = 1000 / targetFps;
-    const statsInterval = 1000;
-
-    const delta = now - lastStatsTime;
-    if (delta < interval) {
-        requestAnimationFrame(updatePerformanceStats);
-        return;
-    }
-    lastStatsTime = now - (delta % interval);
-    appFrameCount++;
-
-    const timeSinceLastLog = now - lastFrameTime;
-    if (timeSinceLastLog >= statsInterval) {
-        const appFps = Math.round((appFrameCount * 1000) / timeSinceLastLog);
-
-        let visFps = 0;
-        if (visualizer) {
-            visFps = Math.round((visualizer.getAndResetFrameCount() * 1000) / timeSinceLastLog);
-        }
-        fps = visFps;
-
-        if (isPlaying && !performanceMode && visualizerEnabled) {
-            avgFps = (avgFps * 0.7) + (visFps * 0.3);
-        } else {
-            avgFps = appFps;
-        }
-
-        const currentFrameTime = appFps > 0 ? Math.round(1000 / appFps) : 0;
-
-        appFrameCount = 0;
-        frameCount = 0;
-        lastFrameTime = now;
-
-        if (showStatsOverlay || (avgFps < targetFps * 0.8)) {
-            const fpsEl = document.getElementById('stat-fps');
-            const timeEl = document.getElementById('stat-time');
-            const lagEl = document.getElementById('stat-lag');
-            const perfInfoEl = document.getElementById('stat-perf-info');
-
-            if (fpsEl) {
-                const visStatus = (isPlaying && !performanceMode) ? fps : '-';
-                fpsEl.textContent = `${appFps} (${visStatus})`;
-
-                if (appFps >= targetFps * 0.9) fpsEl.style.color = '#4ade80';
-                else if (appFps >= targetFps * 0.6) fpsEl.style.color = '#fbbf24';
-                else fpsEl.style.color = '#ef4444';
-            }
-
-            if (timeEl) timeEl.textContent = currentFrameTime + 'ms';
-
-            if (lagEl) {
-                if (performanceMode) {
-                    lagEl.textContent = tr('statPowerSave');
-                    lagEl.style.color = '#38bdf8';
-                } else if (avgFps < targetFps * 0.5) {
-                    lagEl.textContent = 'LAG';
-                    lagEl.style.color = '#ef4444';
-                    if (warmupFrames > 5) triggerPerformanceHint();
-                } else if (avgFps < targetFps * 0.8) {
-                    lagEl.textContent = tr('statUnstable');
-                    lagEl.style.color = '#fbbf24';
-                } else {
-                    lagEl.textContent = isPlaying ? tr('statStable') : 'Standby';
-                    lagEl.style.color = isPlaying ? '#4ade80' : '#8a93a2';
-                }
-            }
-
-            if (perfInfoEl) {
-                if (performanceMode) {
-                    perfInfoEl.textContent = 'Active';
-                } else {
-                    const stability = targetFps > 0 ? Math.min(100, Math.round((avgFps / targetFps) * 100)) : 0;
-                    perfInfoEl.textContent = `${stability}%`;
-                }
-            }
-        }
-    }
-
-    if (isPlaying && !performanceMode && visualizerEnabled) {
-        warmupFrames++;
-    } else {
-        warmupFrames = 0;
-    }
-
-    requestAnimationFrame(updatePerformanceStats);
-}
-
-const pressedKeys = new Set();
-
-function triggerPerformanceHint(force = false) {
-    if (!force && (perfHintShown || performanceMode)) return;
-    const hint = document.getElementById('performance-hint');
-    const hintText = document.getElementById('hint-text');
-    if (hint) {
-        if (hintText) hintText.textContent = tr('perfLagMsg');
-        if (!force && warmupFrames < 600) return;
-        hint.classList.add('visible');
-        if (!force) perfHintShown = true;
-        setTimeout(() => { if (hint) hint.classList.remove('visible'); }, 10000);
-    }
-}
-
-function setPerformanceMode(enabled, silent = false) {
-    performanceMode = enabled;
-    saveSetting('performanceMode', enabled);
-
-    const toggle = document.getElementById('toggle-performance-mode');
-    if (toggle) toggle.checked = enabled;
-
-    if (enabled) {
-        ThemePackListener.deactivateActivePack();
-
-        if (visualizer) visualizer.stop();
-        applyAnimationSetting('off');
-        document.body.classList.add('perf-mode-active');
-        if (!silent) showNotification(tr('perfModeOn'));
-    } else {
-        if (isPlaying && visualizer) visualizer.start();
-        applyAnimationSetting(settings.animationMode || 'flow');
-        document.body.classList.remove('perf-mode-active');
-    }
-}
+// --- Sector: App Core Functions ---
 
 function tr(key, ...args) {
     const langCode = currentLanguage || (settings && settings.language) || 'de';
@@ -1024,6 +884,7 @@ async function loadSettings() {
 
     // Restore Audio Extras Logic (AudioNodes)
     updateAudioEffects();
+    updateActiveFeaturesIndicator();
 
     // Auto Load Folder
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
@@ -1506,10 +1367,10 @@ function initSettingsLogic() {
             applyTranslations();
         },
         onPerformanceModeChange: (enabled) => {
-            setPerformanceMode(enabled);
+            AppPerformance.setPerformanceMode(enabled);
         },
         onStatsToggle: (enabled) => {
-            showStatsOverlay = enabled;
+            AppPerformance.setShowStats(enabled);
         },
         onFavoritesOptionToggle: (enabled) => {
             if (toggleFavoritesBtn) toggleFavoritesBtn.style.display = enabled ? 'flex' : 'none';
@@ -1520,7 +1381,7 @@ function initSettingsLogic() {
             }
         },
         onFpsChange: (val) => {
-            targetFps = val;
+            AppPerformance.setTargetFps(val);
             saveSetting('targetFps', val);
         },
         onExportPlaylist: () => {
@@ -1887,6 +1748,16 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadSettings();
 
             initSettingsLogic();
+
+            // Init Performance Monitoring
+            AppPerformance.init({
+                visualizer,
+                settings,
+                tr,
+                saveSetting,
+                applyAnimation: applyAnimationSetting,
+                showNotification: window.showNotification
+            });
 
             AppLoader.update(70, tr('loaderApplying'));
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
