@@ -1,112 +1,114 @@
-# 🎵 NovaWave `v2.5.10 GO`
-**NovaWave** is a modern, high-performance desktop music player built with **Wails (Go)** and a polished **Web-based frontend**. It combines professional audio processing with a stunning visual experience and powerful downloader capabilities.
+# 🎵 NovaWave `v2.6.0 GO`
 
-![Version](https://img.shields.io/badge/Version-2.5.10--GO-c1d37f?style=for-the-badge)
+Welcome to **NovaWave**! Your new, stylish desktop music player.
+No clutter, no ads, just your music – wrapped in a sleek design and completely Open Source.
+
+Built with ❤️, **Go (Wails)**, and Web Tech.
+
+![Version](https://img.shields.io/badge/Version-2.6.0--GO-c1d37f?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
-![Author](https://img.shields.io/badge/Author-SnuggleDino-fbbf24?style=for-the-badge)
-[![Project Link](https://img.shields.io/badge/GitHub-NovaWave--WAILS-blue?style=for-the-badge&logo=github)](https://github.com/SnuggleDino/NovaWave-WAILS)
+![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
 ---
 
-## ✨ Key Features
+## 🦖 What can it do?
 
-### 🎧 Professional Audio Engine
-*   **Audio Extras:** Enhance your sound with built-in **Bass Boost**, **Crystalizer**, and **Reverb** effects.
-*   **Playback Speed:** Adjust audio speed from 0.5x up to 2.0x without losing pitch quality.
-*   **Gapless Transition:** Smooth handling of your local music library.
+NovaWave is more than just pressing "Play". It's about **Vibes**.
 
-### 🎨 Theme Packs & Design
-NovaWave is not just a player; it's a piece of art. Choose from several handcrafted Theme Packs, each with its own unique colors, icons, and **Startup Intros**:
-*   🦖 **Snuggle Time:** Cozy vibes with loving dinos and warm colors.
-*   🌙 **Sleep Time:** A soothing, midnight-blue atmosphere with a rising moon intro.
-*   ⚡ **Cyberpunk:** A futuristic Night City aesthetic with glitch effects and CRT scanlines.
-*   🏎️ **Sunset Drive:** Classic 80s Retrowave with a synth-sun and an animated grid floor.
-*   🌸 **Sakura Spirit:** Peaceful Japanese garden vibes with falling cherry blossom petals.
-*   💾 **NovaWave 95:** Pure nostalgia with a classic Windows 95 operating system look.
+### 🎨 Style it your way! (Theme Packs)
+Boring players are everywhere. NovaWave brings you handcrafted **Theme Packs** with unique startup animations:
+*   🦖 **Snuggle Time:** Cozy Dino vibes.
+*   🌙 **Sleep Time:** Perfect for night owls.
+*   ⚡ **Cyberpunk:** Neon lights and glitch effects for Night City fans.
+*   🏎️ **Sunset Drive:** Pure 80s Retrowave feeling.
+*   🌸 **Sakura Spirit:** Relaxed Japanese atmosphere.
+*   💾 **NovaWave 95:** Windows 95 nostalgia kick.
 
-### 🏝️ Apple-Style Dynamic Island
-Experience notifications like never before. NovaWave features an **Apple-style Dynamic Island** that expands to show playback status, download progress, and system hints with smooth animations and a clockwise loading indicator.
+### 🎧 Sound & Visuals
+*   **Audio Extras:** Beef up the bass or clarify the sound with built-in **Bass Boost** & **Crystalizer**.
+*   **Visualizer:** Love watching your music? We've got **Bars, Waveforms, Retro Pixels**, and more dancing to the beat.
+*   **Dynamic Island:** Notifications now look seriously chic – Apple-style, but for your desktop.
 
-### 📱 Intelligent Mini-Player
-Need more screen space? Toggle the **Landscape Mini-Player (600x200)**. 
-*   Compact, non-intrusive design.
-*   Integrated volume and playback controls.
-*   **Dedicated Mini-Visualizer:** A specialized 5-bar visualizer to keep your desktop lively but clean.
+### 📥 Download music? Sure!
+Tired of ads in the browser?
+*   **YouTube:** Paste link, get MP3. Done.
+*   **Spotify:** Copy song link, NovaWave finds the track and downloads it for you.
 
-### 📥 Universal Downloader
-*   **YouTube Downloader:** Convert any YouTube link directly to high-quality MP3 (up to 320kbps).
-*   **Spotify Integration:** Paste Spotify track links to automatically find and download the best matching version from YouTube, including full metadata (Title, Artist, Cover).
-*   **Powered by:** Integrated support for `yt-dlp` and `ffmpeg`.
-
-### 📊 Advanced Visualizers
-Multiple visualization styles to match your mood:
-*   Classic Bars, Ocean Waveform, Stellar Orbit, Cyber Pulse, Zen Harmony, Retro Pixel, and Sakura Bloom.
+### 📱 Smaller is better
+Need space? Just switch to **Mini-Player Mode**. Small, compact, but still rocking a visualizer!
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started (For Tinkers)
 
-### Prerequisites
-*   [Go](https://go.dev/) (1.23+ recommended)
-*   [Node.js](https://nodejs.org/) & NPM
-*   [Wails CLI](https://wails.io/docs/gettingstarted/installation)
+Want to touch the code or build it yourself? Easy.
 
-### Installation & Build
-1.  **Clone the repository:**
+### You need:
+*   [Go](https://go.dev/) (Version 1.23+)
+*   [Node.js](https://nodejs.org/) (for the frontend stuff)
+*   [Wails CLI](https://wails.io/)
+
+### Installation:
+1.  **Clone Repo:**
     ```bash
     git clone https://github.com/SnuggleDino/NovaWave-WAILS.git
     cd NovaWave-WAILS
     ```
-2.  **Install frontend dependencies:**
+2.  **Install Frontend:**
     ```bash
     cd frontend 
     npm install 
     cd ..
     ```
-3.  **Setup Binaries:**
-    Place `yt-dlp.exe`, `ffmpeg.exe`, and `ffprobe.exe` into the following directory to enable downloading and metadata features:
-    `frontend/src/executable_bin/`
-4.  **Run in development mode:**
+3.  **Important:** For the downloader to work, you need `yt-dlp.exe`, `ffmpeg.exe`, and `ffprobe.exe` in the `bin/` folder (or in your path).
+4.  **Start:**
     ```bash
     wails dev
     ```
-5.  **Build the production executable:**
+5.  **Build:**
     ```bash
     wails build
     ```
+     **For new comers:**
+    > If you get an error, try to install the dependencies again.
+    > But this command is not needed for the first run.
+    > This command is telling the program basically to build the app.
 
 ---
 
-## 🛠️ Tech Stack
-*   **Backend:** Go (Golang)
-*   **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
-*   **Framework:** [Wails v2](https://wails.io/)
-*   **Audio Processing:** Web Audio API
-*   **Metadata:** `dhowden/tag` (Go)
+## ⌨️ Shortcuts (Hotkeys)
+*   `Space`: Play / Pause (The Classic)
+*   `Arrows Left / Right`: Change Song
+*   `Shift + Arrows`: Seek 5 seconds
+*   `Arrows Up / Down`: Volume
+*   `CTRL + 1`: Dev Console
 
 ---
 
-## 📊 Project Metadata
-*   **Version:** 2.5.9 GO
-*   **Build Date:** 11.01.2026
-*   **Author:** [SnuggleDino](https://github.com/SnuggleDino)
-*   **Go Version:** v2.9.2 (Go 1.23)
-*   **Repository:** [https://github.com/SnuggleDino/NovaWave-WAILS](https://github.com/SnuggleDino/NovaWave-WAILS)
+## 🛠️ Under the Hood
+*   **Go (Golang):** For the power in the background.
+*   **HTML/JS/CSS:** To make it look good.
+*   **Wails:** The glue that holds it all together.
 
 ---
 
-## ⌨️ Hotkeys
-*   `Space`: Play / Pause
-*   `Left / Right Arrows`: Next / Previous Track
-*   `Up / Down Arrows`: Volume Up / Down
-*   `Shift + Left / Right`: Seek 5 seconds
-*   `CTRL + 1`: Open Developer Console
+## 🗺️ Roadmap
+We're just getting started. Here is the master plan:
+
+| Status | Feature | Mission |
+| :--- | :--- | :--- |
+| 🚧 **WIP** | **Custom Playlists** | Create, save, and export your own mixes for every mood. (Local files) |
+| 🔜 **Soon** | **Virtual Folders** | Group tracks into collapsible "Player Folders" (pure design, no file moving). |
+| 🔜 **Soon** | **Tag Editor** | Fix those messy tags and add cover art directly in the player. |
+| 🔜 **Soon** | **Lyrics Support** | Sing along! Display lyrics for your local tracks. |
+| 🔮 **Future** | **5-Band Equalizer** | More control than just Bass & Treble. Fine-tune your sound. |
+| 🔮 **Future** | **More Themes** | You can never have enough style. More colors, more animations. |
+| ✨ **Done** | **Visualizer Customization** | More bars, more styles, more control. (Check!) |
 
 ---
 
-## 👤 Author
-**SnuggleDino**  
-*Your Music • Your Style • Your Rules*
+**Enjoy your music!** 🦖🦕
 
----
-*Made with Love by SnuggleDino 🦖🦕*
+*Made by SnuggleDino*
+
+Your Style, Your Music, Your Rules.

@@ -1131,19 +1131,20 @@ body.gradient-title-active .app-title-text p {
 
 .footer-info-btn {
     background: transparent;
-    border: none;
+    border: 1px solid var(--border-soft);
     color: var(--text-muted);
     font-size: 0.65rem;
     font-weight: 700;
     cursor: pointer;
     letter-spacing: 1px;
-    transition: color 0.2s;
-    padding: 2px 8px;
+    transition: all 0.2s;
+    padding: 2px 12px;
     border-radius: 4px;
 }
 
 .footer-info-btn:hover {
     color: var(--accent);
+    border-color: var(--accent);
     background: rgba(255, 255, 255, 0.05);
 }
 
