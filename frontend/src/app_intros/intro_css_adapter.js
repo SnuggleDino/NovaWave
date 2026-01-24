@@ -25,10 +25,6 @@ export class CssBasedIntro extends Intro {
         }
     }
 }
-
-/**
- * An intro that waits for user interaction (button click) before finishing.
- */
 export class InteractiveIntro extends CssBasedIntro {
     constructor(elementId, buttonId) {
         super(elementId);
@@ -42,7 +38,7 @@ export class InteractiveIntro extends CssBasedIntro {
         const btn = document.getElementById(this.buttonId);
         if (btn) {
             btn.addEventListener('click', this.boundClickHandler);
-            btn.focus(); // Focus for Enter key support
+            btn.focus();
         }
     }
 

@@ -6,7 +6,7 @@
 // Detect theme configurations
 const themeConfigs = import.meta.glob('./*/theme.json', { eager: true });
 
-// Eagerly load all theme CSS files so they are bundled and available
+// Eagerly load all theme CSS files
 const themeStyles = import.meta.glob('./*/theme.css', { eager: true });
 
 export const ThemeListener = {

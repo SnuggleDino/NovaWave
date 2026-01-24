@@ -3,26 +3,23 @@
  * Handles automatic detection and management of theme packs via Vite glob imports.
  */
 
-// Detect theme configurations and logic modules
 const themeConfigs = import.meta.glob('./*/theme.json', { eager: true });
 const themeModules = import.meta.glob('./*/theme.js', { eager: true });
 
-// Track all available assets for bundling
 const themeAssets = import.meta.glob('./**/*.{png,jpg,jpeg,svg,ico,mp3,wav}', { eager: true, as: 'url' });
 
 let activeThemeId = null;
-let loadedThemes = {}; 
+let loadedThemes = {};
 let currentAppInstance = null;
 
-// Populate theme modules cache
 for (const path in themeModules) {
     const dir = path.split('/')[1];
     loadedThemes[dir] = themeModules[path].default;
 }
 
 export const ThemePackListener = {
-    
-    init: function(appInstance) {
+
+    init: function (appInstance) {
         currentAppInstance = appInstance;
         const container = document.getElementById('theme-pack-grid');
         if (!container) return;
@@ -40,15 +37,14 @@ export const ThemePackListener = {
 
         const themes = Object.keys(themeConfigs).map(key => {
             const conf = themeConfigs[key].default || themeConfigs[key];
-            
-            // Resolve preview image URL via Vite asset map
+
             if (conf.preview_image) {
                 const dir = key.split('/')[1];
                 const possiblePaths = [
                     `./${dir}/${conf.preview_image}`,
                     `./${dir}/assets/${conf.preview_image}`
                 ];
-                
+
                 for (const p of possiblePaths) {
                     if (themeAssets[p]) {
                         conf.resolved_preview = themeAssets[p];
@@ -74,7 +70,7 @@ export const ThemePackListener = {
         });
     },
 
-    renderThemeCard: function(container, config, app) {
+    renderThemeCard: function (container, config, app) {
         const card = document.createElement('div');
         card.className = 'theme-card';
         card.id = `${config.id}-pack-item`;
@@ -102,7 +98,7 @@ export const ThemePackListener = {
         });
     },
 
-    enableTheme: function(id, app) {
+    enableTheme: function (id, app) {
         if (activeThemeId && activeThemeId !== id) this.disableTheme(activeThemeId, app);
 
         // Sync UI toggles
@@ -121,12 +117,11 @@ export const ThemePackListener = {
         }
     },
 
-    disableTheme: function(id, app) {
+    disableTheme: function (id, app) {
         if (loadedThemes[id] && loadedThemes[id].onDisable) loadedThemes[id].onDisable(app);
-        
-        // Return to standard app state
+
         if (app.ui && app.ui.resetToDefaultTheme) app.ui.resetToDefaultTheme();
-        
+
         if (app.settings && app.ui && app.ui.updateEmoji) {
             app.ui.updateEmoji(app.settings.coverMode || 'note', app.settings.customCoverEmoji || '');
         }
@@ -137,7 +132,7 @@ export const ThemePackListener = {
         }
     },
 
-    restoreState: function(savedThemeId, app) {
+    restoreState: function (savedThemeId, app) {
         if (!savedThemeId) return;
         const toggle = document.getElementById(`toggle-${savedThemeId}`);
         if (toggle) {
@@ -146,10 +141,9 @@ export const ThemePackListener = {
         }
     },
 
-    deactivateActivePack: function() {
+    deactivateActivePack: function () {
         if (activeThemeId && currentAppInstance) {
             this.disableTheme(activeThemeId, currentAppInstance);
-            // Also uncheck the toggle
             const toggle = document.getElementById(`toggle-${activeThemeId}`);
             if (toggle) toggle.checked = false;
         }

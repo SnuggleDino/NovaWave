@@ -82,6 +82,10 @@ export function ShutdownApp() {
   return window['go']['main']['App']['ShutdownApp']();
 }
 
+export function UpdateMetadata(arg1, arg2, arg3) {
+  return window['go']['main']['App']['UpdateMetadata'](arg1, arg2, arg3);
+}
+
 export function UpdateTitle(arg1, arg2) {
   return window['go']['main']['App']['UpdateTitle'](arg1, arg2);
 }

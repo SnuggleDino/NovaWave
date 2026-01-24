@@ -1,18 +1,12 @@
 import updateData from './update_news.json';
 import dinoImg from '../assets/Two_Loving_Cute_Dinos.png';
 
-/**
- * UPDATE MANAGER
- * Handles the "What's New" popup logic.
- * Checks app version against local storage to determine if the user should see the changelog.
- */
-
 export const UpdateManager = {
     currentVersion: '0.0.0', // Will be set via init
-    
+
     init: async function (api) {
         this.api = api;
-        
+
         try {
             // Fetch current app version from backend
             const meta = await this.api.getAppMeta();
@@ -39,7 +33,7 @@ export const UpdateManager = {
         const markAsSeenAndClose = () => {
             if (modal) modal.classList.remove('visible');
             localStorage.setItem('lastSeenUpdateVersion', this.currentVersion);
-            
+
             // Remove "NEW" badge from footer button if it exists
             if (footerBtn) footerBtn.classList.remove('has-update');
         };
@@ -47,15 +41,13 @@ export const UpdateManager = {
         if (closeBtn) closeBtn.addEventListener('click', markAsSeenAndClose);
         if (okBtn) okBtn.addEventListener('click', markAsSeenAndClose);
 
-        // Footer button to open modal manually
         if (footerBtn) {
             footerBtn.addEventListener('click', () => {
-                // Re-render to catch language changes
                 this.renderChangelog();
                 if (modal) modal.classList.add('visible');
             });
         }
-        
+
         // Initial render
         this.renderChangelog();
     },
@@ -66,25 +58,20 @@ export const UpdateManager = {
         const modal = document.getElementById('update-info-overlay');
 
         if (lastSeen !== this.currentVersion) {
-            // New version detected!
             if (modal) {
-                // Wait a bit for app to load, then show
                 setTimeout(() => modal.classList.add('visible'), 1500);
             }
             if (footerBtn) footerBtn.classList.add('has-update');
         }
     },
 
-    renderChangelog: function() {
+    renderChangelog: function () {
         const container = document.getElementById('changelog-content');
-        if(!container) return;
+        if (!container) return;
 
-        // Determine current language
         const lang = document.documentElement.lang || 'en';
-        // Fallback to English if key missing
         const getLocalized = (obj) => obj[lang] || obj['en'] || obj['de'] || '';
 
-        // Build HTML from JSON
         let listItems = '';
         if (updateData.changes && Array.isArray(updateData.changes)) {
             listItems = updateData.changes.map(change => {
@@ -105,21 +92,17 @@ export const UpdateManager = {
         `;
 
         container.innerHTML = html;
-        
-        // Update version in header and add dino image
-        const titleVer = document.getElementById('update-modal-version');
-        if(titleVer) titleVer.textContent = `v${this.currentVersion}`;
 
-        // Replace rocket with dino image dynamically if not already there
+        const titleVer = document.getElementById('update-modal-version');
+        if (titleVer) titleVer.textContent = `v${this.currentVersion}`;
+
         const iconContainer = document.querySelector('.rocket-icon');
-        if(iconContainer) {
-             // Always update to ensure correct asset path from import
-             iconContainer.innerHTML = `<img src="${dinoImg}" alt="Update Icon" style="width: 120px; height: auto; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));">`;
-             iconContainer.style.animation = 'none';
+        if (iconContainer) {
+            iconContainer.innerHTML = `<img src="${dinoImg}" alt="Update Icon" style="width: 120px; height: auto; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));">`;
+            iconContainer.style.animation = 'none';
         }
-        
-        // Update sub-text
+
         const subText = document.querySelector('.update-title-box p');
-        if(subText) subText.textContent = getLocalized(updateData.subTitle);
+        if (subText) subText.textContent = getLocalized(updateData.subTitle);
     }
 };

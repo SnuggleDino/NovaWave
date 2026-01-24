@@ -26,57 +26,57 @@ var embeddedBinaries embed.FS
 
 type App struct {
 	ctx            context.Context
-	mu             sync.Mutex 
+	mu             sync.Mutex
 	spotifyService *SpotifyService
 }
 
 type Config struct {
-	Theme                   string   `json:"theme"`
-	Volume                  float64  `json:"volume"`
-	DownloadFolder          string   `json:"downloadFolder"`
-	Language                string   `json:"language"`
-	CoverMode               string   `json:"coverMode"`
-	CustomCoverEmoji        string   `json:"customCoverEmoji"`
-	BassGain                float64  `json:"bassGain"` 
-	BassBoostEnabled        bool     `json:"bassBoostEnabled"`
-	BassBoostValue          float64  `json:"bassBoostValue"`
-	TrebleBoostEnabled      bool     `json:"trebleBoostEnabled"`
-	TrebleBoostValue        float64  `json:"trebleBoostValue"`
-	ReverbEnabled           bool     `json:"reverbEnabled"`
-	ReverbValue             float64  `json:"reverbValue"`
-	AnimationMode           string   `json:"animationMode"`
-	VisualizerEnabled       bool     `json:"visualizerEnabled"`
-	VisualizerStyle         string   `json:"visualizerStyle"`
-	VisSensitivity          float64  `json:"visSensitivity"`
-	AutoLoadLastFolder      bool     `json:"autoLoadLastFolder"`
-	CurrentFolderPath       string   `json:"currentFolderPath"`
-	EnableFocusMode         bool     `json:"enableFocusMode"`
-	EnableDragAndDrop       bool     `json:"enableDragAndDrop"`
-	UseCustomColor          bool     `json:"useCustomColor"`
-	CustomAccentColor       string   `json:"customAccentColor"`
-	SortMode                string   `json:"sortMode"`
-	TargetFps               int      `json:"targetFps"`
-	PerformanceMode         bool     `json:"performanceMode"`
-	ShowStatsOverlay        bool     `json:"showStatsOverlay"`
-	CinemaMode              bool     `json:"cinemaMode"`
-	PlaybackSpeed           float64  `json:"playbackSpeed"`
-	Favorites               []string `json:"favorites"`
-	EnableFavoritesPlaylist bool     `json:"enableFavoritesPlaylist"`
-	MiniMode                bool     `json:"miniMode"`
-	AudioQuality            string   `json:"audioQuality"`
-	DeleteSongsEnabled      bool     `json:"deleteSongsEnabled"`
-	Loop                    string   `json:"loop"`
-	Shuffle                 bool     `json:"shuffle"`
-	SnuggleTimeEnabled      bool     `json:"snuggleTimeEnabled"`
-	SleepTimeEnabled        bool     `json:"sleepTimeEnabled"`
-	CyberpunkEnabled        bool     `json:"cyberpunkEnabled"`
-	PlaylistPosition        string   `json:"playlistPosition"`
-	PlaylistHidden          bool     `json:"playlistHidden"`
-	GradientTitleEnabled    bool     `json:"gradientTitleEnabled"`
-	ActiveIntro             string   `json:"activeIntro"`
-	SunsetEnabled           bool     `json:"sunsetEnabled"`
-	SakuraEnabled           bool     `json:"sakuraEnabled"`
-	NovaWave95Enabled       bool     `json:"novaWave95Enabled"`
+	Theme                   string        `json:"theme"`
+	Volume                  float64       `json:"volume"`
+	DownloadFolder          string        `json:"downloadFolder"`
+	Language                string        `json:"language"`
+	CoverMode               string        `json:"coverMode"`
+	CustomCoverEmoji        string        `json:"customCoverEmoji"`
+	BassGain                float64       `json:"bassGain"`
+	BassBoostEnabled        bool          `json:"bassBoostEnabled"`
+	BassBoostValue          float64       `json:"bassBoostValue"`
+	TrebleBoostEnabled      bool          `json:"trebleBoostEnabled"`
+	TrebleBoostValue        float64       `json:"trebleBoostValue"`
+	ReverbEnabled           bool          `json:"reverbEnabled"`
+	ReverbValue             float64       `json:"reverbValue"`
+	AnimationMode           string        `json:"animationMode"`
+	VisualizerEnabled       bool          `json:"visualizerEnabled"`
+	VisualizerStyle         string        `json:"visualizerStyle"`
+	VisSensitivity          float64       `json:"visSensitivity"`
+	AutoLoadLastFolder      bool          `json:"autoLoadLastFolder"`
+	CurrentFolderPath       string        `json:"currentFolderPath"`
+	EnableFocusMode         bool          `json:"enableFocusMode"`
+	EnableDragAndDrop       bool          `json:"enableDragAndDrop"`
+	UseCustomColor          bool          `json:"useCustomColor"`
+	CustomAccentColor       string        `json:"customAccentColor"`
+	SortMode                string        `json:"sortMode"`
+	TargetFps               int           `json:"targetFps"`
+	PerformanceMode         bool          `json:"performanceMode"`
+	ShowStatsOverlay        bool          `json:"showStatsOverlay"`
+	CinemaMode              bool          `json:"cinemaMode"`
+	PlaybackSpeed           float64       `json:"playbackSpeed"`
+	Favorites               []string      `json:"favorites"`
+	EnableFavoritesPlaylist bool          `json:"enableFavoritesPlaylist"`
+	MiniMode                bool          `json:"miniMode"`
+	AudioQuality            string        `json:"audioQuality"`
+	DeleteSongsEnabled      bool          `json:"deleteSongsEnabled"`
+	Loop                    string        `json:"loop"`
+	Shuffle                 bool          `json:"shuffle"`
+	SnuggleTimeEnabled      bool          `json:"snuggleTimeEnabled"`
+	SleepTimeEnabled        bool          `json:"sleepTimeEnabled"`
+	CyberpunkEnabled        bool          `json:"cyberpunkEnabled"`
+	PlaylistPosition        string        `json:"playlistPosition"`
+	PlaylistHidden          bool          `json:"playlistHidden"`
+	GradientTitleEnabled    bool          `json:"gradientTitleEnabled"`
+	ActiveIntro             string        `json:"activeIntro"`
+	SunsetEnabled           bool          `json:"sunsetEnabled"`
+	SakuraEnabled           bool          `json:"sakuraEnabled"`
+	NovaWave95Enabled       bool          `json:"novaWave95Enabled"`
 	PlaylistStructure       []interface{} `json:"playlistStructure"`
 }
 
@@ -114,7 +114,7 @@ func NewApp() *App {
 
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	a.ensureBinaries() 
+	a.ensureBinaries()
 	a.setupMediaKeys()
 }
 
@@ -154,12 +154,12 @@ func (a *App) setupMediaKeys() {
 		procRegisterHotKey := user32.NewProc("RegisterHotKey")
 		procGetMessage := user32.NewProc("GetMessageW")
 
-		procRegisterHotKey.Call(0, 1001, 0, 0xB3) 
-		procRegisterHotKey.Call(0, 1002, 0, 0xB0) 
-		procRegisterHotKey.Call(0, 1003, 0, 0xB1) 
-		procRegisterHotKey.Call(0, 1004, 0, 0xB2) 
-		procRegisterHotKey.Call(0, 1005, 0, 0xFA) 
-		procRegisterHotKey.Call(0, 1006, 0, 0xFB) 
+		procRegisterHotKey.Call(0, 1001, 0, 0xB3)
+		procRegisterHotKey.Call(0, 1002, 0, 0xB0)
+		procRegisterHotKey.Call(0, 1003, 0, 0xB1)
+		procRegisterHotKey.Call(0, 1004, 0, 0xB2)
+		procRegisterHotKey.Call(0, 1005, 0, 0xFA)
+		procRegisterHotKey.Call(0, 1006, 0, 0xFB)
 
 		for {
 			var msg struct {
@@ -256,8 +256,8 @@ func (a *App) LoadConfig() Config {
 		loadedConf.TargetFps = 60
 	}
 	if loadedConf.DownloadFolder == "" {
-	
-cwd, _ := os.Getwd()
+
+		cwd, _ := os.Getwd()
 		loadedConf.DownloadFolder = cwd
 	}
 
@@ -360,7 +360,7 @@ func (a *App) SelectMusicFolder() FolderResult {
 
 func (a *App) getBinaryPath(name string) string {
 	configDir, _ := os.UserConfigDir()
-	
+
 	appDataPath := filepath.Join(configDir, "NovaWave", "bin", name)
 	if info, err := os.Stat(appDataPath); err == nil && !info.IsDir() {
 		return appDataPath
@@ -421,8 +421,12 @@ func (a *App) RefreshMusicFolder(path string) FolderResult {
 		if err == nil {
 			m, err := tag.ReadFrom(f)
 			if err == nil {
-				if m.Title() != "" { currentTrack.Title = m.Title() }
-				if m.Artist() != "" { currentTrack.Artist = m.Artist() }
+				if m.Title() != "" {
+					currentTrack.Title = m.Title()
+				}
+				if m.Artist() != "" {
+					currentTrack.Artist = m.Artist()
+				}
 			}
 			f.Close()
 		}
@@ -457,7 +461,9 @@ func (a *App) RefreshMusicFolder(path string) FolderResult {
 
 func (a *App) GetTracks(folderPath string) ([]Track, error) {
 	files, err := os.ReadDir(folderPath)
-	if err != nil { return nil, err }
+	if err != nil {
+		return nil, err
+	}
 
 	ffprobePath := a.getBinaryPath("ffprobe.exe")
 	tracks := make([]Track, 0)
@@ -466,7 +472,9 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 	var wg sync.WaitGroup
 
 	for _, file := range files {
-		if file.IsDir() { continue }
+		if file.IsDir() {
+			continue
+		}
 		name := strings.ToLower(file.Name())
 		if !strings.HasSuffix(name, ".mp3") && !strings.HasSuffix(name, ".flac") && !strings.HasSuffix(name, ".wav") && !strings.HasSuffix(name, ".m4a") && !strings.HasSuffix(name, ".ogg") {
 			continue
@@ -481,15 +489,21 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 			fullPath := filepath.Join(folderPath, f.Name())
 			info, _ := f.Info()
 			var mtime float64
-			if info != nil { mtime = float64(info.ModTime().UnixMilli()) }
+			if info != nil {
+				mtime = float64(info.ModTime().UnixMilli())
+			}
 
 			currentTrack := Track{Path: fullPath, Title: f.Name(), Artist: "Unknown Artist", Mtime: mtime}
 			fileHandle, err := os.Open(fullPath)
 			if err == nil {
 				m, err := tag.ReadFrom(fileHandle)
 				if err == nil {
-					if m.Title() != "" { currentTrack.Title = m.Title() }
-					if m.Artist() != "" { currentTrack.Artist = m.Artist() }
+					if m.Title() != "" {
+						currentTrack.Title = m.Title()
+					}
+					if m.Artist() != "" {
+						currentTrack.Artist = m.Artist()
+					}
 				}
 				fileHandle.Close()
 			}
@@ -523,14 +537,18 @@ func (a *App) ShowInFolder(path string) {
 
 func (a *App) DeleteTrack(path string) SimpleResult {
 	err := os.Remove(path)
-	if err != nil { return SimpleResult{Success: false, Error: err.Error()} }
+	if err != nil {
+		return SimpleResult{Success: false, Error: err.Error()}
+	}
 	return SimpleResult{Success: true}
 }
 
 func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
 	fileName := filepath.Base(sourcePath)
 	destPath := filepath.Join(destFolder, fileName)
-	if sourcePath == destPath { return SimpleResult{Success: true} }
+	if sourcePath == destPath {
+		return SimpleResult{Success: true}
+	}
 
 	err := os.Rename(sourcePath, destPath)
 	if err != nil {
@@ -541,27 +559,34 @@ func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
 	return SimpleResult{Success: true, NewPath: destPath}
 }
 
-func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
+func (a *App) UpdateMetadata(pathStr string, newTitle string, newArtist string) SimpleResult {
 	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
 	ext := filepath.Ext(pathStr)
 	tempPath := strings.TrimSuffix(pathStr, ext) + "_temp" + ext
 
-	cmd := exec.Command(ffmpegPath, "-i", pathStr, "-metadata", "title="+newTitle, "-c", "copy", "-y", tempPath)
+	args := []string{"-i", pathStr, "-metadata", "title=" + newTitle, "-metadata", "artist=" + newArtist, "-c", "copy", "-y", tempPath}
+	cmd := exec.Command(ffmpegPath, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	err := cmd.Run()
-	if err != nil { return SimpleResult{Success: false, Error: err.Error()} }
+	if err != nil {
+		return SimpleResult{Success: false, Error: err.Error()}
+	}
 
 	err = os.Remove(pathStr)
 	if err != nil {
 		os.Remove(tempPath)
 		return SimpleResult{Success: false, Error: "File locked or read-only: " + err.Error()}
 	}
-	
+
 	err = os.Rename(tempPath, pathStr)
 	if err != nil {
 		return SimpleResult{Success: false, Error: "Rename failed: " + err.Error()}
 	}
 	return SimpleResult{Success: true}
+}
+
+func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
+	return a.UpdateMetadata(pathStr, newTitle, "")
 }
 
 func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
@@ -580,7 +605,9 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	outputTemplate := "%(title)s.%(ext)s"
 	if opts.CustomName != "" {
 		safeName := strings.Map(func(r rune) rune {
-			if strings.ContainsRune("< > : \" / \\ | ? *", r) { return '_' }
+			if strings.ContainsRune("< > : \" / \\ | ? *", r) {
+				return '_'
+			}
 			return r
 		}, opts.CustomName)
 		outputTemplate = safeName + ".%(ext)s"
@@ -610,12 +637,14 @@ func (a *App) IsSpotifyUrl(url string) bool {
 
 func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, error) {
 	track, err := a.spotifyService.GetTrackMetadata(url)
-	if err != nil { return SimpleResult{Success: false, Error: err.Error()}, nil }
-	
+	if err != nil {
+		return SimpleResult{Success: false, Error: err.Error()}, nil
+	}
+
 	return a.DownloadFromYouTube(DownloadOptions{
-		Url: fmt.Sprintf("ytsearch1:%s - %s lyrics", track.Artist, track.Title),
+		Url:        fmt.Sprintf("ytsearch1:%s - %s lyrics", track.Artist, track.Title),
 		CustomName: fmt.Sprintf("%s - %s", track.Artist, track.Title),
-		Quality: quality,
+		Quality:    quality,
 	})
 }
 

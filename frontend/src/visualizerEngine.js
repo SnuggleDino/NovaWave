@@ -183,17 +183,16 @@ export class VisualizerEngine {
         const totalBlockHeight = height / targetRows;
         const gapY = 1.5;
         const blockHeight = totalBlockHeight - gapY;
-        const blockWidth = blockHeight * 5.0; // Initial guess
+        const blockWidth = blockHeight * 5.0;
         const gapX = 3;
-        
+
         let maxColumns = Math.ceil((width / 2) / (blockWidth + gapX)) + 1;
-        
+
         // --- Respect maxBars Setting ---
         if (this.maxBars > 0) {
-            maxColumns = Math.floor(this.maxBars / 2); // Split across center
+            maxColumns = Math.floor(this.maxBars / 2);
         }
-        
-        // Recalculate block width based on maxColumns to fit
+
         const totalBlockWidth = (width / 2) / maxColumns;
         const calculatedBlockWidth = totalBlockWidth - gapX;
 

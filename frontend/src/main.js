@@ -30,6 +30,7 @@ const windowApi = {
     isSpotifyUrl: App.IsSpotifyUrl,
     deleteTrack: App.DeleteTrack,
     updateTitle: App.UpdateTitle,
+    updateMetadata: App.UpdateMetadata,
     showInFolder: App.ShowInFolder,
     moveFile: App.MoveFile,
     setWindowSize: App.SetWindowSize,
@@ -76,7 +77,7 @@ let dynamicIsland;
 let miniPlayer;
 
 // DOM Elements
-let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption;
+let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, editArtistInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption;
 // Spotify & Tabs
 let spotifyUrlInput, tabYtBtn, tabSpotifyBtn, viewYt, viewSpotify;
 let favorites = [];
@@ -141,14 +142,14 @@ function initUIHelpers() {
 function openFolderModal(mode, folderId = null) {
     activeFolderId = folderId;
     if (folderModal) folderModal.classList.add('visible');
-    
+
     const folder = folderId ? PlaylistManager.items.find(i => i.id === folderId) : null;
     if (folderInput) {
         folderInput.value = mode === 'rename' ? folder?.name || '' : '';
         folderInput.placeholder = tr('folderNamePlaceholder');
         folderInput.focus();
     }
-    
+
     const titleKey = mode === 'rename' ? 'folderModalTitleRename' : 'folderModalTitleCreate';
     if (folderModalTitle) folderModalTitle.textContent = tr(titleKey);
 
@@ -159,21 +160,21 @@ function openFolderModal(mode, folderId = null) {
     });
 }
 
-    function showFolderContextMenu(e, folderId) {
+function showFolderContextMenu(e, folderId) {
     e.preventDefault();
-    e.stopPropagation(); 
+    e.stopPropagation();
     contextFolderId = folderId;
-    
+
     if (contextMenu) contextMenu.style.display = 'none';
-    
+
     if (contextMenuFolder) {
         contextMenuFolder.style.top = `${e.clientY}px`;
         contextMenuFolder.style.left = `${e.clientX}px`;
         contextMenuFolder.style.display = 'block';
-        
-        const closeCm = () => { 
-            contextMenuFolder.style.display = 'none'; 
-            window.removeEventListener('click', closeCm); 
+
+        const closeCm = () => {
+            contextMenuFolder.style.display = 'none';
+            window.removeEventListener('click', closeCm);
         };
         window.addEventListener('click', closeCm);
     }
@@ -184,7 +185,7 @@ function showDeleteConfirmation(mode, id) {
     if (confirmDeleteOverlay) {
         const msgEl = confirmDeleteOverlay.querySelector('.confirm-message');
         const titleEl = confirmDeleteOverlay.querySelector('h3');
-        
+
         // Reset Button State
         if (confirmDeleteBtn) {
             confirmDeleteBtn.disabled = false;
@@ -203,35 +204,28 @@ function showDeleteConfirmation(mode, id) {
         confirmDeleteOverlay.classList.add('visible');
     }
 }
-function handleDeleteTrack(fp) { 
+function handleDeleteTrack(fp) {
     showDeleteConfirmation('track', fp);
-    let c = 5; 
+    let c = 5;
     if (confirmDeleteBtn) {
-        confirmDeleteBtn.disabled = true; 
-        confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; 
-        const ci = setInterval(() => { 
-            c--; 
+        confirmDeleteBtn.disabled = true;
+        confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`;
+        const ci = setInterval(() => {
+            c--;
             if (c > 0) {
-                confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`; 
-            } else { 
-                clearInterval(ci); 
-                confirmDeleteBtn.textContent = tr('confirmDeleteButton'); 
-                confirmDeleteBtn.disabled = false; 
-            } 
-        }, 1000); 
+                confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`;
+            } else {
+                clearInterval(ci);
+                confirmDeleteBtn.textContent = tr('confirmDeleteButton');
+                confirmDeleteBtn.disabled = false;
+            }
+        }, 1000);
     }
 }
 
 // Helper to save structure
 function savePlaylistState() {
     const structure = PlaylistManager.exportStructure();
-    // We save this under a key specific to the current folder to avoid mixing up playlists?
-    // For V1, we just save one global structure. If user switches folders, structure might mismatch.
-    // Ideally: 'playlistStructure_' + currentFolderPath (hash).
-    // For simplicity now: Just 'playlistStructure'.
-    // Better: If we switch folders, we wipe the structure anyway in V1 logic usually?
-    // Let's stick to global 'playlistStructure' but keep in mind paths must match.
-    // Actually, saving it part of settings is OK if paths are absolute.
     windowApi.setSetting('playlistStructure', structure);
 }
 
@@ -251,7 +245,7 @@ function initVisualizerEngine() {
         sensitivity: settings.visSensitivity,
         accentColor: cachedAccentColor,
         targetFps: settings.targetFps,
-        maxBars: settings.visualizerBars || 64, // Fix: Pass stored setting
+        maxBars: settings.visualizerBars || 64,
         musicEmojiEl: musicEmojiEl
     });
 
@@ -310,7 +304,6 @@ function saveSetting(key, value) {
 function updateCachedColor() {
     let color = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
 
-    // Hardcoded overrides for known theme packs to be 100% sure they don't use fallbacks
     const currentTheme = document.documentElement.getAttribute('data-theme');
     if (currentTheme === 'dinolove') color = '#c1d37f';
     else if (currentTheme === 'cyberpunk') color = '#fcee0a';
@@ -336,7 +329,6 @@ function updatePerformanceStats() {
     const interval = 1000 / targetFps;
     const statsInterval = 1000;
 
-    // Throttle App Update Loop to targetFps
     const delta = now - lastStatsTime;
     if (delta < interval) {
         requestAnimationFrame(updatePerformanceStats);
@@ -444,7 +436,6 @@ function setPerformanceMode(enabled, silent = false) {
     if (toggle) toggle.checked = enabled;
 
     if (enabled) {
-        // Deactivate any active theme pack for performance
         ThemePackListener.deactivateActivePack();
 
         if (visualizer) visualizer.stop();
@@ -540,7 +531,7 @@ function resetToDefaultTheme() {
         const bars = settings.visualizerBars || 64;
         visualizer.updateSettings({ style: style, maxBars: bars });
         if (visualizerStyleSelect) { visualizerStyleSelect.disabled = false; visualizerStyleSelect.value = style; }
-        
+
         const barsInput = document.getElementById('visualizer-bars-input');
         const barsValue = document.getElementById('visualizer-bars-value');
         if (barsInput) {
@@ -613,54 +604,54 @@ function renderPlaylist() {
     if (!playlistEl) return;
     if (renderPlaylistRequestId) cancelAnimationFrame(renderPlaylistRequestId);
     playlistEl.innerHTML = '';
-    
+
     // Get items to render from Manager
     const renderItems = PlaylistManager.getRenderList(searchInput ? searchInput.value : '');
-    
+
     if (renderItems.length === 0) {
         const msg = showingFavoritesOnly ? tr('noFavoritesFound') : tr('emptyPlaylist');
         playlistEl.innerHTML = `<div class="empty-state">${msg}</div>`;
         if (playlistInfoBar) playlistInfoBar.textContent = `0 items`;
         return;
     }
-    
+
     // Update flat playlist for audio navigation
-    playlist = PlaylistManager.getAllTracks(); 
-    
+    playlist = PlaylistManager.getAllTracks();
+
     if (playlistInfoBar) playlistInfoBar.textContent = `${playlist.length} ${playlist.length === 1 ? tr('track') : tr('tracks')}`;
-    
+
     let renderIndex = 0; const CHUNK_SIZE = 50;
-    
+
     function renderChunk() {
-        const fragment = document.createDocumentFragment(); 
+        const fragment = document.createDocumentFragment();
         const limit = Math.min(renderIndex + CHUNK_SIZE, renderItems.length);
-        
+
         for (let i = renderIndex; i < limit; i++) {
             const item = renderItems[i];
-            
+
             if (item.type === 'folder') {
                 // RENDER FOLDER
                 const row = document.createElement('div');
                 row.className = 'track-row is-folder';
                 row.dataset.id = item.id;
-                
+
                 // Apply dynamic color
                 const color = item.color || '#38bdf8';
                 row.style.setProperty('--folder-color', color);
-                row.style.setProperty('--folder-color-soft', color + '26'); // 15% opacity
+                row.style.setProperty('--folder-color-soft', color + '26');
                 row.style.borderLeftColor = color;
                 row.style.color = color;
                 row.style.background = `linear-gradient(90deg, ${color}26, transparent)`;
-                
+
                 const arrow = item.collapsed ? '▶' : '▼';
                 row.innerHTML = `<div class="track-index" style="width:30px;">${arrow}</div><div class="track-info-block" style="font-size:0.9rem;">${item.name}</div>`;
-                
+
                 row.onclick = () => {
                     PlaylistManager.toggleFolder(item.id);
-                    savePlaylistState(); // Save collapse state
+                    savePlaylistState();
                     renderPlaylist();
                 };
-                
+
                 row.oncontextmenu = (e) => showFolderContextMenu(e, item.id);
 
                 // Drop Zone Logic
@@ -675,24 +666,23 @@ function renderPlaylist() {
                     const trackId = e.dataTransfer.getData('text/plain');
                     if (trackId) {
                         PlaylistManager.moveItemToFolder(trackId, item.id);
-                        savePlaylistState(); // Save structure
+                        savePlaylistState();
                         renderPlaylist();
-                        showNotification(tr('folderRefreshed')); // Use existing key or generic success
+                        showNotification(tr('folderRefreshed'));
                     }
                 };
-                
+
                 fragment.appendChild(row);
-                
+
             } else {
                 // RENDER TRACK
                 const track = item.data;
-                // Find global index for playing
                 const globalIndex = playlist.findIndex(t => t.path === track.path);
-                
+
                 const row = document.createElement('div');
                 row.className = 'track-row';
-                row.draggable = true; // Enable Drag
-                
+                row.draggable = true;
+
                 row.ondragstart = (e) => {
                     e.dataTransfer.setData('text/plain', item.id);
                     e.dataTransfer.effectAllowed = 'move';
@@ -701,28 +691,26 @@ function renderPlaylist() {
                 // Check indentation
                 if (!searchInput.value && item.groupId) {
                     row.classList.add('indent');
-                    // Apply parent folder color to the guide line
                     const parentFolder = PlaylistManager.items.find(i => i.id === item.groupId);
                     if (parentFolder) {
-                        row.style.borderLeftColor = parentFolder.color + '66'; // 40% opacity
+                        row.style.borderLeftColor = parentFolder.color + '66';
                     }
                 }
-                
-                row.dataset.index = globalIndex; 
+
+                row.dataset.index = globalIndex;
                 if (globalIndex === currentIndex) row.classList.add('active');
-                
+
                 const pi = `<div class="playing-bars"><span></span><span></span><span></span></div>`;
                 const isFav = favoritesSet.has(track.path);
                 const favFill = isFav ? 'currentColor' : 'none';
                 const favColor = isFav ? '#fbbf24' : 'var(--text-muted)';
                 const favBtn = `<button class="fav-track-btn" data-path="${track.path}" title="${tr('toggleFavorite')}" style="color: ${favColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="${favFill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>`;
-                
-                // Display Index: Use global Index + 1 (Audio Playlist Order) instead of Render List Index
+
+                // Display Index: Global Index + 1 (Audio Playlist Order) instead of Render List Index
                 const displayIdx = (isPlaying && globalIndex === currentIndex) ? pi : (globalIndex + 1);
-                
-                // Add visual indicator for nested tracks
+
                 const titlePrefix = (!searchInput.value && item.groupId) ? '<span style="opacity:0.6; margin-right:5px;">↳</span> ' : '';
-                
+
                 row.innerHTML = `<div class="track-index">${displayIdx}</div><div class="track-info-block"><div class="track-title-small">${titlePrefix}${track.title}</div><div class="track-artist-small">${track.artist || tr('unknownArtist')}</div></div>${favBtn}<div class="track-duration">${formatTime(track.duration)}</div>`;
                 fragment.appendChild(row);
             }
@@ -745,7 +733,6 @@ function applyTranslations() {
 
         const text = tr(el.dataset.langKey);
         if (text) {
-            // Special case for buttons to avoid appending if multiple calls happen
             if (el.tagName === 'BUTTON') {
                 el.textContent = text;
             } else {
@@ -847,8 +834,6 @@ function updateEmoji(emojiType, customEmoji) {
     if (emojiType === 'auto' || emojiType === undefined) {
         if (currentTrackPath) {
             let rawPath = currentTrackPath.replace(/\\/g, '/');
-            // encodeURI preserves colons (C:) and slashes, but we must manually escape # and ? 
-            // because they have special meaning in URLs and would truncate the path.
             let safeUrlPath = encodeURI(rawPath).replace(/#/g, '%23').replace(/\?/g, '%3F');
             const coverUrl = '/cover/' + safeUrlPath;
             isImage = true;
@@ -901,9 +886,6 @@ async function handleDownload() {
             if (spotifyUrlInput) spotifyUrlInput.value = '';
 
             if (currentFolderPath && settings.downloadFolder && currentFolderPath === settings.downloadFolder) {
-                // Refresh folder triggered via event listener on refresh btn, but here we can't trigger click easily if we decoupled.
-                // But wait, refresh logic is available via windowApi.refreshMusicFolder
-                // For simplicity, we just trigger the button click if it exists, or call the logic.
                 const btn = document.getElementById('refresh-folder-btn');
                 if (btn) btn.click();
             }
@@ -980,7 +962,6 @@ async function loadSettings() {
 
     applyTranslations();
 
-    // AppSettings will handle UI restoration for settings modal!
     AppSettings.restoreUIState();
 
     if (shuffleBtn) shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
@@ -991,7 +972,6 @@ async function loadSettings() {
     if (toggleEnableFocus) toggleEnableFocus.checked = settings.enableFocusMode !== false;
     if (toggleEnableDrag) toggleEnableDrag.checked = settings.enableDragAndDrop !== false;
 
-    // We still need to apply some things that affect global state immediately
     if (settings.useCustomColor) {
         document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
     }
@@ -1036,11 +1016,10 @@ async function loadSettings() {
             const result = await windowApi.refreshMusicFolder(currentFolderPath);
             if (result && result.folderPath) {
                 basePlaylist = result.tracks || [];
-                // Load with restored structure
                 PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
                 playlist = PlaylistManager.getAllTracks();
-                
-                sortPlaylist(sortMode); 
+
+                sortPlaylist(sortMode);
                 updateUIForCurrentTrack();
             }
         } catch (e) {
@@ -1107,9 +1086,8 @@ function filterPlaylist(q) {
 }
 
 function sortPlaylist(m) {
-    // basePlaylist is legacy, now we use Manager
     PlaylistManager.sortItems(m);
-    renderPlaylist(); // Manager handles sorting order in getRenderList
+    renderPlaylist();
 }
 
 function showContextMenu(e, idx) {
@@ -1119,8 +1097,7 @@ function showContextMenu(e, idx) {
         const isFav = favorites.includes(playlist[idx].path);
         contextMenuFavorite.textContent = isFav ? tr('removeFromFavorites') : tr('addToFavorites');
     }
-    
-    // Toggle delete button visibility based on settings
+
     const deleteBtn = document.getElementById('cm-delete');
     if (deleteBtn) {
         deleteBtn.style.display = deleteSongsEnabled ? 'flex' : 'none';
@@ -1134,9 +1111,8 @@ function showContextMenu(e, idx) {
 }
 
 function setupEventListeners() {
-    // Only Main App Listeners here. Settings logic moved to AppSettings via initSettingsLogic().
-    
-    initUIHelpers(); // Initialize UI references for helpers
+
+    initUIHelpers();
 
     const bind = (el, ev, h) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, h); };
     bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) audio.pause(); else (currentIndex === -1) ? playTrack(0) : audio.play(); });
@@ -1151,24 +1127,19 @@ function setupEventListeners() {
         const r = await windowApi.selectMusicFolder();
         if (r && r.folderPath) {
             basePlaylist = r.tracks || [];
-            // Try to restore structure if paths match, otherwise it filters out invalid ones
             PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
-            playlist = PlaylistManager.getAllTracks(); // Keep flat list for audio engine
-            
+            playlist = PlaylistManager.getAllTracks();
+
             currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
             renderPlaylist();
             updateUIForCurrentTrack();
             currentFolderPath = r.folderPath;
             saveSetting('currentFolderPath', currentFolderPath);
-            // Also update structure setting potentially if it changed drastically?
-            savePlaylistState(); // Save the (potentially cleaned) structure for the new folder
-            
+            savePlaylistState();
+
             libraryOverlay.classList.remove('visible');
         }
     });
-    // refreshFolderBtn logic is also handled in AppSettings callback for standard refresh, 
-    // but the button might exist in multiple places (header/modal). 
-    // Actually, AppSettings handles the modal one. The header one is not existent in current HTML.
 
     let st; bind(searchInput, 'input', (e) => { clearTimeout(st); st = setTimeout(() => { filterPlaylist(e.target.value); }, 250); });
 
@@ -1281,16 +1252,16 @@ function setupEventListeners() {
         const row = e.target.closest('.track-row');
         if (row && !row.classList.contains('is-folder')) playTrack(parseInt(row.dataset.index, 10));
     });
-    bind(playlistEl, 'contextmenu', (e) => { 
-        const r = e.target.closest('.track-row'); 
-        if (r) { 
-            e.preventDefault(); 
+    bind(playlistEl, 'contextmenu', (e) => {
+        const r = e.target.closest('.track-row');
+        if (r) {
+            e.preventDefault();
             if (r.classList.contains('is-folder')) {
                 showFolderContextMenu(e, r.dataset.id);
             } else {
-                showContextMenu(e, parseInt(r.dataset.index, 10)); 
+                showContextMenu(e, parseInt(r.dataset.index, 10));
             }
-        } 
+        }
     });
     bind($('#context-menu-show-folder'), 'click', () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; windowApi.showInFolder(playlist[contextTrackIndex].path); });
     const toggleDownloaderBtn = document.getElementById('toggle-downloader-btn');
@@ -1325,22 +1296,22 @@ function setupEventListeners() {
         toggleFavoritesBtn.style.color = showingFavoritesOnly ? 'var(--accent)' : 'var(--text-main)';
         filterPlaylist(searchInput ? searchInput.value : '');
     });
-    
+
     // Event Bindings for Folders & Delete
     bind($('#add-folder-btn'), 'click', () => openFolderModal('create'));
     bind($('#folder-cancel-btn'), 'click', () => folderModal.classList.remove('visible'));
     bind($('#folder-modal-close-btn'), 'click', () => folderModal.classList.remove('visible'));
-    
+
     bind($('#folder-save-btn'), 'click', () => {
         const name = folderInput.value.trim();
         if (!name) return;
-        
+
         if (activeFolderId) {
             PlaylistManager.renameFolder(activeFolderId, name, selectedFolderColor);
         } else {
             PlaylistManager.addFolder(name, selectedFolderColor);
         }
-        savePlaylistState(); // Save changes
+        savePlaylistState();
         renderPlaylist();
         folderModal.classList.remove('visible');
     });
@@ -1350,63 +1321,82 @@ function setupEventListeners() {
 
     bind(confirmDeleteCancelBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
     bind(confirmDeleteCloseBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
-    
+
     bind(confirmDeleteBtn, 'click', async () => {
-        // Folder Delete Logic (Synchronous)
         if (deleteMode === 'folder') {
             if (contextFolderId) {
                 PlaylistManager.deleteFolder(contextFolderId);
-                savePlaylistState(); // Save changes
+                savePlaylistState();
                 renderPlaylist();
                 showNotification(tr('folderDeleted'));
             }
             confirmDeleteOverlay.classList.remove('visible');
             return;
         }
-        
+
         // Track Delete Logic (Async)
-        if (!trackToDeletePath) return; 
-        
-        // Disable button to prevent double-click
+        if (!trackToDeletePath) return;
+
         confirmDeleteBtn.disabled = true;
-        
-        const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null; 
-        const r = await windowApi.deleteTrack(trackToDeletePath); 
-        
-        confirmDeleteBtn.disabled = false; // Re-enable
-        
+
+        const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null;
+        const r = await windowApi.deleteTrack(trackToDeletePath);
+
+        confirmDeleteBtn.disabled = false;
+
         if (r.success) {
             basePlaylist = basePlaylist.filter(x => x.path !== trackToDeletePath);
             PlaylistManager.items = PlaylistManager.items.filter(i => !(i.type === 'track' && i.id === trackToDeletePath));
             playlist = PlaylistManager.getAllTracks();
-            
+
             const favIdx = favorites.indexOf(trackToDeletePath);
             if (favIdx !== -1) {
                 favorites.splice(favIdx, 1);
                 windowApi.setSetting('favorites', favorites);
             }
-            if (ctp) { 
-                if (trackToDeletePath === ctp) { 
-                    audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI(); 
-                } else { 
-                    currentIndex = playlist.findIndex(x => x.path === ctp); 
-                } 
+            if (ctp) {
+                if (trackToDeletePath === ctp) {
+                    audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI();
+                } else {
+                    currentIndex = playlist.findIndex(x => x.path === ctp);
+                }
             }
-            renderPlaylist(); 
-            updateUIForCurrentTrack(); 
-            confirmDeleteOverlay.classList.remove('visible'); 
-            trackToDeletePath = null; 
+            renderPlaylist();
+            updateUIForCurrentTrack();
+            confirmDeleteOverlay.classList.remove('visible');
+            trackToDeletePath = null;
             showNotification(tr('songDeleted'));
         }
     });
 
-    // toggleFavoritesOption is in AppSettings, handled there.
-
     bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
-    bind(editTitleInput, 'input', () => { if (newTitlePreview) newTitlePreview.textContent = editTitleInput.value; });
     bind(editTitleCancelBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleCloseBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
-    bind(editTitleSaveBtn, 'click', async () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; const t = playlist[contextTrackIndex]; const nt = editTitleInput.value.trim(); if (!nt) return; const r = await windowApi.updateTitle(t.path, nt); if (r.success) { t.title = nt; const bt = basePlaylist.find(x => x.path === t.path); if (bt) bt.title = nt; renderPlaylist(); updateUIForCurrentTrack(); editTitleOverlay.classList.remove('visible'); showNotification(tr('titleUpdated')); } });
+    bind(editTitleSaveBtn, 'click', async () => {
+        if (contextTrackIndex === null || !playlist[contextTrackIndex]) return;
+        const t = playlist[contextTrackIndex];
+        const nt = editTitleInput.value.trim();
+        const na = editArtistInput.value.trim();
+        if (!nt) return;
+
+        const r = await windowApi.updateMetadata(t.path, nt, na);
+        if (r.success) {
+            t.title = nt;
+            t.artist = na;
+
+            const mgrItem = PlaylistManager.items.find(i => i.type === 'track' && i.id === t.path);
+            if (mgrItem) {
+                mgrItem.data.title = nt;
+                mgrItem.data.artist = na;
+                mgrItem.searchString = (nt + ' ' + na).toLowerCase();
+            }
+
+            renderPlaylist();
+            updateUIForCurrentTrack();
+            editTitleOverlay.classList.remove('visible');
+            showNotification(tr('titleUpdated'));
+        }
+    });
     let resTimeout; new ResizeObserver(() => { if (visualizerCanvas && visualizerContainer) { visualizerCanvas.width = visualizerContainer.clientWidth; visualizerCanvas.height = visualizerContainer.clientHeight; } }).observe(visualizerContainer);
     window.addEventListener('resize', () => {
         clearTimeout(resTimeout);
@@ -1468,7 +1458,7 @@ function initSettingsLogic() {
         },
         onDeleteSongsToggle: (enabled) => {
             deleteSongsEnabled = enabled;
-            renderPlaylist(); // Update playlist to show/hide delete buttons
+            renderPlaylist();
         },
         onRefreshFolder: async () => {
             let path = currentFolderPath || settings.currentFolderPath;
@@ -1521,26 +1511,27 @@ function initSettingsLogic() {
             URL.revokeObjectURL(url);
             showNotification(tr('exportSuccess'));
         },
-                onResetApp: async () => {
-                     if (confirm(tr('resetWarning'))) {
-                        try {
-                            const res = await windowApi.resetConfig();
-                            if (res.success) {
-                                localStorage.clear();
-                                showNotification("Reset complete. Restarting...", "success");
-                                setTimeout(() => windowApi.restartApp(), 1500); // Use restartApp here too!
-                            } else {
-                                showNotification("Reset failed: " + res.error, "error");
-                            }
-                        } catch (e) {
-                            console.error("Reset error:", e);
-                        }
+        onResetApp: async () => {
+            if (confirm(tr('resetWarning'))) {
+                try {
+                    const res = await windowApi.resetConfig();
+                    if (res.success) {
+                        localStorage.clear();
+                        showNotification("Reset complete. Restarting...", "success");
+                        setTimeout(() => windowApi.restartApp(), 1500); // Use restartApp here too!
+                    } else {
+                        showNotification("Reset failed: " + res.error, "error");
                     }
-                },
-                onRestartApp: () => {
-                     windowApi.restartApp();
-                },
-                onShutdownApp: () => {            AppShutdown.shutdown();
+                } catch (e) {
+                    console.error("Reset error:", e);
+                }
+            }
+        },
+        onRestartApp: () => {
+            windowApi.restartApp();
+        },
+        onShutdownApp: () => {
+            AppShutdown.shutdown();
         },
         onAnimationChange: (val) => {
             applyAnimationSetting(val);
@@ -1640,10 +1631,10 @@ document.addEventListener('DOMContentLoaded', () => {
     sleepTimerSelect = $('#sleep-timer-select'); animationSelect = $('#animation-select'); backgroundAnimationEl = $('.background-animation'); emojiSelect = $('#emoji-select');
     customEmojiContainer = $('#custom-emoji-container'); customEmojiInput = $('#custom-emoji-input'); toggleDeleteSongs = $('#toggle-delete-songs');
     toggleDownloaderBtn = $('#toggle-downloader-btn'); contextMenu = $('#context-menu'); contextMenuEditTitle = $('#context-menu-edit-title'); contextMenuFavorite = $('#context-menu-favorite');
-    editTitleOverlay = $('#edit-title-overlay'); editTitleInput = $('#edit-title-input'); originalTitlePreview = $('#original-title-preview');
+    editTitleOverlay = $('#edit-title-overlay'); editTitleInput = $('#edit-title-input'); editArtistInput = $('#edit-artist-input'); originalTitlePreview = $('#original-title-preview');
     newTitlePreview = $('#new-title-preview'); editTitleCancelBtn = $('#edit-title-cancel-btn'); editTitleSaveBtn = $('#edit-title-save-btn');
     editTitleCloseBtn = $('#edit-title-close-btn');
-    confirmDeleteOverlay = $('#confirm-delete-overlay'); // Init overlay
+    confirmDeleteOverlay = $('#confirm-delete-overlay');
     toggleFavoritesBtn = $('#toggle-favorites-btn'); toggleFavoritesOption = $('#toggle-favorites-option');
     confirmDeleteBtn = $('#confirm-delete-btn');
     confirmDeleteCancelBtn = $('#confirm-delete-cancel-btn');
@@ -1705,11 +1696,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const isHidden = document.body.classList.toggle('playlist-hidden');
             saveSetting('playlistHidden', isHidden);
 
-            // Update icon state (optional visual feedback)
             togglePlaylistBtn.style.color = isHidden ? 'var(--text-muted)' : 'var(--accent)';
             togglePlaylistBtn.style.borderColor = isHidden ? 'var(--border-soft)' : 'var(--accent)';
 
-            // Adjust resizing
             setTimeout(() => {
                 if (visualizerCanvas && visualizerContainer) {
                     visualizerCanvas.width = visualizerContainer.clientWidth;
@@ -1760,7 +1749,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Downloader Tabs
     if (tabYtBtn && tabSpotifyBtn) {
-        // Init default state
         if (activeDownloaderMode === 'youtube') {
             tabYtBtn.classList.add('active');
             viewYt.style.display = 'block';
@@ -1854,7 +1842,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function initializeApp() {
         try {
-            // Pre-detect language for loader
             const savedLang = localStorage.getItem('language');
             if (savedLang) {
                 currentLanguage = savedLang;
@@ -1864,20 +1851,16 @@ document.addEventListener('DOMContentLoaded', () => {
             AppLoader.init();
             AppLoader.update(5, tr('loaderBooting'));
 
-            // Fast Path: Apply cached theme
             const cachedTheme = localStorage.getItem('theme') || 'midnight';
             document.documentElement.setAttribute('data-theme', cachedTheme);
 
             AppLoader.update(20, tr('loaderModules'));
-            // Initialize Dynamic Themes & Animations
             ThemeListener.init();
             BackgroundAnimListener.init();
 
             AppLoader.update(30, tr('loaderLoadingSettings'));
-            // Load Settings (includes folder scan)
             await loadSettings();
 
-            // INIT APP SETTINGS LOGIC
             initSettingsLogic();
 
             AppLoader.update(70, tr('loaderApplying'));
@@ -1890,20 +1873,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (animationSelect) animationSelect.value = initialAnim;
 
             // Initialize Theme Packs
-            ThemePackListener.init({ 
-                visualizer, 
-                ui: { 
-                    updateEmoji, 
-                    updateCachedColor, 
+            ThemePackListener.init({
+                visualizer,
+                ui: {
+                    updateEmoji,
+                    updateCachedColor,
                     resetToDefaultTheme,
-                    applyAnimationSetting // Inject function
-                }, 
-                settings 
+                    applyAnimationSetting
+                },
+                settings
             });
-            
-            // Check for Updates / Changelog
+
             UpdateManager.init(windowApi);
-            
+
             if (settings.theme) {
                 document.documentElement.setAttribute('data-theme', settings.theme);
             }
@@ -1923,13 +1905,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (settings.activeThemePack) {
                 setTimeout(() => {
-                    ThemePackListener.restoreState(settings.activeThemePack, { 
-                        visualizer, 
-                        ui: { 
-                            updateEmoji, 
-                            applyAnimationSetting 
-                        }, 
-                        settings 
+                    ThemePackListener.restoreState(settings.activeThemePack, {
+                        visualizer,
+                        ui: {
+                            updateEmoji,
+                            applyAnimationSetting
+                        },
+                        settings
                     });
                 }, 500);
             }
@@ -1937,7 +1919,6 @@ document.addEventListener('DOMContentLoaded', () => {
             AppLoader.update(100, tr('loaderReady'));
             AppLoader.finish();
 
-            // Start Intro or Show App
             const activeIntro = settings.activeIntro || 'waterdrop';
             if (activeIntro !== 'none') {
                 setTimeout(() => {
@@ -1963,23 +1944,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 
-    // Load Folder and Refresh
     setTimeout(() => {
         const btn = document.getElementById('open-library-btn');
         if (btn) {
-            // Remove old listeners by cloning
             const newBtn = btn.cloneNode(true);
             if (btn.parentNode) btn.parentNode.replaceChild(newBtn, btn);
 
             newBtn.addEventListener('click', async () => {
                 try {
-                    // Direct call to system dialog
                     const res = await windowApi.selectMusicFolder();
                     if (res && res.folderPath) {
                         saveSetting('currentFolderPath', res.folderPath);
                         currentFolderPath = res.folderPath;
 
-                        // Refresh the folder
                         basePlaylist = res.tracks || [];
                         playlist = [...basePlaylist];
                         sortPlaylist(sortMode);
@@ -1996,7 +1973,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // 2. Ensure Refresh Button Works
         const refBtn = document.getElementById('refresh-folder-btn');
         if (refBtn) {
             const newRefBtn = refBtn.cloneNode(true);
@@ -2024,11 +2000,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 500);
 
-
-    // Context Menu logic is handled by global showContextMenu
-
-
-    // Bind Context Menu Actions (Running once at end of file)
     setTimeout(() => {
         // Play
         const cmPlay = document.getElementById('cm-play');
@@ -2036,16 +2007,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (contextTrackIndex !== null) playTrack(contextTrackIndex);
         };
 
-        // Edit Title
+        // Edit Title (Metadata)
         const cmEdit = document.getElementById('cm-edit');
         if (cmEdit) cmEdit.onclick = () => {
             if (contextTrackIndex === null) return;
             const t = playlist[contextTrackIndex];
 
-            // Ensure elements exist before accessing
-            if (originalTitlePreview) originalTitlePreview.textContent = t.title;
-            if (newTitlePreview) newTitlePreview.textContent = t.title;
             if (editTitleInput) editTitleInput.value = t.title;
+            if (editArtistInput) editArtistInput.value = t.artist || '';
 
             if (editTitleOverlay) editTitleOverlay.classList.add('visible');
         };

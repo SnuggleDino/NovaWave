@@ -42,4 +42,6 @@ export function ShowInFolder(arg1:string):Promise<void>;
 
 export function ShutdownApp():Promise<void>;
 
+export function UpdateMetadata(arg1:string,arg2:string,arg3:string):Promise<main.SimpleResult>;
+
 export function UpdateTitle(arg1:string,arg2:string):Promise<main.SimpleResult>;
