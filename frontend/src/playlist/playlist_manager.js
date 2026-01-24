@@ -223,5 +223,85 @@ export const PlaylistManager = {
     // Debug helper
     getFolderCount() {
         return this.items.filter(i => i.type === 'folder').length;
+    },
+
+    /**
+     * Exports the current structure for persistence.
+     * We save:
+     * - Folders: id, name, color, collapsed
+     * - Tracks: id (path), groupId
+     */
+    exportStructure() {
+        return this.items.map(item => {
+            if (item.type === 'folder') {
+                return {
+                    type: 'folder',
+                    id: item.id,
+                    name: item.name,
+                    color: item.color,
+                    collapsed: item.collapsed
+                };
+            } else {
+                return {
+                    type: 'track',
+                    id: item.id, // path
+                    groupId: item.groupId
+                };
+            }
+        });
+    },
+
+    /**
+     * Reconstructs the playlist from a saved structure and a list of currently available raw tracks.
+     * Matches tracks by Path (ID).
+     */
+    importStructure(savedItems, availableTracks) {
+        if (!savedItems || !Array.isArray(savedItems)) {
+            this.loadTracks(availableTracks);
+            return;
+        }
+
+        const newItems = [];
+        const trackMap = new Map(availableTracks.map(t => [t.path, t]));
+        const usedTrackIds = new Set();
+
+        savedItems.forEach(savedItem => {
+            if (savedItem.type === 'folder') {
+                newItems.push({
+                    type: 'folder',
+                    id: savedItem.id,
+                    name: savedItem.name,
+                    color: savedItem.color || '#38bdf8',
+                    collapsed: savedItem.collapsed || false
+                });
+            } else if (savedItem.type === 'track') {
+                const trackData = trackMap.get(savedItem.id);
+                if (trackData) {
+                    newItems.push({
+                        type: 'track',
+                        id: trackData.path,
+                        data: trackData,
+                        groupId: savedItem.groupId || null,
+                        searchString: (trackData.title + ' ' + (trackData.artist || '')).toLowerCase()
+                    });
+                    usedTrackIds.add(trackData.path);
+                }
+            }
+        });
+
+        // Add any new/orphaned tracks that were not in the saved structure (e.g. added files)
+        availableTracks.forEach(t => {
+            if (!usedTrackIds.has(t.path)) {
+                newItems.push({
+                    type: 'track',
+                    id: t.path,
+                    data: t,
+                    groupId: null, // Root
+                    searchString: (t.title + ' ' + (t.artist || '')).toLowerCase()
+                });
+            }
+        });
+
+        this.items = newItems;
     }
 };

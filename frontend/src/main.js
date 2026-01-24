@@ -222,6 +222,19 @@ function handleDeleteTrack(fp) {
     }
 }
 
+// Helper to save structure
+function savePlaylistState() {
+    const structure = PlaylistManager.exportStructure();
+    // We save this under a key specific to the current folder to avoid mixing up playlists?
+    // For V1, we just save one global structure. If user switches folders, structure might mismatch.
+    // Ideally: 'playlistStructure_' + currentFolderPath (hash).
+    // For simplicity now: Just 'playlistStructure'.
+    // Better: If we switch folders, we wipe the structure anyway in V1 logic usually?
+    // Let's stick to global 'playlistStructure' but keep in mind paths must match.
+    // Actually, saving it part of settings is OK if paths are absolute.
+    windowApi.setSetting('playlistStructure', structure);
+}
+
 function initVisualizerEngine() {
     if (!audioExtras && audio) {
         audioExtras = new AudioExtras(audio);
@@ -644,6 +657,7 @@ function renderPlaylist() {
                 
                 row.onclick = () => {
                     PlaylistManager.toggleFolder(item.id);
+                    savePlaylistState(); // Save collapse state
                     renderPlaylist();
                 };
                 
@@ -661,6 +675,7 @@ function renderPlaylist() {
                     const trackId = e.dataTransfer.getData('text/plain');
                     if (trackId) {
                         PlaylistManager.moveItemToFolder(trackId, item.id);
+                        savePlaylistState(); // Save structure
                         renderPlaylist();
                         showNotification(tr('folderRefreshed')); // Use existing key or generic success
                     }
@@ -1021,10 +1036,11 @@ async function loadSettings() {
             const result = await windowApi.refreshMusicFolder(currentFolderPath);
             if (result && result.folderPath) {
                 basePlaylist = result.tracks || [];
-                PlaylistManager.loadTracks(basePlaylist); // Load into Manager
+                // Load with restored structure
+                PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
                 playlist = PlaylistManager.getAllTracks();
                 
-                sortPlaylist(sortMode); // Note: Sort currently only sorts basePlaylist, we might need to update Manager sort later
+                sortPlaylist(sortMode); 
                 updateUIForCurrentTrack();
             }
         } catch (e) {
@@ -1135,7 +1151,8 @@ function setupEventListeners() {
         const r = await windowApi.selectMusicFolder();
         if (r && r.folderPath) {
             basePlaylist = r.tracks || [];
-            PlaylistManager.loadTracks(basePlaylist); // Load into Manager
+            // Try to restore structure if paths match, otherwise it filters out invalid ones
+            PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
             playlist = PlaylistManager.getAllTracks(); // Keep flat list for audio engine
             
             currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
@@ -1143,6 +1160,9 @@ function setupEventListeners() {
             updateUIForCurrentTrack();
             currentFolderPath = r.folderPath;
             saveSetting('currentFolderPath', currentFolderPath);
+            // Also update structure setting potentially if it changed drastically?
+            savePlaylistState(); // Save the (potentially cleaned) structure for the new folder
+            
             libraryOverlay.classList.remove('visible');
         }
     });
@@ -1320,6 +1340,7 @@ function setupEventListeners() {
         } else {
             PlaylistManager.addFolder(name, selectedFolderColor);
         }
+        savePlaylistState(); // Save changes
         renderPlaylist();
         folderModal.classList.remove('visible');
     });
@@ -1335,6 +1356,7 @@ function setupEventListeners() {
         if (deleteMode === 'folder') {
             if (contextFolderId) {
                 PlaylistManager.deleteFolder(contextFolderId);
+                savePlaylistState(); // Save changes
                 renderPlaylist();
                 showNotification(tr('folderDeleted'));
             }

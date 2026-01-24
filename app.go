@@ -77,6 +77,7 @@ type Config struct {
 	SunsetEnabled           bool     `json:"sunsetEnabled"`
 	SakuraEnabled           bool     `json:"sakuraEnabled"`
 	NovaWave95Enabled       bool     `json:"novaWave95Enabled"`
+	PlaylistStructure       []interface{} `json:"playlistStructure"`
 }
 
 type Track struct {

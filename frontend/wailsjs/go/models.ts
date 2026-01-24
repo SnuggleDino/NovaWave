@@ -69,6 +69,7 @@ export namespace main {
 	    sunsetEnabled: boolean;
 	    sakuraEnabled: boolean;
 	    novaWave95Enabled: boolean;
+	    playlistStructure: any[];
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -122,6 +123,7 @@ export namespace main {
 	        this.sunsetEnabled = source["sunsetEnabled"];
 	        this.sakuraEnabled = source["sakuraEnabled"];
 	        this.novaWave95Enabled = source["novaWave95Enabled"];
+	        this.playlistStructure = source["playlistStructure"];
 	    }
 	}
 	export class DownloadOptions {
