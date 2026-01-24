@@ -985,27 +985,12 @@
 
                         <!-- Sub Navigation -->
                         <div class="sub-nav-container">
-                            <button class="sub-nav-btn active" data-sub-target="sub-dl-library">Library & Folders</button>
+                            <button class="sub-nav-btn active" data-sub-target="sub-dl-library">Library</button>
                             <button class="sub-nav-btn" data-sub-target="sub-dl-downloader">Downloader</button>
                         </div>
 
                         <!-- Sub Content: Library -->
                         <div id="sub-dl-library" class="sub-tab-content active">
-                            <div class="setting-item">
-                                <div class="setting-label">
-                                    <strong data-lang-key="defaultDownloadFolder"></strong>
-                                    <p data-lang-key="defaultDownloadFolderDescription"></p>
-                                </div>
-                                <div class="setting-control">
-                                    <div class="action-group">
-                                        <input type="text" id="default-download-folder" class="settings-input"
-                                            style="max-width: 180px;" readonly>
-                                        <button id="change-download-folder-btn" class="settings-button"
-                                            data-lang-key="changeButton"></button>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <strong data-lang-key="refreshFolder"></strong>
@@ -1033,6 +1018,21 @@
 
                         <!-- Sub Content: Downloader -->
                         <div id="sub-dl-downloader" class="sub-tab-content">
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="defaultDownloadFolder"></strong>
+                                    <p data-lang-key="defaultDownloadFolderDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="action-group">
+                                        <input type="text" id="default-download-folder" class="settings-input"
+                                            style="max-width: 180px;" readonly>
+                                        <button id="change-download-folder-btn" class="settings-button"
+                                            data-lang-key="changeButton"></button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <strong data-lang-key="audioQuality"></strong>
