@@ -10,9 +10,13 @@ export function DownloadFromYouTube(arg1:main.DownloadOptions):Promise<main.Simp
 
 export function GetAppMeta():Promise<main.AppMeta>;
 
+export function GetLyrics(arg1:string):Promise<string>;
+
 export function GetSettings():Promise<main.Config>;
 
 export function GetTracks(arg1:string):Promise<Array<main.Track>>;
+
+export function HasLyrics(arg1:string):Promise<boolean>;
 
 export function IsSpotifyUrl(arg1:string):Promise<boolean>;
 

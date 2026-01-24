@@ -76,14 +76,14 @@ type Config struct {
 	ActiveIntro             string        `json:"activeIntro"`
 	SunsetEnabled           bool          `json:"sunsetEnabled"`
 	SakuraEnabled           bool          `json:"sakuraEnabled"`
-		NovaWave95Enabled       bool     `json:"novaWave95Enabled"`
-		PlaylistStructure       []interface{} `json:"playlistStructure"`
-		// --- 5 BiquadFilterNode ---
-		EqEnabled               bool      `json:"eqEnabled"`
-		EqValues                []float64 `json:"eqValues"`
-	}
-	
-	type Track struct {
+	NovaWave95Enabled       bool          `json:"novaWave95Enabled"`
+	PlaylistStructure       []interface{} `json:"playlistStructure"`
+	// --- 5 BiquadFilterNode ---
+	EqEnabled bool      `json:"eqEnabled"`
+	EqValues  []float64 `json:"eqValues"`
+}
+
+type Track struct {
 	Path     string  `json:"path"`
 	Title    string  `json:"title"`
 	Artist   string  `json:"artist"`
@@ -590,6 +590,28 @@ func (a *App) UpdateMetadata(pathStr string, newTitle string, newArtist string) 
 
 func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
 	return a.UpdateMetadata(pathStr, newTitle, "")
+}
+
+// --- Lyrics Function ---
+func (a *App) GetLyrics(pathStr string) string {
+	ext := filepath.Ext(pathStr)
+	lrcPath := strings.TrimSuffix(pathStr, ext) + ".lrc"
+	if _, err := os.Stat(lrcPath); err == nil {
+		content, err := os.ReadFile(lrcPath)
+		if err == nil {
+			return string(content)
+		}
+	}
+	return ""
+}
+
+func (a *App) HasLyrics(pathStr string) bool {
+	ext := filepath.Ext(pathStr)
+	lrcPath := strings.TrimSuffix(pathStr, ext) + ".lrc"
+	if _, err := os.Stat(lrcPath); err == nil {
+		return true
+	}
+	return false
 }
 
 func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {

@@ -18,12 +18,20 @@ export function GetAppMeta() {
   return window['go']['main']['App']['GetAppMeta']();
 }
 
+export function GetLyrics(arg1) {
+  return window['go']['main']['App']['GetLyrics'](arg1);
+}
+
 export function GetSettings() {
   return window['go']['main']['App']['GetSettings']();
 }
 
 export function GetTracks(arg1) {
   return window['go']['main']['App']['GetTracks'](arg1);
+}
+
+export function HasLyrics(arg1) {
+  return window['go']['main']['App']['HasLyrics'](arg1);
 }
 
 export function IsSpotifyUrl(arg1) {

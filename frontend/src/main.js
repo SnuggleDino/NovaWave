@@ -16,12 +16,15 @@ import { AppShutdown } from './app_shutdown/shutdown.js';
 import { AppSettings } from './app_settings/app_settings.js';
 import { UpdateManager } from './app_updates/update_manager.js';
 import { PlaylistManager } from './playlist/playlist_manager.js';
+import { LyricsManager } from './lyrics/lyrics_manager.js';
 
 // Wails API Mapping
 const windowApi = {
     getSettings: App.GetSettings,
     getAppMeta: App.GetAppMeta,
     setSetting: App.SetSetting,
+    getLyrics: App.GetLyrics,
+    hasLyrics: App.HasLyrics,
     selectFolder: App.SelectFolder,
     selectMusicFolder: App.SelectMusicFolder,
     refreshMusicFolder: App.RefreshMusicFolder,
@@ -579,11 +582,14 @@ function updateUIForCurrentTrack() {
         updateEmoji(emojiMode, customEmoji);
         updateActiveTrackInPlaylist();
         updateTrackTitleScroll();
+        LyricsManager.checkAvailability(null); // Hide lyrics btn
         return;
     }
     const track = playlist[currentIndex];
     if (trackTitleEl) trackTitleEl.textContent = track.title;
     if (trackArtistEl) trackArtistEl.textContent = track.artist || tr('unknownArtist');
+
+    LyricsManager.checkAvailability(track.path); // Check lyrics
 
     updateEmoji(emojiMode, customEmoji);
     updateActiveTrackInPlaylist();
@@ -1130,6 +1136,13 @@ function setupEventListeners() {
     bind(nextBtn, 'click', playNext); bind(prevBtn, 'click', playPrev);
     bind(shuffleBtn, 'click', () => { shuffleOn = !shuffleOn; shuffleBtn.classList.toggle('mode-btn--active', shuffleOn); saveSetting('shuffle', shuffleOn); });
     bind(loopBtn, 'click', () => { loopMode = (loopMode === 'off' ? 'all' : (loopMode === 'all' ? 'one' : 'off')); loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); updateLoopIcon(); saveSetting('loop', loopMode); });
+    bind($('#lyrics-btn'), 'click', () => {
+        if (currentTrackPath) {
+            LyricsManager.fetchAndShow(currentTrackPath);
+        } else {
+            showNotification('Kein Song ausgewählt.');
+        }
+    });
     bind(progressBar, 'click', (e) => { if (!isNaN(audio.duration)) { const r = progressBar.getBoundingClientRect(); audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; } });
     bind(volumeSlider, 'input', (e) => { audio.volume = parseFloat(e.target.value); });
     bind(openLibraryBtn, 'click', () => { libraryOverlay.classList.add('visible'); });
@@ -1654,6 +1667,7 @@ document.addEventListener('DOMContentLoaded', () => {
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
 
     loadAppMeta();
+    LyricsManager.init(); // Init Lyrics
 
     const userHelpOverlay = document.getElementById('user-help-overlay');
     const userHelpBtn = document.getElementById('user-help-btn');
