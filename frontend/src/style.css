@@ -2230,6 +2230,52 @@ input[type=range].volume-slider::-moz-range-thumb {
     gap: 10px;
 }
 
+/* === SUB NAVIGATION STYLES === */
+.sub-nav-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sub-nav-btn {
+    background: transparent;
+    border: 1px solid var(--border-soft);
+    color: var(--text-muted);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sub-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+}
+
+.sub-nav-btn.active {
+    background: var(--accent);
+    color: #000; /* Contrast for light accent */
+    border-color: var(--accent);
+    font-weight: 600;
+}
+
+.sub-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.sub-tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .close-modal-btn,
 #settings-close-btn {
     background: transparent;

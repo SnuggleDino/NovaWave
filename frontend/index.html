@@ -724,181 +724,193 @@
                     <div id="tab-appearance" class="settings-tab-content active">
                         <h4 class="settings-section-title"><span data-lang-key="sectionAppearance"></span></h4>
 
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="theme"></strong>
-                                <p data-lang-key="themeDescription"></p>
-                            </div>
-                            <div class="setting-control">
-                                <select id="theme-select" class="settings-select">
-                                    <!-- Populated by ThemeListener -->
-                                </select>
-                            </div>
+                        <!-- Sub Navigation -->
+                        <div class="sub-nav-container">
+                            <button class="sub-nav-btn active" data-sub-target="sub-app-interface">Interface</button>
+                            <button class="sub-nav-btn" data-sub-target="sub-app-visualizer">Visualizer</button>
                         </div>
 
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="useCustomColorOption"></strong>
-                                <p data-lang-key="useCustomColorOptionDesc"></p>
-                            </div>
-                            <div class="setting-control">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="toggle-use-custom-color">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="setting-item" id="accent-color-container">
-                            <div class="setting-label">
-                                <strong data-lang-key="customColor"></strong>
-                                <p data-lang-key="customColorDesc"></p>
-                            </div>
-                            <div class="setting-control">
-                                <input type="color" id="accent-color-picker" class="settings-color-picker">
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="gradientTitle"></strong>
-                                <p data-lang-key="gradientTitleDesc"></p>
-                            </div>
-                            <div class="setting-control">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="toggle-gradient-title">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="backgroundAnimation"></strong>
-                                <p data-lang-key="backgroundAnimationDescription"></p>
-                            </div>
-                            <div class="setting-control">
-                                <select id="animation-select" class="settings-select">
-                                    <!-- Populated by BackgroundAnimListener -->
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="cinemaMode">Cinema Mode</strong>
-                                <p data-lang-key="cinemaModeDesc">Dimmt das Interface f&#252;r puren Musikgenuss.</p>
-                            </div>
-                            <div class="setting-control">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="toggle-cinema-mode">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="playlistPosition">Playlist Position</strong>
-                                <p data-lang-key="playlistPositionDesc">Choose position.</p>
-                            </div>
-                            <div class="setting-control">
-                                <select id="playlist-position-select" class="settings-select">
-                                    <option value="right" data-lang-key="posRight">Right</option>
-                                    <option value="left" data-lang-key="posLeft">Left</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="visualizer"></strong>
-                                <p data-lang-key="visualizerDescription"></p>
-                            </div>
-                            <div class="setting-control">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="toggle-visualizer">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="visualizerStyle"></strong>
-                                <p data-lang-key="visualizerStyleDescription"></p>
-                            </div>
-                            <div class="setting-control">
-                                <select id="visualizer-style-select" class="settings-select">
-                                    <option value="bars" data-lang-key="visBars"></option>
-                                    <option value="waveform" data-lang-key="visWaveform"></option>
-                                    <option value="orbit" data-lang-key="visOrbit"></option>
-                                    <option value="glitch" data-lang-key="visGlitch"></option>
-                                    <option value="zen" data-lang-key="visZen"></option>
-                                    <option value="retro" data-lang-key="visRetro"></option>
-                                    <option value="sakura_bloom">Sakura Bloom</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="visualizerBars"></strong>
-                                <p data-lang-key="visualizerBarsDesc"></p>
-                            </div>
-                            <div class="setting-control">
-                                <div class="action-group">
-                                    <select id="visualizer-bars-select" class="settings-select" style="min-width: 100px;">
-                                        <option value="8">8</option>
-                                        <option value="16">16</option>
-                                        <option value="32">32</option>
-                                        <option value="64">64</option>
-                                        <option value="128">128</option>
+                        <!-- Sub Content: Interface -->
+                        <div id="sub-app-interface" class="sub-tab-content active">
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="theme"></strong>
+                                    <p data-lang-key="themeDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="theme-select" class="settings-select">
+                                        <!-- Populated by ThemeListener -->
                                     </select>
-                                    <button id="visualizer-bars-reset-btn" class="settings-button" title="Reset">&#8634;</button>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="useCustomColorOption"></strong>
+                                    <p data-lang-key="useCustomColorOptionDesc"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-use-custom-color">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-item" id="accent-color-container">
+                                <div class="setting-label">
+                                    <strong data-lang-key="customColor"></strong>
+                                    <p data-lang-key="customColorDesc"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="color" id="accent-color-picker" class="settings-color-picker">
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="gradientTitle"></strong>
+                                    <p data-lang-key="gradientTitleDesc"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-gradient-title">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="backgroundAnimation"></strong>
+                                    <p data-lang-key="backgroundAnimationDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="animation-select" class="settings-select">
+                                        <!-- Populated by BackgroundAnimListener -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="cinemaMode">Cinema Mode</strong>
+                                    <p data-lang-key="cinemaModeDesc">Dimmt das Interface f&#252;r puren Musikgenuss.</p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-cinema-mode">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="playlistPosition">Playlist Position</strong>
+                                    <p data-lang-key="playlistPositionDesc">Choose position.</p>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="playlist-position-select" class="settings-select">
+                                        <option value="right" data-lang-key="posRight">Right</option>
+                                        <option value="left" data-lang-key="posLeft">Left</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="coverEmoji"></strong>
+                                    <p data-lang-key="coverEmojiDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="emoji-select" class="settings-select">
+                                        <option value="note" data-lang-key="emojiNote"></option>
+                                        <option value="dino" data-lang-key="emojiDino"></option>
+                                        <option value="loving_dinos" data-lang-key="emojiLovingDinos">Loving Dinos</option>
+                                        <option value="gift" data-lang-key="emojiGift"></option>
+                                        <option value="custom" data-lang-key="emojiCustom"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-item" id="custom-emoji-container">
+                                <div class="setting-label">
+                                    <strong data-lang-key="customEmoji"></strong>
+                                    <p data-lang-key="customEmojiDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="text" id="custom-emoji-input" class="settings-input"
+                                        placeholder="&#127925;">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="visSensitivity"></strong>
-                                <p data-lang-key="visSensitivityDesc"></p>
-                            </div>
-                            <div class="setting-control">
-                                <div class="action-group">
-                                    <input type="range" id="visualizer-sensitivity" class="settings-range" min="0.5"
-                                        max="4" step="0.1" value="1.5">
-                                    <button id="visualizer-sensitivity-reset-btn" class="settings-button"
-                                        title="Reset Sensitivity">&#8634;</button>
+                        <!-- Sub Content: Visualizer -->
+                        <div id="sub-app-visualizer" class="sub-tab-content">
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="visualizer"></strong>
+                                    <p data-lang-key="visualizerDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-visualizer">
+                                        <span class="slider"></span>
+                                    </label>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="coverEmoji"></strong>
-                                <p data-lang-key="coverEmojiDescription"></p>
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="visualizerStyle"></strong>
+                                    <p data-lang-key="visualizerStyleDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="visualizer-style-select" class="settings-select">
+                                        <option value="bars" data-lang-key="visBars"></option>
+                                        <option value="waveform" data-lang-key="visWaveform"></option>
+                                        <option value="orbit" data-lang-key="visOrbit"></option>
+                                        <option value="glitch" data-lang-key="visGlitch"></option>
+                                        <option value="zen" data-lang-key="visZen"></option>
+                                        <option value="retro" data-lang-key="visRetro"></option>
+                                        <option value="sakura_bloom">Sakura Bloom</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="setting-control">
-                                <select id="emoji-select" class="settings-select">
-                                    <option value="note" data-lang-key="emojiNote"></option>
-                                    <option value="dino" data-lang-key="emojiDino"></option>
-                                    <option value="loving_dinos" data-lang-key="emojiLovingDinos">Loving Dinos</option>
-                                    <option value="gift" data-lang-key="emojiGift"></option>
-                                    <option value="custom" data-lang-key="emojiCustom"></option>
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="setting-item" id="custom-emoji-container">
-                            <div class="setting-label">
-                                <strong data-lang-key="customEmoji"></strong>
-                                <p data-lang-key="customEmojiDescription"></p>
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="visualizerBars"></strong>
+                                    <p data-lang-key="visualizerBarsDesc"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="action-group">
+                                        <select id="visualizer-bars-select" class="settings-select" style="min-width: 100px;">
+                                            <option value="8">8</option>
+                                            <option value="16">16</option>
+                                            <option value="32">32</option>
+                                            <option value="64">64</option>
+                                            <option value="128">128</option>
+                                        </select>
+                                        <button id="visualizer-bars-reset-btn" class="settings-button" title="Reset">&#8634;</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="setting-control">
-                                <input type="text" id="custom-emoji-input" class="settings-input"
-                                    placeholder="&#127925;">
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="visSensitivity"></strong>
+                                    <p data-lang-key="visSensitivityDesc"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="action-group">
+                                        <input type="range" id="visualizer-sensitivity" class="settings-range" min="0.5"
+                                            max="4" step="0.1" value="1.5">
+                                        <button id="visualizer-sensitivity-reset-btn" class="settings-button"
+                                            title="Reset Sensitivity">&#8634;</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -971,56 +983,68 @@
                     <div id="tab-downloads" class="settings-tab-content">
                         <h4 class="settings-section-title"><span data-lang-key="sectionDownloads"></span></h4>
 
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="defaultDownloadFolder"></strong>
-                                <p data-lang-key="defaultDownloadFolderDescription"></p>
+                        <!-- Sub Navigation -->
+                        <div class="sub-nav-container">
+                            <button class="sub-nav-btn active" data-sub-target="sub-dl-library">Library & Folders</button>
+                            <button class="sub-nav-btn" data-sub-target="sub-dl-downloader">Downloader</button>
+                        </div>
+
+                        <!-- Sub Content: Library -->
+                        <div id="sub-dl-library" class="sub-tab-content active">
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="defaultDownloadFolder"></strong>
+                                    <p data-lang-key="defaultDownloadFolderDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <div class="action-group">
+                                        <input type="text" id="default-download-folder" class="settings-input"
+                                            style="max-width: 180px;" readonly>
+                                        <button id="change-download-folder-btn" class="settings-button"
+                                            data-lang-key="changeButton"></button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="setting-control">
-                                <div class="action-group">
-                                    <input type="text" id="default-download-folder" class="settings-input"
-                                        style="max-width: 180px;" readonly>
-                                    <button id="change-download-folder-btn" class="settings-button"
-                                        data-lang-key="changeButton"></button>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="refreshFolder"></strong>
+                                    <p data-lang-key="refreshFolderDesc"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <button id="refresh-folder-btn" class="settings-button"
+                                        data-lang-key="refreshFolder"></button>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="autoLoadLastFolder"></strong>
+                                    <p data-lang-key="autoLoadLastFolderDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-auto-load-last-folder">
+                                        <span class="slider"></span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="audioQuality"></strong>
-                                <p data-lang-key="audioQualityDescription"></p>
-                            </div>
-                            <div class="setting-control">
-                                <select id="audio-quality-select" class="settings-select">
-                                    <option value="best" data-lang-key="qualityBest"></option>
-                                    <option value="high" data-lang-key="qualityHigh"></option>
-                                    <option value="standard" data-lang-key="qualityStandard"></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="refreshFolder"></strong>
-                                <p data-lang-key="refreshFolderDesc"></p>
-                            </div>
-                            <div class="setting-control">
-                                <button id="refresh-folder-btn" class="settings-button"
-                                    data-lang-key="refreshFolder"></button>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="autoLoadLastFolder"></strong>
-                                <p data-lang-key="autoLoadLastFolderDescription"></p>
-                            </div>
-                            <div class="setting-control">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="toggle-auto-load-last-folder">
-                                    <span class="slider"></span>
-                                </label>
+                        <!-- Sub Content: Downloader -->
+                        <div id="sub-dl-downloader" class="sub-tab-content">
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="audioQuality"></strong>
+                                    <p data-lang-key="audioQualityDescription"></p>
+                                </div>
+                                <div class="setting-control">
+                                    <select id="audio-quality-select" class="settings-select">
+                                        <option value="best" data-lang-key="qualityBest"></option>
+                                        <option value="high" data-lang-key="qualityHigh"></option>
+                                        <option value="standard" data-lang-key="qualityStandard"></option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1215,81 +1239,93 @@
                     <div id="tab-system" class="settings-tab-content">
                         <h4 class="settings-section-title"><span data-lang-key="sectionSystem">System & Perf.</span></h4>
 
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="perfModeLabel">Performance Mode</strong>
-                                <p data-lang-key="perfModeDesc">Deaktiviert Visualizer und Animationen f\u00FCr maximale
-                                    CPU-Schonung.</p>
+                        <!-- Sub Navigation -->
+                        <div class="sub-nav-container">
+                            <button class="sub-nav-btn active" data-sub-target="sub-sys-perf">Performance</button>
+                            <button class="sub-nav-btn" data-sub-target="sub-sys-data">Data & Power</button>
+                        </div>
+
+                        <!-- Sub Content: Performance -->
+                        <div id="sub-sys-perf" class="sub-tab-content active">
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="perfModeLabel">Performance Mode</strong>
+                                    <p data-lang-key="perfModeDesc">Deaktiviert Visualizer und Animationen f\u00FCr maximale
+                                        CPU-Schonung.</p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-performance-mode">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
                             </div>
-                            <div class="setting-control">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="toggle-performance-mode">
-                                    <span class="slider"></span>
-                                </label>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="fpsLimitLabel">FPS Limit</strong>
+                                    <p data-lang-key="fpsLimitDesc">Begrenze die Bildrate f\u00FCr Visualizer und
+                                        Animationen (15 - 120).</p>
+                                </div>
+                                <div class="setting-control">
+                                    <input type="number" id="fps-input" class="settings-input"
+                                        style="width: 80px; text-align: center;" min="15" max="120" placeholder="60">
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="showStatsLabel">System-Stats anzeigen</strong>
+                                    <p data-lang-key="showStatsDesc">Zeigt FPS und Performance-Daten im Hauptfenster an.</p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-show-stats">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="fpsLimitLabel">FPS Limit</strong>
-                                <p data-lang-key="fpsLimitDesc">Begrenze die Bildrate f\u00FCr Visualizer und
-                                    Animationen (15 - 120).</p>
-                            </div>
-                            <div class="setting-control">
-                                <input type="number" id="fps-input" class="settings-input"
-                                    style="width: 80px; text-align: center;" min="15" max="120" placeholder="60">
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="showStatsLabel">System-Stats anzeigen</strong>
-                                <p data-lang-key="showStatsDesc">Zeigt FPS und Performance-Daten im Hauptfenster an.</p>
-                            </div>
-                            <div class="setting-control">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="toggle-show-stats">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <strong data-lang-key="exportPlaylist">Playlist Export</strong>
-                                <p data-lang-key="exportPlaylistDesc">Speichere die aktuelle Playlist als Datei.</p>
-                            </div>
-                            <div class="setting-control">
-                                <button id="btn-export-playlist" class="settings-button"
-                                    data-lang-key="saveBtn">Speichern</button>
-                            </div>
-                        </div>
-
-                        <h4 class="settings-section-title" style="color: #ef4444; margin-top: 30px;"><span
-                                data-lang-key="sectionDangerZone">Danger Zone</span></h4>
-
-                        <div class="setting-item" style="display: block;">
-                            <div class="info-box"
-                                style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                                <strong style="color: #ef4444; display: block; margin-bottom: 5px;">⚠️ <span
-                                        data-lang-key="warningTitle">Warning</span></strong>
-                                <p style="font-size: 0.85rem; color: var(--text-muted);"><span
-                                        data-lang-key="resetWarning"></span></p>
+                        <!-- Sub Content: Data & Power -->
+                        <div id="sub-sys-data" class="sub-tab-content">
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="exportPlaylist">Playlist Export</strong>
+                                    <p data-lang-key="exportPlaylistDesc">Speichere die aktuelle Playlist als Datei.</p>
+                                </div>
+                                <div class="setting-control">
+                                    <button id="btn-export-playlist" class="settings-button"
+                                        data-lang-key="saveBtn">Speichern</button>
+                                </div>
                             </div>
 
-                            <div style="display: flex; gap: 10px;">
-                                <button id="btn-restart-app" class="settings-button primary-btn"
-                                    style="background: #3b82f6; color: white; flex: 1; padding: 12px;">
-                                    <span data-lang-key="restartButton">RESTART APP</span>
-                                </button>
-                                <button id="btn-reset-app" class="settings-button primary-btn"
-                                    style="background: #ef4444; color: white; flex: 1; padding: 12px;">
-                                    <span data-lang-key="resetButton">RESET APP</span>
-                                </button>
-                                <button id="btn-shutdown-app" class="settings-button primary-btn"
-                                    style="background: #f87171; color: white; flex: 1; padding: 12px;">
-                                    <span data-lang-key="shutdownButton">SHUTDOWN</span>
-                                </button>
+                            <h4 class="settings-section-title" style="color: #ef4444; margin-top: 30px;"><span
+                                    data-lang-key="sectionDangerZone">Danger Zone</span></h4>
+
+                            <div class="setting-item" style="display: block;">
+                                <div class="info-box"
+                                    style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                                    <strong style="color: #ef4444; display: block; margin-bottom: 5px;">⚠️ <span
+                                            data-lang-key="warningTitle">Warning</span></strong>
+                                    <p style="font-size: 0.85rem; color: var(--text-muted);"><span
+                                            data-lang-key="resetWarning"></span></p>
+                                </div>
+
+                                <div style="display: flex; gap: 10px;">
+                                    <button id="btn-restart-app" class="settings-button primary-btn"
+                                        style="background: #3b82f6; color: white; flex: 1; padding: 12px;">
+                                        <span data-lang-key="restartButton">RESTART APP</span>
+                                    </button>
+                                    <button id="btn-reset-app" class="settings-button primary-btn"
+                                        style="background: #ef4444; color: white; flex: 1; padding: 12px;">
+                                        <span data-lang-key="resetButton">RESET APP</span>
+                                    </button>
+                                    <button id="btn-shutdown-app" class="settings-button primary-btn"
+                                        style="background: #f87171; color: white; flex: 1; padding: 12px;">
+                                        <span data-lang-key="shutdownButton">SHUTDOWN</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

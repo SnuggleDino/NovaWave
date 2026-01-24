@@ -67,6 +67,25 @@ export const AppSettings = {
             settingsCloseBtn.addEventListener('click', () => settingsOverlay.classList.remove('visible'));
         }
 
+        // --- SUB NAVIGATION ---
+        const subNavBtns = document.querySelectorAll('.sub-nav-btn');
+        subNavBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetId = btn.dataset.subTarget;
+                const parentTab = btn.closest('.settings-tab-content');
+                if (!parentTab) return;
+
+                // Buttons logic
+                parentTab.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Content logic
+                parentTab.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) targetContent.classList.add('active');
+            });
+        });
+
         // --- APPEARANCE TAB ---
 
         // Theme Select
