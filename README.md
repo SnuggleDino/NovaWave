@@ -106,8 +106,8 @@ We're just getting started. Here is the master plan:
 | ✨ **Done** | **YouTube Music** | Integrated support for music.youtube.com links. |
 | ✨ **Done** | **i18n** | Full multi-language support (German/English). |
 | 🔜 **Soon** | **Tag Editor** | Fix those messy tags and add cover art directly in the player. |
-| 🔮 **Future** | **5-Band Equalizer** | More control than just Bass & Treble. Fine-tune your sound. |
-| 🔮 **Future** | **More Themes** | You can never have enough style. More colors, more animations. |
+| ✨ **Done** | **5-Band Equalizer** | More control than just Bass & Treble. Fine-tune your sound. |
+| ✨ **Done** | **More Themes** | You can never have enough style. More colors, more animations. |
 
 ---
 
