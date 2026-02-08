@@ -1,23 +1,10 @@
-/**
- * Playlist Manager
- * Handles the logic for Virtual Folders and mixed content (Tracks/Folders).
- * Uses a Group-ID system: Tracks belong to a folder via 'groupId'.
- */
-
 export const PlaylistManager = {
     items: [],
-    // Mixed array of Tracks and Folders
-    // Track Structure: { type: 'track', id: path, data: trackObj, groupId: string|null, searchString: string }
-    // Folder Structure: { type: 'folder', id: string, name: string, collapsed: bool }
 
     init() {
         this.items = [];
     },
 
-    /**
-     * Loads a raw list of tracks. Resets current structure.
-     * All tracks start in the Root (groupId: null).
-     */
     loadTracks(tracks) {
         this.items = tracks.map(t => ({
             type: 'track',
@@ -28,9 +15,6 @@ export const PlaylistManager = {
         }));
     },
 
-    /**
-     * Helper to ensure unique folder names.
-     */
     getUniqueName(name, excludeId = null) {
         let uniqueName = name;
         let counter = 1;
@@ -44,9 +28,6 @@ export const PlaylistManager = {
         return uniqueName;
     },
 
-    /**
-     * Adds a new virtual folder.
-     */
     addFolder(name, color = null) {
         const uniqueName = this.getUniqueName(name);
 
@@ -62,26 +43,13 @@ export const PlaylistManager = {
         return folder;
     },
 
-    /**
-     * Delete a folder.
-     * Tracks inside the folder are moved back to Root (groupId: null).
-     */
     deleteFolder(folderId) {
-        // 1. Reset Group ID for children
         this.items.forEach(item => {
             if (item.type === 'track' && item.groupId === folderId) {
                 item.groupId = null;
             }
         });
-
-        // 2. Remove the folder item itself
-        const initialLength = this.items.length;
         this.items = this.items.filter(i => i.id !== folderId);
-
-        // Safety check (optional debug)
-        if (this.items.length !== initialLength - 1) {
-            console.warn("PlaylistManager: Delete folder count mismatch", initialLength, this.items.length);
-        }
     },
 
     renameFolder(folderId, newName, newColor = null) {
@@ -105,51 +73,38 @@ export const PlaylistManager = {
             return 0;
         };
 
-        const folders = this.items.filter(i => i.type === 'folder');
         const tracks = this.items.filter(i => i.type === 'track');
-
         tracks.sort(compare);
-
         this.currentSortMode = mode;
     },
 
-    /**
-     * Generates the flat list for the Virtual Scroll View.
-     * Structure:
-     * 1. Folders
-     * 2. Root Tracks
-     */
-    getRenderList(filterText = '') {
+    getRenderList(filterText = '', favoritesSet = null) {
         let activeFilter = filterText.trim().toLowerCase();
 
-        // 1. Filter Logic
-        let filteredItems = this.items;
+        if (favoritesSet) {
+            return this.items.filter(i => i.type === 'track' && favoritesSet.has(i.id));
+        }
+
         if (activeFilter.length > 0) {
             return this.items.filter(i => i.type === 'track' && i.searchString.includes(activeFilter));
         }
 
-        // 2. Grouping Logic
         const folders = this.items.filter(i => i.type === 'folder');
         const rootTracks = this.items.filter(i => i.type === 'track' && !i.groupId);
 
-        // Sort Root Tracks
         if (this.currentSortMode) this._sortList(rootTracks, this.currentSortMode);
 
         const renderList = [];
 
-        // A) Add Folders and their children
         folders.forEach(folder => {
             renderList.push(folder);
             if (!folder.collapsed) {
-                // Find children
                 const children = this.items.filter(i => i.type === 'track' && i.groupId === folder.id);
-                // Sort children
                 if (this.currentSortMode) this._sortList(children, this.currentSortMode);
                 renderList.push(...children);
             }
         });
 
-        // B) Add Root Tracks
         renderList.push(...rootTracks);
 
         return renderList;
@@ -164,9 +119,6 @@ export const PlaylistManager = {
         });
     },
 
-    /**
-     * Moves a track into a folder.
-     */
     moveItemToFolder(trackId, folderId) {
         const item = this.items.find(i => i.type === 'track' && i.id === trackId);
         const folder = this.items.find(i => i.type === 'folder' && i.id === folderId);
@@ -183,16 +135,12 @@ export const PlaylistManager = {
         this.items.splice(toIndex, 0, item);
     },
 
-    /**
-     * Get all tracks (for player navigation: next/prev ignoring folders)
-     */
     getAllTracks() {
         const allTracks = this.items.filter(i => i.type === 'track');
         this._sortList(allTracks, this.currentSortMode || 'name');
         return allTracks.map(i => i.data);
     },
 
-    // Debug helper
     getFolderCount() {
         return this.items.filter(i => i.type === 'folder').length;
     },
@@ -210,7 +158,7 @@ export const PlaylistManager = {
             } else {
                 return {
                     type: 'track',
-                    id: item.id, // path
+                    id: item.id,
                     groupId: item.groupId
                 };
             }
@@ -257,7 +205,7 @@ export const PlaylistManager = {
                     type: 'track',
                     id: t.path,
                     data: t,
-                    groupId: null, // Root
+                    groupId: null,
                     searchString: (t.title + ' ' + (t.artist || '')).toLowerCase()
                 });
             }

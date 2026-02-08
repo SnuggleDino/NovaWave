@@ -16,6 +16,7 @@ import { AppShutdown } from './app_shutdown/shutdown.js';
 import { AppSettings } from './app_settings/app_settings.js';
 import { UpdateManager } from './app_updates/update_manager.js';
 import { PlaylistManager } from './playlist/playlist_manager.js';
+import { DownloadManager } from './downloader/download_manager.js';
 import { LyricsManager } from './lyrics/lyrics_manager.js';
 import { AppPerformance } from './app_performance.js';
 
@@ -84,6 +85,7 @@ let miniPlayer;
 let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, editArtistInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption;
 // Spotify & Tabs
 let spotifyUrlInput, tabYtBtn, tabSpotifyBtn, viewYt, viewSpotify;
+let musicUrlInput, musicNameInput, tabMusicBtn, viewMusic;
 let favorites = [];
 let favoritesSet = new Set();
 let showingFavoritesOnly = false;
@@ -97,6 +99,7 @@ let renderPlaylistRequestId = null;
 
 // Performance
 let lastFrameTime = performance.now();
+let downloadManager;
 let frameCount = 0;
 let appFrameCount = 0;
 let fps = 0;
@@ -121,6 +124,7 @@ let folderModalTitle = null;
 let contextMenuFolder = null;
 let contextFolderId = null;
 let deleteMode = 'track';
+let isQueueModalOpen = false;
 
 function initUIHelpers() {
     folderModal = $('#folder-modal-overlay');
@@ -483,7 +487,10 @@ function renderPlaylist() {
     playlistEl.innerHTML = '';
 
     // Get items to render from Manager
-    const renderItems = PlaylistManager.getRenderList(searchInput ? searchInput.value : '');
+    const renderItems = PlaylistManager.getRenderList(
+        searchInput ? searchInput.value : '',
+        showingFavoritesOnly ? favoritesSet : null
+    );
 
     if (renderItems.length === 0) {
         const msg = showingFavoritesOnly ? tr('noFavoritesFound') : tr('emptyPlaylist');
@@ -493,7 +500,15 @@ function renderPlaylist() {
     }
 
     // Update flat playlist for audio navigation
-    playlist = PlaylistManager.getAllTracks();
+    if (showingFavoritesOnly || (searchInput && searchInput.value)) {
+        playlist = renderItems.filter(i => i.type === 'track').map(i => i.data);
+    } else {
+        playlist = PlaylistManager.getAllTracks();
+    }
+
+    if (currentTrackPath) {
+        currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
+    }
 
     if (playlistInfoBar) playlistInfoBar.textContent = `${playlist.length} ${playlist.length === 1 ? tr('track') : tr('tracks')}`;
 
@@ -732,51 +747,240 @@ function updateEmoji(emojiType, customEmoji) {
     }
 }
 
+// --- UI Utility Functions for Modern Downloader ---
+function updateQueueStatsUI(stats) {
+    const pEl = document.getElementById('qs-pending');
+    const rEl = document.getElementById('qs-processing');
+    const sEl = document.getElementById('qs-success');
+
+    if (pEl) pEl.textContent = stats.pending;
+    if (rEl) rEl.textContent = stats.processing;
+    if (sEl) sEl.textContent = stats.success;
+
+    if (stats.processing > 0) {
+        setDownloaderState('processing', tr('statusProgress', stats.processing));
+    } else if (stats.pending > 0) {
+        setDownloaderState('idle', `${tr('queueTitle')}: ${stats.pending}`);
+    } else if (stats.success > 0 || stats.failed > 0) {
+        setDownloaderState('idle', tr('legendFinished'));
+    } else {
+        setDownloaderState('idle');
+    }
+}
+
+
+function setDownloaderState(state, message) {
+    const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('info-status-text');
+    const terminal = document.getElementById('terminal-view');
+    const btn = document.getElementById('download-btn');
+    const toggleTerminal = document.getElementById('toggle-terminal-btn');
+
+    if (!statusDot || !statusText || !terminal || !btn) return;
+
+    // Reset classes
+    statusDot.className = 'status-dot'; // Reset to base class
+    btn.classList.remove('loading');
+    btn.disabled = false;
+
+    if (state === 'idle') {
+        statusDot.classList.add('idle'); // Add idle/ready style
+        statusText.textContent = message || tr('statusReady');
+        terminal.classList.remove('visible');
+        terminal.innerHTML = '';
+        if (toggleTerminal) toggleTerminal.style.display = 'none';
+    } else if (state === 'processing') {
+        statusDot.classList.add('processing');
+        statusText.textContent = message || tr('statusStarting');
+        btn.classList.add('loading');
+        btn.disabled = true;
+        terminal.classList.remove('visible');
+        terminal.innerHTML = ''; // Clear previous logs
+        if (toggleTerminal) toggleTerminal.style.display = 'none';
+    } else if (state === 'success') {
+        statusDot.classList.add('success');
+        statusText.textContent = message || tr('statusSuccess');
+        terminal.classList.add('visible');
+        logToTerminal(tr('statusSuccess'), 'success');
+        if (toggleTerminal) toggleTerminal.style.display = 'flex';
+    } else if (state === 'error') {
+        statusDot.classList.add('error');
+        statusText.textContent = tr('statusError');
+        terminal.classList.add('visible');
+        logToTerminal(message, 'error');
+        if (toggleTerminal) toggleTerminal.style.display = 'flex';
+    } else if (state === 'info') {
+        statusDot.classList.add('info');
+        statusText.textContent = message;
+        terminal.classList.add('visible');
+        if (toggleTerminal) toggleTerminal.style.display = 'flex';
+    }
+}
+
+// --- Queue Modal Logic ---
+function setupQueueUI() {
+    const queueOverlay = document.getElementById('queue-overlay');
+    const closeBtn = document.getElementById('queue-close-btn');
+    const openBtn = document.getElementById('open-queue-btn');
+    const clearBtn = document.getElementById('clear-history-btn');
+
+    if (openBtn) openBtn.onclick = toggleQueuePanel;
+    if (closeBtn) closeBtn.onclick = closeQueuePanel;
+
+    if (clearBtn) {
+        clearBtn.onclick = () => {
+            if (downloadManager) {
+                downloadManager.history = [];
+                downloadManager._notifyStats(); // Update UI
+                renderQueueModal();
+            }
+        };
+    }
+
+    // Close on click outside
+    if (queueOverlay) {
+        queueOverlay.addEventListener('click', (e) => {
+            if (e.target === queueOverlay) closeQueueModal();
+        });
+    }
+}
+
+function toggleQueuePanel() {
+    const queuePanel = document.getElementById('queue-panel');
+    const downOverlay = document.getElementById('downloader-overlay');
+
+    if (queuePanel) {
+        if (queuePanel.style.display === 'none') {
+            queuePanel.style.display = 'flex';
+            isQueueModalOpen = true;
+            renderQueueModal();
+            // Ensure container allows side-by-side
+            if (downOverlay) downOverlay.classList.add('with-queue');
+            // Animate
+            queuePanel.classList.add('fade-in-right');
+        } else {
+            closeQueuePanel();
+        }
+    }
+}
+
+function closeQueuePanel() {
+    const queuePanel = document.getElementById('queue-panel');
+    const downOverlay = document.getElementById('downloader-overlay');
+
+    if (queuePanel) {
+        queuePanel.style.display = 'none';
+        isQueueModalOpen = false;
+        if (downOverlay) downOverlay.classList.remove('with-queue');
+    }
+}
+
+function renderQueueModal() {
+    const container = document.getElementById('queue-list-container');
+    if (!container || !downloadManager) return;
+
+    const { queue, history } = downloadManager.getAllItems();
+    const allItems = [...queue, ...history].sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+
+    if (allItems.length === 0) {
+        container.innerHTML = '<div class="empty-state" style="padding:20px; text-align:center; color:var(--text-muted);">No downloads in current session.</div>';
+        return;
+    }
+
+    container.innerHTML = '';
+
+    allItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'q-item';
+
+        let icon = '🎵';
+        if (item.type === 'youtube') icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>`;
+        else if (item.type === 'spotify') icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" /></svg>`;
+
+        let statusClass = item.status;
+        let pText = item.status;
+        if (item.status === 'processing') pText = tr('statusStarting');
+
+        div.innerHTML = `
+            <div class="q-item-icon">${icon}</div>
+            <div class="q-item-info">
+                <div class="q-item-title" title="${item.url}">${item.url}</div>
+                <div class="q-item-meta">
+                    <span class="q-status ${statusClass}">${pText}</span>
+                    <span>${new Date(item.addedAt).toLocaleTimeString()}</span>
+                </div>
+            </div>
+            ${item.status === 'error' ? `<div style="color:var(--clean-danger); font-size:12px;">${tr('statusError')}</div>` : ''}
+        `;
+        container.appendChild(div);
+    });
+
+    const summary = document.querySelector('.queue-summary');
+    if (summary) summary.textContent = `${tr('queueTotal')} ${allItems.length}`;
+}
+
+function logToTerminal(msg, type = 'info') {
+    const terminal = document.getElementById('terminal-view');
+    if (!terminal) return;
+
+    const div = document.createElement('div');
+    div.className = 'terminal-line';
+
+    if (type === 'error') div.classList.add('log-error');
+    else if (type === 'success') div.classList.add('log-success');
+
+    const prefix = document.createElement('span');
+    prefix.className = 'cmd-prefix';
+    prefix.textContent = '>';
+
+    div.appendChild(prefix);
+    div.appendChild(document.createTextNode(msg));
+    terminal.appendChild(div);
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
 async function handleDownload() {
     let url = '';
 
     if (activeDownloaderMode === 'spotify') {
         url = spotifyUrlInput.value.trim();
+    } else if (activeDownloaderMode === 'music') {
+        url = musicUrlInput.value.trim();
     } else {
         url = ytUrlInput.value.trim();
     }
 
-    if (!url) { downloadStatusEl.textContent = tr('statusUrlMissing'); return; }
+    const ytRegex = /^(https?:\/\/)?(www\.|music\.)?(youtube\.com|youtu\.be)\/.+$/;
+    const spotifyRegex = /^(https?:\/\/)?(open\.)?spotify\.com\/.+$/;
 
-    downloadBtn.disabled = true;
-    downloadBtn.style.opacity = '0.5';
-    downloadStatusEl.textContent = tr('statusStarting');
-
-    try {
-        let result;
-        if (activeDownloaderMode === 'spotify') {
-            downloadStatusEl.textContent = tr('statusLoadingMetadata');
-            result = await windowApi.downloadFromSpotify(url, qualitySelect.value);
-        } else {
-            result = await windowApi.downloadFromYouTube({ url, customName: ytNameInput.value.trim(), quality: qualitySelect.value });
-        }
-
-        if (result.success) {
-            downloadStatusEl.textContent = tr('statusSuccess');
-            ytUrlInput.value = '';
-            ytNameInput.value = '';
-            if (spotifyUrlInput) spotifyUrlInput.value = '';
-
-            if (currentFolderPath && settings.downloadFolder && currentFolderPath === settings.downloadFolder) {
-                const btn = document.getElementById('refresh-folder-btn');
-                if (btn) btn.click();
-            }
-        } else {
-            downloadStatusEl.textContent = `${tr('statusError')}: ${result.error}`;
-            if (downloadProgressFill) downloadProgressFill.style.width = '0%';
-        }
-    } catch (err) {
-        downloadStatusEl.textContent = `${tr('statusError')}: ${err.message}`;
-        if (downloadProgressFill) downloadProgressFill.style.width = '0%';
-    } finally {
-        downloadBtn.disabled = false;
-        downloadBtn.style.opacity = '1';
+    if (!url) {
+        setDownloaderState('idle', tr('statusUrlMissing'));
+        return;
     }
+
+    if ((activeDownloaderMode === 'youtube' || activeDownloaderMode === 'music') && !ytRegex.test(url)) {
+        setDownloaderState('error', tr('statusUrlInvalid'));
+        return;
+    }
+    if (activeDownloaderMode === 'spotify' && !spotifyRegex.test(url)) {
+        setDownloaderState('error', tr('statusUrlInvalid'));
+        return;
+    }
+
+    const type = (activeDownloaderMode === 'music') ? 'youtube' : activeDownloaderMode;
+    downloadManager.add(url, type);
+
+    if (activeDownloaderMode === 'youtube') {
+        ytUrlInput.value = '';
+        ytNameInput.value = '';
+    } else if (activeDownloaderMode === 'music') {
+        musicUrlInput.value = '';
+        musicNameInput.value = '';
+    } else {
+        spotifyUrlInput.value = '';
+    }
+
+    // UI Feedback is handled by DownloadManager callbacks
 }
 
 function setupAudioEvents() {
@@ -948,18 +1152,7 @@ function toggleFavorite(path) {
 }
 
 function filterPlaylist(q) {
-    let filtered = [...basePlaylist];
-    if (showingFavoritesOnly) {
-        filtered = filtered.filter(t => favoritesSet.has(t.path));
-    }
-    if (q) {
-        const lowerQ = q.toLowerCase();
-        filtered = filtered.filter(t => t.title.toLowerCase().includes(lowerQ) || (t.artist && t.artist.toLowerCase().includes(lowerQ)));
-    }
-    playlist = filtered;
-    if (currentTrackPath) {
-        currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
-    }
+    // Logic moved to renderPlaylist + PlaylistManager
     renderPlaylist();
 }
 
@@ -1029,6 +1222,7 @@ function setupEventListeners() {
     let st; bind(searchInput, 'input', (e) => { clearTimeout(st); st = setTimeout(() => { filterPlaylist(e.target.value); }, 250); });
 
     window.addEventListener('keydown', (e) => {
+        if (!e.key) return;
         const key = e.key.toLowerCase();
         pressedKeys.add(key);
         const isCtrl = pressedKeys.has('control');
@@ -1071,7 +1265,7 @@ function setupEventListeners() {
         }
     });
 
-    window.addEventListener('keyup', (e) => { pressedKeys.delete(e.key.toLowerCase()); });
+    window.addEventListener('keyup', (e) => { if (e.key) pressedKeys.delete(e.key.toLowerCase()); });
     window.addEventListener('blur', () => { pressedKeys.clear(); });
 
     bind(toggleMiniMode, 'change', (e) => {
@@ -1152,6 +1346,20 @@ function setupEventListeners() {
     const toggleDownloaderBtn = document.getElementById('toggle-downloader-btn');
     bind(toggleDownloaderBtn, 'click', () => {
         downloaderOverlay.classList.add('visible');
+    });
+
+    // Toggle Legend
+    const toggleLegendBtn = document.getElementById('toggle-legend-btn');
+    bind(toggleLegendBtn, 'click', () => {
+        const legend = document.getElementById('clean-legend');
+        if (legend) legend.classList.toggle('collapsed');
+    });
+
+    // Toggle Terminal (Manually)
+    const toggleTerminalBtn = document.getElementById('toggle-terminal-btn');
+    bind(toggleTerminalBtn, 'click', () => {
+        const term = document.getElementById('terminal-view');
+        if (term) term.classList.toggle('visible');
     });
 
     const infoBtn = document.getElementById('project-info-btn');
@@ -1403,7 +1611,7 @@ function initSettingsLogic() {
                     if (res.success) {
                         localStorage.clear();
                         showNotification("Reset complete. Restarting...", "success");
-                        setTimeout(() => windowApi.restartApp(), 1500); // Use restartApp here too!
+                        setTimeout(() => windowApi.restartApp(), 1500);
                     } else {
                         showNotification("Reset failed: " + res.error, "error");
                     }
@@ -1503,11 +1711,12 @@ document.addEventListener('DOMContentLoaded', () => {
     libraryOverlay = $('#library-overlay'); libraryCloseBtn = $('#library-close-btn'); loadFolderBtn = $('#load-folder-btn');
     refreshFolderBtn = $('#refresh-folder-btn'); searchInput = $('.playlist-search-input'); sortSelect = $('#sort-select');
     ytUrlInput = $('#yt-url-input'); ytNameInput = $('#yt-name-input'); downloadBtn = $('#download-btn');
+    musicUrlInput = $('#music-url-input'); musicNameInput = $('#music-name-input');
     spotifyUrlInput = $('#spotify-url-input');
-    tabYtBtn = $('#tab-yt-btn'); tabSpotifyBtn = $('#tab-spotify-btn');
-    viewYt = $('#view-youtube'); viewSpotify = $('#view-spotify');
+    tabYtBtn = $('#tab-yt-btn'); tabMusicBtn = $('#tab-music-btn'); tabSpotifyBtn = $('#tab-spotify-btn');
+    viewYt = $('#view-youtube'); viewMusic = $('#view-music'); viewSpotify = $('#view-spotify');
 
-    downloaderOverlay = $('#downloader-overlay'); downloaderCloseBtn = $('#downloader-close-btn'); downloadStatusEl = $('.status-text');
+    downloaderOverlay = $('#downloader-overlay'); downloaderCloseBtn = $('#downloader-close-btn'); downloadStatusEl = $('#info-status-text');
     downloadProgressFill = $('.yt-progress-fill'); visualizerCanvas = $('#visualizer-canvas'); visualizerContainer = $('.visualizer-container');
     langButtons = document.querySelectorAll('.lang-btn'); settingsBtn = $('#settings-btn'); settingsOverlay = $('#settings-overlay');
     settingsCloseBtn = $('#settings-close-btn'); downloadFolderInput = $('#default-download-folder'); changeFolderBtn = $('#change-download-folder-btn');
@@ -1528,7 +1737,7 @@ document.addEventListener('DOMContentLoaded', () => {
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
 
     loadAppMeta();
-    LyricsManager.init(); // Init Lyrics
+    LyricsManager.init();
 
     const userHelpOverlay = document.getElementById('user-help-overlay');
     const userHelpBtn = document.getElementById('user-help-btn');
@@ -1633,40 +1842,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Downloader Tabs
-    if (tabYtBtn && tabSpotifyBtn) {
-        if (activeDownloaderMode === 'youtube') {
-            tabYtBtn.classList.add('active');
-            viewYt.style.display = 'block';
-            viewSpotify.style.display = 'none';
-        }
+    if (tabYtBtn && tabSpotifyBtn && tabMusicBtn) {
+        const setTab = (mode) => {
+            activeDownloaderMode = mode;
+            tabYtBtn.classList.toggle('active', mode === 'youtube');
+            tabMusicBtn.classList.toggle('active', mode === 'music');
+            tabSpotifyBtn.classList.toggle('active', mode === 'spotify');
 
-        tabYtBtn.addEventListener('click', () => {
-            activeDownloaderMode = 'youtube';
-            tabYtBtn.classList.add('active');
-            tabSpotifyBtn.classList.remove('active');
-            viewYt.style.display = 'block';
-            viewSpotify.style.display = 'none';
-        });
+            viewYt.style.display = mode === 'youtube' ? 'block' : 'none';
+            viewMusic.style.display = mode === 'music' ? 'block' : 'none';
+            viewSpotify.style.display = mode === 'spotify' ? 'block' : 'none';
+        };
 
-        tabSpotifyBtn.addEventListener('click', () => {
-            activeDownloaderMode = 'spotify';
-            tabSpotifyBtn.classList.add('active');
-            tabYtBtn.classList.remove('active');
-            viewSpotify.style.display = 'block';
-            viewYt.style.display = 'none';
-        });
+        if (activeDownloaderMode) setTab(activeDownloaderMode);
+
+        tabYtBtn.addEventListener('click', () => setTab('youtube'));
+        tabMusicBtn.addEventListener('click', () => setTab('music'));
+        tabSpotifyBtn.addEventListener('click', () => setTab('spotify'));
     }
 
     if (downloadBtn) {
         downloadBtn.addEventListener('click', handleDownload);
     }
 
+    const inputs = [ytUrlInput, ytNameInput, spotifyUrlInput];
+    inputs.forEach(input => {
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') handleDownload();
+            });
+        }
+    });
+
     const overlays = [settingsOverlay, libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay')];
     overlays.forEach(ov => {
         if (ov) {
-            const modal = ov.querySelector('.settings-modal');
-            const header = ov.querySelector('.settings-header');
+            let modal = ov.querySelector('.settings-modal');
+            let header = ov.querySelector('.settings-header');
+
+            // Support for modern downloader & discord settings & modern clean
+            if (!modal) modal = ov.querySelector('.modern-downloader-panel');
+            if (!modal) modal = ov.querySelector('.discord-settings-layout');
+            if (!modal) modal = ov.querySelector('.modern-clean-panel');
+
+            if (!header) header = ov.querySelector('.modern-header');
+            if (!header) header = ov.querySelector('.settings-sidebar');
+            if (!header) header = ov.querySelector('.clean-header');
+
             if (modal && header) makeDraggable(modal, header);
 
             ov.addEventListener('click', (e) => {
@@ -1690,7 +1912,12 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             const ov = btn.closest('.overlay-container');
             if (ov) {
-                const modal = ov.querySelector('.settings-modal');
+                let modal = ov.querySelector('.settings-modal');
+                if (!modal) modal = ov.querySelector('.modern-downloader-panel');
+                if (!modal) modal = ov.querySelector('.discord-settings-layout');
+                if (!modal) modal = ov.querySelector('.modern-clean-panel');
+
+                ov.classList.remove('visible');
                 setTimeout(() => {
                     if (modal) {
                         modal.style.position = '';
@@ -1745,9 +1972,50 @@ document.addEventListener('DOMContentLoaded', () => {
             BackgroundAnimListener.init();
 
             AppLoader.update(30, tr('loaderLoadingSettings'));
+            // Initialize Download Manager
+            downloadManager = new DownloadManager({
+                onStatsUpdate: (stats) => {
+                    updateQueueStatsUI(stats);
+                    if (isQueueModalOpen) renderQueueModal();
+                },
+                onLog: (key, type, args) => {
+                    // key is now a translation key or object
+                    let msg = key;
+                    if (typeof key === 'string' && (key.startsWith('log') || key.startsWith('status'))) {
+                        msg = tr(key, args);
+                    }
+                    logToTerminal(msg, type);
+
+                    // Also update main status text if processing
+                    const statusText = document.getElementById('info-status-text');
+                    const statusDot = document.getElementById('status-dot');
+                    if (statusText && statusDot) {
+                        if (type === 'error') {
+                            // Optional: Flash error state briefly?
+                        }
+                    }
+                }
+            });
+
+            const headerStats = document.getElementById('header-queue-stats');
+            if (headerStats && headerStats.children.length === 0) {
+                headerStats.innerHTML = `
+                    <div class="q-stat" title="Pending"><span class="q-icon">⏳</span> <span class="q-val" id="qs-pending">0</span></div>
+                    <div class="q-stat" title="Processing"><span class="q-icon">🚀</span> <span class="q-val" id="qs-processing">0</span></div>
+                    <div class="q-stat" title="Success"><span class="q-icon">✅</span> <span class="q-val" id="qs-success">0</span></div>
+                 `;
+            }
+
+            setupQueueUI();
+
             await loadSettings();
 
             initSettingsLogic();
+
+            // Restore Favorites Button Visibility
+            if (toggleFavoritesBtn) {
+                toggleFavoritesBtn.style.display = settings.enableFavoritesPlaylist ? 'flex' : 'none';
+            }
 
             // Init Performance Monitoring
             AppPerformance.init({
@@ -1897,13 +2165,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 
     setTimeout(() => {
-        // Play
         const cmPlay = document.getElementById('cm-play');
         if (cmPlay) cmPlay.onclick = () => {
             if (contextTrackIndex !== null) playTrack(contextTrackIndex);
         };
 
-        // Edit Title (Metadata)
         const cmEdit = document.getElementById('cm-edit');
         if (cmEdit) cmEdit.onclick = () => {
             if (contextTrackIndex === null) return;
@@ -1915,19 +2181,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (editTitleOverlay) editTitleOverlay.classList.add('visible');
         };
 
-        // Favorite
         const cmFav = document.getElementById('cm-fav');
         if (cmFav) cmFav.onclick = () => {
             if (contextTrackIndex !== null && playlist[contextTrackIndex]) toggleFavorite(playlist[contextTrackIndex].path);
         };
 
-        // Folder
         const cmFolder = document.getElementById('cm-folder');
         if (cmFolder) cmFolder.onclick = () => {
             if (contextTrackIndex !== null && playlist[contextTrackIndex]) windowApi.showInFolder(playlist[contextTrackIndex].path);
         };
 
-        // Delete
         const cmDelete = document.getElementById('cm-delete');
         if (cmDelete) cmDelete.onclick = () => {
             if (contextTrackIndex !== null && playlist[contextTrackIndex]) {

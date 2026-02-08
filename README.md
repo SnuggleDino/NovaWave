@@ -1,11 +1,11 @@
-# 🎵 NovaWave `v2.6.0 GO`
+# 🎵 NovaWave `v2.7.0 GO`
 
 Welcome to **NovaWave**! Your new, stylish desktop music player.
 No clutter, no ads, just your music – wrapped in a sleek design and completely Open Source.
 
 Built with ❤️, **Go (Wails)**, and Web Tech.
 
-![Version](https://img.shields.io/badge/Version-2.6.0--GO-c1d37f?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.7.0--GO-c1d37f?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -31,8 +31,9 @@ Boring players are everywhere. NovaWave brings you handcrafted **Theme Packs** w
 
 ### 📥 Download music? Sure!
 Tired of ads in the browser?
-*   **YouTube:** Paste link, get MP3. Done.
+*   **YouTube:** Paste link, get MP3. Done. Now with **YouTube Music** support!
 *   **Spotify:** Copy song link, NovaWave finds the track and downloads it for you.
+*   **Queue Manager:** Download multiple tracks at once with the new concurrent queue.
 
 ### 📱 Smaller is better
 Need space? Just switch to **Mini-Player Mode**. Small, compact, but still rocking a visualizer!
@@ -81,6 +82,8 @@ Want to touch the code or build it yourself? Easy.
 *   `Arrows Left / Right`: Change Song
 *   `Shift + Arrows`: Seek 5 seconds
 *   `Arrows Up / Down`: Volume
+*   `L`: Open Lyrics
+*   `Q`: Toggle Queue Modal
 *   `CTRL + 1`: Dev Console
 
 ---
@@ -97,13 +100,14 @@ We're just getting started. Here is the master plan:
 
 | Status | Feature | Mission |
 | :--- | :--- | :--- |
-| 🚧 **WIP** | **Custom Playlists** | Create, save, and export your own mixes for every mood. (Local files) |
-| 🔜 **Soon** | **Virtual Folders** | Group tracks into collapsible "Player Folders" (pure design, no file moving). |
+| ✨ **Done** | **Custom Playlists** | Create, save, and export your own mixes for every mood. (Local files) |
+| ✨ **Done** | **Virtual Folders** | Group tracks into collapsible "Player Folders" (pure design, no file moving). |
+| ✨ **Done** | **Lyrics Support** | Sing along! Display lyrics for your local tracks. |
+| ✨ **Done** | **YouTube Music** | Integrated support for music.youtube.com links. |
+| ✨ **Done** | **i18n** | Full multi-language support (German/English). |
 | 🔜 **Soon** | **Tag Editor** | Fix those messy tags and add cover art directly in the player. |
-| 🔜 **Soon** | **Lyrics Support** | Sing along! Display lyrics for your local tracks. |
 | 🔮 **Future** | **5-Band Equalizer** | More control than just Bass & Treble. Fine-tune your sound. |
 | 🔮 **Future** | **More Themes** | You can never have enough style. More colors, more animations. |
-| ✨ **Done** | **Visualizer Customization** | More bars, more styles, more control. (Check!) |
 
 ---
 
@@ -111,4 +115,4 @@ We're just getting started. Here is the master plan:
 
 *Made by SnuggleDino*
 
-Your Style, Your Music, Your Rules.
+Your Music • Your Style • Your Rules.

@@ -1,43 +1,43 @@
 {
-    "version": "2.6.0",
-    "date": "January 2026",
+    "version": "2.7.0",
+    "date": "February 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Kuschelig eingepackt mit neuen Funktionen!",
-        "en": "Snuggled up with new features!"
+        "de": "Your Music • Your Style • Your Rules",
+        "en": "Your Music • Your Style • Your Rules"
     },
     "changes": [
         {
-            "icon": "🔧",
+            "icon": "🎵",
             "title": {
-                "de": "Einstellungen überarbeitet",
-                "en": "Settings Overhaul"
+                "de": "YouTube Music Integration",
+                "en": "YouTube Music Integration"
             },
             "desc": {
-                "de": "Das Einstellungsmenü wurde komplett neu organisiert. Jede Funktion befindet sich nun in ihrem passenden Reiter für mehr Übersichtlichkeit.",
-                "en": "Completely reorganized settings menu. Each function is now in its corresponding tab for better clarity."
+                "de": "Ein brandneuer Tab für YouTube Music! Füge Links von music.youtube.com einfach hinzu und genieße deine Lieblingssongs in bester Qualität.",
+                "en": "A brand new tab for YouTube Music! Easily add links from music.youtube.com and enjoy your favorite songs in top quality."
             }
         },
         {
-            "icon": "📥",
+            "icon": "📄",
             "title": {
-                "de": "Downloader Fixes",
-                "en": "Downloader Fixes"
+                "de": "Verbesserte Warteschlange",
+                "en": "Improved Queue"
             },
             "desc": {
-                "de": "Verbesserte Stabilität für YouTube- und Spotify-Downloads. Metadaten werden nun zuverlässiger geladen.",
-                "en": "Improved stability for both YouTube and Spotify downloads. Metadata loading is now more reliable."
+                "de": "Habe deine Downloads im Blick! Ein neues Status-Panel im Header zeigt dir sofort Fortschritt und Erfolge. Die detaillierte Warteschlange ist nur einen Klick entfernt.",
+                "en": "Keep an eye on your downloads! A new status panel in the header shows progress and success instantly. The detailed queue is just a click away."
             }
         },
         {
-            "icon": "🛑",
+            "icon": "🌍",
             "title": {
-                "de": "Reset & Shutdown",
-                "en": "Reset & Shutdown"
+                "de": "Vollständige Übersetzung",
+                "en": "Full Internationalization"
             },
             "desc": {
-                "de": "Neue Optionen im 'System'-Tab, um die App sicher zurückzusetzen oder vollständig zu beenden.",
-                "en": "Dedicated options in the 'System' tab to safely reset the app config or shutdown completely."
+                "de": "NovaWave spricht deine Sprache! Wir haben die gesamte App überarbeitet, sodass alle Texte, Statusmeldungen und Logs dynamisch übersetzt werden.",
+                "en": "NovaWave speaks your language! We've overhauled the entire app so all text, status messages, and logs are now dynamically translated."
             }
         }
     ]

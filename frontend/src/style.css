@@ -4850,3 +4850,39 @@ kbd {
         opacity: 0.5;
     }
 }
+
+/* --- Downloader Status Terminal --- */
+.status-container {
+    background: #000;
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 15px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+    color: #4ade80;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    width: 100%;
+}
+
+.status-container.has-error {
+    height: 150px;
+    border-color: #ff003c;
+    align-items: flex-start;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.status-container.has-error .status-text {
+    color: #ff003c;
+}
+
+.status-text {
+    margin: 0;
+    width: 100%;
+    word-break: break-word;
+}
