@@ -6,8 +6,8 @@ export function DeleteTrack(arg1) {
   return window['go']['main']['App']['DeleteTrack'](arg1);
 }
 
-export function DownloadFromSpotify(arg1, arg2) {
-  return window['go']['main']['App']['DownloadFromSpotify'](arg1, arg2);
+export function DownloadFromSpotify(arg1, arg2, arg3) {
+  return window['go']['main']['App']['DownloadFromSpotify'](arg1, arg2, arg3);
 }
 
 export function DownloadFromYouTube(arg1) {

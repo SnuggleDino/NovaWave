@@ -1,5 +1,5 @@
 {
-    "version": "2.7.0",
+    "version": "2.7.1",
     "date": "February 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
@@ -7,6 +7,17 @@
         "en": "Your Music • Your Style • Your Rules"
     },
     "changes": [
+        {
+            "icon": "🔧",
+            "title": {
+                "de": "Downloader-Upgrade & Fixes",
+                "en": "Downloader Upgrade & Fixes"
+            },
+            "desc": {
+                "de": "Live-Terminal implementiert, detailliertes Error-Modal hinzugefügt und die Warteschlange optimiert. Strikte URL-Prüfung verhindert nun Fehl-Downloads.",
+                "en": "Implemented Live Terminal, added detailed Error Modal, and optimized the queue. Strict URL validation now prevents incorrect downloads."
+            }
+        },
         {
             "icon": "🎵",
             "title": {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"embed"
 	"encoding/json"
@@ -92,6 +93,7 @@ type Track struct {
 }
 
 type DownloadOptions struct {
+	Id         string `json:"id"`
 	Url        string `json:"url"`
 	CustomName string `json:"customName"`
 	Quality    string `json:"quality"`
@@ -640,6 +642,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 
 	args := []string{
 		opts.Url, "-x", "--audio-format", "mp3", "--audio-quality", qVal,
+		"--newline", "--progress",
 		"--embed-thumbnail", "--add-metadata",
 		"--ffmpeg-location", filepath.Dir(ffmpegPath),
 		"-P", folderPath, "-o", outputTemplate,
@@ -647,10 +650,67 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 
 	cmd := exec.Command(ytPath, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return SimpleResult{Success: false, Error: string(output)}, nil
+
+	stdout, _ := cmd.StdoutPipe()
+	stderr, _ := cmd.StderrPipe()
+
+	if err := cmd.Start(); err != nil {
+		return SimpleResult{Success: false, Error: err.Error()}, nil
 	}
+
+	go func() {
+		tCmd := exec.Command(ytPath, "--get-title", "--no-warnings", opts.Url)
+		tCmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+		if out, err := tCmd.Output(); err == nil {
+			title := strings.TrimSpace(string(out))
+			if title != "" {
+				wailsRuntime.EventsEmit(a.ctx, "download-title-update", map[string]string{
+					"id":    opts.Id,
+					"title": title,
+				})
+			}
+		}
+	}()
+
+	processPipe := func(r io.Reader) {
+		scanner := bufio.NewScanner(r)
+		for scanner.Scan() {
+			line := scanner.Text()
+			wailsRuntime.EventsEmit(a.ctx, "download-terminal-log", line+"\n")
+
+			lowerLine := strings.ToLower(line)
+			var titleCandidate string
+
+			if strings.Contains(line, "Destination: ") {
+				parts := strings.Split(line, "Destination: ")
+				titleCandidate = parts[len(parts)-1]
+			} else if strings.Contains(lowerLine, "has already been downloaded") {
+				titleCandidate = strings.TrimPrefix(line, "[download] ")
+				titleCandidate = strings.Split(titleCandidate, " has already")[0]
+			}
+
+			if titleCandidate != "" {
+				filename := filepath.Base(strings.TrimSpace(titleCandidate))
+				title := strings.TrimSuffix(filename, filepath.Ext(filename))
+				if idx := strings.LastIndex(title, " ["); idx != -1 {
+					title = strings.TrimSpace(title[:idx])
+				}
+				wailsRuntime.EventsEmit(a.ctx, "download-title-update", map[string]string{
+					"id":    opts.Id,
+					"title": title,
+				})
+			}
+		}
+	}
+
+	go processPipe(stdout)
+	go processPipe(stderr)
+
+	err := cmd.Wait()
+	if err != nil {
+		return SimpleResult{Success: false, Error: "Download failed (check terminal for details)"}, nil
+	}
+
 	return SimpleResult{Success: true}, nil
 }
 
@@ -660,13 +720,14 @@ func (a *App) IsSpotifyUrl(url string) bool {
 	return a.spotifyService.IsSpotifyUrl(url)
 }
 
-func (a *App) DownloadFromSpotify(url string, quality string) (SimpleResult, error) {
+func (a *App) DownloadFromSpotify(id string, url string, quality string) (SimpleResult, error) {
 	track, err := a.spotifyService.GetTrackMetadata(url)
 	if err != nil {
 		return SimpleResult{Success: false, Error: err.Error()}, nil
 	}
 
 	return a.DownloadFromYouTube(DownloadOptions{
+		Id:         id,
 		Url:        fmt.Sprintf("ytsearch1:%s - %s lyrics", track.Artist, track.Title),
 		CustomName: fmt.Sprintf("%s - %s", track.Artist, track.Title),
 		Quality:    quality,

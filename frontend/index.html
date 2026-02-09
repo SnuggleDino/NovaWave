@@ -603,6 +603,21 @@
 
     <!-- ================= DOWNLOADER MODAL ================= -->
     <div id="downloader-overlay" class="overlay-container">
+        
+        <!-- Terminal Panel (Left Side) -->
+        <div id="terminal-panel" class="queue-side-panel glass-panel"
+            style="display: none; width: 500px; margin-right: 20px; flex-direction: column; max-height: 600px; background: #0c0c0c; border-color: #333;">
+            <div class="settings-header" style="background: rgba(0,255,0,0.05); border-bottom: 1px solid #333;">
+                <h3 style="color: #00ff00; font-family: monospace;"><span class="q-icon">💻</span> Terminal Output</h3>
+            </div>
+            <div id="terminal-view" class="clean-log-output" style="flex: 1; overflow-y: auto; padding: 15px; max-height: none; display: block; opacity: 1;">
+                <!-- Logs Injected Here -->
+            </div>
+            <div class="queue-footer" style="padding: 10px; border-top: 1px solid #333; justify-content: flex-end;">
+                <button id="clear-terminal-btn" class="settings-button" style="padding: 4px 10px; font-size: 0.7rem; background: transparent; color: #666; border-color: #333;">Clear Console</button>
+            </div>
+        </div>
+
         <div class="modern-clean-panel">
             <!-- Header -->
             <div class="clean-header">
@@ -615,12 +630,27 @@
                     </svg>
                     <span data-lang-key="downloaderTitle">Downloader</span>
                 </h2>
-                <button id="downloader-close-btn" class="clean-close-btn" data-lang-title="close">&times;</button>
-            </div>
-
-            <!-- Queue Stats (Header Position) -->
-            <div id="header-queue-stats" class="header-queue-stats"
-                style="display: flex; gap: 15px; padding: 0 4px 10px 4px; border-bottom: 1px solid var(--clean-border); margin-bottom: 15px;">
+                <div class="header-actions" style="display: flex; gap: 8px;">
+                    <button id="open-queue-btn" class="clean-icon-btn" title="Show Queue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                    </button>
+                    <button id="toggle-terminal-btn" class="clean-icon-btn" title="Toggle Log">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="4 17 10 11 4 5"></polyline>
+                            <line x1="12" y1="19" x2="20" y2="19"></line>
+                        </svg>
+                    </button>
+                    <button id="downloader-close-btn" class="clean-close-btn" data-lang-title="close">&times;</button>
+                </div>
             </div>
 
             <!-- Tabs -->
@@ -631,7 +661,7 @@
                         <path
                             d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                     </svg>
-                    <span data-lang-key="tabYoutube">YouTube</span>
+                    <span data-lang-key="tabYouTube">YouTube</span>
                 </button>
                 <button id="tab-music-btn" class="clean-tab">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -705,7 +735,7 @@
                 <div class="status-row">
                     <div id="status-dot" class="status-dot"></div>
                     <span id="info-status-text" class="status-text" data-lang-key="statusReady">Bereit</span>
-                    <button id="toggle-legend-btn" class="clean-icon-btn" title="Show Legend">
+                    <button id="toggle-legend-btn" class="clean-icon-btn" title="Show Legend" style="margin-left: auto;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"></circle>
@@ -713,26 +743,7 @@
                             <line x1="12" y1="17" x2="12.01" y2="17"></line>
                         </svg>
                     </button>
-                    <button id="toggle-terminal-btn" class="clean-icon-btn" title="Toggle Log" style="display: none;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="4 17 10 11 4 5"></polyline>
-                            <line x1="12" y1="19" x2="20" y2="19"></line>
-                        </svg>
-                    </button>
-                    <button id="open-queue-btn" class="clean-icon-btn" title="Show Queue">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="8" y1="6" x2="21" y2="6"></line>
-                            <line x1="8" y1="12" x2="21" y2="12"></line>
-                            <line x1="8" y1="18" x2="21" y2="18"></line>
-                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                        </svg>
-                    </button>
                 </div>
-                <div id="terminal-view" class="clean-log-output"></div>
             </div>
 
             <!-- Legend (Collapsible) -->
@@ -762,7 +773,6 @@
             style="display: none; width: 400px; margin-left: 20px; flex-direction: column; max-height: 600px;">
             <div class="settings-header">
                 <h3><span class="q-icon">📋</span> Queue</h3>
-                <button id="queue-close-btn" class="close-modal-btn">&times;</button>
             </div>
             <div id="queue-list-container" class="settings-content" style="flex: 1; overflow-y: auto; padding: 10px;">
                 <!-- Queue Items Injected Here -->
@@ -1838,6 +1848,33 @@
                     style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 20px; opacity: 0.7;">
                     NovaWave Core v2.0
                 </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ERROR MODAL ================= -->
+    <div id="error-modal-overlay" class="overlay-container">
+        <div class="glass-panel settings-modal" style="max-width: 550px;">
+            <div class="settings-header" style="background: rgba(239, 68, 68, 0.15); border-bottom: 1px solid rgba(239, 68, 68, 0.3);">
+                <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        style="margin-right:10px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span style="color: #ef4444;" data-lang-key="downloadErrorTitle">Download Error</span>
+                </h3>
+                <button id="error-modal-close-btn" class="close-modal-btn">&times;</button>
+            </div>
+            <div class="settings-content">
+                <div class="error-details-box" style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 1rem; max-height: 350px; overflow-y: auto; color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); margin-bottom: 20px; line-height: 1.5; text-align: center;">
+                    <div id="error-modal-content">No error information available.</div>
+                </div>
+                <div class="modal-actions">
+                    <button id="error-modal-ok-btn" class="modal-btn primary" style="background: #ef4444; width: 100%;" data-lang-key="errorModalClose">Close</button>
+                </div>
             </div>
         </div>
     </div>

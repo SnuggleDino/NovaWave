@@ -131,6 +131,7 @@ export namespace main {
 	    }
 	}
 	export class DownloadOptions {
+	    id: string;
 	    url: string;
 	    customName: string;
 	    quality: string;
@@ -141,6 +142,7 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
 	        this.url = source["url"];
 	        this.customName = source["customName"];
 	        this.quality = source["quality"];

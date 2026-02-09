@@ -326,7 +326,6 @@ function updateCachedColor() {
 }
 
 // --- Sector: App Core Functions ---
-
 function tr(key, ...args) {
     const langCode = currentLanguage || (settings && settings.language) || 'de';
     const lang = translations[langCode] || translations.de;
@@ -446,14 +445,14 @@ function updateUIForCurrentTrack() {
         updateEmoji(emojiMode, customEmoji);
         updateActiveTrackInPlaylist();
         updateTrackTitleScroll();
-        LyricsManager.checkAvailability(null); // Hide lyrics btn
+        LyricsManager.checkAvailability(null);
         return;
     }
     const track = playlist[currentIndex];
     if (trackTitleEl) trackTitleEl.textContent = track.title;
     if (trackArtistEl) trackArtistEl.textContent = track.artist || tr('unknownArtist');
 
-    LyricsManager.checkAvailability(track.path); // Check lyrics
+    LyricsManager.checkAvailability(track.path);
 
     updateEmoji(emojiMode, customEmoji);
     updateActiveTrackInPlaylist();
@@ -522,12 +521,10 @@ function renderPlaylist() {
             const item = renderItems[i];
 
             if (item.type === 'folder') {
-                // RENDER FOLDER
                 const row = document.createElement('div');
                 row.className = 'track-row is-folder';
                 row.dataset.id = item.id;
 
-                // Apply dynamic color
                 const color = item.color || '#38bdf8';
                 row.style.setProperty('--folder-color', color);
                 row.style.setProperty('--folder-color-soft', color + '26');
@@ -546,7 +543,6 @@ function renderPlaylist() {
 
                 row.oncontextmenu = (e) => showFolderContextMenu(e, item.id);
 
-                // Drop Zone Logic
                 row.ondragover = (e) => {
                     e.preventDefault();
                     row.classList.add('drag-over');
@@ -598,7 +594,6 @@ function renderPlaylist() {
                 const favColor = isFav ? '#fbbf24' : 'var(--text-muted)';
                 const favBtn = `<button class="fav-track-btn" data-path="${track.path}" title="${tr('toggleFavorite')}" style="color: ${favColor};"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="${favFill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>`;
 
-                // Display Index: Global Index + 1 (Audio Playlist Order) instead of Render List Index
                 const displayIdx = (isPlaying && globalIndex === currentIndex) ? pi : (globalIndex + 1);
 
                 const titlePrefix = (!searchInput.value && item.groupId) ? '<span style="opacity:0.6; margin-right:5px;">↳</span> ' : '';
@@ -747,7 +742,7 @@ function updateEmoji(emojiType, customEmoji) {
     }
 }
 
-// --- UI Utility Functions for Modern Downloader ---
+// --- UI Utility Functions for Downloader ---
 function updateQueueStatsUI(stats) {
     const pEl = document.getElementById('qs-pending');
     const rEl = document.getElementById('qs-processing');
@@ -778,70 +773,64 @@ function setDownloaderState(state, message) {
 
     if (!statusDot || !statusText || !terminal || !btn) return;
 
-    // Reset classes
-    statusDot.className = 'status-dot'; // Reset to base class
+    statusDot.className = 'status-dot';
     btn.classList.remove('loading');
     btn.disabled = false;
 
+    if (toggleTerminal) toggleTerminal.style.display = 'flex';
+
     if (state === 'idle') {
-        statusDot.classList.add('idle'); // Add idle/ready style
+        statusDot.classList.add('idle');
         statusText.textContent = message || tr('statusReady');
-        terminal.classList.remove('visible');
-        terminal.innerHTML = '';
-        if (toggleTerminal) toggleTerminal.style.display = 'none';
     } else if (state === 'processing') {
         statusDot.classList.add('processing');
         statusText.textContent = message || tr('statusStarting');
         btn.classList.add('loading');
         btn.disabled = true;
-        terminal.classList.remove('visible');
-        terminal.innerHTML = ''; // Clear previous logs
-        if (toggleTerminal) toggleTerminal.style.display = 'none';
+        terminal.innerHTML = '';
     } else if (state === 'success') {
         statusDot.classList.add('success');
         statusText.textContent = message || tr('statusSuccess');
-        terminal.classList.add('visible');
-        logToTerminal(tr('statusSuccess'), 'success');
-        if (toggleTerminal) toggleTerminal.style.display = 'flex';
     } else if (state === 'error') {
         statusDot.classList.add('error');
-        statusText.textContent = tr('statusError');
-        terminal.classList.add('visible');
-        logToTerminal(message, 'error');
-        if (toggleTerminal) toggleTerminal.style.display = 'flex';
+        statusText.textContent = message || tr('statusError');
+        const terminalPanel = document.getElementById('terminal-panel');
+        if (terminalPanel && terminalPanel.style.display === 'none') {
+            toggleTerminalPanel();
+        }
     } else if (state === 'info') {
         statusDot.classList.add('info');
         statusText.textContent = message;
-        terminal.classList.add('visible');
-        if (toggleTerminal) toggleTerminal.style.display = 'flex';
     }
 }
 
 // --- Queue Modal Logic ---
 function setupQueueUI() {
     const queueOverlay = document.getElementById('queue-overlay');
-    const closeBtn = document.getElementById('queue-close-btn');
     const openBtn = document.getElementById('open-queue-btn');
     const clearBtn = document.getElementById('clear-history-btn');
 
+    const terminalBtn = document.getElementById('toggle-terminal-btn');
+    const clearTerminalBtn = document.getElementById('clear-terminal-btn');
+
     if (openBtn) openBtn.onclick = toggleQueuePanel;
-    if (closeBtn) closeBtn.onclick = closeQueuePanel;
+
+    if (terminalBtn) terminalBtn.onclick = toggleTerminalPanel;
+    if (clearTerminalBtn) {
+        clearTerminalBtn.onclick = () => {
+            const term = document.getElementById('terminal-view');
+            if (term) term.innerHTML = '';
+        };
+    }
 
     if (clearBtn) {
         clearBtn.onclick = () => {
             if (downloadManager) {
                 downloadManager.history = [];
-                downloadManager._notifyStats(); // Update UI
+                downloadManager._notifyStats();
                 renderQueueModal();
             }
         };
-    }
-
-    // Close on click outside
-    if (queueOverlay) {
-        queueOverlay.addEventListener('click', (e) => {
-            if (e.target === queueOverlay) closeQueueModal();
-        });
     }
 }
 
@@ -854,10 +843,7 @@ function toggleQueuePanel() {
             queuePanel.style.display = 'flex';
             isQueueModalOpen = true;
             renderQueueModal();
-            // Ensure container allows side-by-side
             if (downOverlay) downOverlay.classList.add('with-queue');
-            // Animate
-            queuePanel.classList.add('fade-in-right');
         } else {
             closeQueuePanel();
         }
@@ -871,7 +857,43 @@ function closeQueuePanel() {
     if (queuePanel) {
         queuePanel.style.display = 'none';
         isQueueModalOpen = false;
-        if (downOverlay) downOverlay.classList.remove('with-queue');
+        if (downOverlay && !document.getElementById('terminal-panel').style.display === 'flex') {
+            downOverlay.classList.remove('with-queue');
+        }
+    }
+}
+
+function toggleTerminalPanel() {
+    const terminalPanel = document.getElementById('terminal-panel');
+    const downOverlay = document.getElementById('downloader-overlay');
+
+    if (terminalPanel) {
+        if (terminalPanel.style.display === 'none') {
+            terminalPanel.style.display = 'flex';
+            if (downOverlay) downOverlay.classList.add('with-queue');
+        } else {
+            closeTerminalPanel();
+        }
+    }
+}
+
+function closeTerminalPanel() {
+    const terminalPanel = document.getElementById('terminal-panel');
+    const downOverlay = document.getElementById('downloader-overlay');
+    if (terminalPanel) {
+        terminalPanel.style.display = 'none';
+        if (downOverlay && (!document.getElementById('queue-panel') || document.getElementById('queue-panel').style.display === 'none')) {
+            downOverlay.classList.remove('with-queue');
+        }
+    }
+}
+
+function showErrorModal(errorText) {
+    const overlay = document.getElementById('error-modal-overlay');
+    const content = document.getElementById('error-modal-content');
+    if (overlay && content) {
+        content.textContent = errorText || 'Unknown error occurred.';
+        overlay.classList.add('visible');
     }
 }
 
@@ -892,6 +914,12 @@ function renderQueueModal() {
     allItems.forEach(item => {
         const div = document.createElement('div');
         div.className = 'q-item';
+        if (item.status === 'error') {
+            div.classList.add('has-error');
+            div.style.cursor = 'pointer';
+            div.title = 'Click for details';
+            div.onclick = () => showErrorModal(item.error);
+        }
 
         let icon = '🎵';
         if (item.type === 'youtube') icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>`;
@@ -901,16 +929,18 @@ function renderQueueModal() {
         let pText = item.status;
         if (item.status === 'processing') pText = tr('statusStarting');
 
+        const displayName = item.customName || (item.url.length > 40 ? item.url.substring(0, 37) + '...' : item.url);
+
         div.innerHTML = `
             <div class="q-item-icon">${icon}</div>
             <div class="q-item-info">
-                <div class="q-item-title" title="${item.url}">${item.url}</div>
+                <div class="q-item-title" title="${item.url}">${displayName}</div>
                 <div class="q-item-meta">
                     <span class="q-status ${statusClass}">${pText}</span>
                     <span>${new Date(item.addedAt).toLocaleTimeString()}</span>
                 </div>
             </div>
-            ${item.status === 'error' ? `<div style="color:var(--clean-danger); font-size:12px;">${tr('statusError')}</div>` : ''}
+            ${item.status === 'error' ? `<div style="color:var(--clean-danger); font-size:12px; font-weight: bold;">VIEW ERROR</div>` : ''}
         `;
         container.appendChild(div);
     });
@@ -923,52 +953,72 @@ function logToTerminal(msg, type = 'info') {
     const terminal = document.getElementById('terminal-view');
     if (!terminal) return;
 
-    const div = document.createElement('div');
-    div.className = 'terminal-line';
+    const lines = msg.split(/\r?\n/);
+    
+    lines.forEach((line, idx) => {
+        if (line.trim() === '' && idx > 0) return;
 
-    if (type === 'error') div.classList.add('log-error');
-    else if (type === 'success') div.classList.add('log-success');
+        let lastLine = terminal.lastElementChild;
+        
+        if (lastLine && !msg.includes('\n') && idx === 0) {
+            lastLine.textContent += line;
+        } else {
+            const div = document.createElement('div');
+            div.className = 'terminal-line';
+            if (type === 'error') div.classList.add('log-error');
+            else if (type === 'success') div.classList.add('log-success');
+            
+            div.textContent = (idx === 0 && !lastLine ? '> ' : '') + line;
+            terminal.appendChild(div);
+        }
+    });
 
-    const prefix = document.createElement('span');
-    prefix.className = 'cmd-prefix';
-    prefix.textContent = '>';
-
-    div.appendChild(prefix);
-    div.appendChild(document.createTextNode(msg));
-    terminal.appendChild(div);
     terminal.scrollTop = terminal.scrollHeight;
 }
 
 async function handleDownload() {
     let url = '';
+    let name = '';
 
     if (activeDownloaderMode === 'spotify') {
         url = spotifyUrlInput.value.trim();
     } else if (activeDownloaderMode === 'music') {
         url = musicUrlInput.value.trim();
+        name = musicNameInput.value.trim();
     } else {
         url = ytUrlInput.value.trim();
+        name = ytNameInput.value.trim();
     }
-
-    const ytRegex = /^(https?:\/\/)?(www\.|music\.)?(youtube\.com|youtu\.be)\/.+$/;
-    const spotifyRegex = /^(https?:\/\/)?(open\.)?spotify\.com\/.+$/;
 
     if (!url) {
         setDownloaderState('idle', tr('statusUrlMissing'));
         return;
     }
 
-    if ((activeDownloaderMode === 'youtube' || activeDownloaderMode === 'music') && !ytRegex.test(url)) {
-        setDownloaderState('error', tr('statusUrlInvalid'));
+    const isYtMusic = url.includes('music.youtube.com');
+    const isYtStandard = (url.includes('youtube.com') || url.includes('youtu.be')) && !isYtMusic;
+    const isSpotify = url.includes('spotify.com');
+
+    if (activeDownloaderMode === 'youtube' && !isYtStandard) {
+        const msg = tr('errorOnlyYtLinks');
+        setDownloaderState('error', msg);
+        showErrorModal(msg);
         return;
     }
-    if (activeDownloaderMode === 'spotify' && !spotifyRegex.test(url)) {
+    if (activeDownloaderMode === 'music' && !isYtMusic) {
+        const msg = tr('errorOnlyMusicLinks');
+        setDownloaderState('error', msg);
+        showErrorModal(msg);
+        return;
+    }
+    if (activeDownloaderMode === 'spotify' && !isSpotify) {
         setDownloaderState('error', tr('statusUrlInvalid'));
         return;
     }
 
     const type = (activeDownloaderMode === 'music') ? 'youtube' : activeDownloaderMode;
-    downloadManager.add(url, type);
+    
+    downloadManager.add(url, type, name);
 
     if (activeDownloaderMode === 'youtube') {
         ytUrlInput.value = '';
@@ -979,8 +1029,6 @@ async function handleDownload() {
     } else {
         spotifyUrlInput.value = '';
     }
-
-    // UI Feedback is handled by DownloadManager callbacks
 }
 
 function setupAudioEvents() {
@@ -1152,7 +1200,6 @@ function toggleFavorite(path) {
 }
 
 function filterPlaylist(q) {
-    // Logic moved to renderPlaylist + PlaylistManager
     renderPlaylist();
 }
 
@@ -1308,17 +1355,30 @@ function setupEventListeners() {
                 audio.pause();
             }
         });
+
+        window.runtime.EventsOn("download-terminal-log", (data) => {
+            logToTerminal(data, 'info');
+        });
+
+        window.runtime.EventsOn("download-title-update", (data) => {
+            if (downloadManager && data.title && data.id) {
+                const items = downloadManager.getAllItems();
+                const task = [...items.queue, ...items.history].find(t => t.id === data.id);
+                if (task && !task.customName) {
+                    task.customName = data.title;
+                    if (isQueueModalOpen) renderQueueModal();
+                }
+            }
+        });
     }
 
     bind(sortSelect, 'change', (e) => { sortMode = e.target.value; saveSetting('sortMode', sortMode); sortPlaylist(sortMode); });
 
-    // Bind "Focus Mode" Button (Player UI)
     bind(toggleFocusModeBtn, 'click', () => {
         document.body.classList.toggle('focus-active');
         if (document.body.classList.contains('focus-active')) showNotification(tr('focusActiveNotify'));
     });
 
-    // Legacy / Orphaned Binds Check
     bind(toggleEnableFocus, 'change', (e) => { saveSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });
     bind(toggleEnableDrag, 'change', (e) => { saveSetting('enableDragAndDrop', e.target.checked); });
 
@@ -1343,7 +1403,6 @@ function setupEventListeners() {
         }
     });
     bind($('#context-menu-show-folder'), 'click', () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; windowApi.showInFolder(playlist[contextTrackIndex].path); });
-    const toggleDownloaderBtn = document.getElementById('toggle-downloader-btn');
     bind(toggleDownloaderBtn, 'click', () => {
         downloaderOverlay.classList.add('visible');
     });
@@ -1462,7 +1521,11 @@ function setupEventListeners() {
         }
     });
 
-    bind(downloaderCloseBtn, 'click', () => { downloaderOverlay.classList.remove('visible'); });
+    bind(downloaderCloseBtn, 'click', () => { 
+        downloaderOverlay.classList.remove('visible'); 
+        const errorOverlay = document.getElementById('error-modal-overlay');
+        if (errorOverlay) errorOverlay.classList.remove('visible');
+    });
     bind(editTitleCancelBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleCloseBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleSaveBtn, 'click', async () => {
@@ -1874,13 +1937,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const overlays = [settingsOverlay, libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay')];
+    const overlays = [settingsOverlay, libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay'), document.getElementById('error-modal-overlay')];
     overlays.forEach(ov => {
         if (ov) {
             let modal = ov.querySelector('.settings-modal');
             let header = ov.querySelector('.settings-header');
 
-            // Support for modern downloader & discord settings & modern clean
             if (!modal) modal = ov.querySelector('.modern-downloader-panel');
             if (!modal) modal = ov.querySelector('.discord-settings-layout');
             if (!modal) modal = ov.querySelector('.modern-clean-panel');
@@ -1889,7 +1951,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!header) header = ov.querySelector('.settings-sidebar');
             if (!header) header = ov.querySelector('.clean-header');
 
-            if (modal && header) makeDraggable(modal, header);
+            const isDownloader = ov.id === 'downloader-overlay';
+            if (modal && header && !isDownloader) makeDraggable(modal, header);
 
             ov.addEventListener('click', (e) => {
                 if (e.target === ov) {
@@ -1908,7 +1971,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.querySelectorAll('.close-modal-btn, #settings-close-btn, #edit-title-cancel-btn, #confirm-delete-cancel-btn').forEach(btn => {
+    document.querySelectorAll('.close-modal-btn, #settings-close-btn, #edit-title-cancel-btn, #confirm-delete-cancel-btn, #error-modal-close-btn, #error-modal-ok-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const ov = btn.closest('.overlay-container');
             if (ov) {
@@ -1937,14 +2000,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = card.querySelector('.apply-intro-btn');
         if (btn) {
             btn.addEventListener('click', (e) => {
-                e.stopPropagation(); // prevent card click issues if any
-                // 1. Remove active from all
+                e.stopPropagation();
                 introCards.forEach(c => c.classList.remove('active'));
-                // 2. Add active to current
                 card.classList.add('active');
-                // 3. Update button texts
                 applyTranslations();
-                // 4. Save setting
                 const introKey = card.dataset.intro;
                 saveSetting('activeIntro', introKey);
             });
@@ -1972,39 +2031,23 @@ document.addEventListener('DOMContentLoaded', () => {
             BackgroundAnimListener.init();
 
             AppLoader.update(30, tr('loaderLoadingSettings'));
-            // Initialize Download Manager
             downloadManager = new DownloadManager({
                 onStatsUpdate: (stats) => {
                     updateQueueStatsUI(stats);
                     if (isQueueModalOpen) renderQueueModal();
                 },
                 onLog: (key, type, args) => {
-                    // key is now a translation key or object
                     let msg = key;
                     if (typeof key === 'string' && (key.startsWith('log') || key.startsWith('status'))) {
                         msg = tr(key, args);
                     }
                     logToTerminal(msg, type);
 
-                    // Also update main status text if processing
-                    const statusText = document.getElementById('info-status-text');
-                    const statusDot = document.getElementById('status-dot');
-                    if (statusText && statusDot) {
-                        if (type === 'error') {
-                            // Optional: Flash error state briefly?
-                        }
+                    if (type === 'error') {
+                        setDownloaderState('error', msg);
                     }
                 }
             });
-
-            const headerStats = document.getElementById('header-queue-stats');
-            if (headerStats && headerStats.children.length === 0) {
-                headerStats.innerHTML = `
-                    <div class="q-stat" title="Pending"><span class="q-icon">⏳</span> <span class="q-val" id="qs-pending">0</span></div>
-                    <div class="q-stat" title="Processing"><span class="q-icon">🚀</span> <span class="q-val" id="qs-processing">0</span></div>
-                    <div class="q-stat" title="Success"><span class="q-icon">✅</span> <span class="q-val" id="qs-success">0</span></div>
-                 `;
-            }
 
             setupQueueUI();
 
@@ -2012,12 +2055,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             initSettingsLogic();
 
-            // Restore Favorites Button Visibility
             if (toggleFavoritesBtn) {
                 toggleFavoritesBtn.style.display = settings.enableFavoritesPlaylist ? 'flex' : 'none';
             }
 
-            // Init Performance Monitoring
             AppPerformance.init({
                 visualizer,
                 settings,
@@ -2199,7 +2240,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }, 1000);
-
 
     // Dynamic Island
     dynamicIsland = new DynamicIsland();

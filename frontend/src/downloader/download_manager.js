@@ -8,12 +8,13 @@ export class DownloadManager {
         // callbacks: { onStatsUpdate: (stats) => void, onLog: (msg, type) => void }
     }
 
-    add(url, type) {
+    add(url, type, customName = "") {
         const id = Date.now() + Math.random().toString(36).substr(2, 9);
         const task = {
             id,
             url,
             type,
+            customName,
             status: 'pending', // pending, processing, success, error
             addedAt: new Date()
         };
@@ -40,21 +41,31 @@ export class DownloadManager {
         }
 
         try {
+            let result;
             if (nextTask.type === 'youtube') {
-                await window.go.main.App.DownloadFromYouTube(nextTask.url);
+                result = await window.go.main.App.DownloadFromYouTube({
+                    id: nextTask.id,
+                    url: nextTask.url,
+                    customName: nextTask.customName,
+                    quality: "best"
+                });
             } else if (nextTask.type === 'spotify') {
-                await window.go.main.App.DownloadFromSpotify(nextTask.url);
+                result = await window.go.main.App.DownloadFromSpotify(nextTask.id, nextTask.url, "best");
             }
 
-            nextTask.status = 'success';
-            if (this.callbacks.onLog) {
-                this.callbacks.onLog('logDownloadComplete', 'success', nextTask.url);
+            if (result && result.success) {
+                nextTask.status = 'success';
+                if (this.callbacks.onLog) {
+                    this.callbacks.onLog('logDownloadComplete', 'success', nextTask.url);
+                }
+            } else {
+                throw new Error(result ? result.error : 'Unknown error');
             }
         } catch (err) {
             nextTask.status = 'error';
-            nextTask.error = err;
+            nextTask.error = err.message || err;
             if (this.callbacks.onLog) {
-                this.callbacks.onLog('logDownloadFailed', 'error', err);
+                this.callbacks.onLog('logDownloadFailed', 'error', nextTask.error);
             }
         } finally {
             this.activeDownloads--;

@@ -4,7 +4,7 @@ import {main} from '../models';
 
 export function DeleteTrack(arg1:string):Promise<main.SimpleResult>;
 
-export function DownloadFromSpotify(arg1:string,arg2:string):Promise<main.SimpleResult>;
+export function DownloadFromSpotify(arg1:string,arg2:string,arg3:string):Promise<main.SimpleResult>;
 
 export function DownloadFromYouTube(arg1:main.DownloadOptions):Promise<main.SimpleResult>;
 

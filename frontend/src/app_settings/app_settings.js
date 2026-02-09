@@ -1,17 +1,5 @@
-/**
- * APP SETTINGS MODULE
- * Handles the settings modal logic, event listeners, and UI state management for settings.
- * Decouples settings logic from the main application controller.
- */
-
 export const AppSettings = {
-    /**
-     * Initializes the settings logic.
-     * @param {Object} api - The exposed window API (windowApi).
-     * @param {Object} settings - The current settings object (reference).
-     * @param {Object} callbacks - Functions to execute when settings change (e.g., visualizer updates).
-     * @param {Object} uiRefs - References to DOM elements that are managed outside (optional).
-     */
+
     init: function (api, settings, callbacks = {}, uiRefs = {}) {
         this.api = api;
         this.settings = settings;
@@ -22,9 +10,6 @@ export const AppSettings = {
         this.restoreUIState();
     },
 
-    /**
-     * Function to safe a setting and update local state.
-     */
     saveSetting: function (key, value) {
         if (this.settings) this.settings[key] = value;
         if (this.api && this.api.setSetting) {
@@ -35,9 +20,6 @@ export const AppSettings = {
         }
     },
 
-    /**
-     * Sets up all event listeners for the settings modal inputs.
-     */
     setupEventListeners: function () {
         const $ = (id) => document.getElementById(id);
 
@@ -75,11 +57,9 @@ export const AppSettings = {
                 const parentTab = btn.closest('.settings-tab-content');
                 if (!parentTab) return;
 
-                // Buttons logic
                 parentTab.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
-                // Content logic
                 parentTab.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
                 const targetContent = document.getElementById(targetId);
                 if (targetContent) targetContent.classList.add('active');
@@ -466,7 +446,6 @@ export const AppSettings = {
             fpsInput.addEventListener('input', (e) => updateFps(e.target.value));
             fpsInput.addEventListener('blur', (e) => {
                 updateFps(e.target.value);
-                // Reset visual value to clamped
                 if (this.settings.targetFps) fpsInput.value = this.settings.targetFps;
             });
         }
@@ -531,9 +510,6 @@ export const AppSettings = {
         }
     },
 
-    /**
-     * Restores the UI state based on the provided settings object.
-     */
     restoreUIState: function () {
         const s = this.settings;
         const $ = (id) => document.getElementById(id);
@@ -560,7 +536,7 @@ export const AppSettings = {
         const animationSelect = $('animation-select');
         if (animationSelect && s.animationMode) animationSelect.value = s.animationMode;
 
-        // Appearance (Moved from Player)
+        // Appearance
         const visualizerToggle = $('toggle-visualizer');
         if (visualizerToggle) visualizerToggle.checked = s.visualizerEnabled !== false;
 
