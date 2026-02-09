@@ -1,6 +1,5 @@
 // DONT REMOVE THIS FILE OR EDIT IT - APP WILL BREAK IF YOU DO SO
 
-// App Loader Screen
 import './loader.css';
 import iconPng from '../assets/icon.png';
 

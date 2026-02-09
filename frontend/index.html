@@ -121,6 +121,13 @@
                 class="stat-value">0x0</span></div>
     </div>
 
+    <!-- Standalone Audio Extras Toggle -->
+    <button id="audio-extras-toggle-btn" class="side-toggle-btn left" title="Audio Extras">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20v-6M6 20V10M18 20V4" />
+        </svg>
+    </button>
+
     <div class="app-shell">
         <!-- ================= HEADER ================= -->
         <header class="app-header">
@@ -190,42 +197,6 @@
         <main class="main-grid">
             <section class="player-column">
                 <div class="cover-art-container">
-                    <div id="active-features-indicator" class="active-features-container">
-                        <div class="features-badges-row">
-                            <div id="modal-feat-bass" class="feature-icon-badge" data-lang-title="bassBoost">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <rect width="16" height="20" x="4" y="2" rx="2" />
-                                    <circle cx="12" cy="14" r="4" />
-                                </svg>
-                            </div>
-                            <div id="modal-feat-crystal" class="feature-icon-badge" data-lang-title="trebleBoost">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <path d="M6 3h12l4 9-10 10L2 12l4-9z" />
-                                </svg>
-                            </div>
-                            <div id="modal-feat-reverb" class="feature-icon-badge" data-lang-title="reverb">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <circle cx="12" cy="12" r="6" />
-                                    <circle cx="12" cy="12" r="2" />
-                                </svg>
-                            </div>
-                            <div id="modal-feat-eq" class="feature-icon-badge" data-lang-title="equalizer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M3 20v-8"></path>
-                                    <path d="M9 20v-5"></path>
-                                    <path d="M15 20v-9"></path>
-                                    <path d="M21 20v-3"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="cover-art-wrapper">
                         <div id="music-emoji" class="music-emoji">&#127925;</div>
                     </div>
@@ -312,6 +283,7 @@
                         </svg>
                     </button>
                 </div>
+
                 <div class="volume-control-area">
                     <div class="volume-row">
                         <span class="volume-icon"></span>

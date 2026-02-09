@@ -1,0 +1,62 @@
+.audio-features-panel {
+    position: fixed;
+    left: -200px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-soft);
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.audio-features-panel.visible {
+    left: 0;
+}
+
+.audio-feature-item {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.audio-feature-item.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    filter: drop-shadow(0 0 5px var(--accent-soft));
+}
+
+.audio-feature-item svg {
+    width: 18px;
+    height: 18px;
+}
+
+.audio-extras-toggle-btn {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.audio-extras-toggle-btn:hover {
+    opacity: 1;
+}

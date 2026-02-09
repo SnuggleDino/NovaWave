@@ -163,131 +163,113 @@ body.is-mini #toggle-playlist-btn {
     background-color: #000;
 }
 
-.active-features-container {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #000;
-    border-radius: 20px;
-    padding: 2px;
-    min-width: 36px;
-    max-width: 36px;
-    height: 12px;
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    opacity: 0;
-    pointer-events: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-.active-features-container.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.active-features-container::before {
-    content: '';
-    position: absolute;
-    z-index: -2;
-    left: 50%;
+.side-toggle-btn {
+    position: fixed;
     top: 50%;
-    width: 300px;
-    height: 300px;
-    background: conic-gradient(transparent,
-            var(--accent),
-            #8b5cf6,
-            transparent 30%);
-    transform: translate(-50%, -50%) rotate(0deg);
-    animation: rotate-feature-border 4s linear infinite;
-    opacity: 0.8;
-}
-
-@keyframes rotate-feature-border {
-    from {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-
-    to {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
-}
-
-.active-features-container::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    left: 2px;
-    top: 2px;
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    background: #0a0a0f;
-    border-radius: 18px;
-}
-
-.active-features-container:hover {
-    max-width: 180px;
-    height: 36px;
-    padding: 2px 12px;
-}
-
-.features-badges-row {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    opacity: 0;
-    transform: translateY(5px);
-    transition: all 0.3s ease 0.1s;
-}
-
-.active-features-container:hover .features-badges-row {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.feature-icon-badge {
-    display: none;
-    width: 20px;
-    height: 20px;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 60px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
     color: var(--text-muted);
-    transition: all 0.3s;
+    cursor: pointer;
+    z-index: 150;
+    display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-soft);
 }
 
-.feature-icon-badge.active {
-    display: flex;
+.side-toggle-btn:hover {
     color: var(--accent);
-    filter: drop-shadow(0 0 5px var(--accent-soft));
+    background: var(--accent-soft);
+    border-color: var(--accent);
 }
 
-.feature-icon-badge svg {
-    width: 16px;
-    height: 16px;
+.side-toggle-btn.left {
+    left: 0;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
 }
 
-.feature-icon-badge {
-    display: none;
+body.audio-panel-open .side-toggle-btn.left {
+    left: 60px;
+}
+
+.side-toggle-btn.right {
+    right: 0;
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+}
+
+body.audio-panel-open .side-toggle-btn.right {
+    right: 60px;
+}
+
+/* Playlist Left Mode: Switch Button to Right */
+body.playlist-left .side-toggle-btn.left {
+    left: auto;
+    right: 0;
+    border-left: 1px solid var(--border-soft);
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+}
+
+body.playlist-left.audio-panel-open .side-toggle-btn.left {
+    right: 60px;
+    left: auto;
+}
+
+/* Mini Player Optimierung */
+body.is-mini .side-toggle-btn {
+    width: 30px;
+    height: 40px;
+    z-index: 300;
+}
+
+body.is-mini .audio-features-panel {
+    width: 45px;
+    height: auto;
+    max-height: 200px;
+    padding: 10px 0;
+}
+
+body.is-mini .audio-feature-item {
     width: 28px;
     height: 28px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.feature-icon-badge.active {
-    display: flex;
+body.is-mini .audio-feature-item svg {
+    width: 14px;
+    height: 14px;
+}
+
+body.is-mini.audio-panel-open .side-toggle-btn.left {
+    left: 45px;
+}
+
+body.is-mini.audio-panel-open .side-toggle-btn.right {
+    right: 45px;
+}
+
+body.is-mini.playlist-left.audio-panel-open .side-toggle-btn.left {
+    right: 45px;
+    left: auto;
+}
+
+/* Adjust Panel Position based on Body Class */
+body.playlist-left .audio-features-panel {
+    left: auto;
+    right: -200px;
+    border-left: 1px solid var(--border-soft);
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+}
+
+body.playlist-left .audio-features-panel.visible {
+    right: 0;
+    left: auto;
 }
 
 .modal-header {
@@ -1703,6 +1685,60 @@ body.sunset-active .music-emoji img {
     align-items: center;
     justify-content: center;
     gap: 20px;
+}
+
+.active-features-indicator-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 5px 0;
+}
+
+.active-features-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 12px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-soft);
+    min-height: 24px;
+    width: fit-content;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.active-features-container.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.features-badges-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.feature-icon-badge {
+    display: none;
+    width: 20px;
+    height: 20px;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-icon-badge.active {
+    display: flex;
+    color: var(--accent);
+    filter: drop-shadow(0 0 5px var(--accent-soft));
+}
+
+.feature-icon-badge svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5px;
 }
 
 .control-btn {

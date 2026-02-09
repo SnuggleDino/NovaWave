@@ -19,6 +19,8 @@ import { PlaylistManager } from './playlist/playlist_manager.js';
 import { DownloadManager } from './downloader/download_manager.js';
 import { LyricsManager } from './lyrics/lyrics_manager.js';
 import { AppPerformance } from './app_performance.js';
+import { AudioFeaturesPanel } from './audio_extras/audio_features_panel.js';
+import './audio_extras/audio_features_panel.css';
 
 // Wails API Mapping
 const windowApi = {
@@ -78,11 +80,12 @@ let activeDownloaderMode = 'youtube';
 // Visualizer State
 let visualizer;
 let audioExtras;
+let audioFeaturesPanel;
 let dynamicIsland;
 let miniPlayer;
 
 // DOM Elements
-let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, editArtistInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption;
+let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, editArtistInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, audioExtrasToggleBtn;
 // Spotify & Tabs
 let spotifyUrlInput, tabYtBtn, tabSpotifyBtn, viewYt, viewSpotify;
 let musicUrlInput, musicNameInput, tabMusicBtn, viewMusic;
@@ -277,28 +280,9 @@ function updateAudioEffects() {
 }
 
 function updateActiveFeaturesIndicator() {
-    const container = document.getElementById('active-features-indicator');
-    if (!container) return;
-
-    const bass = settings.bassBoostEnabled === true;
-    const treble = settings.trebleBoostEnabled === true;
-    const reverb = settings.reverbEnabled === true;
-    const eq = settings.eqEnabled === true;
-    const anyActive = bass || treble || reverb || eq;
-
-    container.classList.toggle('active', anyActive);
-
-    const bassBadge = document.getElementById('modal-feat-bass');
-    if (bassBadge) bassBadge.classList.toggle('active', bass);
-
-    const trebleBadge = document.getElementById('modal-feat-crystal');
-    if (trebleBadge) trebleBadge.classList.toggle('active', treble);
-
-    const reverbBadge = document.getElementById('modal-feat-reverb');
-    if (reverbBadge) reverbBadge.classList.toggle('active', reverb);
-
-    const eqBadge = document.getElementById('modal-feat-eq');
-    if (eqBadge) eqBadge.classList.toggle('active', eq);
+    if (audioFeaturesPanel) {
+        audioFeaturesPanel.updateStatus(settings);
+    }
 }
 
 function saveSetting(key, value) {
@@ -1619,16 +1603,32 @@ function initSettingsLogic() {
         onRefreshFolder: async () => {
             let path = currentFolderPath || settings.currentFolderPath;
             if (!path) return;
+
+            showNotification(tr('refreshFolder'), 'info', 2000);
+            const startTime = performance.now();
+
             const r = await windowApi.refreshMusicFolder(path);
             if (r && r.tracks) {
+                const endTime = performance.now();
+                const duration = Math.round(endTime - startTime);
+
                 currentFolderPath = r.folderPath;
                 saveSetting('currentFolderPath', currentFolderPath);
                 basePlaylist = r.tracks;
-                playlist = [...basePlaylist];
+
+                PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
+                playlist = PlaylistManager.getAllTracks();
+
                 sortPlaylist(sortMode);
-                if (currentTrackPath) currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
+                
+                if (currentTrackPath) {
+                    currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
+                }
+
                 updateUIForCurrentTrack();
-                showNotification(tr('folderRefreshed'));
+                renderPlaylist();
+                
+                showNotification(`${tr('folderRefreshed')} (${duration}ms)`, 'success', 3000);
             }
         },
         onAudioEffectChange: () => {
@@ -1797,10 +1797,20 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmDeleteCancelBtn = $('#confirm-delete-cancel-btn');
     confirmDeleteCloseBtn = $('#confirm-delete-close-btn');
     autoLoadLastFolderToggle = $('#toggle-auto-load-last-folder'); toggleMiniMode = $('#toggle-mini-mode');
+    audioExtrasToggleBtn = $('#audio-extras-toggle-btn');
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
 
     loadAppMeta();
     LyricsManager.init();
+
+    audioFeaturesPanel = new AudioFeaturesPanel();
+    audioFeaturesPanel.init();
+
+    if (audioExtrasToggleBtn) {
+        audioExtrasToggleBtn.addEventListener('click', () => {
+            audioFeaturesPanel.toggle();
+        });
+    }
 
     const userHelpOverlay = document.getElementById('user-help-overlay');
     const userHelpBtn = document.getElementById('user-help-btn');
