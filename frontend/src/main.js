@@ -94,6 +94,7 @@ let favoritesSet = new Set();
 let showingFavoritesOnly = false;
 
 let trackToDeletePath = null;
+let deleteInterval = null;
 let bassBoostToggle, bassBoostSlider, bassBoostValueEl, bassBoostContainer;
 let trebleBoostToggle, trebleBoostSlider, trebleBoostValueEl, trebleBoostContainer;
 let reverbToggle, reverbSlider, reverbValueEl, reverbContainer;
@@ -191,13 +192,24 @@ function showFolderContextMenu(e, folderId) {
 
 function showDeleteConfirmation(mode, id) {
     deleteMode = mode;
+    if (deleteInterval) {
+        clearInterval(deleteInterval);
+        deleteInterval = null;
+    }
+
+    const countdownWrapper = $('.delete-countdown-wrapper');
+    const countdownBar = $('#delete-countdown-bar');
+
+    if (countdownWrapper) countdownWrapper.classList.remove('active');
+    if (countdownBar) countdownBar.classList.remove('animate');
+
     if (confirmDeleteOverlay) {
         const msgEl = confirmDeleteOverlay.querySelector('.confirm-message');
         const titleEl = confirmDeleteOverlay.querySelector('h3');
 
         // Reset Button State
         if (confirmDeleteBtn) {
-            confirmDeleteBtn.disabled = false;
+            confirmDeleteBtn.disabled = (mode === 'track');
             confirmDeleteBtn.textContent = tr('confirmDeleteButton');
         }
 
@@ -205,6 +217,8 @@ function showDeleteConfirmation(mode, id) {
             trackToDeletePath = id;
             if (titleEl) titleEl.textContent = tr('confirmDeleteTitle');
             if (msgEl) msgEl.textContent = tr('confirmDeleteMessage');
+
+            handleDeleteTrack(id);
         } else {
             contextFolderId = id;
             if (titleEl) titleEl.textContent = tr('cmFolderDelete');
@@ -213,18 +227,30 @@ function showDeleteConfirmation(mode, id) {
         confirmDeleteOverlay.classList.add('visible');
     }
 }
+
 function handleDeleteTrack(fp) {
-    showDeleteConfirmation('track', fp);
-    let c = 5;
+    let countdown = 5;
+    const countdownWrapper = $('.delete-countdown-wrapper');
+    const countdownBar = $('#delete-countdown-bar');
+
+    if (countdownWrapper) countdownWrapper.classList.add('active');
+    if (countdownBar) {
+        countdownBar.classList.remove('animate');
+        void countdownBar.offsetWidth; // Trigger reflow
+        countdownBar.classList.add('animate');
+    }
+
     if (confirmDeleteBtn) {
         confirmDeleteBtn.disabled = true;
-        confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`;
-        const ci = setInterval(() => {
-            c--;
-            if (c > 0) {
-                confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${c})`;
+        confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${countdown})`;
+
+        deleteInterval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                confirmDeleteBtn.textContent = `${tr('confirmDeleteButton')} (${countdown})`;
             } else {
-                clearInterval(ci);
+                clearInterval(deleteInterval);
+                deleteInterval = null;
                 confirmDeleteBtn.textContent = tr('confirmDeleteButton');
                 confirmDeleteBtn.disabled = false;
             }
@@ -938,12 +964,12 @@ function logToTerminal(msg, type = 'info') {
     if (!terminal) return;
 
     const lines = msg.split(/\r?\n/);
-    
+
     lines.forEach((line, idx) => {
         if (line.trim() === '' && idx > 0) return;
 
         let lastLine = terminal.lastElementChild;
-        
+
         if (lastLine && !msg.includes('\n') && idx === 0) {
             lastLine.textContent += line;
         } else {
@@ -951,7 +977,7 @@ function logToTerminal(msg, type = 'info') {
             div.className = 'terminal-line';
             if (type === 'error') div.classList.add('log-error');
             else if (type === 'success') div.classList.add('log-success');
-            
+
             div.textContent = (idx === 0 && !lastLine ? '> ' : '') + line;
             terminal.appendChild(div);
         }
@@ -1001,7 +1027,7 @@ async function handleDownload() {
     }
 
     const type = (activeDownloaderMode === 'music') ? 'youtube' : activeDownloaderMode;
-    
+
     downloadManager.add(url, type, name);
 
     if (activeDownloaderMode === 'youtube') {
@@ -1366,8 +1392,6 @@ function setupEventListeners() {
 
 
     bind(playlistEl, 'click', (e) => {
-        const db = e.target.closest('.delete-track-btn');
-        if (db) { e.stopPropagation(); handleDeleteTrack(db.dataset.path); return; }
         const fb = e.target.closest('.fav-track-btn');
         if (fb) { e.stopPropagation(); toggleFavorite(fb.dataset.path); return; }
         const row = e.target.closest('.track-row');
@@ -1384,7 +1408,34 @@ function setupEventListeners() {
             }
         }
     });
-    bind($('#context-menu-show-folder'), 'click', () => { if (contextTrackIndex === null || !playlist[contextTrackIndex]) return; windowApi.showInFolder(playlist[contextTrackIndex].path); });
+
+    // --- CONTEXT MENU ITEM BINDINGS ---
+    bind($('#cm-play'), 'click', () => {
+        if (contextTrackIndex !== null && playlist[contextTrackIndex]) playTrack(contextTrackIndex);
+    });
+
+    bind($('#cm-edit'), 'click', () => {
+        if (contextTrackIndex === null || !playlist[contextTrackIndex]) return;
+        const t = playlist[contextTrackIndex];
+        if (editTitleInput) editTitleInput.value = t.title;
+        if (editArtistInput) editArtistInput.value = t.artist || '';
+        if (editTitleOverlay) editTitleOverlay.classList.add('visible');
+    });
+
+    bind($('#cm-fav'), 'click', () => {
+        if (contextTrackIndex !== null && playlist[contextTrackIndex]) toggleFavorite(playlist[contextTrackIndex].path);
+    });
+
+    bind($('#cm-folder'), 'click', () => {
+        if (contextTrackIndex !== null && playlist[contextTrackIndex]) windowApi.showInFolder(playlist[contextTrackIndex].path);
+    });
+
+    bind($('#cm-delete'), 'click', () => {
+        if (contextTrackIndex !== null && playlist[contextTrackIndex]) {
+            showDeleteConfirmation('track', playlist[contextTrackIndex].path);
+        }
+    });
+
     bind(toggleDownloaderBtn, 'click', () => {
         downloaderOverlay.classList.add('visible');
     });
@@ -1453,8 +1504,16 @@ function setupEventListeners() {
     bind($('#cm-folder-rename'), 'click', () => openFolderModal('rename', contextFolderId));
     bind($('#cm-folder-delete'), 'click', () => showDeleteConfirmation('folder', contextFolderId));
 
-    bind(confirmDeleteCancelBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
-    bind(confirmDeleteCloseBtn, 'click', () => { confirmDeleteOverlay.classList.remove('visible'); trackToDeletePath = null; });
+    bind(confirmDeleteCancelBtn, 'click', () => {
+        if (deleteInterval) { clearInterval(deleteInterval); deleteInterval = null; }
+        confirmDeleteOverlay.classList.remove('visible');
+        trackToDeletePath = null;
+    });
+    bind(confirmDeleteCloseBtn, 'click', () => {
+        if (deleteInterval) { clearInterval(deleteInterval); deleteInterval = null; }
+        confirmDeleteOverlay.classList.remove('visible');
+        trackToDeletePath = null;
+    });
 
     bind(confirmDeleteBtn, 'click', async () => {
         if (deleteMode === 'folder') {
@@ -1474,6 +1533,16 @@ function setupEventListeners() {
         confirmDeleteBtn.disabled = true;
 
         const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null;
+
+        // --- RELEASE FILE LOCK ---
+        if (trackToDeletePath === ctp) {
+            audio.pause();
+            audio.src = '';
+            audio.load();
+            currentIndex = -1;
+            updatePlayPauseUI();
+        }
+
         const r = await windowApi.deleteTrack(trackToDeletePath);
 
         confirmDeleteBtn.disabled = false;
@@ -1488,23 +1557,23 @@ function setupEventListeners() {
                 favorites.splice(favIdx, 1);
                 windowApi.setSetting('favorites', favorites);
             }
-            if (ctp) {
-                if (trackToDeletePath === ctp) {
-                    audio.pause(); currentIndex = -1; audio.src = ''; updatePlayPauseUI();
-                } else {
-                    currentIndex = playlist.findIndex(x => x.path === ctp);
-                }
+
+            if (ctp && trackToDeletePath !== ctp) {
+                currentIndex = playlist.findIndex(x => x.path === ctp);
             }
+
             renderPlaylist();
             updateUIForCurrentTrack();
             confirmDeleteOverlay.classList.remove('visible');
             trackToDeletePath = null;
-            showNotification(tr('songDeleted'));
+            showNotification(tr('songDeleted'), 'success');
+        } else {
+            showNotification(tr('statusError') + ': ' + (r.error || 'Unknown error'), 'error');
         }
     });
 
-    bind(downloaderCloseBtn, 'click', () => { 
-        downloaderOverlay.classList.remove('visible'); 
+    bind(downloaderCloseBtn, 'click', () => {
+        downloaderOverlay.classList.remove('visible');
         const errorOverlay = document.getElementById('error-modal-overlay');
         if (errorOverlay) errorOverlay.classList.remove('visible');
     });
@@ -1618,14 +1687,14 @@ function initSettingsLogic() {
                 playlist = PlaylistManager.getAllTracks();
 
                 sortPlaylist(sortMode);
-                
+
                 if (currentTrackPath) {
                     currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
                 }
 
                 updateUIForCurrentTrack();
                 renderPlaylist();
-                
+
                 showNotification(`${tr('folderRefreshed')} (${duration}ms)`, 'success', 3000);
             }
         },
@@ -1702,7 +1771,7 @@ function makeDraggable(modal, handle) {
     function dragMouseDown(e) {
         if (e.button !== 0) return;
         if (e.target.closest('input, button, select')) return;
-        
+
         e.preventDefault();
         pos3 = e.clientX;
         pos4 = e.clientY;
@@ -1966,6 +2035,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ov.addEventListener('click', (e) => {
                 if (e.target === ov) {
+                    if (ov.id === 'confirm-delete-overlay' && deleteInterval) {
+                        clearInterval(deleteInterval);
+                        deleteInterval = null;
+                    }
                     ov.classList.remove('visible');
                     setTimeout(() => {
                         if (modal) {
@@ -2214,42 +2287,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }, 500);
-
-    setTimeout(() => {
-        const cmPlay = document.getElementById('cm-play');
-        if (cmPlay) cmPlay.onclick = () => {
-            if (contextTrackIndex !== null) playTrack(contextTrackIndex);
-        };
-
-        const cmEdit = document.getElementById('cm-edit');
-        if (cmEdit) cmEdit.onclick = () => {
-            if (contextTrackIndex === null) return;
-            const t = playlist[contextTrackIndex];
-
-            if (editTitleInput) editTitleInput.value = t.title;
-            if (editArtistInput) editArtistInput.value = t.artist || '';
-
-            if (editTitleOverlay) editTitleOverlay.classList.add('visible');
-        };
-
-        const cmFav = document.getElementById('cm-fav');
-        if (cmFav) cmFav.onclick = () => {
-            if (contextTrackIndex !== null && playlist[contextTrackIndex]) toggleFavorite(playlist[contextTrackIndex].path);
-        };
-
-        const cmFolder = document.getElementById('cm-folder');
-        if (cmFolder) cmFolder.onclick = () => {
-            if (contextTrackIndex !== null && playlist[contextTrackIndex]) windowApi.showInFolder(playlist[contextTrackIndex].path);
-        };
-
-        const cmDelete = document.getElementById('cm-delete');
-        if (cmDelete) cmDelete.onclick = () => {
-            if (contextTrackIndex !== null && playlist[contextTrackIndex]) {
-                trackToDeletePath = playlist[contextTrackIndex].path;
-                if (confirmDeleteOverlay) confirmDeleteOverlay.classList.add('visible');
-            }
-        };
-    }, 1000);
 
     // Dynamic Island
     dynamicIsland = new DynamicIsland();

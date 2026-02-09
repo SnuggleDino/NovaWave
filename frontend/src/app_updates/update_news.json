@@ -1,5 +1,5 @@
 {
-    "version": "2.7.3",
+    "version": "2.7.4",
     "date": "February 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
@@ -8,47 +8,36 @@
     },
     "changes": [
         {
-            "icon": "🔧",
+            "icon": "🗑️",
             "title": {
-                "de": "Downloader-Upgrade & Fixes",
-                "en": "Downloader Upgrade & Fixes"
+                "de": "Sicheres Löschen",
+                "en": "Safe Deletion"
             },
             "desc": {
-                "de": "Live-Terminal implementiert, detailliertes Error-Modal hinzugefügt und die Warteschlange optimiert. Strikte URL-Prüfung verhindert nun Fehl-Downloads.",
-                "en": "Implemented Live Terminal, added detailed Error Modal, and optimized the queue. Strict URL validation now prevents incorrect downloads."
+                "de": "Wir haben die Löschfunktion repariert und sicherer gemacht! Songs können nun über das Kontextmenü gelöscht werden, inklusive einer 5-sekündigen Sicherheitsanimation, um versehentliches Löschen zu verhindern.",
+                "en": "We've fixed and improved the delete function! Songs can now be deleted via the context menu, featuring a 5-second safety animation to prevent accidental deletion."
             }
         },
         {
-            "icon": "🎵",
+            "icon": "⚙️",
             "title": {
-                "de": "YouTube Music Integration",
-                "en": "YouTube Music Integration"
+                "de": "Einstellungen & Suche",
+                "en": "Settings & Search"
             },
             "desc": {
-                "de": "Ein brandneuer Tab für YouTube Music! Füge Links von music.youtube.com einfach hinzu und genieße deine Lieblingssongs in bester Qualität.",
-                "en": "A brand new tab for YouTube Music! Easily add links from music.youtube.com and enjoy your favorite songs in top quality."
+                "de": "Die Suchfunktion in den Einstellungen wurde optimiert. Finde jede Option sofort mit visueller Hervorhebung und Multi-Tab-Trefferanzeige.",
+                "en": "The search function in the settings has been optimized. Find every option instantly with visual highlighting and multi-tab result display."
             }
         },
         {
-            "icon": "📄",
+            "icon": "🧹",
             "title": {
-                "de": "Verbesserte Warteschlange",
-                "en": "Improved Queue"
+                "de": "Code-Bereinigung",
+                "en": "Code Cleanup"
             },
             "desc": {
-                "de": "Habe deine Downloads im Blick! Ein neues Status-Panel im Header zeigt dir sofort Fortschritt und Erfolge. Die detaillierte Warteschlange ist nur einen Klick entfernt.",
-                "en": "Keep an eye on your downloads! A new status panel in the header shows progress and success instantly. The detailed queue is just a click away."
-            }
-        },
-        {
-            "icon": "🌍",
-            "title": {
-                "de": "Vollständige Übersetzung",
-                "en": "Full Internationalization"
-            },
-            "desc": {
-                "de": "NovaWave spricht deine Sprache! Wir haben die gesamte App überarbeitet, sodass alle Texte, Statusmeldungen und Logs dynamisch übersetzt werden.",
-                "en": "NovaWave speaks your language! We've overhauled the entire app so all text, status messages, and logs are now dynamically translated."
+                "de": "Unter der Haube haben wir ordentlich aufgeräumt. Altlasten wurden entfernt und die Event-Steuerung für Kontextmenüs zentralisiert.",
+                "en": "We've done some serious spring cleaning under the hood. Legacy code has been removed and event handling for context menus has been centralized."
             }
         }
     ]
