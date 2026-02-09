@@ -10,6 +10,8 @@ export function DownloadFromYouTube(arg1:main.DownloadOptions):Promise<main.Simp
 
 export function GetAppMeta():Promise<main.AppMeta>;
 
+export function GetImageBase64(arg1:string):Promise<string>;
+
 export function GetLyrics(arg1:string):Promise<string>;
 
 export function GetSettings():Promise<main.Config>;
@@ -34,9 +36,13 @@ export function SaveConfig(arg1:main.Config):Promise<string>;
 
 export function SelectFolder():Promise<string>;
 
+export function SelectImage():Promise<string>;
+
 export function SelectMusicFolder():Promise<main.FolderResult>;
 
 export function SendPlaybackState(arg1:boolean):Promise<void>;
+
+export function SetCoverArt(arg1:string,arg2:string):Promise<main.SimpleResult>;
 
 export function SetSetting(arg1:string,arg2:any):Promise<void>;
 

@@ -1,5 +1,5 @@
 {
-    "version": "2.7.4",
+    "version": "2.7.5",
     "date": "February 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
@@ -8,36 +8,36 @@
     },
     "changes": [
         {
-            "icon": "🗑️",
+            "icon": "🖼️",
             "title": {
-                "de": "Sicheres Löschen",
-                "en": "Safe Deletion"
+                "de": "Tag Editor Pro (Cover Art)",
+                "en": "Tag Editor Pro (Cover Art)"
             },
             "desc": {
-                "de": "Wir haben die Löschfunktion repariert und sicherer gemacht! Songs können nun über das Kontextmenü gelöscht werden, inklusive einer 5-sekündigen Sicherheitsanimation, um versehentliches Löschen zu verhindern.",
-                "en": "We've fixed and improved the delete function! Songs can now be deleted via the context menu, featuring a 5-second safety animation to prevent accidental deletion."
+                "de": "Ändere Album-Cover jetzt direkt in der App! Mit der neuen ffmpeg-Integration und Base64-Live-Vorschau ist dein Player-Look immer perfekt.",
+                "en": "Change album covers directly within the app! With the new ffmpeg integration and Base64 live preview, your player look is always perfect."
             }
         },
         {
-            "icon": "⚙️",
+            "icon": "⚡",
             "title": {
-                "de": "Einstellungen & Suche",
-                "en": "Settings & Search"
+                "de": "Schnellsuche (STRG+F)",
+                "en": "Quick Search (CTRL+F)"
             },
             "desc": {
-                "de": "Die Suchfunktion in den Einstellungen wurde optimiert. Finde jede Option sofort mit visueller Hervorhebung und Multi-Tab-Trefferanzeige.",
-                "en": "The search function in the settings has been optimized. Find every option instantly with visual highlighting and multi-tab result display."
+                "de": "Drücke STRG+F, um sofort die Playlist zu durchsuchen. Der Suchbegriff wird automatisch markiert – für maximale Geschwindigkeit.",
+                "en": "Press CTRL+F to search the playlist instantly. The search term is automatically selected – for maximum speed."
             }
         },
         {
-            "icon": "🧹",
+            "icon": "🔧",
             "title": {
-                "de": "Code-Bereinigung",
-                "en": "Code Cleanup"
+                "de": "UI & Bugfixes",
+                "en": "UI & Bugfixes"
             },
             "desc": {
-                "de": "Unter der Haube haben wir ordentlich aufgeräumt. Altlasten wurden entfernt und die Event-Steuerung für Kontextmenüs zentralisiert.",
-                "en": "We've done some serious spring cleaning under the hood. Legacy code has been removed and event handling for context menus has been centralized."
+                "de": "Die Option 'Auto (Album Cover)' ist zurück in den Einstellungen. Zudem wurde die Bildvorschau im Tag-Editor stabilisiert.",
+                "en": "The 'Auto (Album Cover)' option is back in settings. Image previews in the tag editor have also been stabilized."
             }
         }
     ]

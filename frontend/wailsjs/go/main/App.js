@@ -18,6 +18,10 @@ export function GetAppMeta() {
   return window['go']['main']['App']['GetAppMeta']();
 }
 
+export function GetImageBase64(arg1) {
+  return window['go']['main']['App']['GetImageBase64'](arg1);
+}
+
 export function GetLyrics(arg1) {
   return window['go']['main']['App']['GetLyrics'](arg1);
 }
@@ -66,12 +70,20 @@ export function SelectFolder() {
   return window['go']['main']['App']['SelectFolder']();
 }
 
+export function SelectImage() {
+  return window['go']['main']['App']['SelectImage']();
+}
+
 export function SelectMusicFolder() {
   return window['go']['main']['App']['SelectMusicFolder']();
 }
 
 export function SendPlaybackState(arg1) {
   return window['go']['main']['App']['SendPlaybackState'](arg1);
+}
+
+export function SetCoverArt(arg1, arg2) {
+  return window['go']['main']['App']['SetCoverArt'](arg1, arg2);
 }
 
 export function SetSetting(arg1, arg2) {

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"embed"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -355,6 +356,30 @@ func (a *App) SelectFolder() string {
 	return selection
 }
 
+func (a *App) SelectImage() string {
+	selection, _ := wailsRuntime.OpenFileDialog(a.ctx, wailsRuntime.OpenDialogOptions{
+		Title: "Select Cover Image",
+		Filters: []wailsRuntime.FileFilter{
+			{DisplayName: "Images (*.png;*.jpg;*.jpeg)", Pattern: "*.png;*.jpg;*.jpeg"},
+		},
+	})
+	return selection
+}
+
+func (a *App) GetImageBase64(path string) string {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	
+	contentType := "image/jpeg"
+	if strings.HasSuffix(strings.ToLower(path), ".png") {
+		contentType = "image/png"
+	}
+	
+	return "data:" + contentType + ";base64," + base64.StdEncoding.EncodeToString(data)
+}
+
 func (a *App) SelectMusicFolder() FolderResult {
 	path := a.SelectFolder()
 	if path == "" {
@@ -592,6 +617,52 @@ func (a *App) UpdateMetadata(pathStr string, newTitle string, newArtist string) 
 
 func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
 	return a.UpdateMetadata(pathStr, newTitle, "")
+}
+
+func (a *App) SetCoverArt(audioPath string, imagePath string) SimpleResult {
+	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
+	ext := filepath.Ext(audioPath)
+	tempPath := strings.TrimSuffix(audioPath, ext) + "_cover_temp" + ext
+
+	// ffmpeg command to attach picture (ID3v2 for MP3)
+	// -map 0:a -map 1:v -> Take audio from file 0, video (image) from file 1
+	// -c copy -> Copy streams without re-encoding (fast)
+	// -id3v2_version 3 -> Maximum compatibility
+	// -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)" -> Tags
+	args := []string{
+		"-i", audioPath,
+		"-i", imagePath,
+		"-map", "0:a",
+		"-map", "1:v",
+		"-c", "copy",
+		"-id3v2_version", "3",
+		"-metadata:s:v", "title=Album cover",
+		"-metadata:s:v", "comment=Cover (front)",
+		"-y",
+		tempPath,
+	}
+
+	cmd := exec.Command(ffmpegPath, args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return SimpleResult{Success: false, Error: "FFmpeg Error: " + err.Error() + " | Log: " + string(output)}
+	}
+
+	// Replace original file
+	err = os.Remove(audioPath)
+	if err != nil {
+		os.Remove(tempPath)
+		return SimpleResult{Success: false, Error: "Could not remove original file (locked?): " + err.Error()}
+	}
+
+	err = os.Rename(tempPath, audioPath)
+	if err != nil {
+		return SimpleResult{Success: false, Error: "Rename failed: " + err.Error()}
+	}
+
+	return SimpleResult{Success: true}
 }
 
 // --- Lyrics Function ---

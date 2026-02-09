@@ -38,6 +38,9 @@ const windowApi = {
     deleteTrack: App.DeleteTrack,
     updateTitle: App.UpdateTitle,
     updateMetadata: App.UpdateMetadata,
+    selectImage: App.SelectImage,
+    getImageBase64: App.GetImageBase64,
+    setCoverArt: App.SetCoverArt,
     showInFolder: App.ShowInFolder,
     moveFile: App.MoveFile,
     setWindowSize: App.SetWindowSize,
@@ -129,6 +132,7 @@ let contextMenuFolder = null;
 let contextFolderId = null;
 let deleteMode = 'track';
 let isQueueModalOpen = false;
+let selectedCoverPath = null;
 
 function initUIHelpers() {
     folderModal = $('#folder-modal-overlay');
@@ -1285,6 +1289,16 @@ function setupEventListeners() {
         const isCtrl = pressedKeys.has('control');
         const isOne = pressedKeys.has('1');
 
+        if (isCtrl && key === 'f') {
+            e.preventDefault();
+            const search = document.querySelector('.playlist-search-input');
+            if (search) {
+                search.focus();
+                search.select();
+            }
+            return;
+        }
+
         if (isCtrl && isOne && pressedKeys.has('x')) { triggerPerformanceHint(true); return; }
         if (isCtrl && isOne && pressedKeys.has('h')) {
             const debugEl = document.getElementById('debug-size-item');
@@ -1419,6 +1433,16 @@ function setupEventListeners() {
         const t = playlist[contextTrackIndex];
         if (editTitleInput) editTitleInput.value = t.title;
         if (editArtistInput) editArtistInput.value = t.artist || '';
+        
+        // Load Cover
+        const img = document.getElementById('edit-cover-img');
+        if (img) {
+            let rawPath = t.path.replace(/\\/g, '/');
+            let safeUrlPath = encodeURI(rawPath).replace(/#/g, '%23').replace(/\?/g, '%3F');
+            img.src = '/cover/' + safeUrlPath + '?t=' + Date.now();
+        }
+        selectedCoverPath = null;
+
         if (editTitleOverlay) editTitleOverlay.classList.add('visible');
     });
 
@@ -1579,12 +1603,31 @@ function setupEventListeners() {
     });
     bind(editTitleCancelBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
     bind(editTitleCloseBtn, 'click', () => { editTitleOverlay.classList.remove('visible'); });
+    bind($('#change-cover-btn'), 'click', async () => {
+        const path = await windowApi.selectImage();
+        if (path) {
+            selectedCoverPath = path;
+            const base64Data = await windowApi.getImageBase64(path);
+            const img = document.getElementById('edit-cover-img');
+            if (img && base64Data) img.src = base64Data;
+        }
+    });
+
     bind(editTitleSaveBtn, 'click', async () => {
         if (contextTrackIndex === null || !playlist[contextTrackIndex]) return;
         const t = playlist[contextTrackIndex];
         const nt = editTitleInput.value.trim();
         const na = editArtistInput.value.trim();
         if (!nt) return;
+
+        // Save Cover if changed
+        if (selectedCoverPath) {
+            const res = await windowApi.setCoverArt(t.path, selectedCoverPath);
+            if (!res.success) {
+                showNotification('Cover Error: ' + res.error, 'error');
+                return;
+            }
+        }
 
         const r = await windowApi.updateMetadata(t.path, nt, na);
         if (r.success) {
@@ -1601,7 +1644,7 @@ function setupEventListeners() {
             renderPlaylist();
             updateUIForCurrentTrack();
             editTitleOverlay.classList.remove('visible');
-            showNotification(tr('titleUpdated'));
+            showNotification(selectedCoverPath ? tr('coverUpdated') : tr('titleUpdated'));
         }
     });
     let resTimeout; new ResizeObserver(() => { if (visualizerCanvas && visualizerContainer) { visualizerCanvas.width = visualizerContainer.clientWidth; visualizerCanvas.height = visualizerContainer.clientHeight; } }).observe(visualizerContainer);

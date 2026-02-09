@@ -962,6 +962,7 @@
                                 </div>
                                 <div class="setting-control">
                                     <select id="emoji-select" class="settings-select">
+                                        <option value="auto" data-lang-key="emojiAuto">Album Cover</option>
                                         <option value="note" data-lang-key="emojiNote"></option>
                                         <option value="dino" data-lang-key="emojiDino"></option>
                                         <option value="loving_dinos" data-lang-key="emojiLovingDinos">Loving Dinos
@@ -1571,16 +1572,27 @@
                 <button id="edit-title-close-btn" class="close-modal-btn" data-lang-title="close">&times;</button>
             </div>
             <div class="settings-content edit-track-content">
-                <div class="edit-field-group">
-                    <label for="edit-title-input" class="edit-label" data-lang-key="track">Title</label>
-                    <input type="text" id="edit-title-input" class="edit-input-modern" placeholder="..."
-                        autocomplete="off">
-                </div>
+                <div class="edit-modal-grid">
+                    <div class="edit-cover-section">
+                        <div class="edit-cover-preview">
+                            <img id="edit-cover-img" src="" alt="Cover" draggable="false">
+                            <div class="edit-cover-overlay">
+                                <span data-lang-key="changeCoverBtn">Change</span>
+                            </div>
+                        </div>
+                        <button id="change-cover-btn" class="settings-button secondary-btn small-btn" data-lang-key="changeCoverBtn">Change Cover</button>
+                    </div>
+                    <div class="edit-fields-section">
+                        <div class="edit-field-group">
+                            <label for="edit-title-input" class="edit-label" data-lang-key="track">Title</label>
+                            <input type="text" id="edit-title-input" class="edit-input-modern" placeholder="..." autocomplete="off">
+                        </div>
 
-                <div class="edit-field-group" style="margin-top: 15px;">
-                    <label for="edit-artist-input" class="edit-label">Artist</label>
-                    <input type="text" id="edit-artist-input" class="edit-input-modern" placeholder="..."
-                        autocomplete="off">
+                        <div class="edit-field-group">
+                            <label for="edit-artist-input" class="edit-label">Artist</label>
+                            <input type="text" id="edit-artist-input" class="edit-input-modern" placeholder="..." autocomplete="off">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-actions">
