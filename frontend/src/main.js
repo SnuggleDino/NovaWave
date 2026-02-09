@@ -1259,9 +1259,8 @@ function setupEventListeners() {
         const isCtrl = pressedKeys.has('control');
         const isOne = pressedKeys.has('1');
 
-        if (isCtrl && isOne && pressedKeys.has('x')) { e.preventDefault(); triggerPerformanceHint(true); return; }
+        if (isCtrl && isOne && pressedKeys.has('x')) { triggerPerformanceHint(true); return; }
         if (isCtrl && isOne && pressedKeys.has('h')) {
-            e.preventDefault();
             const debugEl = document.getElementById('debug-size-item');
             const statsOverlay = document.getElementById('stats-overlay');
             if (debugEl && statsOverlay) {
@@ -1273,13 +1272,12 @@ function setupEventListeners() {
             return;
         }
         if (isCtrl && isOne && pressedKeys.size === 2) {
-            e.preventDefault();
             const devModal = document.getElementById('dev-modal-overlay');
             if (devModal && !devModal.classList.contains('visible')) devModal.classList.add('visible');
             return;
         }
 
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.target.closest('input, textarea')) return;
         switch (e.code) {
             case 'Space': e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break;
             case 'ArrowRight': if (e.shiftKey) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); else playNext(); break;
@@ -1703,6 +1701,8 @@ function makeDraggable(modal, handle) {
 
     function dragMouseDown(e) {
         if (e.button !== 0) return;
+        if (e.target.closest('input, button, select')) return;
+        
         e.preventDefault();
         pos3 = e.clientX;
         pos4 = e.clientY;

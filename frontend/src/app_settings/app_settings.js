@@ -1,3 +1,5 @@
+import './app_settings.css';
+
 export const AppSettings = {
 
     init: function (api, settings, callbacks = {}, uiRefs = {}) {
@@ -8,6 +10,90 @@ export const AppSettings = {
 
         this.setupEventListeners();
         this.restoreUIState();
+        this.initSearch();
+    },
+
+    initSearch: function () {
+        const searchInput = document.getElementById('settings-search-input');
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            this.performSearch(query);
+        });
+    },
+
+    performSearch: function (query) {
+        const items = document.querySelectorAll('.setting-item');
+        const sections = document.querySelectorAll('.settings-tab-content');
+        const navBtns = document.querySelectorAll('.settings-nav-btn');
+        const titles = document.querySelectorAll('.settings-section-title');
+
+        items.forEach(item => {
+            item.classList.remove('search-match', 'search-hidden');
+        });
+
+        navBtns.forEach(btn => {
+            btn.classList.remove('search-match');
+        });
+
+        sections.forEach(sec => {
+            sec.classList.remove('search-hidden', 'search-active');
+        });
+
+        titles.forEach(t => {
+            t.classList.remove('search-hidden');
+        });
+
+        if (!query) {
+            const activeBtn = document.querySelector('.settings-nav-btn.active');
+            if (activeBtn) {
+                const target = activeBtn.dataset.target;
+                const targetContent = document.getElementById(target);
+                if (targetContent) targetContent.classList.add('active');
+            }
+            return;
+        }
+
+        navBtns.forEach(btn => btn.classList.remove('active-during-search'));
+        sections.forEach(sec => sec.classList.remove('active'));
+
+        const matchedTabs = new Set();
+
+        items.forEach(item => {
+            const text = item.innerText.toLowerCase();
+            const isMatch = text.includes(query);
+
+            if (isMatch) {
+                item.classList.add('search-match');
+                const parentTab = item.closest('.settings-tab-content');
+                if (parentTab) matchedTabs.add(parentTab.id);
+            } else {
+                item.classList.add('search-hidden');
+            }
+        });
+
+        navBtns.forEach(btn => {
+            const target = btn.dataset.target;
+            if (matchedTabs.has(target)) {
+                btn.classList.add('search-match');
+            }
+        });
+
+        sections.forEach(sec => {
+            if (matchedTabs.has(sec.id)) {
+                sec.classList.add('search-active');
+            } else {
+                sec.classList.add('search-hidden');
+            }
+        });
+
+        titles.forEach(t => {
+            const parentTab = t.closest('.settings-tab-content');
+            if (parentTab && !matchedTabs.has(parentTab.id)) {
+                t.classList.add('search-hidden');
+            }
+        });
     },
 
     saveSetting: function (key, value) {
