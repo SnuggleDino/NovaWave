@@ -95,22 +95,6 @@ Want to touch the code or build it yourself? Easy.
 
 ---
 
-## 🗺️ Roadmap
-We're just getting started. Here is the master plan:
-
-| Status | Feature | Mission |
-| :--- | :--- | :--- |
-| ✨ **Done** | **Custom Playlists** | Create, save, and export your own mixes for every mood. (Local files) |
-| ✨ **Done** | **Virtual Folders** | Group tracks into collapsible "Player Folders" (pure design, no file moving). |
-| ✨ **Done** | **Lyrics Support** | Sing along! Display lyrics for your local tracks. |
-| ✨ **Done** | **YouTube Music** | Integrated support for music.youtube.com links. |
-| ✨ **Done** | **i18n** | Full multi-language support (German/English). |
-| 🔜 **Soon** | **Tag Editor** | Fix those messy tags and add cover art directly in the player. |
-| ✨ **Done** | **5-Band Equalizer** | More control than just Bass & Treble. Fine-tune your sound. |
-| ✨ **Done** | **More Themes** | You can never have enough style. More colors, more animations. |
-
----
-
 **Enjoy your music!** 🦖🦕
 
 *Made by SnuggleDino*
