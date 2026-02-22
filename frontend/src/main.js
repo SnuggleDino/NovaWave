@@ -2,7 +2,6 @@ import * as App from '../wailsjs/go/main/App.js';
 import lovingDinosImg from './assets/Two_Loving_Cute_Dinos.png';
 import sunsetSunImg from './assets/sunset_drive_retrowave_sun.png';
 import lovingDinosIco from './assets/Two_Loving_Cute_Dinos.ico';
-import { translations } from './translations.js';
 import { VisualizerEngine } from './visualizerEngine.js';
 import { IntroManager } from './app_intros/intro_manager.js';
 import { AudioExtras } from './audio_extras.js';
@@ -12,8 +11,10 @@ import { ThemePackListener } from './theme_packs/theme_pack_listener.js';
 import { ThemeListener } from './app_themes/theme_listener.js';
 import { BackgroundAnimListener } from './background_animations/background_anim_listener.js';
 import { AppLoader } from './app_start/app_loader.js';
+import { OnBoarding } from './app_start/onboarding.js';
 import { AppShutdown } from './app_shutdown/shutdown.js';
 import { AppSettings } from './app_settings/app_settings.js';
+import { LangHandler } from './app_language/lang_handler.js';
 import { UpdateManager } from './app_updates/update_manager.js';
 import { PlaylistManager } from './playlist/playlist_manager.js';
 import { DownloadManager } from './downloader/download_manager.js';
@@ -52,6 +53,61 @@ const windowApi = {
 };
 
 window.api = windowApi;
+
+// --- GLOBAL UI SWITCHER ---
+window.switchUI = async function (key, target) {
+    console.log(`[Global] switchUI called: key=${key}, target=${target}`);
+    try {
+        if (window.api && window.api.setSetting) {
+            await window.api.setSetting('uiVersion', key);
+            console.log('[Global] UI setting saved');
+        } else {
+            localStorage.setItem('uiVersion', key);
+        }
+    } catch (e) {
+        console.error('[Global] Error saving UI setting:', e);
+    }
+
+    // Force navigation
+    setTimeout(() => {
+        console.log(`[Global] Navigating to ${target}`);
+        try {
+            window.location.href = target;
+        } catch (e) {
+            window.location.assign(target);
+        }
+    }, 50);
+};
+
+// --- GLOBAL HOTKEYS ---
+document.addEventListener('keydown', (e) => {
+    // Stage 1: Ctrl + U
+    if (e.ctrlKey && e.key.toLowerCase() === 'u') {
+        window.__uiHotkeyStage = true;
+        console.log('[Hotkeys] UI Switch Stage 1 Activated (Waiting for 1 or 2)');
+
+        // Reset after 1 second
+        if (window.__uiHotkeyTimeout) clearTimeout(window.__uiHotkeyTimeout);
+        window.__uiHotkeyTimeout = setTimeout(() => {
+            window.__uiHotkeyStage = false;
+            console.log('[Hotkeys] UI Switch Timeout');
+        }, 1000);
+        return;
+    }
+
+    // Stage 2: 1 or 2
+    if (window.__uiHotkeyStage) {
+        if (e.key === '1') {
+            console.log('[Hotkeys] Triggering Legacy UI');
+            window.switchUI('legacy', 'index.html');
+            window.__uiHotkeyStage = false;
+        } else if (e.key === '2') {
+            console.log('[Hotkeys] Triggering V2 UI');
+            window.switchUI('v2', 'v2.html');
+            window.__uiHotkeyStage = false;
+        }
+    }
+});
 
 // App State
 let playlist = [];
@@ -341,10 +397,7 @@ function updateCachedColor() {
 
 // --- Sector: App Core Functions ---
 function tr(key, ...args) {
-    const langCode = currentLanguage || (settings && settings.language) || 'de';
-    const lang = translations[langCode] || translations.de;
-    const text = (lang && lang[key]) || (translations.de[key]) || key;
-    return typeof text === 'function' ? text(...args) : text;
+    return LangHandler.tr(key, ...args);
 }
 
 // Player Logic
@@ -463,7 +516,14 @@ function updateUIForCurrentTrack() {
         return;
     }
     const track = playlist[currentIndex];
-    if (trackTitleEl) trackTitleEl.textContent = track.title;
+    
+    let cleanTitle = track.title || "";
+    const extensions = ['.mp3', '.wav', '.flac', '.ogg', '.m4a'];
+    extensions.forEach(ext => {
+        if (cleanTitle.toLowerCase().endsWith(ext)) cleanTitle = cleanTitle.slice(0, -ext.length);
+    });
+
+    if (trackTitleEl) trackTitleEl.textContent = cleanTitle;
     if (trackArtistEl) trackArtistEl.textContent = track.artist || tr('unknownArtist');
 
     LyricsManager.checkAvailability(track.path);
@@ -471,7 +531,10 @@ function updateUIForCurrentTrack() {
     updateEmoji(emojiMode, customEmoji);
     updateActiveTrackInPlaylist();
     updateTrackTitleScroll();
-    if (isPlaying && lastNotifiedPath !== track.path) { showNotification(`${tr('nowPlaying')}: ${track.title}`); lastNotifiedPath = track.path; }
+    if (isPlaying && lastNotifiedPath !== track.path) { 
+        showNotification(`${tr('nowPlaying')}: ${cleanTitle}`); 
+        lastNotifiedPath = track.path; 
+    }
 }
 
 function updatePlayPauseUI() { if (playIcon && pauseIcon) { playIcon.style.display = isPlaying ? 'none' : 'block'; pauseIcon.style.display = isPlaying ? 'block' : 'none'; } updateActiveTrackInPlaylist(); }
@@ -499,7 +562,6 @@ function renderPlaylist() {
     if (renderPlaylistRequestId) cancelAnimationFrame(renderPlaylistRequestId);
     playlistEl.innerHTML = '';
 
-    // Get items to render from Manager
     const renderItems = PlaylistManager.getRenderList(
         searchInput ? searchInput.value : '',
         showingFavoritesOnly ? favoritesSet : null
@@ -512,7 +574,6 @@ function renderPlaylist() {
         return;
     }
 
-    // Update flat playlist for audio navigation
     if (showingFavoritesOnly || (searchInput && searchInput.value)) {
         playlist = renderItems.filter(i => i.type === 'track').map(i => i.data);
     } else {
@@ -623,22 +684,22 @@ function renderPlaylist() {
 }
 
 function applyTranslations() {
-    document.querySelectorAll('[data-lang-key]').forEach(el => {
+    document.querySelectorAll('[data-lang-key], [data-key]').forEach(el => {
+        const key = el.dataset.langKey || el.dataset.key;
         if (el.classList.contains('apply-intro-btn')) {
             const card = el.closest('.intro-card');
             if (card) {
                 const isActive = card.classList.contains('active');
-                el.dataset.langKey = isActive ? 'introActiveBtn' : 'introApplyBtn';
+                const introKey = isActive ? 'introActiveBtn' : 'introApplyBtn';
+                const text = tr(introKey);
+                if(text) el.textContent = text;
+                return;
             }
         }
 
-        const text = tr(el.dataset.langKey);
+        const text = tr(key);
         if (text) {
-            if (el.tagName === 'BUTTON') {
-                el.textContent = text;
-            } else {
-                el.textContent = text;
-            }
+            el.textContent = text;
             if (el.classList.contains('glitch-text')) el.setAttribute('data-text', text);
         }
     });
@@ -651,10 +712,13 @@ function applyTranslations() {
 
     document.querySelectorAll('[data-lang-placeholder]').forEach(el => { el.placeholder = tr(el.dataset.langPlaceholder); });
     document.querySelectorAll('[data-lang-title]').forEach(el => { el.title = tr(el.dataset.langTitle); });
-    const dropZoneTextEl = $('#drop-zone p'); if (dropZoneTextEl) dropZoneTextEl.textContent = tr('dropZoneText');
+    const dropZoneTextEl = $('#drop-zone p'); if (dropZoneTextEl) dropZoneTextEl.textContent = tr('dropFiles');
     document.title = tr('appTitle');
     updateUIForCurrentTrack();
     renderPlaylist();
+    if (UpdateManager && typeof UpdateManager.renderChangelog === 'function') {
+        UpdateManager.renderChangelog();
+    }
 
     if (settings.snuggleTimeEnabled || document.body.classList.contains('snuggle-time-active')) {
         updateEmoji('loving_dinos');
@@ -1433,7 +1497,7 @@ function setupEventListeners() {
         const t = playlist[contextTrackIndex];
         if (editTitleInput) editTitleInput.value = t.title;
         if (editArtistInput) editArtistInput.value = t.artist || '';
-        
+
         // Load Cover
         const img = document.getElementById('edit-cover-img');
         if (img) {
@@ -1744,9 +1808,6 @@ function initSettingsLogic() {
         onAudioEffectChange: () => {
             updateAudioEffects();
         },
-        onLangUpdate: () => {
-            applyTranslations();
-        },
         onPerformanceModeChange: (enabled) => {
             AppPerformance.setPerformanceMode(enabled);
         },
@@ -1893,7 +1954,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     downloaderOverlay = $('#downloader-overlay'); downloaderCloseBtn = $('#downloader-close-btn'); downloadStatusEl = $('#info-status-text');
     downloadProgressFill = $('.yt-progress-fill'); visualizerCanvas = $('#visualizer-canvas'); visualizerContainer = $('.visualizer-container');
-    langButtons = document.querySelectorAll('.lang-btn'); settingsBtn = $('#settings-btn'); settingsOverlay = $('#settings-overlay');
+    const langSelect = $('#lang-select');
+    if (langSelect) {
+        langSelect.value = currentLanguage;
+        langSelect.addEventListener('change', (e) => {
+            const newLang = e.target.value;
+            LangHandler.setLanguage(newLang);
+            currentLanguage = newLang; // State updaten
+            api.setSetting('language', newLang);
+            applyTranslations(); // Live Update ohne Reload
+        });
+    }
+    settingsBtn = $('#settings-btn'); settingsOverlay = $('#settings-overlay');
     settingsCloseBtn = $('#settings-close-btn'); downloadFolderInput = $('#default-download-folder'); changeFolderBtn = $('#change-download-folder-btn');
     qualitySelect = $('#audio-quality-select'); themeSelect = $('#theme-select'); visualizerToggle = $('#toggle-visualizer');
     visualizerStyleSelect = $('#visualizer-style-select'); visualizerSensitivity = $('#visualizer-sensitivity');
@@ -1939,6 +2011,12 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             userHelpOverlay.classList.remove('visible');
         };
+    }
+
+    if (settingsBtn && settingsOverlay) {
+        settingsBtn.addEventListener('click', () => {
+            settingsOverlay.classList.add('visible');
+        });
     }
 
     const helpToSettingsBtn = $('#help-to-settings-btn');
@@ -2139,12 +2217,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAudioEvents(); setupEventListeners();
 
     async function initializeApp() {
+        if (OnBoarding.init()) return;
         try {
-            const savedLang = localStorage.getItem('language');
-            if (savedLang) {
-                currentLanguage = savedLang;
-                document.documentElement.lang = currentLanguage;
-            }
+            const savedLang = localStorage.getItem('language') || 'de';
+            LangHandler.init(savedLang);
+            currentLanguage = savedLang;
+            document.documentElement.lang = currentLanguage;
 
             AppLoader.init();
             AppLoader.update(5, tr('loaderBooting'));
@@ -2198,10 +2276,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
-            // --- Sector: Animation Init ---
-            const initialAnim = settings.animationMode || 'flow';
-            applyAnimationSetting(initialAnim);
-            if (animationSelect) animationSelect.value = initialAnim;
+            // Set select value but don't re-trigger animation logic
+            if (animationSelect) animationSelect.value = settings.animationMode || 'flow';
 
             // Initialize Theme Packs
             ThemePackListener.init({
@@ -2342,5 +2418,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.hideNotification = function () {
         if (dynamicIsland) dynamicIsland.hide();
     };
+
+    // --- Design Tab: Smart UI Switcher ---
+    // NOTE: initDesignTab is handled by app_settings.js setupEventListeners
 
 });

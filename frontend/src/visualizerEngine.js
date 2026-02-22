@@ -104,6 +104,7 @@ export class VisualizerEngine {
         else if (this.style === 'sakura_bloom') this.drawSakura(width, height, ac, boost);
         else if (this.style === 'zen') this.drawZen(width, height, ac, boost);
         else if (this.style === 'moonlight') this.drawMoonlight(width, height, ac, boost);
+        else if (this.style === 'retro-circle') this.drawRetroCircle(width, height, ac, boost);
 
         if (this.musicEmojiEl && this.audio && !this.audio.paused) {
             const blv = (this.dataArray[0] + this.dataArray[1]) / 2;
@@ -114,12 +115,11 @@ export class VisualizerEngine {
     }
 
     drawBars(width, height, ac, boost) {
-        let bl = this.dataArray.length / 2;
-        if (this.maxBars > 0 && bl > this.maxBars) bl = this.maxBars;
+        let bl = 64; // Fixed minimum count for V2
+        if (this.maxBars > 0 && this.maxBars > bl) bl = this.maxBars;
         const bw = (width / bl) * 0.8;
         for (let i = 0; i < bl; i++) {
-            let dataIdx = i;
-            if (this.maxBars > 0) dataIdx = Math.floor(i * ((this.dataArray.length / 2) / this.maxBars));
+            const dataIdx = Math.floor(i * (this.dataArray.length / 2 / bl));
             const bh = (this.dataArray[dataIdx] / 255) * height * 0.8 * boost;
             this.ctx.fillStyle = ac;
             this.ctx.fillRect(i * (width / bl), height - bh, bw, bh);
@@ -188,7 +188,6 @@ export class VisualizerEngine {
 
         let maxColumns = Math.ceil((width / 2) / (blockWidth + gapX)) + 1;
 
-        // --- Respect maxBars Setting ---
         if (this.maxBars > 0) {
             maxColumns = Math.floor(this.maxBars / 2);
         }
@@ -304,6 +303,35 @@ export class VisualizerEngine {
                 this.ctx.globalAlpha = 1.0;
             }
         }
+    }
+
+    drawRetroCircle(width, height, ac, boost) {
+        const centerX = width / 2, centerY = height / 2;
+        const radius = Math.min(width, height) / 3.5;
+        const blocks = 48;
+        const blockWidth = (Math.PI * 2 * radius / blocks) * 0.7;
+        const rotation = Date.now() * 0.0005;
+
+        for (let i = 0; i < blocks; i++) {
+            const dataIdx = Math.floor((i / blocks) * (this.dataArray.length / 2));
+            const val = this.dataArray[dataIdx] * boost;
+            const bh = (val / 255) * 80;
+            const angle = (i / blocks) * Math.PI * 2 + rotation;
+
+            this.ctx.save();
+            this.ctx.translate(centerX + Math.cos(angle) * radius, centerY + Math.sin(angle) * radius);
+            this.ctx.rotate(angle + Math.PI / 2);
+
+            this.ctx.fillStyle = val > 180 ? '#ff4444' : val > 120 ? '#ffcc00' : ac;
+            this.ctx.shadowBlur = 15;
+            this.ctx.shadowColor = this.ctx.fillStyle;
+
+            this.ctx.fillRect(-blockWidth / 2, -bh, blockWidth, 8);
+            if (bh > 20) this.ctx.fillRect(-blockWidth / 2, -bh + 20, blockWidth, 4);
+
+            this.ctx.restore();
+        }
+        this.ctx.shadowBlur = 0;
     }
 
     getAndResetFrameCount() {

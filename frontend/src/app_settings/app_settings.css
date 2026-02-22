@@ -1,3 +1,119 @@
+/* Design Grid */
+.design-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+    max-width: 1000px;
+}
+
+/* Design Cards*/
+.design-card {
+    flex: 1;
+    min-width: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.design-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.design-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.design-card:hover::before {
+    opacity: 1;
+}
+
+.design-card.active {
+    background: color-mix(in srgb, var(--accent), transparent 90%);
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 40px color-mix(in srgb, var(--accent), transparent 70%);
+}
+
+.design-card-badge {
+    align-self: flex-start;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-muted);
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.design-card.active .design-card-badge {
+    background: var(--accent);
+    color: #000;
+    border-color: transparent;
+}
+
+.design-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1;
+}
+
+.design-card-title {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+}
+
+.design-card-desc {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+.design-card-status {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--accent);
+}
+
 .settings-search-wrapper {
     position: relative;
     flex: 1;
@@ -12,6 +128,7 @@
     transform: translateY(-50%);
     color: var(--text-muted);
     pointer-events: none;
+    z-index: 2;
 }
 
 #settings-search-input {
@@ -50,9 +167,17 @@
 }
 
 @keyframes item-highlight-pulse {
-    0% { box-shadow: 0 0 0 0 var(--accent-soft); }
-    50% { box-shadow: 0 0 0 8px transparent; }
-    100% { box-shadow: 0 0 0 0 transparent; }
+    0% {
+        box-shadow: 0 0 0 0 var(--accent-soft);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px transparent;
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 transparent;
+    }
 }
 
 .settings-nav-btn.search-match {
@@ -65,10 +190,9 @@
     display: block !important;
 }
 
-#settings-search-input:not(:placeholder-shown) ~ #settings-close-btn {
-}
+#settings-search-input:not(:placeholder-shown)~#settings-close-btn {}
 
-#settings-search-input:not(:placeholder-shown) ~ .settings-body .settings-nav-btn.active {
+#settings-search-input:not(:placeholder-shown)~.settings-body .settings-nav-btn.active {
     background: transparent !important;
     color: var(--text-muted) !important;
     border-color: transparent !important;

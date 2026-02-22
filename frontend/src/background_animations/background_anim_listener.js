@@ -5,7 +5,7 @@
 
 // Load configurations and styles
 const animConfigs = import.meta.glob('./*/anim.json', { eager: true });
-const animStyles = import.meta.glob('./*/anim.css', { eager: true }); // Ensure CSS is bundled
+const animStyles = import.meta.glob('./*/anim.css', { eager: true });
 
 // Load JS logic modules
 const animModules = import.meta.glob('./*/anim.js', { eager: true });
@@ -19,16 +19,13 @@ export const BackgroundAnimListener = {
         const select = document.getElementById('animation-select');
         if (!select) return;
 
-        // Clear existing options
         const currentVal = select.value;
         select.innerHTML = '';
 
-        // Extract animations
         const anims = Object.keys(animConfigs).map(key => {
             return animConfigs[key].default || animConfigs[key];
         });
 
-        // Sort order
         const sortOrder = ['off', 'flow', 'nebula', 'aurora', 'plasma', 'snowfall', 'stellar', 'rain', 'fireflies', 'matrix'];
 
         anims.sort((a, b) => {
@@ -38,7 +35,6 @@ export const BackgroundAnimListener = {
             return a.name.localeCompare(b.name);
         });
 
-        // Populate Select
         anims.forEach(anim => {
             const option = document.createElement('option');
             option.value = anim.id;
@@ -46,14 +42,15 @@ export const BackgroundAnimListener = {
             select.appendChild(option);
         });
 
-        // Restore selection
+        const storedAnim = localStorage.getItem('animationMode');
         if (currentVal && anims.find(a => a.id === currentVal)) {
             select.value = currentVal;
+        } else if (storedAnim && anims.find(a => a.id === storedAnim)) {
+            select.value = storedAnim;
         } else {
-            select.value = 'off';
+            select.value = 'flow';
         }
 
-        // Apply initial animation
         this.setAnimation(select.value);
     },
 

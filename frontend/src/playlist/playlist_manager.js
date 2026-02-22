@@ -1,8 +1,10 @@
 export const PlaylistManager = {
     items: [],
+    favOnly: false,
 
     init() {
         this.items = [];
+        this.favOnly = false;
     },
 
     loadTracks(tracks) {
@@ -13,6 +15,10 @@ export const PlaylistManager = {
             groupId: null,
             searchString: (t.title + ' ' + (t.artist || '')).toLowerCase()
         }));
+    },
+
+    toggleFavOnly() {
+        this.favOnly = !this.favOnly;
     },
 
     getUniqueName(name, excludeId = null) {
@@ -81,8 +87,8 @@ export const PlaylistManager = {
     getRenderList(filterText = '', favoritesSet = null) {
         let activeFilter = filterText.trim().toLowerCase();
 
-        if (favoritesSet) {
-            return this.items.filter(i => i.type === 'track' && favoritesSet.has(i.id));
+        if (this.favOnly && favoritesSet) {
+            return this.items.filter(i => i.type === 'track' && favoritesSet.has(i.id.replace(/\\/g, '/')));
         }
 
         if (activeFilter.length > 0) {

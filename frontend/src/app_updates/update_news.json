@@ -1,43 +1,63 @@
 {
-    "version": "2.7.5",
-    "date": "February 2026",
+    "version": "2.8.0 Liquid",
+    "date": "22. Februar 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Your Music • Your Style • Your Rules",
-        "en": "Your Music • Your Style • Your Rules"
+        "de": "Das Liquid-Update ist da - Schneller, Schöner, Besser!",
+        "en": "The Liquid Update is here - Faster, More Beautiful, Better!",
+        "tr": "Liquid Güncellemesi geldi - Daha Hızlı, Daha Güzel, Daha İyi!"
     },
     "changes": [
         {
-            "icon": "🖼️",
+            "icon": "✨",
             "title": {
-                "de": "Tag Editor Pro (Cover Art)",
-                "en": "Tag Editor Pro (Cover Art)"
+                "de": "NovaWave V2 (Liquid UI)",
+                "en": "NovaWave V2 (Liquid UI)",
+                "tr": "NovaWave V2 (Liquid Arayüzü)"
             },
             "desc": {
-                "de": "Ändere Album-Cover jetzt direkt in der App! Mit der neuen ffmpeg-Integration und Base64-Live-Vorschau ist dein Player-Look immer perfekt.",
-                "en": "Change album covers directly within the app! With the new ffmpeg integration and Base64 live preview, your player look is always perfect."
+                "de": "Erleben Sie das komplett neue Redesign mit Sidebar-Navigation, Glas-Effekten und flüssigen Animationen.",
+                "en": "Experience the completely new redesign with sidebar navigation, glass effects, and smooth animations.",
+                "tr": "Kenar çubuğu navigasyonu, cam efektleri ve akıcı animasyonlarla tamamen yeni yeniden tasarımı deneyimleyin."
             }
         },
         {
-            "icon": "⚡",
+            "icon": "🚀",
             "title": {
-                "de": "Schnellsuche (STRG+F)",
-                "en": "Quick Search (CTRL+F)"
+                "de": "Blitzschnelles Laden",
+                "en": "Lightning Fast Loading",
+                "tr": "Yıldırım Hızında Yükleme"
             },
             "desc": {
-                "de": "Drücke STRG+F, um sofort die Playlist zu durchsuchen. Der Suchbegriff wird automatisch markiert – für maximale Geschwindigkeit.",
-                "en": "Press CTRL+F to search the playlist instantly. The search term is automatically selected – for maximum speed."
+                "de": "Dank des neuen Track-Caches im Backend werden auch riesige Musikbibliotheken (140+ Songs) sofort geladen.",
+                "en": "Thanks to the new track cache in the backend, even massive music libraries (140+ songs) load instantly.",
+                "tr": "Backend'deki yeni şarkı önbelleği sayesinde devasa müzik kitaplıkları (140+ şarkı) anında yüklenir."
             }
         },
         {
-            "icon": "🔧",
+            "icon": "🌈",
             "title": {
-                "de": "UI & Bugfixes",
-                "en": "UI & Bugfixes"
+                "de": "10 Farb-Themes",
+                "en": "10 Color Themes",
+                "tr": "10 Renk Teması"
             },
             "desc": {
-                "de": "Die Option 'Auto (Album Cover)' ist zurück in den Einstellungen. Zudem wurde die Bildvorschau im Tag-Editor stabilisiert.",
-                "en": "The 'Auto (Album Cover)' option is back in settings. Image previews in the tag editor have also been stabilized."
+                "de": "Wählen Sie aus 10 neuen, lebendigen Farbschemata Ihren persönlichen Favoriten für das Interface.",
+                "en": "Choose your personal favorite for the interface from 10 new, vibrant color schemes.",
+                "tr": "Arayüz için 10 yeni ve canlı renk şeması arasından kişisel favorinizi seçin."
+            }
+        },
+        {
+            "icon": "🌍",
+            "title": {
+                "de": "Türkische Sprache",
+                "en": "Turkish Language Support",
+                "tr": "Türkçe Dil Desteği"
+            },
+            "desc": {
+                "de": "NovaWave spricht jetzt Türkisch! Die gesamte App wurde vollständig lokalisiert.",
+                "en": "NovaWave now speaks Turkish! The entire app has been fully localized.",
+                "tr": "NovaWave artık Türkçe konuşuyor! Tüm uygulama tamamen yerelleştirildi."
             }
         }
     ]

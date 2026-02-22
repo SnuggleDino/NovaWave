@@ -1,0 +1,48 @@
+import { de_DE } from './language/de_DE.js';
+import { en_EN } from './language/en_EN.js';
+import { tr_TR } from './language/tr_TR.js';
+
+export const LangHandler = {
+    languages: {
+        'de': de_DE,
+        'en': en_EN,
+        'tr': tr_TR
+    },
+    
+    currentLang: localStorage.getItem('language') || 'de',
+
+    init: function(lang) {
+        if (lang && this.languages[lang]) {
+            this.currentLang = lang;
+        }
+        document.documentElement.lang = this.currentLang;
+    },
+
+    setLanguage: function(lang) {
+        if (this.languages[lang]) {
+            this.currentLang = lang;
+            localStorage.setItem('language', lang);
+            document.documentElement.lang = lang;
+            return true;
+        }
+        return false;
+    },
+
+    tr: function(key, ...args) {
+        const langData = this.languages[this.currentLang] || this.languages['de'];
+        let text = langData[key] || this.languages['de'][key] || key;
+        
+        if (typeof text === 'function') {
+            return text(...args);
+        }
+        return text;
+    },
+
+    getAvailableLanguages: function() {
+        return [
+            { code: 'de', label: 'Deutsch' },
+            { code: 'en', label: 'English' },
+            { code: 'tr', label: 'T\u00FCrk\u00E7e' }
+        ];
+    }
+};

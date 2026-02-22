@@ -1,4 +1,5 @@
 import './app_settings.css';
+import { LangHandler } from '../app_language/lang_handler.js';
 
 export const AppSettings = {
 
@@ -11,6 +12,7 @@ export const AppSettings = {
         this.setupEventListeners();
         this.restoreUIState();
         this.initSearch();
+        this.renderDesignCards();
     },
 
     initSearch: function () {
@@ -121,6 +123,9 @@ export const AppSettings = {
                 const targetId = tab.dataset.target;
                 const targetContent = document.getElementById(targetId);
                 if (targetContent) targetContent.classList.add('active');
+                if (targetId === 'tab-design') {
+                    this.renderDesignCards();
+                }
             });
         });
 
@@ -154,7 +159,6 @@ export const AppSettings = {
 
         // --- APPEARANCE TAB ---
 
-        // Theme Select
         const themeSelect = $('theme-select');
         if (themeSelect) {
             themeSelect.addEventListener('change', (e) => {
@@ -165,7 +169,6 @@ export const AppSettings = {
             });
         }
 
-        // Custom Color Toggle
         const toggleUseCustomColor = $('toggle-use-custom-color');
         const accentColorContainer = $('accent-color-container');
         if (toggleUseCustomColor) {
@@ -185,7 +188,6 @@ export const AppSettings = {
             });
         }
 
-        // Accent Color Picker
         const accentColorPicker = $('accent-color-picker');
         if (accentColorPicker) {
             accentColorPicker.addEventListener('input', (e) => {
@@ -199,7 +201,6 @@ export const AppSettings = {
             });
         }
 
-        // Gradient Title
         const toggleGradientTitle = $('toggle-gradient-title');
         if (toggleGradientTitle) {
             toggleGradientTitle.addEventListener('change', (e) => {
@@ -208,7 +209,6 @@ export const AppSettings = {
             });
         }
 
-        // Background Animation
         const animationSelect = $('animation-select');
         if (animationSelect) {
             animationSelect.addEventListener('change', (e) => {
@@ -218,7 +218,6 @@ export const AppSettings = {
             });
         }
 
-        // Visualizer Toggle
         const visualizerToggle = $('toggle-visualizer');
         if (visualizerToggle) {
             visualizerToggle.addEventListener('change', (e) => {
@@ -228,7 +227,6 @@ export const AppSettings = {
             });
         }
 
-        // Visualizer Style
         const visualizerStyleSelect = $('visualizer-style-select');
         if (visualizerStyleSelect) {
             visualizerStyleSelect.addEventListener('change', (e) => {
@@ -238,7 +236,6 @@ export const AppSettings = {
             });
         }
 
-        // Visualizer Sensitivity
         const visualizerSensitivity = $('visualizer-sensitivity');
         if (visualizerSensitivity) {
             visualizerSensitivity.addEventListener('input', (e) => {
@@ -258,7 +255,6 @@ export const AppSettings = {
             });
         }
 
-        // Visualizer Bars
         const visualizerBarsSelect = $('visualizer-bars-select');
         const visualizerBarsResetBtn = $('visualizer-bars-reset-btn');
 
@@ -279,7 +275,6 @@ export const AppSettings = {
             });
         }
 
-        // Cover Emoji
         const emojiSelect = $('emoji-select');
         const customEmojiContainer = $('custom-emoji-container');
         const customEmojiInput = $('custom-emoji-input');
@@ -305,7 +300,6 @@ export const AppSettings = {
 
         // --- PLAYER TAB ---
 
-        // Sleep Timer
         const sleepTimerSelect = $('sleep-timer-select');
         if (sleepTimerSelect) {
             sleepTimerSelect.addEventListener('change', (e) => {
@@ -314,7 +308,6 @@ export const AppSettings = {
             });
         }
 
-        // Playback Speed
         const speedSlider = $('speed-slider');
         const speedValue = $('speed-value');
         const speedResetBtn = $('speed-reset-btn');
@@ -338,7 +331,6 @@ export const AppSettings = {
             });
         }
 
-        // Delete Songs
         const toggleDeleteSongs = $('toggle-delete-songs');
         if (toggleDeleteSongs) {
             toggleDeleteSongs.addEventListener('change', (e) => {
@@ -460,10 +452,10 @@ export const AppSettings = {
                 const val = parseFloat(e.target.value);
                 if (!this.settings.eqValues) this.settings.eqValues = [0, 0, 0, 0, 0];
                 this.settings.eqValues[band] = val;
-                
+
                 const valueDisplay = slider.parentElement.querySelector('.eq-value');
                 if (valueDisplay) valueDisplay.textContent = val + 'dB';
-                
+
                 this.saveSetting('eqValues', this.settings.eqValues);
                 if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
             });
@@ -573,25 +565,41 @@ export const AppSettings = {
             });
         }
 
-        // --- RESET & SHUTDOWN TAB ---
+        const btnClearCache = $('btn-clear-cache');
+        if (btnClearCache) {
+            btnClearCache.addEventListener('click', () => {
+                localStorage.clear();
+                location.reload();
+            });
+        }
+
         const btnRestartApp = $('btn-restart-app');
         if (btnRestartApp) {
             btnRestartApp.addEventListener('click', () => {
-                if(this.callbacks.onRestartApp) this.callbacks.onRestartApp();
+                if (this.api && this.api.restartApp) this.api.restartApp();
             });
         }
 
         const btnResetApp = $('btn-reset-app');
         if (btnResetApp) {
-            btnResetApp.addEventListener('click', () => {
-                if (this.callbacks.onResetApp) this.callbacks.onResetApp();
+            btnResetApp.addEventListener('click', async () => {
+                const confirmMsg = LangHandler.tr('resetWarning');
+                if (confirm(confirmMsg)) {
+                    if (this.api && this.api.resetConfig) {
+                        const res = await this.api.resetConfig();
+                        if (res.success) {
+                            localStorage.clear();
+                            location.reload();
+                        }
+                    }
+                }
             });
         }
 
-        const btnShutdownApp = $('btn-shutdown-app');
-        if (btnShutdownApp) {
-            btnShutdownApp.addEventListener('click', () => {
-                if (this.callbacks.onShutdownApp) this.callbacks.onShutdownApp();
+        const btnQuitApp = $('btn-quit-app');
+        if (btnQuitApp) {
+            btnQuitApp.addEventListener('click', () => {
+                if (this.api && this.api.restartApp) this.api.restartApp(); // Or dedicated quit if available
             });
         }
     },
@@ -736,5 +744,121 @@ export const AppSettings = {
 
         const playlistPositionSelect = $('playlist-position-select');
         if (playlistPositionSelect && s.playlistPosition) playlistPositionSelect.value = s.playlistPosition;
+    },
+
+    renderDesignCards: function () {
+        const container = document.getElementById('design-ui-cards');
+        if (!container) return;
+
+        // Clear container (Standard Pattern)
+        container.innerHTML = '';
+
+        // --- SECTION 1: DESIGN CARDS ---
+        const tr = (key) => LangHandler.tr(key);
+        const activeUi = localStorage.getItem('uiVersion') || 'legacy';
+        const activeBadgeText = tr('designActiveBadge');
+
+        const cards = [
+            {
+                key: 'legacy',
+                label: tr('designLegacyLabel'),
+                badge: tr('designLegacyBadge'),
+                desc: tr('designLegacyDesc'),
+                target: 'index.html'
+            },
+            {
+                key: 'v2',
+                label: tr('designV2Label'),
+                badge: tr('designV2Badge'),
+                desc: tr('designV2Desc'),
+                target: 'v2.html'
+            }
+        ];
+
+        cards.forEach(card => {
+            const isActive = card.key === activeUi;
+
+            const cardEl = document.createElement('div');
+            cardEl.className = `design-card ${isActive ? 'active' : ''}`;
+
+            // Badge
+            const badgeEl = document.createElement('div');
+            badgeEl.className = 'design-card-badge';
+            badgeEl.textContent = card.badge;
+
+            // Content
+            const contentEl = document.createElement('div');
+            contentEl.className = 'design-card-content';
+
+            const titleEl = document.createElement('div');
+            titleEl.className = 'design-card-title';
+            titleEl.textContent = card.label;
+
+            const descEl = document.createElement('div');
+            descEl.className = 'design-card-desc';
+            descEl.textContent = card.desc;
+
+            contentEl.appendChild(titleEl);
+            contentEl.appendChild(descEl);
+
+            cardEl.appendChild(badgeEl);
+            cardEl.appendChild(contentEl);
+
+            // Active Status
+            if (isActive) {
+                const statusEl = document.createElement('div');
+                statusEl.className = 'design-card-status';
+                statusEl.textContent = activeBadgeText;
+                cardEl.appendChild(statusEl);
+            }
+
+            // Event Listener (Standard Pattern)
+            cardEl.addEventListener('click', () => {
+                if (window.switchUI) {
+                    window.switchUI(card.key, card.target);
+                } else {
+                    // Fallback
+                    localStorage.setItem('uiVersion', card.key);
+                    window.location.href = card.target;
+                }
+            });
+
+            container.appendChild(cardEl);
+        });
+
+        // --- SECTION 2: HOTKEY INFO ---
+        const hotkeySection = document.createElement('div');
+        hotkeySection.className = 'setting-item';
+        hotkeySection.style.marginTop = '24px';
+        hotkeySection.style.borderTop = '1px solid var(--border-soft)';
+        hotkeySection.style.paddingTop = '24px';
+        hotkeySection.style.display = 'block';
+
+        hotkeySection.innerHTML = `
+            <div class="setting-label" style="margin-bottom: 15px;">
+                <strong>UI Shortcuts</strong>
+                <p>Quickly switch between interfaces using your keyboard</p>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.85rem; font-weight: 600;">Legacy UI</span>
+                    <div style="display: flex; gap: 4px;">
+                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">CTRL</kbd>
+                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">U</kbd>
+                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">1</kbd>
+                    </div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.85rem; font-weight: 600;">NovaWave V2</span>
+                    <div style="display: flex; gap: 4px;">
+                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">CTRL</kbd>
+                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">U</kbd>
+                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">2</kbd>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(hotkeySection);
     }
 };

@@ -30,6 +30,8 @@ type App struct {
 	ctx            context.Context
 	mu             sync.Mutex
 	spotifyService *SpotifyService
+	trackCache     map[string]Track
+	cacheMu        sync.RWMutex
 }
 
 type Config struct {
@@ -115,6 +117,7 @@ type FolderResult struct {
 func NewApp() *App {
 	return &App{
 		spotifyService: NewSpotifyService(),
+		trackCache:     make(map[string]Track),
 	}
 }
 
@@ -345,8 +348,29 @@ func (a *App) SetSetting(key string, value interface{}) {
 	os.WriteFile(path, newData, 0644)
 }
 
-func (a *App) GetSettings() Config {
-	return a.LoadConfig()
+func (a *App) GetSettings() map[string]interface{} {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	path := getConfigPath()
+	data, err := os.ReadFile(path)
+	if err != nil {
+		// Return default config as map
+		return map[string]interface{}{
+			"theme":                   "midnight",
+			"volume":                  0.2,
+			"language":                "de",
+			"coverMode":               "note",
+			"animationMode":           "flow",
+			"visualizerEnabled":       true,
+			"activeIntro":             "waterdrop",
+			"enableFavoritesPlaylist": true,
+		}
+	}
+
+	var configMap map[string]interface{}
+	json.Unmarshal(data, &configMap)
+	return configMap
 }
 
 func (a *App) SelectFolder() string {
@@ -389,25 +413,22 @@ func (a *App) SelectMusicFolder() FolderResult {
 }
 
 func (a *App) getBinaryPath(name string) string {
-	configDir, _ := os.UserConfigDir()
+	// 1. Check local bin folder first (Development)
+	cwd, _ := os.Getwd()
+	localPath := filepath.Join(cwd, "bin", name)
+	if info, err := os.Stat(localPath); err == nil && !info.IsDir() {
+		abs, _ := filepath.Abs(localPath)
+		return abs
+	}
 
+	// 2. Check AppData (Production)
+	configDir, _ := os.UserConfigDir()
 	appDataPath := filepath.Join(configDir, "NovaWave", "bin", name)
 	if info, err := os.Stat(appDataPath); err == nil && !info.IsDir() {
 		return appDataPath
 	}
 
-	ex, _ := os.Executable()
-	curr := filepath.Dir(ex)
-	searchPaths := []string{curr, filepath.Join(curr, "bin"), "bin"}
-
-	for _, p := range searchPaths {
-		fullPath := filepath.Join(p, name)
-		if info, err := os.Stat(fullPath); err == nil && !info.IsDir() {
-			abs, _ := filepath.Abs(fullPath)
-			return abs
-		}
-	}
-
+	// 3. Fallback to PATH
 	return name
 }
 
@@ -523,6 +544,18 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 				mtime = float64(info.ModTime().UnixMilli())
 			}
 
+			// 1. Check Cache first
+			a.cacheMu.RLock()
+			cached, exists := a.trackCache[fullPath]
+			a.cacheMu.RUnlock()
+
+			if exists && cached.Mtime == mtime {
+				mutex.Lock()
+				tracks = append(tracks, cached)
+				mutex.Unlock()
+				return
+			}
+
 			currentTrack := Track{Path: fullPath, Title: f.Name(), Artist: "Unknown Artist", Mtime: mtime}
 			fileHandle, err := os.Open(fullPath)
 			if err == nil {
@@ -551,6 +584,10 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 				currentTrack.Duration = int(dur)
 			}
 
+			a.cacheMu.Lock()
+			a.trackCache[fullPath] = currentTrack
+			a.cacheMu.Unlock()
+
 			mutex.Lock()
 			tracks = append(tracks, currentTrack)
 			mutex.Unlock()
@@ -570,6 +607,12 @@ func (a *App) DeleteTrack(path string) SimpleResult {
 	if err != nil {
 		return SimpleResult{Success: false, Error: err.Error()}
 	}
+
+	// Remove from cache
+	a.cacheMu.Lock()
+	delete(a.trackCache, path)
+	a.cacheMu.Unlock()
+
 	return SimpleResult{Success: true}
 }
 
@@ -779,8 +822,15 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 
 	err := cmd.Wait()
 	if err != nil {
-		return SimpleResult{Success: false, Error: "Download failed (check terminal for details)"}, nil
+		wailsRuntime.EventsEmit(a.ctx, "download-terminal-log", fmt.Sprintf("ERROR: %v\n", err))
+		return SimpleResult{Success: false, Error: fmt.Sprintf("Download failed: %v", err)}, nil
 	}
+
+	// Try to find the downloaded file to send path to frontend
+	wailsRuntime.EventsEmit(a.ctx, "download-success", map[string]string{
+		"id":   opts.Id,
+		"path": folderPath,
+	})
 
 	return SimpleResult{Success: true}, nil
 }

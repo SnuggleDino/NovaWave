@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
@@ -20,13 +21,13 @@ type FileLoader struct{}
 
 func (h *FileLoader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/music/") {
-		filePath := strings.TrimPrefix(r.URL.Path, "/music/")
+		filePath, _ := url.PathUnescape(strings.TrimPrefix(r.URL.Path, "/music/"))
 		http.ServeFile(w, r, filePath)
 		return
 	}
 
 	if strings.HasPrefix(r.URL.Path, "/cover/") {
-		filePath := strings.TrimPrefix(r.URL.Path, "/cover/")
+		filePath, _ := url.PathUnescape(strings.TrimPrefix(r.URL.Path, "/cover/"))
 		f, err := os.Open(filePath)
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)

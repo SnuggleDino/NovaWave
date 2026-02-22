@@ -1,21 +1,20 @@
 import updateData from './update_news.json';
 import dinoImg from '../assets/Two_Loving_Cute_Dinos.png';
+import { LangHandler } from '../app_language/lang_handler.js';
 
 export const UpdateManager = {
-    currentVersion: '0.0.0', // Will be set via init
+    currentVersion: '0.0.0',
 
     init: async function (api) {
         this.api = api;
 
         try {
-            // Fetch current app version from backend
             const meta = await this.api.getAppMeta();
             if (meta && meta.version) {
                 this.currentVersion = meta.version;
             }
         } catch (e) {
             console.error("UpdateManager: Could not fetch app version", e);
-            // Fallback if API fails (should not happen in prod)
             this.currentVersion = updateData.version || '2.0.0';
         }
 
@@ -29,12 +28,10 @@ export const UpdateManager = {
         const okBtn = document.getElementById('update-info-ok-btn');
         const footerBtn = document.getElementById('footer-update-btn');
 
-        // Logic to close modal and save version
         const markAsSeenAndClose = () => {
             if (modal) modal.classList.remove('visible');
             localStorage.setItem('lastSeenUpdateVersion', this.currentVersion);
 
-            // Remove "NEW" badge from footer button if it exists
             if (footerBtn) footerBtn.classList.remove('has-update');
         };
 
@@ -48,7 +45,6 @@ export const UpdateManager = {
             });
         }
 
-        // Initial render
         this.renderChangelog();
     },
 
@@ -69,7 +65,7 @@ export const UpdateManager = {
         const container = document.getElementById('changelog-content');
         if (!container) return;
 
-        const lang = document.documentElement.lang || 'en';
+        const lang = LangHandler.currentLang || 'de';
         const getLocalized = (obj) => obj[lang] || obj['en'] || obj['de'] || '';
 
         let listItems = '';
