@@ -30,6 +30,9 @@ export const UpdateManager = {
 
         const markAsSeenAndClose = () => {
             if (modal) modal.classList.remove('visible');
+            if (this.api && this.api.setSetting) {
+                this.api.setSetting('lastSeenUpdateVersion', this.currentVersion);
+            }
             localStorage.setItem('lastSeenUpdateVersion', this.currentVersion);
 
             if (footerBtn) footerBtn.classList.remove('has-update');
@@ -48,8 +51,16 @@ export const UpdateManager = {
         this.renderChangelog();
     },
 
-    checkIfUpdateIsNew: function () {
-        const lastSeen = localStorage.getItem('lastSeenUpdateVersion');
+    checkIfUpdateIsNew: async function () {
+        let lastSeen = localStorage.getItem('lastSeenUpdateVersion');
+        
+        if (this.api && this.api.getSettings) {
+            const config = await this.api.getSettings();
+            if (config && config.lastSeenUpdateVersion) {
+                lastSeen = config.lastSeenUpdateVersion;
+            }
+        }
+
         const footerBtn = document.getElementById('footer-update-btn');
         const modal = document.getElementById('update-info-overlay');
 

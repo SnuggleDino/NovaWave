@@ -284,6 +284,10 @@ export const AppSettings = {
                 const val = e.target.value;
                 if (customEmojiContainer) customEmojiContainer.style.display = val === 'custom' ? 'flex' : 'none';
                 this.saveSetting('coverMode', val);
+                
+                if (val !== 'auto') {
+                    this.saveSetting('lastCoverEmoji', val);
+                }
 
                 const customVal = customEmojiInput ? customEmojiInput.value : '';
                 if (this.callbacks.onEmojiChange) this.callbacks.onEmojiChange(val, customVal);
@@ -294,6 +298,7 @@ export const AppSettings = {
             customEmojiInput.addEventListener('input', (e) => {
                 const val = e.target.value;
                 this.saveSetting('customCoverEmoji', val);
+                this.saveSetting('lastCoverEmoji', 'custom');
                 if (this.callbacks.onEmojiChange) this.callbacks.onEmojiChange('custom', val);
             });
         }
@@ -755,7 +760,11 @@ export const AppSettings = {
 
         // --- SECTION 1: DESIGN CARDS ---
         const tr = (key) => LangHandler.tr(key);
-        const activeUi = localStorage.getItem('uiVersion') || 'legacy';
+        
+        // Detect actual active UI via filename
+        const isV2 = window.location.pathname.includes('v2.html');
+        const activeUi = isV2 ? 'v2' : 'legacy';
+        
         const activeBadgeText = tr('designActiveBadge');
 
         const cards = [

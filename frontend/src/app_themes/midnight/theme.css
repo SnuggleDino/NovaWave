@@ -8,3 +8,17 @@
     --text-muted: #a1a1aa;
     --border-soft: #27272a;
 }
+
+:root[data-theme="midnight"] .track-row.active {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.25), transparent) !important;
+    border-left: 5px solid var(--accent) !important;
+    box-shadow: inset 8px 0 15px -10px var(--accent);
+}
+
+:root[data-theme="midnight"] .track-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme="midnight"] .track-row.active:hover {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.35), transparent) !important;
+}

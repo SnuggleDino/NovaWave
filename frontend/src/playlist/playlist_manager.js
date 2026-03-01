@@ -87,8 +87,13 @@ export const PlaylistManager = {
     getRenderList(filterText = '', favoritesSet = null) {
         let activeFilter = filterText.trim().toLowerCase();
 
-        if (this.favOnly && favoritesSet) {
-            return this.items.filter(i => i.type === 'track' && favoritesSet.has(i.id.replace(/\\/g, '/')));
+        if (favoritesSet) {
+            return this.items.filter(i => {
+                if (i.type !== 'track') return false;
+                const path = i.id.replace(/\\/g, '/');
+                const isMatch = activeFilter.length === 0 || i.searchString.includes(activeFilter);
+                return isMatch && favoritesSet.has(path);
+            });
         }
 
         if (activeFilter.length > 0) {

@@ -55,6 +55,7 @@ export class DownloadManager {
 
             if (result && result.success) {
                 nextTask.status = 'success';
+                nextTask.finishedAt = new Date();
                 if (this.callbacks.onLog) {
                     this.callbacks.onLog('logDownloadComplete', 'success', nextTask.url);
                 }
@@ -63,6 +64,7 @@ export class DownloadManager {
             }
         } catch (err) {
             nextTask.status = 'error';
+            nextTask.finishedAt = new Date();
             nextTask.error = err.message || err;
             if (this.callbacks.onLog) {
                 this.callbacks.onLog('logDownloadFailed', 'error', nextTask.error);

@@ -136,7 +136,7 @@
                 <img src="/src/assets/icon.png" alt="App Icon" class="logo-icon">
                 <div class="app-title-text">
                     <h1 data-lang-key="appTitle">NovaWave</h1>
-                    <p data-lang-key="appSubtitle">Lokal &amp; YouTube</p>
+                    <p data-lang-key="appSubtitle">Your Music • Your Style • Your Rules</p>
                 </div>
             </div>
             <div class="header-right">
@@ -154,6 +154,9 @@
                         <option value="de">Deutsch</option>
                         <option value="en">English</option>
                         <option value="tr">T&uuml;rk&ccedil;e</option>
+                        <option value="es">Espa&ntilde;ol</option>
+                        <option value="fr">Fran&ccedil;ais</option>
+                        <option value="it">Italiano</option>
                     </select>
                 </div>
                 <div class="header-item">
@@ -175,7 +178,7 @@
                         </svg>
                     </button>
                     <button id="toggle-downloader-btn" class="control-btn" style="margin-right: 12px;"
-                        data-lang-title="toggleDownloader">
+                        data-lang-title="openDownloader">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -354,7 +357,16 @@
 
         <footer class="app-footer">
             <button id="open-dev-btn" class="footer-info-btn">NW DEV</button>
-            <button id="footer-update-btn" class="footer-update-btn">UPDATE</button>
+            <button id="footer-update-btn" class="footer-update-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span data-lang-key="updateTitle">UPDATE</span>
+                <div class="update-dot"></div>
+            </button>
             <div class="footer-right" style="margin-left: auto;">
                 <button id="project-info-btn" class="footer-info-btn">INFO</button>
             </div>
@@ -1522,6 +1534,19 @@
 
                             <div class="setting-item">
                                 <div class="setting-label">
+                                    <strong data-lang-key="rememberThemePack">Theme-Packs merken</strong>
+                                    <p data-lang-key="rememberThemePackDesc">Soll das zuletzt gewählte Theme-Pack beim nächsten Start automatisch geladen werden?</p>
+                                </div>
+                                <div class="setting-control">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="toggle-remember-themepack">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-item">
+                                <div class="setting-label">
                                     <strong data-lang-key="showStatsLabel">System-Stats anzeigen</strong>
                                     <p data-lang-key="showStatsDesc">Zeigt FPS und Performance-Daten im Hauptfenster
                                         an.
@@ -1654,8 +1679,8 @@
             </div>
             <div class="settings-content">
                 <div class="edit-field-group">
-                    <label class="edit-label" data-lang-key="folderNamePlaceholder"></label>
-                    <input type="text" id="folder-input" class="edit-input-modern" placeholder="..." autocomplete="off">
+                    <label class="edit-label" data-lang-key="folderNamePlaceholder">Name</label>
+                    <input type="text" id="folder-input" class="edit-input-modern" data-lang-placeholder="FOLDERNAMEPLACEHOLDER" placeholder="..." autocomplete="off">
                 </div>
                 <div class="edit-field-group" style="margin-top: 15px;">
                     <label class="edit-label" data-lang-key="folderColorLabel"></label>
@@ -1821,70 +1846,81 @@
                         <path d="m6 8-4 4 4 4"></path>
                         <path d="m14.5 4-5 16"></path>
                     </svg>
-                    <span data-lang-key="devTitle">Developer Console</span>
-                </h3>
-                <button id="dev-modal-close-btn" class="close-modal-btn">&times;</button>
-            </div>
-            <div class="settings-content">
-                <div class="settings-section">
+                    <span data-lang-key="devTitle">Developer Toolkit</span>
+                    </h3>
+                    <button id="dev-modal-close-btn" class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="settings-content">
+                    <div class="settings-section">
                     <h4 class="settings-section-title" data-lang-key="devStandardHotkeys">Player Hotkeys</h4>
                     <div class="help-grid">
-                        <div class="help-card">
-                            <div class="help-card-content">
-                                <h4 data-lang-key="devPlayPause"></h4>
-                            </div>
-                            <div class="hotkey-display"><kbd>Space</kbd></div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4 data-lang-key="devPlayPause">Wiedergabe / Pause</h4>
                         </div>
-                        <div class="help-card">
-                            <div class="help-card-content">
-                                <h4 data-lang-key="devNavTitle"></h4>
-                            </div>
-                            <div class="hotkey-display"><kbd>&#8592;</kbd> <kbd>&#8594;</kbd></div>
-                        </div>
-                        <div class="help-card">
-                            <div class="help-card-content">
-                                <h4 data-lang-key="devVolTitle"></h4>
-                            </div>
-                            <div class="hotkey-display"><kbd>&#8593;</kbd> <kbd>&#8595;</kbd></div>
-                        </div>
-                        <div class="help-card">
-                            <div class="help-card-content">
-                                <h4 data-lang-key="devSeekTitle"></h4>
-                            </div>
-                            <div class="hotkey-display"><kbd>Shift</kbd> + <kbd>&#8592;/&#8594;</kbd></div>
-                        </div>
+                        <div class="hotkey-display"><kbd>Space</kbd></div>
                     </div>
-                </div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4 data-lang-key="devNavTitle">Navigation (Songs)</h4>
+                        </div>
+                        <div class="hotkey-display"><kbd>&#8592;</kbd> <kbd>&#8594;</kbd></div>
+                    </div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4 data-lang-key="devVolTitle">Lautst&auml;rke</h4>
+                        </div>
+                        <div class="hotkey-display"><kbd>&#8593;</kbd> <kbd>&#8595;</kbd></div>
+                    </div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4 data-lang-key="devSeekTitle">Spulen</h4>
+                        </div>
+                        <div class="hotkey-display"><kbd>Shift</kbd> + <kbd>&#8592;/&#8594;</kbd></div>
+                    </div>
+                    </div>
+                    </div>
 
-                <div class="settings-section">
+                    <div class="settings-section">
                     <h4 class="settings-section-title" data-lang-key="devDebugHotkeys">System Hotkeys</h4>
                     <div class="help-grid">
-                        <div class="help-card">
-                            <div class="help-card-content">
-                                <h4 data-lang-key="devMenuTitle"></h4>
-                            </div>
-                            <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd></div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4 data-lang-key="devTitle">Developer Toolkit</h4>
                         </div>
-                        <div class="help-card">
-                            <div class="help-card-content">
-                                <h4 data-lang-key="devPerfTitle"></h4>
-                            </div>
-                            <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>X</kbd></div>
-                        </div>
-                        <div class="help-card">
-                            <div class="help-card-content">
-                                <h4 data-lang-key="devWinTitle"></h4>
-                            </div>
-                            <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>H</kbd></div>
-                        </div>
+                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd></div>
                     </div>
-                </div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4 data-lang-key="devMenuTitle">Legacy UI</h4>
+                        </div>
+                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>U</kbd> <span style="opacity:0.5; margin:0 5px;">then</span> <kbd>1</kbd></div>
+                    </div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4 data-lang-key="devPerfTitle">V2 UI</h4>
+                        </div>
+                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>U</kbd> <span style="opacity:0.5; margin:0 5px;">then</span> <kbd>2</kbd></div>
+                    </div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4 data-lang-key="devWinTitle">Debug Overlay</h4>
+                        </div>
+                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>H</kbd></div>
+                    </div>
+                    <div class="help-card">
+                        <div class="help-card-content">
+                            <h4>Performance Mode</h4>
+                        </div>
+                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>X</kbd></div>
+                    </div>
+                    </div>
+                    </div>
 
-                <p
+                    <p
                     style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 20px; opacity: 0.7;">
-                    NovaWave Core v2.0
-                </p>
-
+                    NovaWave
+                    </p>
             </div>
         </div>
     </div>

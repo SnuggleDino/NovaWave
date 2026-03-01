@@ -1,12 +1,18 @@
 import { de_DE } from './language/de_DE.js';
 import { en_EN } from './language/en_EN.js';
 import { tr_TR } from './language/tr_TR.js';
+import { es_ES } from './language/es_ES.js';
+import { fr_FR } from './language/fr_FR.js';
+import { it_IT } from './language/it_IT.js';
 
 export const LangHandler = {
     languages: {
         'de': de_DE,
         'en': en_EN,
-        'tr': tr_TR
+        'tr': tr_TR,
+        'es': es_ES,
+        'fr': fr_FR,
+        'it': it_IT
     },
     
     currentLang: localStorage.getItem('language') || 'de',
@@ -35,6 +41,14 @@ export const LangHandler = {
         if (typeof text === 'function') {
             return text(...args);
         }
+
+        // Support for {} placeholders
+        if (args.length > 0 && typeof text === 'string') {
+            args.forEach(arg => {
+                text = text.replace('{}', arg);
+            });
+        }
+        
         return text;
     },
 
@@ -42,7 +56,10 @@ export const LangHandler = {
         return [
             { code: 'de', label: 'Deutsch' },
             { code: 'en', label: 'English' },
-            { code: 'tr', label: 'T\u00FCrk\u00E7e' }
+            { code: 'tr', label: 'T\u00FCrk\u00E7e' },
+            { code: 'es', label: 'Espa\u00F1ol' },
+            { code: 'fr', label: 'Fran\u00E7ais' },
+            { code: 'it', label: 'Italiano' }
         ];
     }
 };

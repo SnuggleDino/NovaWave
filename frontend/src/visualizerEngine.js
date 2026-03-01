@@ -108,9 +108,14 @@ export class VisualizerEngine {
 
         if (this.musicEmojiEl && this.audio && !this.audio.paused) {
             const blv = (this.dataArray[0] + this.dataArray[1]) / 2;
-            const fy = Math.sin(this.audio.currentTime * 2) * 10;
-            let js = (blv > 180) ? 1 + (Math.min((blv - 180) / 50, 1) * 0.15) : 1;
-            this.musicEmojiEl.style.transform = `translateY(${fy}px) scale(${js})`;
+            const time = performance.now() * 0.002;
+            const fy = Math.sin(time) * 8;
+            const rot = Math.sin(time * 0.5) * 2;
+            let js = (blv > 170) ? 1 + (Math.min((blv - 170) / 60, 1) * 0.12) : 1;
+            
+            this.musicEmojiEl.style.transform = `translateY(${fy}px) rotate(${rot}deg) scale(${js})`;
+        } else if (this.musicEmojiEl) {
+            this.musicEmojiEl.style.transform = 'translateY(0) rotate(0deg) scale(1)';
         }
     }
 

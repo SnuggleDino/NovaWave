@@ -1,10 +1,10 @@
 import { LangHandler } from '../app_language/lang_handler.js';
 
 export const OnBoarding = {
-    init: function() {
-        const isComplete = localStorage.getItem('on_boarding_complete') === 'true';
-        if (isComplete) return false;
+    onComplete: null,
 
+    init: function(callback) {
+        this.onComplete = callback;
         this.renderModal();
         return true;
     },
@@ -50,7 +50,7 @@ export const OnBoarding = {
         subText.textContent = 'Choose your language to start';
 
         const langGrid = document.createElement('div');
-        langGrid.style = 'display: grid; grid-template-columns: 1fr; gap: 15px;';
+        langGrid.style = 'display: grid; grid-template-columns: 1fr 1fr; gap: 15px;';
 
         const langs = LangHandler.getAvailableLanguages();
         langs.forEach(l => {
@@ -107,6 +107,12 @@ export const OnBoarding = {
     complete: function(lang) {
         LangHandler.setLanguage(lang);
         localStorage.setItem('on_boarding_complete', 'true');
+        
+        if (typeof this.onComplete === 'function') {
+            this.onComplete(lang);
+            return;
+        }
+
         const overlay = document.getElementById('onboarding-overlay');
         if (overlay) {
             overlay.style.opacity = 0;

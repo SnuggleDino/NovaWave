@@ -32,7 +32,9 @@ export function renderDesignCards() {
     const container = document.getElementById('design-ui-cards');
     if (!container) return;
 
-    const activeUi = localStorage.getItem('uiVersion') || 'legacy';
+    // Detect actual active UI via filename
+    const isV2 = window.location.pathname.includes('v2.html');
+    const activeUi = isV2 ? 'v2' : 'legacy';
 
     const cards = [
         {
@@ -49,7 +51,7 @@ export function renderDesignCards() {
             badge: tr('designV2Badge'),
             desc: tr('designV2Desc'),
             icon: V2_ICON,
-            target: 'src/ui_v2/v2.html'
+            target: 'v2.html'
         }
     ];
 

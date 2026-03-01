@@ -7,6 +7,11 @@ import { VisualizerEngine } from '../visualizerEngine.js';
 import { AudioExtras } from '../audio_extras.js';
 import { LangHandler } from '../app_language/lang_handler.js';
 import { OnBoarding } from '../app_start/onboarding.js';
+import updateData from '../app_updates/update_news.json';
+import vinylImg from '../assets/Vinyl_Record.png';
+import cdImg from '../assets/Compact_Disc.png';
+import dinoImg from '../assets/Two_Loving_Cute_Dinos.png';
+import iconImg from '../assets/icon.png';
 
 // --- Safe API Wrapper ---
 const api = {
@@ -17,6 +22,7 @@ const api = {
     selectMusicFolder: () => App.SelectMusicFolder().catch(()=>({tracks:[]})),
     selectFolder: () => App.SelectFolder().catch(()=>""),
     refreshMusicFolder: (p) => App.RefreshMusicFolder(p).catch(() => ({tracks:[]})),
+    getAppMeta: () => App.GetAppMeta().catch(()=>({})),
     showInFolder: (p) => App.ShowInFolder(p).catch(()=>{}),
     deleteTrack: (p) => App.DeleteTrack(p).catch(()=>{}),
     restartApp: () => App.RestartApp().catch(()=>{}),
@@ -45,7 +51,8 @@ const state = {
     downloadFolder: null,
     loop: false,
     shuffle: false,
-    favs: new Set()
+    favs: new Set(),
+    favFilterActive: false
 };
 
 const $ = (id) => document.getElementById(id);
@@ -57,16 +64,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.lang = localStorage.getItem('language') || 'de';
     LangHandler.init(state.lang);
     applyTranslations();
+    
+    if ($('l-sidebar-logo')) $('l-sidebar-logo').src = iconImg;
+    if ($('l-art-img')) $('l-art-img').src = iconImg;
+
     initNavigation();
     initAudioSystem();
     await initSettings();
     initDownloader();
     initModals();
+    initLibraryButtons();
     loadChangelogInto('v2-changelog-list');
     
-    setTimeout(() => {
+    setTimeout(async () => {
         $('v2-root')?.classList.add('ready');
-        autoLoad();
+        await autoLoad();
     }, 200);
 });
 
@@ -165,113 +177,115 @@ async function initAudioEngine() {
 // --- 3. SETTINGS ---
 
 async function initSettings() {
-    const s = await api.getSettings();
-    
-    // Volume Fix: Always prioritize loaded settings
-    if(s.v2_volume !== undefined) { 
-        state.volume = parseFloat(s.v2_volume);
-        state.audio.volume = state.volume; 
-        if($('l-vol-slider')) $('l-vol-slider').value = state.volume; 
-    } else {
-        // Fallback to default
-        state.audio.volume = state.volume;
-        if($('l-vol-slider')) $('l-vol-slider').value = state.volume;
-    }
-    
-    if(s.favorites) state.favs = new Set(s.favorites.map(p => p.replace(/\\/g, '/')));
-    if(s.v2_cover_mode) state.coverMode = s.v2_cover_mode;
-    if(s.v2_custom_cover) state.customCoverPath = s.v2_custom_cover;
-    state.downloadFolder = s.downloadFolder || s.DownloadFolder;
-    
-    const dlPathEl = $('v2-dl-folder-path');
-    if(dlPathEl) dlPathEl.textContent = state.downloadFolder || 'Not set';
-
-    $('btn-v2-change-dl-folder').onclick = async () => {
-        const p = await api.selectFolder();
-        if(p) {
-            state.downloadFolder = p;
-            api.setSetting('downloadFolder', p);
-            if(dlPathEl) dlPathEl.textContent = p;
-            window.logToDev("Updated download folder: " + p);
+    try {
+        const s = await api.getSettings();
+        if(!s) return;
+        
+        if(s.v2_volume !== undefined) { 
+            state.volume = parseFloat(s.v2_volume);
+            state.audio.volume = state.volume; 
+            if($('l-vol-slider')) $('l-vol-slider').value = state.volume; 
+        } else {
+            state.audio.volume = state.volume;
+            if($('l-vol-slider')) $('l-vol-slider').value = state.volume;
         }
-    };
-    
-    applyTheme(s.v2_theme || 'midnight');
-    $$('.l-swatch').forEach(sw => {
-        if(sw.dataset.t === (s.v2_theme || 'midnight')) sw.classList.add('active');
-        sw.onclick = () => {
-            applyTheme(sw.dataset.t);
-            api.setSetting('v2_theme', sw.dataset.t);
-            $$('.l-swatch').forEach(x => x.classList.remove('active'));
-            sw.classList.add('active');
-            
-            // Immediately update visualizer color if active
-            if(state.visualizer) {
-                const newAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-                state.visualizer.updateSettings({ accentColor: newAccent });
+        
+        if(s.favorites) state.favs = new Set(s.favorites.map(p => p.replace(/\\/g, '/')));
+        if(s.v2_cover_mode) state.coverMode = s.v2_cover_mode;
+        if(s.v2_custom_cover) state.customCoverPath = s.v2_custom_cover;
+        state.downloadFolder = s.downloadFolder || s.DownloadFolder;
+        
+        const dlPathEl = $('v2-dl-folder-path');
+        if(dlPathEl) dlPathEl.textContent = state.downloadFolder || 'Not set';
+
+        $('btn-v2-change-dl-folder').onclick = async () => {
+            const p = await api.selectFolder();
+            if(p) {
+                state.downloadFolder = p;
+                api.setSetting('downloadFolder', p);
+                if(dlPathEl) dlPathEl.textContent = p;
+                window.logToDev("Updated download folder: " + p);
             }
         };
-    });
+        
+        applyTheme(s.v2_theme || 'midnight');
+        $$('.l-swatch').forEach(sw => {
+            if(sw.dataset.t === (s.v2_theme || 'midnight')) sw.classList.add('active');
+            sw.onclick = () => {
+                applyTheme(sw.dataset.t);
+                api.setSetting('v2_theme', sw.dataset.t);
+                $$('.l-swatch').forEach(x => x.classList.remove('active'));
+                sw.classList.add('active');
+                
+                if(state.visualizer) {
+                    const newAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+                    state.visualizer.updateSettings({ accentColor: newAccent });
+                }
+            };
+        });
 
-    $$('.l-lang-btn').forEach(btn => {
-        if (btn.dataset.lang === state.lang) btn.classList.add('active');
-        btn.onclick = () => {
-            const newLang = btn.dataset.lang;
-            LangHandler.setLanguage(newLang);
-            state.lang = newLang; // State updaten
-            api.setSetting('language', newLang);
-            $$('.l-lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === newLang));
-            applyTranslations(); // Live Update
-        };
-    });
+        $$('.l-lang-btn').forEach(btn => {
+            if (btn.dataset.lang === state.lang) btn.classList.add('active');
+            btn.onclick = () => {
+                const newLang = btn.dataset.lang;
+                LangHandler.setLanguage(newLang);
+                state.lang = newLang;
+                api.setSetting('language', newLang);
+                $$('.l-lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === newLang));
+                applyTranslations();
+            };
+        });
 
-    const coverSel = $('set-cover-mode');
-    if(coverSel) {
-        coverSel.value = s.v2_cover_mode || 'auto';
-        state.coverMode = coverSel.value;
-        coverSel.onchange = () => {
+        const coverSel = $('set-cover-mode');
+        if(coverSel) {
+            coverSel.value = s.v2_cover_mode || 'auto';
             state.coverMode = coverSel.value;
-            api.setSetting('v2_cover_mode', state.coverMode);
-            $('btn-set-custom-image').style.display = state.coverMode === 'custom' ? 'inline-flex' : 'none';
-            if(state.currentIndex >= 0) updateUI(state.playlist[state.currentIndex]);
-        };
-    }
-
-    const visSel = $('set-vis-style');
-    if(visSel) {
-        visSel.value = s.v2_vis_style || 'orbit';
-        visSel.onchange = () => {
-            const style = visSel.value;
-            if(state.visualizer) state.visualizer.updateSettings({ style: style });
-            api.setSetting('v2_vis_style', style);
-        };
-    }
-    $('btn-set-custom-image').onclick = async () => {
-        const p = await api.selectImage();
-        if(p) { 
-            state.customCoverPath = p; 
-            api.setSetting('v2_custom_cover', p); 
-            if(state.currentIndex >= 0) updateUI(state.playlist[state.currentIndex]); 
+            coverSel.onchange = () => {
+                state.coverMode = coverSel.value;
+                api.setSetting('v2_cover_mode', state.coverMode);
+                $('btn-set-custom-image').style.display = state.coverMode === 'custom' ? 'inline-flex' : 'none';
+                if(state.currentIndex >= 0) updateUI(state.playlist[state.currentIndex]);
+            };
         }
-    };
 
-    const updateFX = () => {
-        if (!state.audioExtras) return;
-        const eq = Array.from($$('.l-slider-v')).map(sl => parseFloat(sl.value));
-        state.audioExtras.setEq(eq, true);
-        state.audioExtras.setBass(parseFloat($('fx-bass-val')?.value || 6), $('fx-bass-en').checked);
-        state.audioExtras.setTreble(parseFloat($('fx-treble-val')?.value || 6), $('fx-treble-en').checked);
-        state.audioExtras.setReverb(parseFloat($('fx-reverb-val')?.value || 30), $('fx-reverb-en').checked);
-        api.setSetting('v2_eq_values', eq);
-    };
-    $$('.l-slider-v, .l-switch input, .l-slider-h').forEach(i => i.oninput = updateFX);
-    $('btn-eq-reset-all').onclick = () => { $$('.l-slider-v').forEach(s => s.value = 0); updateFX(); };
+        const visSel = $('set-vis-style');
+        if(visSel) {
+            visSel.value = s.v2_vis_style || 'orbit';
+            visSel.onchange = () => {
+                const style = visSel.value;
+                if(state.visualizer) state.visualizer.updateSettings({ style: style });
+                api.setSetting('v2_vis_style', style);
+            };
+        }
+        $('btn-set-custom-image').onclick = async () => {
+            const p = await api.selectImage();
+            if(p) { 
+                state.customCoverPath = p; 
+                api.setSetting('v2_custom_cover', p); 
+                if(state.currentIndex >= 0) updateUI(state.playlist[state.currentIndex]); 
+            }
+        };
 
-    $('sys-switch-legacy').onclick = () => api.setSetting('uiVersion', 'legacy').then(() => window.location.href = 'index.html');
-    $('sys-clear-cache').onclick = () => { localStorage.clear(); location.reload(); };
-    $('sys-restart-app').onclick = () => api.restartApp();
-    $('sys-reset-all').onclick = async () => { if(confirm("Reset Settings?")) { await api.resetConfig(); location.reload(); }};
-    $('sys-quit-app').onclick = () => api.restartApp(); // Wails Quit is specialized
+        const updateFX = () => {
+            if (!state.audioExtras) return;
+            const eq = Array.from($$('.l-slider-v')).map(sl => parseFloat(sl.value));
+            state.audioExtras.setEq(eq, true);
+            state.audioExtras.setBass(parseFloat($('fx-bass-val')?.value || 6), $('fx-bass-en').checked);
+            state.audioExtras.setTreble(parseFloat($('fx-treble-val')?.value || 6), $('fx-treble-en').checked);
+            state.audioExtras.setReverb(parseFloat($('fx-reverb-val')?.value || 30), $('fx-reverb-en').checked);
+            api.setSetting('v2_eq_values', eq);
+        };
+        $$('.l-slider-v, .l-switch input, .l-slider-h').forEach(i => i.oninput = updateFX);
+        $('btn-eq-reset-all').onclick = () => { $$('.l-slider-v').forEach(s => s.value = 0); updateFX(); };
+
+        $('sys-switch-legacy').onclick = () => api.setSetting('uiVersion', 'legacy').then(() => window.location.href = 'index.html');
+        $('sys-clear-cache').onclick = () => { localStorage.clear(); location.reload(); };
+        $('sys-restart-app').onclick = () => api.restartApp();
+        $('sys-reset-all').onclick = async () => { if(confirm("Reset Settings?")) { await api.resetConfig(); location.reload(); }};
+        $('sys-quit-app').onclick = () => api.restartApp();
+    } catch(e) {
+        window.logToDev("Settings Error: " + e.message, 'err');
+    }
 }
 
 function applyTheme(t) {
@@ -282,10 +296,15 @@ function applyTheme(t) {
 // --- 4. PLAYLIST ---
 
 async function autoLoad() {
-    const s = await api.getSettings();
-    if(s.currentFolderPath) {
-        const res = await api.refreshMusicFolder(s.currentFolderPath);
-        handleTracks(Array.isArray(res) ? res : (res?.tracks || []));
+    try {
+        const s = await api.getSettings();
+        const path = s.currentFolderPath || s.CurrentFolderPath;
+        if(path) {
+            const res = await api.refreshMusicFolder(path);
+            handleTracks(Array.isArray(res) ? res : (res?.tracks || []));
+        }
+    } catch(e) {
+        window.logToDev("AutoLoad Error: " + e.message, 'err');
     }
 }
 
@@ -300,6 +319,41 @@ $('btn-refresh-playlist').onclick = async () => {
     const res = await api.refreshMusicFolder(s.currentFolderPath);
     handleTracks(Array.isArray(res) ? res : (res?.tracks || []));
 };
+
+function initLibraryButtons() {
+    $('btn-load-folder').onclick = async () => {
+        try {
+            const res = await api.selectMusicFolder();
+            handleTracks(Array.isArray(res) ? res : (res?.tracks || []));
+        } catch(e) {
+            window.logToDev("Load Folder Error: " + e.message, 'err');
+        }
+    };
+
+    $('btn-refresh-playlist').onclick = async () => {
+        try {
+            const s = await api.getSettings();
+            const path = s.currentFolderPath || s.CurrentFolderPath;
+            if(!path) return;
+            const res = await api.refreshMusicFolder(path);
+            handleTracks(Array.isArray(res) ? res : (res?.tracks || []));
+        } catch(e) {
+            window.logToDev("Refresh Folder Error: " + e.message, 'err');
+        }
+    };
+
+    $('plist-sort').onchange = () => {
+        state.playlist = PlaylistManager.getRenderList($('plist-search').value, $('plist-sort').value);
+        renderPlaylist();
+    };
+
+    $('btn-fav-filter').onclick = () => {
+        PlaylistManager.toggleFavOnly();
+        $('btn-fav-filter').classList.toggle('active', PlaylistManager.favOnly);
+        state.playlist = PlaylistManager.getRenderList($('plist-search').value, $('plist-sort').value);
+        renderPlaylist();
+    };
+}
 
 function handleTracks(tracks) {
     if(!tracks || !Array.isArray(tracks)) return;
@@ -328,8 +382,9 @@ function showNotification(title, text) {
 
 function renderPlaylist() {
     const list = $('l-list-content');
-    const query = $('plist-search').value;
-    const items = PlaylistManager.getRenderList(query, state.favs);
+    if (!list) return;
+    const query = $('plist-search')?.value || '';
+    const items = PlaylistManager.getRenderList(query, state.favFilterActive ? state.favs : null);
     state.playlist = PlaylistManager.getAllTracks();
 
     // Use fast string joining for performance
@@ -342,6 +397,9 @@ function renderPlaylist() {
         // Fix: Strip extension if it's showing the filename
         let displayTitle = t.title || t.path.split(/[\\/]/).pop();
         if (displayTitle.toLowerCase().endsWith('.mp3')) displayTitle = displayTitle.slice(0, -4);
+        if (displayTitle.toLowerCase().endsWith('.wav')) displayTitle = displayTitle.slice(0, -4);
+        if (displayTitle.toLowerCase().endsWith('.flac')) displayTitle = displayTitle.slice(0, -5);
+        if (displayTitle.toLowerCase().endsWith('.m4a')) displayTitle = displayTitle.slice(0, -4);
         
         const isLong = displayTitle.length > 25;
 
@@ -444,23 +502,23 @@ async function updateUI(t) {
         if(favSvg) favSvg.setAttribute('fill', isFav ? 'currentColor' : 'none');
     }
     
-    let coverSrc = '/src/assets/icon.png';
+    let coverSrc = iconImg;
     let isIcon = false;
     let isSpin = false;
 
     if(state.coverMode === 'auto') {
         coverSrc = `/cover/${encodeURI(t.path.replace(/\\/g, '/')).replace(/#/g, '%23')}`;
     } else if(state.coverMode === 'dino') {
-        coverSrc = '/src/assets/Two_Loving_Cute_Dinos.png';
+        coverSrc = dinoImg;
     } else if(state.coverMode === 'note') {
-        coverSrc = '/src/assets/icon.png';
+        coverSrc = iconImg;
         isIcon = true;
     } else if(state.coverMode === 'vinyl') {
-        coverSrc = '/src/assets/Vinyl_Record.png';
+        coverSrc = vinylImg;
         isIcon = true;
         isSpin = true;
     } else if(state.coverMode === 'compact') {
-        coverSrc = '/src/assets/Compact_Disc.png';
+        coverSrc = cdImg;
         isIcon = true;
         isSpin = true;
     } else if(state.coverMode === 'custom' && state.customCoverPath) {
@@ -469,7 +527,7 @@ async function updateUI(t) {
     }
 
     const spinClass = isSpin && !state.audio.paused ? 'l-spin' : '';
-    const imgTag = `<img src="${coverSrc}" class="${isIcon?'l-icon-mode':''} ${spinClass}" onerror="this.src='/src/assets/icon.png'">`;
+    const imgTag = `<img src="${coverSrc}" class="${isIcon?'l-icon-mode':''} ${spinClass}" onerror="this.src='${iconImg}'">`;
     $('l-art-main').innerHTML = imgTag;
     $('l-pb-art').innerHTML = imgTag;
 }
@@ -712,29 +770,24 @@ function initModals() {
     $('plist-search').oninput = renderPlaylist;
     $('plist-sort').onchange = (e) => { PlaylistManager.sortItems(e.target.value); renderPlaylist(); };
     $('btn-fav-filter').onclick = () => {
-        $('btn-fav-filter').classList.toggle('active');
-        PlaylistManager.toggleFavOnly();
+        state.favFilterActive = !state.favFilterActive;
+        $('btn-fav-filter').classList.toggle('active', state.favFilterActive);
         renderPlaylist();
     };
 
 async function loadChangelogInto(targetId) {
-    try {
-        const response = await fetch('/src/app_updates/update_news.json');
-        if (!response.ok) return;
-        const data = await response.json();
-        const container = $(targetId);
-        if(!container || !data.changes) return;
-        
-        const lang = LangHandler.currentLang || 'de';
-        container.innerHTML = data.changes.map(item => `
-            <li>
-                <strong>${item.icon} ${item.title[lang] || item.title['en']}</strong>
-                <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.6; line-height: 1.4;">
-                    ${item.desc[lang] || item.desc['en']}
-                </p>
-            </li>
-        `).join('');
-    } catch(e) { /* silent fail */ }
+    const container = $(targetId);
+    if(!container || !updateData || !updateData.changes) return;
+    
+    const lang = LangHandler.currentLang || 'de';
+    container.innerHTML = updateData.changes.map(item => `
+        <li>
+            <strong>${item.icon} ${item.title[lang] || item.title['en']}</strong>
+            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.6; line-height: 1.4;">
+                ${item.desc[lang] || item.desc['en']}
+            </p>
+        </li>
+    `).join('');
 }
 
 window.logToDev = function(msg, type = '') {

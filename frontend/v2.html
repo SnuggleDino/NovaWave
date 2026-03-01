@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NovaWave V2 Liquid</title>
-    <script src="/wails/ipc.js"></script>
-    <script src="/wails/runtime.js"></script>
+    <link rel="icon" type="image/png" href="./src/assets/icon.png">
     <style>
         /* Prevention of flashes */
         html,
@@ -43,7 +42,7 @@
     <div class="liquid-root" id="v2-root">
         <!-- LEFT SIDEBAR -->
         <aside class="l-sidebar">
-            <div class="l-logo"><img src="/src/assets/icon.png"></div>
+            <div class="l-logo"><img id="l-sidebar-logo"></div>
             <nav class="l-nav">
                 <button class="l-nav-btn active" data-v="home" title="Home">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -86,7 +85,7 @@
             <section id="view-home" class="l-view active">
                 <div class="l-hero-box">
                     <div class="l-art-stage">
-                        <div class="l-art-main" id="l-art-main"><img src="/src/assets/icon.png"></div>
+                        <div class="l-art-main" id="l-art-main"><img id="l-art-img"></div>
                         <canvas id="l-vis-canvas"></canvas>
                     </div>
                     <div class="l-hero-meta">
@@ -232,6 +231,9 @@
                                 <button class="l-lang-btn" data-lang="de">DE</button>
                                 <button class="l-lang-btn" data-lang="en">EN</button>
                                 <button class="l-lang-btn" data-lang="tr">TR</button>
+                                <button class="l-lang-btn" data-lang="es">ES</button>
+                                <button class="l-lang-btn" data-lang="fr">FR</button>
+                                <button class="l-lang-btn" data-lang="it">IT</button>
                             </div>
                         </div>
                         <div class="l-set-group">
@@ -468,7 +470,7 @@
         <div id="l-notifications" class="l-notif-container"></div>
     </div>
 
-    <script type="module" src="/src/ui_v2/v2.js"></script>
+    <script type="module" src="./src/ui_v2/v2.js"></script>
 </body>
 
 </html>

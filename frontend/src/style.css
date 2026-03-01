@@ -1428,13 +1428,13 @@ body.gradient-title-active .app-title-text p {
     justify-content: center;
     background: linear-gradient(135deg, var(--bg-card-light), transparent);
     flex-shrink: 1;
+    transition: transform 0.15s ease-out, box-shadow 0.3s ease;
 }
 
 .music-emoji {
     width: 100%;
     height: 100%;
     font-size: 100px;
-    transition: transform 0.1s ease-out;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1489,7 +1489,6 @@ body.sunset-active .music-emoji img {
 .sakura-cover {
     font-size: 120px;
     filter: drop-shadow(0 0 20px rgba(251, 207, 232, 0.8));
-    animation: sakura-float 4s ease-in-out infinite alternate;
 }
 
 @keyframes sakura-float {

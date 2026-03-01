@@ -1,63 +1,109 @@
 {
-    "version": "2.8.0 Liquid",
-    "date": "22. Februar 2026",
+    "version": "2.8.4",
+    "date": "1. März 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Das Liquid-Update ist da - Schneller, Schöner, Besser!",
-        "en": "The Liquid Update is here - Faster, More Beautiful, Better!",
-        "tr": "Liquid Güncellemesi geldi - Daha Hızlı, Daha Güzel, Daha İyi!"
+        "de": "Legacy UI Stabilit\u00E4t & Globale Sprachen",
+        "en": "Legacy UI Stability & Global Languages",
+        "tr": "Legacy UI Kararl\u0131l\u0131\u011F\u0131 ve K\u00FCresel Diller",
+        "es": "Estabilidad de la IU heredada y idiomas globales",
+        "fr": "Stabilit\u00E9 de l'interface h\u00E9rit\u00E9e et langues mondiales",
+        "it": "Stabilit\u00E0 dell'interfaccia legacy e lingue globali"
     },
     "changes": [
         {
-            "icon": "✨",
+            "icon": "🛡\uFE0F",
             "title": {
-                "de": "NovaWave V2 (Liquid UI)",
-                "en": "NovaWave V2 (Liquid UI)",
-                "tr": "NovaWave V2 (Liquid Arayüzü)"
+                "de": "Legacy UI Stabilit\u00E4t",
+                "en": "Legacy UI Stability",
+                "tr": "Legacy UI Kararl\u0131l\u0131\u011F\u0131",
+                "es": "Estabilidad de la IU",
+                "fr": "Stabilit\u00E9 de l'interface",
+                "it": "Stabilit\u00E0 dell'interfaccia"
             },
             "desc": {
-                "de": "Erleben Sie das komplett neue Redesign mit Sidebar-Navigation, Glas-Effekten und flüssigen Animationen.",
-                "en": "Experience the completely new redesign with sidebar navigation, glass effects, and smooth animations.",
-                "tr": "Kenar çubuğu navigasyonu, cam efektleri ve akıcı animasyonlarla tamamen yeni yeniden tasarımı deneyimleyin."
+                "de": "Massive Verbesserungen an der Playlist-Synchronisation, Favoriten-Speicherung und fl\u00FCssigere Animationen.",
+                "en": "Massive improvements to playlist sync, favorites saving, and smoother animations.",
+                "tr": "\u00C7alma listesi senkronizasyonu, favori kaydetme und daha ak\u0131c\u0131 animasyonlarda b\u00FCy\u00FCk iyile\u015Ftirmeler.",
+                "es": "Mejoras masivas en la sincronizaci\u00F3n de la lista, guardado de favoritos y animaciones m\u00E1s fluidas.",
+                "fr": "Am\u00E9liorations massives de la synchronisation, de l'enregistrement des favoris et des animations plus fluides.",
+                "it": "Miglioramenti massicci alla sincronizzazione, al salvataggio dei preferiti e animazioni pi\u00F9 fluide."
             }
         },
         {
-            "icon": "🚀",
+            "icon": "\uD83C\uDF0D",
             "title": {
-                "de": "Blitzschnelles Laden",
-                "en": "Lightning Fast Loading",
-                "tr": "Yıldırım Hızında Yükleme"
+                "de": "3 Neue Sprachen",
+                "en": "3 New Languages",
+                "tr": "3 Yeni Dil",
+                "es": "3 Nuevos Idiomas",
+                "fr": "3 Nouvelles Langues",
+                "it": "3 Nuove Lingue"
             },
             "desc": {
-                "de": "Dank des neuen Track-Caches im Backend werden auch riesige Musikbibliotheken (140+ Songs) sofort geladen.",
-                "en": "Thanks to the new track cache in the backend, even massive music libraries (140+ songs) load instantly.",
-                "tr": "Backend'deki yeni şarkı önbelleği sayesinde devasa müzik kitaplıkları (140+ şarkı) anında yüklenir."
+                "de": "NovaWave unterst\u00FCtzt jetzt offiziell Spanisch (ES), Franz\u00F6sisch (FR) und Italienisch (IT).",
+                "en": "NovaWave now officially supports Spanish (ES), French (FR), and Italian (IT).",
+                "tr": "NovaWave art\u0131k resmi olarak \u0130spanyolca (ES), Frans\u0131zca (FR) ve \u0130talyanca (IT) dillerini destekliyor.",
+                "es": "NovaWave ahora soporta oficialmente espa\u00F1ol (ES), franc\u00E9s (FR) e italiano (IT).",
+                "fr": "NovaWave supporte d\u00E9sormais officiellement l'espagnol (ES), le fran\u00E7ais (FR) et l'italien (IT).",
+                "it": "NovaWave ora supporta ufficialmente lo spagnolo (ES), il francese (FR) e l'italiano (IT)."
             }
         },
         {
-            "icon": "🌈",
+            "icon": "\uD83D\uDCE5",
             "title": {
-                "de": "10 Farb-Themes",
-                "en": "10 Color Themes",
-                "tr": "10 Renk Teması"
+                "de": "Multi-Downloader + Zeit",
+                "en": "Multi-Downloader + Time",
+                "tr": "Multi-Downloader + Zaman",
+                "es": "Multi-Descargador + Tiempo",
+                "fr": "Multi-T\u00E9l\u00E9chargeur + Temps",
+                "it": "Multi-Downloader + Tempo"
             },
             "desc": {
-                "de": "Wählen Sie aus 10 neuen, lebendigen Farbschemata Ihren persönlichen Favoriten für das Interface.",
-                "en": "Choose your personal favorite for the interface from 10 new, vibrant color schemes.",
-                "tr": "Arayüz için 10 yeni ve canlı renk şeması arasından kişisel favorinizi seçin."
+                "de": "Lade mehrere Links gleichzeitig in die Warteschlange und sieh genau, wann dein Song fertig wurde.",
+                "en": "Queue multiple links simultaneously and see exactly when your song finished downloading.",
+                "tr": "Ayn\u0131 anda birden fazla ba\u011Flant\u0131y\u0131 s\u0131raya ekleyin ve \u015Fark\u0131n\u0131z\u0131n ne zaman indi\u011Fini tam olarak g\u00F6r\u00FCn.",
+                "es": "Pon en cola varios enlaces simult\u00E1neamente y mira exactamente cu\u00E1ndo termin\u00F3 la descarga.",
+                "fr": "Mettez en file d'attente plusieurs liens simultan\u00E9ment et voyez exactement quand le t\u00E9l\u00E9chargement est fini.",
+                "it": "Metti in coda pi\u00F9 link contemporaneamente e vedi esattamente quando il brano \u00E8 stato scaricato."
             }
         },
         {
-            "icon": "🌍",
+            "icon": "\uD83E\uDDF9",
             "title": {
-                "de": "Türkische Sprache",
-                "en": "Turkish Language Support",
-                "tr": "Türkçe Dil Desteği"
+                "de": "Saubere Titel",
+                "en": "Clean Titles",
+                "tr": "Temiz Ba\u015Fl\u0131klar",
+                "es": "T\u00EDtulos Limpios",
+                "fr": "Titres Propres",
+                "it": "Titoli Puliti"
             },
             "desc": {
-                "de": "NovaWave spricht jetzt Türkisch! Die gesamte App wurde vollständig lokalisiert.",
-                "en": "NovaWave now speaks Turkish! The entire app has been fully localized.",
-                "tr": "NovaWave artık Türkçe konuşuyor! Tüm uygulama tamamen yerelleştirildi."
+                "de": "Dateiendungen wie .mp3 oder .wav werden nun radikal aus allen Anzeigen entfernt f\u00FCr einen modernen Look.",
+                "en": "File extensions like .mp3 or .wav are now radically removed from all displays for a modern look.",
+                "tr": "Modern bir g\u00F6r\u00FCn\u00FCm i\u00E7in .mp3 veya .wav gibi dosya uzant\u0131lar\u0131 art\u0131k t\u00FCm ekranlardan tamamen kald\u0131r\u0131l\u0131yor.",
+                "es": "Las extensiones como .mp3 o .wav ahora se eliminan radicalmente de todas las pantallas.",
+                "fr": "Les extensions comme .mp3 ou .wav sont d\u00E9sormais radicalement supprim\u00E9es de tous les affichages.",
+                "it": "Le estensioni come .mp3 o .wav sono ora rimosse radicalmente da tutti i display."
+            }
+        },
+        {
+            "icon": "\uD83D\uDEE0\uFE0F",
+            "title": {
+                "de": "Developer Toolkit",
+                "en": "Developer Toolkit",
+                "tr": "Geli\u015Ftirici Ara\u00E7 Tak\u0131m\u0131",
+                "es": "Centro de Desarrolladores",
+                "fr": "Centre de D\u00E9veloppement",
+                "it": "Hub per Sviluppatori"
+            },
+            "desc": {
+                "de": "Die neue Entwickler-Zentrale mit allen Hotkeys und System-Statistiken auf einen Blick.",
+                "en": "The new developer hub with all hotkeys and system statistics at a glance.",
+                "tr": "T\u00FCm k\u0131sayollar\u0131n ve sistem istatistiklerinin bir bak\u0131\u015Fta g\u00F6r\u00FClebilece\u011Fi yeni geli\u015Ftirici merkezi.",
+                "es": "El nuevo centro con todos los atajos y estad\u00EDsticas del sistema de un vistazo.",
+                "fr": "Le nouveau centre avec tous les raccourcis et statistiques syst\u00E8me en un coup d'\u0153il.",
+                "it": "Il nuovo hub con tutte le scorciatoie e le statistiche di sistema a colpo d'occhio."
             }
         }
     ]
