@@ -790,7 +790,10 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 		scanner := bufio.NewScanner(r)
 		for scanner.Scan() {
 			line := scanner.Text()
-			wailsRuntime.EventsEmit(a.ctx, "download-terminal-log", line+"\n")
+			wailsRuntime.EventsEmit(a.ctx, "download-terminal-log", map[string]string{
+				"id":   opts.Id,
+				"line": line + "\n",
+			})
 
 			lowerLine := strings.ToLower(line)
 			var titleCandidate string
@@ -822,7 +825,10 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 
 	err := cmd.Wait()
 	if err != nil {
-		wailsRuntime.EventsEmit(a.ctx, "download-terminal-log", fmt.Sprintf("ERROR: %v\n", err))
+		wailsRuntime.EventsEmit(a.ctx, "download-terminal-log", map[string]string{
+			"id":   opts.Id,
+			"line": fmt.Sprintf("ERROR: %v\n", err),
+		})
 		return SimpleResult{Success: false, Error: fmt.Sprintf("Download failed: %v", err)}, nil
 	}
 

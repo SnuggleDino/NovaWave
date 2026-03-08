@@ -1,476 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaWave V2 Liquid</title>
-    <link rel="icon" type="image/png" href="./src/assets/icon.png">
-    <style>
-        /* Prevention of flashes */
-        html,
-        body {
-            background: transparent !important;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
-
-        .liquid-root {
-            opacity: 0;
-            transition: opacity 1s ease;
-            display: flex;
-            height: 100%;
-            width: 100%;
-            background: transparent !important;
-        }
-
-        .liquid-root.ready {
-            opacity: 1;
-        }
-    </style>
+    <title>NovaWave Pro</title>
+    <link rel="stylesheet" href="./src/NovaWave_Pro/pro_style.css">
 </head>
-
 <body>
 
-    <!-- Background Layer (Persistent) -->
-    <div class="liquid-bg"></div>
+    <!-- HOTKEY COUNTDOWN OVERLAY -->
+    <div id="hotkey-overlay">
+        <span class="hk-key">KEY_COMBO</span>
+        <div class="hk-action">ACTION_NAME</div>
+        <div class="hk-timer-bar"></div>
+    </div>
 
-    <div class="liquid-root" id="v2-root">
-        <!-- LEFT SIDEBAR -->
-        <aside class="l-sidebar">
-            <div class="l-logo"><img id="l-sidebar-logo"></div>
-            <nav class="l-nav">
-                <button class="l-nav-btn active" data-v="home" title="Home">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                    </svg>
-                    <span class="l-tooltip" data-key="home">Home</span>
-                </button>
-                <button class="l-nav-btn" data-v="playlist" title="Library">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="8" y1="6" x2="21" y2="6" />
-                        <line x1="8" y1="12" x2="21" y2="12" />
-                        <line x1="8" y1="18" x2="21" y2="18" />
-                        <path d="M3 6h.01M3 12h.01M3 18h.01" />
-                    </svg>
-                    <span class="l-tooltip" data-key="playlist">Library</span>
-                </button>
-                <button class="l-nav-btn" data-v="downloader" title="Downloader">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7 10 12 15 17 10" />
-                        <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    <span class="l-tooltip" data-key="downloader">Downloader</span>
-                </button>
-                <button class="l-nav-btn" data-v="settings" title="Settings">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <circle cx="12" cy="12" r="3" />
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                    </svg>
-                    <span class="l-tooltip" data-key="settings">Settings</span>
-                </button>
+    <div id="app-grid">
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <div class="studio-logo">
+                <img src="./src/assets/icon.png" alt="Logo">
+                NW-V2.PRO
+            </div>
+            <nav class="nav-group">
+                <button class="nav-item active" data-v="home">Dashboard</button>
+                <button class="nav-item" data-v="library">Library</button>
+                <button class="nav-item" data-v="downloader">Sampler</button>
+                <button class="nav-item" data-v="settings">System</button>
             </nav>
         </aside>
 
-        <!-- MAIN WINDOW -->
-        <main class="l-main">
-
-            <!-- HOME VIEW -->
-            <section id="view-home" class="l-view active">
-                <div class="l-hero-box">
-                    <div class="l-art-stage">
-                        <div class="l-art-main" id="l-art-main"><img id="l-art-img"></div>
-                        <canvas id="l-vis-canvas"></canvas>
-                    </div>
-                    <div class="l-hero-meta">
-                        <h1 id="l-title">NovaWave</h1>
-                        <h2 id="l-artist" data-key="v2Subtitle">Experience the Flow</h2>
-                    </div>
-                </div>
-                <div class="l-home-grid">
-                    <div class="l-home-left">
-                        <button class="l-home-card" data-v="playlist">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"
-                                stroke-width="2">
-                                <path d="M9 18V5l12-2v13" />
-                                <circle cx="6" cy="18" r="3" />
-                                <circle cx="18" cy="16" r="3" />
-                            </svg>
-                            <span data-key="playlist">Library</span>
-                        </button>
-                        <button class="l-home-card" data-v="downloader">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none"
-                                stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="7 10 12 15 17 10" />
-                                <line x1="12" y1="15" x2="12" y2="3" />
-                            </svg>
-                            <span data-key="downloader">Get Music</span>
-                        </button>
-                    </div>
-                    <div class="l-home-right">
-                        <div class="l-card l-changelog">
-                            <h3 data-key="whatsNew">What's New</h3>
-                            <ul id="v2-changelog-list">
-                                <!-- Dynamic news from UpdateManager -->
-                            </ul>
+        <!-- Main Viewport -->
+        <main id="viewport">
+            
+            <!-- HOME -->
+            <section id="v-home" class="view-section active">
+                <div class="section-header"><h1>Dashboard</h1><span class="t-mono" id="dash-status-label" style="opacity:0.3">SYSTEM_OFFLINE</span></div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:35px;">
+                    <div class="pro-card">
+                        <span class="card-label" id="dash-source-monitor">SOURCE_MONITOR</span>
+                        <div style="display:flex; gap:30px; align-items:center;">
+                            <div class="dino-container" id="dash-art-box">
+                                <span class="dino-dance" id="dash-dino">🦖</span>
+                                <img id="dash-art" src="" class="hidden" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div>
+                                <h2 id="dash-title" style="font-size:28px; font-weight:900;">Not Loaded</h2>
+                                <p id="dash-artist" class="t-mono" style="color:var(--text-dim);">STANDBY</p>
+                            </div>
                         </div>
                     </div>
+                    <div class="pro-card">
+                        <span class="card-label" id="dash-latest-commits">LATEST_COMMITS</span>
+                        <div id="news-feed" style="font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--text-dim);">...</div>
+                    </div>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-item"><div class="stat-val" id="stat-tracks">0</div><div class="stat-name">Total Tracks</div></div>
+                    <div class="stat-item"><div class="stat-val" id="stat-folders">0</div><div class="stat-name">Active Folders</div></div>
+                    <div class="stat-item"><div class="stat-val" id="stat-uptime">00:00</div><div class="stat-name">Session Uptime</div></div>
                 </div>
             </section>
 
-            <!-- PLAYLIST VIEW -->
-            <section id="view-playlist" class="l-view">
-                <header class="l-view-head">
-                    <h1 data-key="playlist">Library</h1>
-                    <div class="l-head-actions">
-                        <button class="l-btn-action primary" id="btn-load-folder">Open Folder</button>
-                        <button class="l-btn-action" id="btn-refresh-playlist">↻</button>
+            <!-- LIBRARY -->
+            <section id="v-library" class="view-section">
+                <div class="section-header">
+                    <h1>Library</h1>
+                    <div style="display:flex; gap:15px;">
+                        <input type="text" id="lib-search" class="input-pro" placeholder="SEARCH...">
+                        <button class="btn-pro primary" id="btn-open-folder" style="background:var(--accent); color:#000;">Mount Path</button>
                     </div>
-                </header>
-                <div class="l-plist-toolbar">
-                    <div class="l-search-box">
-                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none"
-                            stroke-width="2.5">
-                            <circle cx="11" cy="11" r="8" />
-                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                        </svg>
-                        <input type="text" id="plist-search" placeholder="Search...">
-                    </div>
-                    <select id="plist-sort" class="l-select-glass">
-                        <option value="name">A-Z</option>
-                        <option value="newest">Recent</option>
-                    </select>
-                    <button class="l-btn-icon-toggle" id="btn-fav-filter" title="Filter Favorites">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
-                    </button>
                 </div>
-                <div class="l-plist-container custom-scroll">
-                    <div id="l-list-content"></div>
+                <div class="pro-card" style="padding:0; overflow:hidden;">
+                    <table class="track-table">
+                        <thead>
+                            <tr><th style="width:60px">IDX</th><th>Title</th><th>Artist</th><th style="width:100px">Length</th></tr>
+                        </thead>
+                        <tbody id="track-body"></tbody>
+                    </table>
                 </div>
             </section>
 
-            <!-- DOWNLOADER VIEW -->
-            <section id="view-downloader" class="l-view">
-                <div class="l-dl-layout">
-                    <div class="l-dl-main l-card">
-                        <h1 data-key="downloader">Downloader</h1>
-                        <p class="l-dl-info">Universal Link Support (YT, Spotify, YTM)</p>
-                        <div class="l-dl-input-row">
-                            <input type="text" id="dl-url-input" placeholder="Paste link here...">
-                            <button class="l-btn-action primary" id="btn-dl-start">Start</button>
-                        </div>
-                        <div id="dl-progress-box" class="l-dl-status" style="display:none">
-                            <div class="l-dl-status-row">
-                                <span id="dl-msg">Ready</span>
-                                <span id="dl-pct">0%</span>
-                            </div>
-                            <div class="l-progress-rail">
-                                <div id="dl-progress-fill"></div>
-                            </div>
-                        </div>
-                        <div class="l-dl-legend">
-                            <span><i class="dot green"></i> Finished</span>
-                            <span><i class="dot yellow"></i> Working</span>
-                            <span><i class="dot red"></i> Error</span>
-                        </div>
-                    </div>
-                    <div class="l-dl-history l-card">
-                        <div class="l-dl-hist-head">
-                            <h3 data-key="history">History</h3>
-                            <button id="btn-open-dl-folder" class="l-icon-btn-tiny">📂</button>
-                        </div>
-                        <div id="dl-history-list" class="custom-scroll"></div>
-                    </div>
+            <!-- DOWNLOADER -->
+            <section id="v-downloader" class="view-section">
+                <div class="section-header"><h1>Sampler Engine</h1></div>
+                
+                <div class="info-box">
+                    <h4>How to use the Sampler</h4>
+                    <p>Paste a YouTube or Spotify URL below to fetch high-quality audio streams. The sampling engine will automatically extract metadata and place the file in your specified download directory.</p>
                 </div>
-            </section>
 
-            <!-- SETTINGS VIEW -->
-            <section id="view-settings" class="l-view">
-                <h1 data-key="settings">Settings</h1>
-                <div class="l-settings-grid">
-                    <!-- Column 1 -->
-                    <div class="l-card l-set-card">
-                        <h3 data-key="sectionAppearance">Appearance</h3>
-                        <div class="l-set-group">
-                            <label data-key="theme">Theme</label>
-                            <div class="l-themes-grid">
-                                <button class="l-swatch blue" data-t="blue"></button>
-                                <button class="l-swatch midnight" data-t="midnight"></button>
-                                <button class="l-swatch dark" data-t="dark"></button>
-                                <button class="l-swatch rose" data-t="rose"></button>
-                                <button class="l-swatch cherry" data-t="cherry"></button>
-                                <button class="l-swatch forest" data-t="forest"></button>
-                                <button class="l-swatch gold" data-t="gold"></button>
-                                <button class="l-swatch dino" data-t="dino"></button>
-                                <button class="l-swatch crimson" data-t="crimson"></button>
-                                <button class="l-swatch amber" data-t="amber"></button>
-                                <button class="l-swatch mint" data-t="mint"></button>
-                                <button class="l-swatch lavender" data-t="lavender"></button>
-                                <button class="l-swatch slate" data-t="slate"></button>
-                            </div>
-                        </div>
-                        <div class="l-set-group">
-                            <label data-key="defaultDownloadFolder">Download Folder</label>
-                            <div style="display:flex; gap:10px; align-items:center;">
-                                <div id="v2-dl-folder-path" style="font-size:10px; opacity:0.5; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px;">...</div>
-                                <button class="l-btn-action small" id="btn-v2-change-dl-folder" data-key="changeButton">Change</button>
-                            </div>
-                        </div>
-                        <div class="l-set-group">
-                            <label data-key="lang">Language</label>
-                            <div class="l-lang-grid">
-                                <button class="l-lang-btn" data-lang="de">DE</button>
-                                <button class="l-lang-btn" data-lang="en">EN</button>
-                                <button class="l-lang-btn" data-lang="tr">TR</button>
-                                <button class="l-lang-btn" data-lang="es">ES</button>
-                                <button class="l-lang-btn" data-lang="fr">FR</button>
-                                <button class="l-lang-btn" data-lang="it">IT</button>
-                            </div>
-                        </div>
-                        <div class="l-set-group">
-                            <label data-key="coverMode">Cover Mode</label>
-                            <select id="set-cover-mode" class="l-select-glass">
-                                <option value="auto" data-key="emojiAuto">Album Art</option>
-                                <option value="note" data-key="emojiNote">Music Note</option>
-                                <option value="dino" data-key="emojiDino">Nova Dino</option>
-                                <option value="vinyl" data-key="emojiVinyl">Vinyl Record</option>
-                                <option value="compact" data-key="emojiCompact">Compact Disc</option>
-                                <option value="custom" data-key="emojiCustom">Custom Image</option>
-                            </select>
-                            <button class="l-btn-action ghost small" id="btn-set-custom-image"
-                                style="display:none;margin-top:10px" data-key="pickFile">Pick File</button>
-                        </div>
+                <div class="pro-card" style="max-width:850px;">
+                    <span class="card-label">REMOTE_RESOURCE_URL</span>
+                    <div style="display:flex; gap:12px; margin-bottom: 20px;">
+                        <input type="text" id="dl-url" class="input-pro" style="flex:1;" placeholder="Source URL...">
                     </div>
-
-                    <!-- Column 2 -->
-                    <div class="l-card l-set-card">
-                        <h3 data-key="sectionAudioExtras">Audio Engine</h3>
-                        <div class="l-set-group" style="margin-bottom:15px;">
-                            <label data-key="visualizerStyle">Visualizer Style</label>
-                            <select id="set-vis-style" class="l-select-glass">
-                                <option value="bars" data-key="visBars">Bars</option>
-                                <option value="orbit" data-key="visOrbit">Orbit</option>
-                                <option value="retro-circle" data-key="visRetroCircle">Retro Circle (V2)</option>
+                    
+                    <div style="display:flex; gap:15px; align-items: flex-end;">
+                        <div style="flex:1;">
+                            <span class="card-label" style="margin-bottom:8px;">FORMAT</span>
+                            <select id="dl-format" class="select-pro" style="width:100%;">
+                                <option value="mp3">MP3 (Audio Only)</option>
+                                <option value="mp4">MP4 (Video + Audio)</option>
+                                <option value="wav">WAV (Lossless)</option>
                             </select>
                         </div>
-                        <div class="l-eq-box">
-                            <div class="l-eq-head" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                                <span style="font-size:11px; font-weight:800; opacity:0.3; text-transform:uppercase;">Equalizer</span>
-                                <button id="btn-eq-reset-all">Reset</button>
-                            </div>
-                            <div class="l-eq-flex">
-                                <div class="l-eq-col"><input type="range" class="l-slider-v" data-b="0" min="-12"
-                                        max="12" value="0"><span>60</span></div>
-                                <div class="l-eq-col"><input type="range" class="l-slider-v" data-b="1" min="-12"
-                                        max="12" value="0"><span>230</span></div>
-                                <div class="l-eq-col"><input type="range" class="l-slider-v" data-b="2" min="-12"
-                                        max="12" value="0"><span>910</span></div>
-                                <div class="l-eq-col"><input type="range" class="l-slider-v" data-b="3" min="-12"
-                                        max="12" value="0"><span>4k</span></div>
-                                <div class="l-eq-col"><input type="range" class="l-slider-v" data-b="4" min="-12"
-                                        max="12" value="0"><span>14k</span></div>
-                            </div>
+                        <div style="flex:1;">
+                            <span class="card-label" style="margin-bottom:8px;">QUALITY</span>
+                            <select id="dl-quality" class="select-pro" style="width:100%;">
+                                <option value="best">Ultra (320kbps / 4K)</option>
+                                <option value="high">High (256kbps / 1080p)</option>
+                                <option value="medium">Medium (128kbps / 720p)</option>
+                            </select>
                         </div>
-                        <div class="l-fx-stack">
-                            <div class="l-fx-item">
-                                <div class="l-fx-head"><span data-key="bass">Bass</span><label class="l-switch"><input
-                                            type="checkbox" id="fx-bass-en"><i></i></label></div>
-                                <input type="range" class="l-slider-h" id="fx-bass-val" min="0" max="15" value="6">
-                            </div>
-                            <div class="l-fx-item">
-                                <div class="l-fx-head"><span data-key="treble">Crystalizer</span><label
-                                        class="l-switch"><input type="checkbox" id="fx-treble-en"><i></i></label></div>
-                                <input type="range" class="l-slider-h" id="fx-treble-val" min="0" max="15" value="6">
-                            </div>
-                            <div class="l-fx-item">
-                                <div class="l-fx-head"><span data-key="reverb">Reverb</span><label
-                                        class="l-switch"><input type="checkbox" id="fx-reverb-en"><i></i></label></div>
-                                <input type="range" class="l-slider-h" id="fx-reverb-val" min="0" max="100" value="30">
-                            </div>
-                        </div>
+                        <button class="btn-pro" id="btn-dl" style="height:45px; background:var(--accent); color:#000;">Execute Sampling</button>
                     </div>
 
-                    <!-- Column 3 -->
-                    <div class="l-card l-set-card">
-                        <h3 data-key="system">System</h3>
-                        <div class="l-sys-grid">
-                            <button class="l-sys-btn" id="sys-clear-cache">
-                                <span data-key="clearCache">Clear Cache</span>
-                                <small data-key="clearCacheDesc">Deletes temporary data.</small>
-                            </button>
-                            <button class="l-sys-btn" id="sys-restart-app">
-                                <span data-key="restart">Restart App</span>
-                                <small data-key="restartDesc">Reloads NovaWave.</small>
-                            </button>
-                            <button class="l-sys-btn warning" id="sys-reset-all">
-                                <span data-key="reset">Factory Reset</span>
-                                <small data-key="resetDesc">Wipes all settings.</small>
-                            </button>
-                            <button class="l-sys-btn danger" id="sys-quit-app">
-                                <span data-key="quit">Quit</span>
-                                <small data-key="quitDesc">Closes the app.</small>
-                            </button>
-                            <button class="l-sys-btn" id="sys-switch-legacy" style="margin-top:10px; border-color:var(--accent);">
-                                <span data-key="backToLegacy">BACK TO LEGACY UI</span>
-                                <small>Switch to the classic interface.</small>
-                            </button>
+                    <div id="dl-monitor" class="hidden" style="margin-top:25px; padding:20px; background:#000; font-family:var(--font-mono); font-size:12px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                            <span id="dl-status">...</span>
+                            <span id="dl-progress">0%</span>
+                        </div>
+                        <div style="height:2px; background:#222;"><div id="dl-fill" style="height:100%; background:var(--accent); width:0%;"></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SETTINGS / SYSTEM -->
+            <section id="v-settings" class="view-section">
+                <div class="section-header"><h1>System Config</h1></div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
+                    <div class="pro-card">
+                        <span class="card-label">UI_ACCENT</span>
+                        <div class="theme-selector">
+                            <div class="color-block" style="background:#ff5722" data-c="#ff5722"></div>
+                            <div class="color-block" style="background:#00e5ff" data-c="#00e5ff"></div>
+                            <div class="color-block" style="background:#76ff03" data-c="#76ff03"></div>
+                            <div class="color-block" style="background:#d500f9" data-c="#d500f9"></div>
+                            <div class="color-block" style="background:#facc15" data-c="#facc15"></div>
+                        </div>
+                        <br>
+                        <button class="btn-pro" id="btn-reset-fx-pro">Reset All Config</button>
+                    </div>
+                    <div class="pro-card">
+                        <span class="card-label">PRO_SESSION_LOGS</span>
+                        <div id="system-log-box" class="log-box"></div>
+                    </div>
+                    <div class="pro-card">
+                        <span class="card-label">CORE_OPERATIONS</span>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <button class="btn-pro" id="btn-legacy">Legacy Interface</button>
+                            <button class="btn-pro" id="btn-restart">Warm Reboot</button>
+                            <button class="btn-pro danger" id="btn-quit">Shutdown</button>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
 
-        <!-- FOOTER BAR -->
-        <footer class="l-bar">
-            <div class="l-bar-info">
-                <div class="l-bar-art" id="l-pb-art"></div>
-                <div class="l-bar-meta">
-                    <div id="l-pb-title" data-key="nothingPlaying">Nothing Playing</div>
-                    <div id="l-pb-artist">-</div>
+        <!-- Master Player Bar -->
+        <footer id="master-bar">
+            <div class="m-info">
+                <div class="m-art-wrap" id="m-art-box">
+                    <span class="dino-dance" id="m-dino">🦖</span>
+                    <img id="m-art" src="" class="hidden">
                 </div>
-                <button class="l-btn-fav" id="l-pb-fav" title="Toggle Favorite">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="l-bar-center">
-                <div class="l-bar-controls">
-                    <button class="l-icon-btn" id="btn-shuffle" title="Shuffle">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
-                            stroke-width="2.5">
-                            <polyline points="16 3 21 3 21 8" />
-                            <line x1="4" y1="20" x2="21" y2="3" />
-                            <polyline points="21 16 21 21 16 21" />
-                            <line x1="15" y1="15" x2="21" y2="21" />
-                            <line x1="4" y1="4" x2="9" y2="9" />
-                        </svg>
-                    </button>
-                    <button class="l-icon-btn" id="btn-prev"><svg viewBox="0 0 24 24" width="22" height="22"
-                            fill="currentColor">
-                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
-                        </svg></button>
-                    <button class="l-btn-main-play" id="btn-play-main">
-                        <svg id="l-play-svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                            <path d="M8 5v14l11-7z" />
-                        </svg>
-                        <svg id="l-pause-svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"
-                            style="display:none">
-                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                        </svg>
-                    </button>
-                    <button class="l-icon-btn" id="btn-next"><svg viewBox="0 0 24 24" width="22" height="22"
-                            fill="currentColor">
-                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-                        </svg></button>
-                    <button class="l-icon-btn" id="btn-loop" title="Loop">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
-                            stroke-width="2.5">
-                            <polyline points="17 1 21 5 17 9" />
-                            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-                            <polyline points="7 23 3 19 7 15" />
-                            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="l-bar-progress">
-                    <span class="l-time" id="l-cur-time">0:00</span>
-                    <div class="l-progress-rail" id="l-seek-rail">
-                        <div id="l-seek-fill"></div>
-                    </div>
-                    <span class="l-time" id="l-tot-time">0:00</span>
+                <div class="m-meta">
+                    <div id="m-title">STANDBY</div>
+                    <div id="m-artist">OFFLINE</div>
                 </div>
             </div>
-
-            <div class="l-bar-extra">
-                <div class="l-footer-links">
-                    <button class="l-ft-link" data-modal="dev">DEV</button>
-                    <button class="l-ft-link" data-modal="info">INFO</button>
+            <div class="m-controls">
+                <div class="m-btns">
+                    <button class="btn-transport" id="m-shuf" title="Shuffle">
+                        <span style="font-size: 14px; font-weight: 800;">SHUF</span>
+                    </button>
+                    <button class="btn-transport" id="m-prev" title="Previous">
+                        <img src="./src/assets/previous.svg" alt="Prev">
+                    </button>
+                    <button class="btn-transport btn-play-main" id="m-play" title="Play/Pause">
+                        <img id="icon-play" src="./src/assets/play.svg" alt="Play">
+                        <img id="icon-pause" src="./src/assets/pause.svg" alt="Pause" class="hidden">
+                    </button>
+                    <button class="btn-transport" id="m-next" title="Next">
+                        <img src="./src/assets/next.svg" alt="Next">
+                    </button>
+                    <button class="btn-transport" id="m-loop" title="Loop">
+                        <span style="font-size: 14px; font-weight: 800;">LOOP</span>
+                    </button>
                 </div>
-                <div class="l-vol-wrap">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
-                        style="opacity:0.4">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                    </svg>
-                    <input type="range" id="l-vol-slider" min="0" max="1" step="0.01" value="0.5">
+                <div class="m-timeline">
+                    <span class="m-time" id="m-cur">00:00</span>
+                    <div class="m-slider" id="m-rail"><div id="m-fill"></div></div>
+                    <span class="m-time" id="m-tot">00:00</span>
                 </div>
             </div>
+            <div class="m-extra"><input type="range" id="m-vol" min="0" max="1" step="0.01" value="0.5" class="vol-slider"></div>
         </footer>
-
-        <!-- GLOBAL OVERLAYS -->
-        <div id="modal-info" class="l-modal-overlay">
-            <div class="l-card l-modal-box">
-                <div class="l-modal-head">
-                    <h2 id="modal-title">Info</h2><button id="modal-close">✕</button>
-                </div>
-                <div id="modal-body" class="l-modal-content"></div>
-            </div>
-        </div>
-
-        <div id="modal-confirm-delete" class="l-modal-overlay">
-            <div class="l-card l-modal-box" style="max-width:400px; text-align:center;">
-                <div class="l-modal-head">
-                    <h2 data-key="confirmDeleteTitle">Delete Track</h2>
-                </div>
-                <div class="l-modal-content">
-                    <p id="delete-confirm-text" style="margin-bottom:30px; opacity:0.7;">Are you sure?</p>
-                    <div style="display:flex; gap:15px;">
-                        <button class="l-btn-action" id="btn-delete-cancel" style="flex:1;" data-key="cancelBtn">Cancel</button>
-                        <button class="l-btn-action danger" id="btn-delete-confirm" style="flex:1;" data-key="cmDelete">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- EDIT TAGS MODAL -->
-        <div id="modal-edit-tags" class="l-modal-overlay">
-            <div class="l-card l-modal-box" style="max-width:450px;">
-                <div class="l-modal-head">
-                    <h2 data-key="cmEdit">Edit Tags</h2>
-                </div>
-                <div class="l-modal-content">
-                    <div style="display:flex; flex-direction:column; gap:15px;">
-                        <div class="l-set-group">
-                            <label data-key="track">Title</label>
-                            <input type="text" id="edit-tag-title" class="l-dl-input-row" style="background:rgba(0,0,0,0.2); border:1px solid var(--glass-border); padding:12px; border-radius:10px; width:100%; color:#fff;">
-                        </div>
-                        <div class="l-set-group">
-                            <label>Artist</label>
-                            <input type="text" id="edit-tag-artist" class="l-dl-input-row" style="background:rgba(0,0,0,0.2); border:1px solid var(--glass-border); padding:12px; border-radius:10px; width:100%; color:#fff;">
-                        </div>
-                        <div style="display:flex; gap:15px; margin-top:10px;">
-                            <button class="l-btn-action" id="btn-edit-tag-cancel" style="flex:1;" data-key="cancelBtn">Cancel</button>
-                            <button class="l-btn-action primary" id="btn-edit-tag-save" style="flex:1;" data-key="saveBtn">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="l-context-menu" class="l-context-menu">
-            <button class="l-cm-item" id="cm-play">Play Now</button>
-            <button class="l-cm-item" id="cm-folder">Open in Folder</button>
-            <button class="l-cm-item" id="cm-edit">Edit Tags</button>
-            <div class="l-cm-sep"></div>
-            <button class="l-cm-item danger" id="cm-delete">Delete Track</button>
-        </div>
-
-        <!-- NOTIFICATIONS -->
-        <div id="l-notifications" class="l-notif-container"></div>
     </div>
 
-    <script type="module" src="./src/ui_v2/v2.js"></script>
+    <script type="module" src="./src/NovaWave_Pro/pro_main.js"></script>
 </body>
-
 </html>
