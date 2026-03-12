@@ -1,9 +1,5 @@
 import { Intro } from './intro_base.js';
 
-/**
- * Adapter for intros that already exist in index.html and only need to be toggled via CSS class.
- * Automatically resolves after a timeout (handled by manager usually, but we can add hooks here).
- */
 export class CssBasedIntro extends Intro {
     constructor(elementId) {
         super(elementId);

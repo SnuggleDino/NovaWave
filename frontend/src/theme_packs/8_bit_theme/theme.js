@@ -40,7 +40,7 @@ export default {
         document.body.classList.add('8-bit-active');
         document.documentElement.style.setProperty('--accent', '#39ff14');
         
-        // Sync visualizer with theme color
+
         if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
 
         if (app.visualizer) {
@@ -50,7 +50,6 @@ export default {
             });
         }
 
-        // Lock UI to prevent theme conflicts
         setTimeout(() => {
             const elements = [
                 'visualizer-style-select', 'emoji-select', 'theme-select',
@@ -65,7 +64,6 @@ export default {
             if (colorToggle) colorToggle.checked = false;
         }, 100);
 
-        // Theme Intro Overlay
         const overlay = document.createElement('div');
         overlay.id = 'retro-intro-layer';
         overlay.className = 'retro-intro-overlay';
@@ -106,7 +104,6 @@ export default {
             app.visualizer.updateSettings({ accentColor: '#38bdf8' });
         }
 
-        // Unlock
         const elements = [
             'visualizer-style-select', 'emoji-select', 'theme-select',
             'animation-select', 'toggle-use-custom-color',

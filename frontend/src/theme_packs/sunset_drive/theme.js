@@ -6,7 +6,7 @@ export default {
         if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
         const intro = document.getElementById('sunset-intro');
         if (intro) { intro.classList.add('visible'); setTimeout(() => intro.classList.remove('visible'), 3000); }
-        if (app.visualizer) app.visualizer.updateSettings({ style: 'bars', accentColor: '#f97316' }); // Retrowave bars
+        if (app.visualizer) app.visualizer.updateSettings({ style: 'bars', accentColor: '#f97316' });
         if (app.ui && app.ui.updateEmoji) app.ui.updateEmoji('sunset_sun');
 
         // --- Sector: Animation ---

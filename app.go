@@ -756,7 +756,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 
 	args := []string{
 		opts.Url, "-x", "--audio-format", "mp3", "--audio-quality", qVal,
-		"--newline", "--progress",
+		"--newline", "--progress", "--no-warnings",
 		"--embed-thumbnail", "--add-metadata",
 		"--ffmpeg-location", filepath.Dir(ffmpegPath),
 		"-P", folderPath, "-o", outputTemplate,

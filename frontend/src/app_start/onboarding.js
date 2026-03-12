@@ -83,7 +83,6 @@ export const OnBoarding = {
         overlay.appendChild(container);
         document.body.appendChild(overlay);
 
-        // Apple-style multi-language animation
         const greetings = ['Hello', 'Hallo', 'Merhaba', 'Bonjour', 'Hola', 'Ciao'];
         let idx = 0;
         
@@ -99,12 +98,18 @@ export const OnBoarding = {
             }, 600);
         };
 
-        setInterval(animate, 2500);
+        // FIX: Store interval ID to clear it in complete(), preventing a timer leak.
+        this._greetingInterval = setInterval(animate, 2500);
 
         setTimeout(() => overlay.style.opacity = 1, 100);
     },
 
     complete: function(lang) {
+        // FIX: Stop animation interval to avoid timer leak after overlay is removed.
+        if (this._greetingInterval) {
+            clearInterval(this._greetingInterval);
+            this._greetingInterval = null;
+        }
         LangHandler.setLanguage(lang);
         localStorage.setItem('on_boarding_complete', 'true');
         

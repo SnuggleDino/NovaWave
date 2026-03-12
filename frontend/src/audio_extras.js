@@ -54,6 +54,7 @@ export class AudioExtras {
             this.reverbGain.gain.value = 0;
 
             // --- Audio Chain ---
+            // source → bass → treble → EQ[0..4] → analyser → destination
             this.source.connect(this.bassFilter);
             this.bassFilter.connect(this.trebleFilter);
 
@@ -63,9 +64,14 @@ export class AudioExtras {
                 lastNode = filter;
             });
 
+            // lastNode is now the final EQ filter
             lastNode.connect(this.analyser);
 
-            this.trebleFilter.connect(this.reverbNode);
+            // FIX: Reverb was previously branched off this.trebleFilter (before
+            // the EQ filters), meaning EQ had no effect on the reverb signal.
+            // It is now correctly branched off lastNode (after the full EQ chain),
+            // so Bass + Treble + EQ all feed into the reverb as intended.
+            lastNode.connect(this.reverbNode);
             this.reverbNode.connect(this.reverbGain);
             this.reverbGain.connect(this.analyser);
 

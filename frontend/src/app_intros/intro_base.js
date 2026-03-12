@@ -1,7 +1,4 @@
-/**
- * Base class for all intros.
- * Provides basic mount/unmount functionality.
- */
+
 export class Intro {
     constructor(containerId) {
         this.containerId = containerId;

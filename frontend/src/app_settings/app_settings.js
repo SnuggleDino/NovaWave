@@ -418,7 +418,6 @@ export const AppSettings = {
         setupAudioToggle('toggle-reverb', 'reverb-slider-container', 'reverbEnabled');
         setupAudioSlider('reverb-slider', 'reverb-value', 'reverbValue');
 
-        // Resets
         const resetAudio = (btnId, sliderId, displayId, settingKey, defVal) => {
             const btn = $(btnId);
             if (btn) {
@@ -479,7 +478,6 @@ export const AppSettings = {
                 if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
             });
         }
-
 
         // --- INTROS TAB ---
         const introCards = document.querySelectorAll('.intro-card');
@@ -573,15 +571,25 @@ export const AppSettings = {
         const btnClearCache = $('btn-clear-cache');
         if (btnClearCache) {
             btnClearCache.addEventListener('click', () => {
-                localStorage.clear();
-                location.reload();
+                if (window.showNotification) window.showNotification('Clearing Cache...', 'loading', 1500);
+                setTimeout(() => {
+                    localStorage.clear();
+                    location.reload();
+                }, 1500);
             });
         }
 
         const btnRestartApp = $('btn-restart-app');
         if (btnRestartApp) {
             btnRestartApp.addEventListener('click', () => {
-                if (this.api && this.api.restartApp) this.api.restartApp();
+                if (window.showNotification) window.showNotification('Restarting App...', 'loading', 1500);
+                setTimeout(() => {
+                    if (this.callbacks && this.callbacks.onRestartApp) {
+                        this.callbacks.onRestartApp();
+                    } else if (this.api && this.api.restartApp) {
+                        this.api.restartApp();
+                    }
+                }, 1500);
             });
         }
 
@@ -604,7 +612,14 @@ export const AppSettings = {
         const btnQuitApp = $('btn-quit-app');
         if (btnQuitApp) {
             btnQuitApp.addEventListener('click', () => {
-                if (this.api && this.api.restartApp) this.api.restartApp(); // Or dedicated quit if available
+                if (window.showNotification) window.showNotification('Shutting down...', 'info', 1000);
+                setTimeout(() => {
+                    if (this.callbacks && this.callbacks.onShutdownApp) {
+                        this.callbacks.onShutdownApp();
+                    } else if (this.api && this.api.shutdownApp) {
+                        this.api.shutdownApp();
+                    }
+                }, 1000);
             });
         }
     },
@@ -614,10 +629,13 @@ export const AppSettings = {
         const $ = (id) => document.getElementById(id);
 
         if (!s) return;
+        window._isRestoring = true;
 
-        // Appearance
         const themeSelect = $('theme-select');
-        if (themeSelect && s.theme) themeSelect.value = s.theme;
+        if (themeSelect && s.theme) {
+            themeSelect.value = s.theme;
+            document.documentElement.setAttribute('data-theme', s.theme);
+        }
 
         const toggleUseCustomColor = $('toggle-use-custom-color');
         const accentColorContainer = $('accent-color-container');
@@ -633,9 +651,11 @@ export const AppSettings = {
         if (toggleGradientTitle) toggleGradientTitle.checked = !!s.gradientTitleEnabled;
 
         const animationSelect = $('animation-select');
-        if (animationSelect && s.animationMode) animationSelect.value = s.animationMode;
+        if (animationSelect && s.animationMode) {
+            animationSelect.value = s.animationMode;
+            if (this.callbacks.onAnimationChange) this.callbacks.onAnimationChange(s.animationMode);
+        }
 
-        // Appearance
         const visualizerToggle = $('toggle-visualizer');
         if (visualizerToggle) visualizerToggle.checked = s.visualizerEnabled !== false;
 
@@ -659,8 +679,11 @@ export const AppSettings = {
         }
         if (customEmojiInput && s.customCoverEmoji) customEmojiInput.value = s.customCoverEmoji;
 
+        if (emojiSelect && s.coverMode) {
+            const customVal = customEmojiInput ? customEmojiInput.value : '';
+            if (this.callbacks.onEmojiChange) this.callbacks.onEmojiChange(s.coverMode, customVal);
+        }
 
-        // Player
         const sleepTimerSelect = $('sleep-timer-select');
 
         const speedSlider = $('speed-slider');
@@ -673,7 +696,6 @@ export const AppSettings = {
         const toggleDeleteSongs = $('toggle-delete-songs');
         if (toggleDeleteSongs) toggleDeleteSongs.checked = !!s.deleteSongsEnabled;
 
-        // Downloads
         const dlInput = $('default-download-folder');
         if (dlInput && s.downloadFolder) dlInput.value = s.downloadFolder;
 
@@ -683,8 +705,6 @@ export const AppSettings = {
         const autoLoadLastFolderToggle = $('toggle-auto-load-last-folder');
         if (autoLoadLastFolderToggle) autoLoadLastFolderToggle.checked = s.autoLoadLastFolder !== false;
 
-
-        // Audio Extras
         const restoreAudio = (toggleId, containerId, sliderId, displayId, enabledKey, valueKey, suffix) => {
             const toggle = $(toggleId);
             const container = $(containerId);
@@ -718,8 +738,6 @@ export const AppSettings = {
             });
         }
 
-
-        // Intros
         if (s.activeIntro) {
             const introCards = document.querySelectorAll('.intro-card');
             introCards.forEach(c => {
@@ -727,7 +745,6 @@ export const AppSettings = {
             });
         }
 
-        // Extras
         const toggleCinemaMode = $('toggle-cinema-mode');
         if (toggleCinemaMode) toggleCinemaMode.checked = !!s.cinemaMode;
 
@@ -749,19 +766,20 @@ export const AppSettings = {
 
         const playlistPositionSelect = $('playlist-position-select');
         if (playlistPositionSelect && s.playlistPosition) playlistPositionSelect.value = s.playlistPosition;
+
+        window._isRestoring = false;
     },
 
     renderDesignCards: function () {
         const container = document.getElementById('design-ui-cards');
         if (!container) return;
 
-        // Clear container (Standard Pattern)
         container.innerHTML = '';
 
         // --- SECTION 1: DESIGN CARDS ---
         const tr = (key) => LangHandler.tr(key);
         
-        // Detect actual active UI via filename
+
         const isV2 = window.location.pathname.includes('v2.html');
         const activeUi = isV2 ? 'v2' : 'legacy';
         
@@ -790,12 +808,10 @@ export const AppSettings = {
             const cardEl = document.createElement('div');
             cardEl.className = `design-card ${isActive ? 'active' : ''}`;
 
-            // Badge
             const badgeEl = document.createElement('div');
             badgeEl.className = 'design-card-badge';
             badgeEl.textContent = card.badge;
 
-            // Content
             const contentEl = document.createElement('div');
             contentEl.className = 'design-card-content';
 
@@ -813,7 +829,6 @@ export const AppSettings = {
             cardEl.appendChild(badgeEl);
             cardEl.appendChild(contentEl);
 
-            // Active Status
             if (isActive) {
                 const statusEl = document.createElement('div');
                 statusEl.className = 'design-card-status';
@@ -821,12 +836,11 @@ export const AppSettings = {
                 cardEl.appendChild(statusEl);
             }
 
-            // Event Listener (Standard Pattern)
             cardEl.addEventListener('click', () => {
                 if (window.switchUI) {
                     window.switchUI(card.key, card.target);
                 } else {
-                    // Fallback
+
                     localStorage.setItem('uiVersion', card.key);
                     window.location.href = card.target;
                 }

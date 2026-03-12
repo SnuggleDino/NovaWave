@@ -11,7 +11,6 @@ export default {
             setTimeout(() => intro.classList.remove('visible'), 3000);
         }
 
-                    // Settings
                 if (app.visualizer) {
                     app.visualizer.updateSettings({ 
                         enabled: true, 
@@ -23,7 +22,7 @@ export default {
                 // --- Sector: Animation ---
                 if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('snowfall');
                 
-                // Lock
+
                 setTimeout(() => {
                     const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'visualizer-bars-input'];
                     elements.forEach(id => {
@@ -33,7 +32,7 @@ export default {
                     const anim = document.getElementById('animation-select');
                     if (anim) anim.value = 'snowfall';
                     
-                    // Emoji
+
                     const emojiSelect = document.getElementById('emoji-select');            if (emojiSelect) {
                 emojiSelect.value = 'loving_dinos';
                 emojiSelect.disabled = true;
@@ -50,7 +49,6 @@ export default {
             app.visualizer.updateSettings({ accentColor: '#38bdf8' });
         }
 
-        // Unlock
         const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'emoji-select', 'visualizer-bars-input'];
         elements.forEach(id => {
             const el = document.getElementById(id);

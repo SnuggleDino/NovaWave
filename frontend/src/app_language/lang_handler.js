@@ -42,7 +42,6 @@ export const LangHandler = {
             return text(...args);
         }
 
-        // Support for {} placeholders
         if (args.length > 0 && typeof text === 'string') {
             args.forEach(arg => {
                 text = text.replace('{}', arg);

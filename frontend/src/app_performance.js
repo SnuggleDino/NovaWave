@@ -11,10 +11,16 @@ export const AppPerformance = {
     lastStatsTime: performance.now(),
     warmupFrames: 0,
 
+    // --- Cached DOM Refs (populated in init) ---
+    _fpsEl: null,
+    _timeEl: null,
+    _lagEl: null,
+    _perfInfoEl: null,
+
     // --- External Refs ---
     visualizer: null,
     settings: {},
-    tr: (key) => key, // Fallback
+    tr: (key) => key,
     saveSetting: () => { },
     applyAnimation: () => { },
     showNotification: () => { },
@@ -29,6 +35,12 @@ export const AppPerformance = {
         this.targetFps = this.settings.targetFps || 60;
         this.showStatsOverlay = !!this.settings.showStatsOverlay;
         this.performanceMode = !!this.settings.performanceMode;
+
+        // FIX: Cache DOM elements once instead of querying on every frame
+        this._fpsEl = document.getElementById('stat-fps');
+        this._timeEl = document.getElementById('stat-time');
+        this._lagEl = document.getElementById('stat-lag');
+        this._perfInfoEl = document.getElementById('stat-perf-info');
 
         this.startLoop();
     },
@@ -55,6 +67,11 @@ export const AppPerformance = {
         this.lastStatsTime = now - (delta % interval);
         this.appFrameCount++;
 
+        // FIX: warmupFrames was never incremented — triggerPerformanceHint()
+        // could therefore never fire (without force=true), since the guard
+        // condition `this.warmupFrames < 1200` was always true.
+        this.warmupFrames++;
+
         const timeSinceLastLog = now - this.lastFrameTime;
         if (timeSinceLastLog >= statsInterval) {
             const appFps = Math.round((this.appFrameCount * 1000) / timeSinceLastLog);
@@ -64,7 +81,6 @@ export const AppPerformance = {
                 visFps = Math.round((this.visualizer.getAndResetFrameCount() * 1000) / timeSinceLastLog);
             }
             this.fps = visFps;
-
             this.avgFps = appFps;
 
             const currentFrameTime = appFps > 0 ? Math.round(1000 / appFps) : 0;
@@ -80,10 +96,11 @@ export const AppPerformance = {
     },
 
     updateUI(appFps, frameTime) {
-        const fpsEl = document.getElementById('stat-fps');
-        const timeEl = document.getElementById('stat-time');
-        const lagEl = document.getElementById('stat-lag');
-        const perfInfoEl = document.getElementById('stat-perf-info');
+        // FIX: Use cached DOM refs instead of getElementById on every frame tick
+        const fpsEl = this._fpsEl;
+        const timeEl = this._timeEl;
+        const lagEl = this._lagEl;
+        const perfInfoEl = this._perfInfoEl;
 
         if (fpsEl) {
             fpsEl.textContent = `${appFps} (${this.fps || '-'})`;
@@ -109,7 +126,9 @@ export const AppPerformance = {
         }
 
         if (perfInfoEl) {
-            perfInfoEl.textContent = this.performanceMode ? 'Active' : `${Math.min(100, Math.round((this.avgFps / this.targetFps) * 100))}%`;
+            perfInfoEl.textContent = this.performanceMode
+                ? 'Active'
+                : `${Math.min(100, Math.round((this.avgFps / this.targetFps) * 100))}%`;
         }
     },
 

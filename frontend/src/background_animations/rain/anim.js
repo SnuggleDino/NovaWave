@@ -1,4 +1,4 @@
-// Rain Logic
+
 let rainInterval;
 
 export default {

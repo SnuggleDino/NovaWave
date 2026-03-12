@@ -1,10 +1,4 @@
-/* ==========================================================================
-   NOVAWAVE THEME PACK: 8-BIT RETRO
-   Version: 1.0.0
-   Author: NovaWave User
-   Description: A complete retro overhaul featuring neon green visuals, 
-                custom grid layouts for the mini-player, and interactive intros.
-   ========================================================================== */
+
 
 /* --------------------------------------------------------------------------
    1. CORE VARIABLES & TYPOGRAPHY
@@ -16,7 +10,7 @@
     --bg-card-hover: #111111;
     --bg-card-light: #050505;
     
-    /* Neon Green / Terminal Green */
+    
     --accent: #39ff14; 
     --accent-dim: #1a8000;
     --accent-glow: rgba(57, 255, 20, 0.4);
@@ -30,7 +24,7 @@
     --font-stack: "Courier New", Courier, monospace;
 }
 
-/* Force Monospace & Uppercase for Retro Feel */
+
 :root[data-theme="8_bit_theme"] body {
     background-color: var(--bg-main);
     color: var(--text-main);
@@ -39,7 +33,7 @@
     text-transform: uppercase;
 }
 
-/* Force Square Edges Globally */
+
 :root[data-theme="8_bit_theme"] * {
     border-radius: 0px !important;
 }
@@ -70,7 +64,7 @@
    Custom styling for Buttons, Inputs, Modals to match the 8-bit aesthetic.
    -------------------------------------------------------------------------- */
 
-/* Buttons: Black with Green Borders & Shadow */
+
 :root[data-theme="8_bit_theme"] button {
     background: #000 !important;
     border: var(--border-thin) !important;
@@ -90,7 +84,7 @@
     color: #000 !important;
 }
 
-/* Modals & Panels: Heavy Borders */
+
 :root[data-theme="8_bit_theme"] .glass-panel,
 :root[data-theme="8_bit_theme"] .settings-modal,
 :root[data-theme="8_bit_theme"] .context-menu,
@@ -101,7 +95,7 @@
     backdrop-filter: none !important;
 }
 
-/* Inputs */
+
 :root[data-theme="8_bit_theme"] input,
 :root[data-theme="8_bit_theme"] select {
     background: #000 !important;
@@ -110,7 +104,7 @@
     font-family: var(--font-stack) !important;
 }
 
-/* Toggle Switches: Square Design */
+
 :root[data-theme="8_bit_theme"] .toggle-switch {
     width: 40px !important;
     height: 20px !important;
@@ -147,7 +141,7 @@
    4. PLAYER SPECIFICS (Full Size)
    -------------------------------------------------------------------------- */
 
-/* Progress Bar */
+
 :root[data-theme="8_bit_theme"] .progress-bar {
     background: #111 !important;
     border: 2px solid var(--accent);
@@ -159,7 +153,7 @@
     box-shadow: inset 0 0 10px var(--bg-main);
 }
 
-/* Cover Art Container (Normal Player) */
+
 :root[data-theme="8_bit_theme"] body:not(.is-mini) .cover-art-container {
     border: var(--border-main) !important;
     padding: 10px !important;
@@ -171,7 +165,7 @@
     aspect-ratio: 1/1 !important;
 }
 
-/* Album Cover Image (CSS Replacement) */
+
 .eight-bit-cover {
     width: 100%;
     height: 100%;
@@ -183,7 +177,7 @@
     display: block !important;
 }
 
-/* Settings List Fix: Prevent Text Overlap on Toggles */
+
 :root[data-theme="8_bit_theme"] .setting-label p {
     font-size: 0.7rem !important;
     max-width: 60%;
@@ -191,7 +185,7 @@
     opacity: 0.8;
 }
 
-/* Settings Preview Image */
+
 .preview-8bit-img-container {
     width: 100%;
     height: 100%;
@@ -219,13 +213,13 @@ html[data-theme="8_bit_theme"] body.is-mini .main-grid {
     width: 100% !important;
 }
 
-/* Grid Definition: Left Column (Cover) | Right Column (Content Stack) */
+
 html[data-theme="8_bit_theme"] body.is-mini .player-column {
     display: grid !important;
     width: 100% !important;
     height: 100% !important;
     grid-template-columns: 140px 1fr !important;
-    /* Explicit Rows: Info | Visualizer | Controls | Volume | Progress */
+    
     grid-template-rows: auto 40px auto auto auto !important; 
     grid-template-areas:
         "cover info"
@@ -239,7 +233,7 @@ html[data-theme="8_bit_theme"] body.is-mini .player-column {
     margin: 0 !important;
 }
 
-/* A. Left Column: Fixed Cover Art */
+
 html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
     grid-area: cover !important;
     width: 140px !important;
@@ -253,7 +247,7 @@ html[data-theme="8_bit_theme"] body.is-mini .cover-art-container {
     align-self: center !important;
 }
 
-/* B. Right Column Row 1: Track Info & Marquee Title */
+
 html[data-theme="8_bit_theme"] body.is-mini .track-info-area {
     grid-area: info !important;
     width: 100% !important;
@@ -274,11 +268,11 @@ html[data-theme="8_bit_theme"] body.is-mini .track-title-large {
     display: inline-block !important; 
     padding-right: 50px !important; 
     white-space: nowrap !important;
-    text-overflow: clip !important; /* Required for Marquee */
+    text-overflow: clip !important; 
     animation: none; 
 }
 
-/* Scrolling Animation for Long Titles */
+
 html[data-theme="8_bit_theme"] body.is-mini .title-scroll-wrapper.scroll-active .track-title-large {
     animation: marquee8bit 10s linear infinite !important;
 }
@@ -288,7 +282,7 @@ html[data-theme="8_bit_theme"] body.is-mini .title-scroll-wrapper.scroll-active 
     to { transform: translateX(-50%); }
 }
 
-/* C. Right Column Row 2: Visualizer Strip */
+
 html[data-theme="8_bit_theme"] body.is-mini .visualizer-container {
     grid-area: vis !important;
     display: block !important;
@@ -308,11 +302,11 @@ html[data-theme="8_bit_theme"] body.is-mini canvas#visualizer-canvas {
     height: 100% !important;
 }
 
-/* D. Right Column Row 3: Control Buttons */
+
 html[data-theme="8_bit_theme"] body.is-mini .controls-area {
     grid-area: buttons !important;
     display: flex !important;
-    flex-direction: row !important; /* Force Horizontal Layout */
+    flex-direction: row !important; 
     flex-wrap: nowrap !important;
     align-items: center !important;
     justify-content: flex-start !important;
@@ -341,7 +335,7 @@ html[data-theme="8_bit_theme"] body.is-mini .control-main {
     justify-content: center !important;
 }
 
-/* E. Right Column Row 4: Volume Slider (Wide) */
+
 html[data-theme="8_bit_theme"] body.is-mini .volume-control-area {
     grid-area: volume !important;
     display: flex !important;
@@ -372,7 +366,7 @@ html[data-theme="8_bit_theme"] body.is-mini .volume-slider::-webkit-slider-thumb
     margin-top: -5px !important;
 }
 
-/* F. Right Column Row 5: Progress Bar */
+
 html[data-theme="8_bit_theme"] body.is-mini .progress-area {
     grid-area: progress !important;
     width: 100% !important;

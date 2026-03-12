@@ -7,7 +7,6 @@ export class IntroManager {
         this.settings = settings || {};
         this.activeIntro = null;
 
-        // Registry of available intros
         this.intros = {
             'waterdrop': WaterdropIntro,
 
@@ -47,7 +46,6 @@ export class IntroManager {
             }
         }
 
-        // Instantiate
         if (typeof IntroClassOrFactory === 'function' && !(IntroClassOrFactory.prototype instanceof Object)) {
             this.activeIntro = IntroClassOrFactory();
         } else {
@@ -62,7 +60,6 @@ export class IntroManager {
             });
         }
 
-        // Standard timeout for passive intros
         return new Promise((resolve) => {
             setTimeout(() => {
                 this.stop();

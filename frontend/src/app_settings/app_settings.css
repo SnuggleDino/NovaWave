@@ -1,4 +1,4 @@
-/* Design Grid */
+
 .design-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -7,7 +7,7 @@
     max-width: 1000px;
 }
 
-/* Design Cards*/
+
 .design-card {
     flex: 1;
     min-width: 300px;

@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NovaWave Pro</title>
+    <link rel="icon" type="image/png" href="./src/assets/icon.png">
     <link rel="stylesheet" href="./src/NovaWave_Pro/pro_style.css">
+    <script src="/wails/ipc.js"></script>
+    <script src="/wails/runtime.js"></script>
 </head>
+
 <body>
 
     <!-- HOTKEY COUNTDOWN OVERLAY -->
@@ -28,39 +33,59 @@
                 <button class="nav-item" data-v="downloader">Sampler</button>
                 <button class="nav-item" data-v="settings">System</button>
             </nav>
+            <div id="sidebar-version" class="sidebar-version" title="Click for details"></div>
         </aside>
 
         <!-- Main Viewport -->
         <main id="viewport">
-            
+
             <!-- HOME -->
             <section id="v-home" class="view-section active">
-                <div class="section-header"><h1>Dashboard</h1><span class="t-mono" id="dash-status-label" style="opacity:0.3">SYSTEM_OFFLINE</span></div>
-                
+                <div class="section-header">
+                    <h1>Dashboard</h1><span class="t-mono" id="dash-status-label"
+                        style="opacity:0.3">SYSTEM_OFFLINE</span>
+                </div>
+
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:35px;">
                     <div class="pro-card">
                         <span class="card-label" id="dash-source-monitor">SOURCE_MONITOR</span>
                         <div style="display:flex; gap:30px; align-items:center;">
-                            <div class="dino-container" id="dash-art-box">
-                                <span class="dino-dance" id="dash-dino">🦖</span>
-                                <img id="dash-art" src="" class="hidden" style="width:100%; height:100%; object-fit:cover;">
+                            <div class="dino-container cover-clickable" id="dash-art-box"
+                                title="Click to change cover art">
+                                <img class="dino-dance" id="dash-dino" src="./src/assets/Two_Loving_Cute_Dinos.png"
+                                    alt="Dino">
+                                <img id="dash-art" src="" class="hidden"
+                                    style="width:100%; height:100%; object-fit:cover;">
                             </div>
-                            <div>
-                                <h2 id="dash-title" style="font-size:28px; font-weight:900;">Not Loaded</h2>
-                                <p id="dash-artist" class="t-mono" style="color:var(--text-dim);">STANDBY</p>
+                            <div style="min-width:0; overflow:hidden;">
+                                <div class="title-wrap">
+                                    <h2 id="dash-title"
+                                        style="font-size:28px; font-weight:900; white-space:nowrap; margin:0; display:inline-block; padding-right:30px;">
+                                        Not Loaded</h2>
+                                </div>
+                                <p id="dash-artist" class="t-mono" style="color:var(--text-dim); margin:0;">STANDBY</p>
                             </div>
                         </div>
                     </div>
                     <div class="pro-card">
                         <span class="card-label" id="dash-latest-commits">LATEST_COMMITS</span>
-                        <div id="news-feed" style="font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--text-dim);">...</div>
+                        <div id="news-feed" class="commits-scroll">...</div>
                     </div>
                 </div>
 
                 <div class="stat-grid">
-                    <div class="stat-item"><div class="stat-val" id="stat-tracks">0</div><div class="stat-name">Total Tracks</div></div>
-                    <div class="stat-item"><div class="stat-val" id="stat-folders">0</div><div class="stat-name">Active Folders</div></div>
-                    <div class="stat-item"><div class="stat-val" id="stat-uptime">00:00</div><div class="stat-name">Session Uptime</div></div>
+                    <div class="stat-item">
+                        <div class="stat-val" id="stat-tracks">0</div>
+                        <div class="stat-name">Total Tracks</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val" id="stat-folders">0</div>
+                        <div class="stat-name">Active Folders</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-val" id="stat-uptime">00:00</div>
+                        <div class="stat-name">Session Uptime</div>
+                    </div>
                 </div>
             </section>
 
@@ -68,70 +93,120 @@
             <section id="v-library" class="view-section">
                 <div class="section-header">
                     <h1>Library</h1>
-                    <div style="display:flex; gap:15px;">
-                        <input type="text" id="lib-search" class="input-pro" placeholder="SEARCH...">
-                        <button class="btn-pro primary" id="btn-open-folder" style="background:var(--accent); color:#000;">Mount Path</button>
+                    <div style="display:flex; gap:15px; align-items:center;">
+                        <select id="lib-sort" class="select-pro" style="width:140px; font-size:10px;">
+                            <option value="default">Default</option>
+                            <option value="az">Sort A-Z</option>
+                            <option value="za">Sort Z-A</option>
+                            <option value="recent">Recently Added</option>
+                        </select>
+                        <input type="text" id="lib-search" class="input-pro" placeholder="SEARCH..."
+                            style="width:250px;">
+                        <button class="btn-pro primary" id="btn-open-folder" style="white-space:nowrap;">Mount
+                            Path</button>
+                        <button class="btn-transport" id="btn-refresh-lib" title="Refresh Loaded Folders">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.44l5.5 5.5" />
+                            </svg>
+                        </button>
+                        <span id="refresh-status" class="refresh-status hidden"></span>
                     </div>
                 </div>
                 <div class="pro-card" style="padding:0; overflow:hidden;">
                     <table class="track-table">
                         <thead>
-                            <tr><th style="width:60px">IDX</th><th>Title</th><th>Artist</th><th style="width:100px">Length</th></tr>
+                            <tr>
+                                <th style="width:50px">IDX</th>
+                                <th style="width:40px">❤</th>
+                                <th>Title</th>
+                                <th>Artist</th>
+                                <th style="width:100px">Length</th>
+                            </tr>
                         </thead>
                         <tbody id="track-body"></tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- DOWNLOADER -->
+            <!-- DOWNLOADER / SAMPLER -->
             <section id="v-downloader" class="view-section">
-                <div class="section-header"><h1>Sampler Engine</h1></div>
-                
+                <div class="section-header">
+                    <h1>Sampler Engine</h1>
+                </div>
+
                 <div class="info-box">
                     <h4>How to use the Sampler</h4>
-                    <p>Paste a YouTube or Spotify URL below to fetch high-quality audio streams. The sampling engine will automatically extract metadata and place the file in your specified download directory.</p>
+                    <p>Paste a YouTube or Spotify URL below to fetch high-quality audio streams. The sampling engine
+                        will automatically extract metadata and place the file in your specified download directory.</p>
                 </div>
 
                 <div class="pro-card" style="max-width:850px;">
                     <span class="card-label">REMOTE_RESOURCE_URL</span>
-                    <div style="display:flex; gap:12px; margin-bottom: 20px;">
+                    <div style="display:flex; gap:12px; margin-bottom: 25px;">
                         <input type="text" id="dl-url" class="input-pro" style="flex:1;" placeholder="Source URL...">
                     </div>
-                    
-                    <div style="display:flex; gap:15px; align-items: flex-end;">
-                        <div style="flex:1;">
-                            <span class="card-label" style="margin-bottom:8px;">FORMAT</span>
-                            <select id="dl-format" class="select-pro" style="width:100%;">
+
+                    <span class="card-label">CUSTOM NAME (OPTIONAL)</span>
+                    <div style="display:flex; gap:12px; margin-bottom: 25px;">
+                        <input type="text" id="dl-name" class="input-pro" style="flex:1;"
+                            placeholder="Leave empty for auto-title...">
+                    </div>
+
+                    <div class="sampler-grid" style="margin-bottom: 25px;">
+                        <div class="sampler-field">
+                            <span class="card-label">FORMAT</span>
+                            <select id="dl-format" class="select-pro">
                                 <option value="mp3">MP3 (Audio Only)</option>
                                 <option value="mp4">MP4 (Video + Audio)</option>
                                 <option value="wav">WAV (Lossless)</option>
                             </select>
                         </div>
-                        <div style="flex:1;">
-                            <span class="card-label" style="margin-bottom:8px;">QUALITY</span>
-                            <select id="dl-quality" class="select-pro" style="width:100%;">
+                        <div class="sampler-field">
+                            <span class="card-label">QUALITY</span>
+                            <select id="dl-quality" class="select-pro">
                                 <option value="best">Ultra (320kbps / 4K)</option>
                                 <option value="high">High (256kbps / 1080p)</option>
                                 <option value="medium">Medium (128kbps / 720p)</option>
                             </select>
                         </div>
-                        <button class="btn-pro" id="btn-dl" style="height:45px; background:var(--accent); color:#000;">Execute Sampling</button>
+                        <div class="sampler-field sampler-action">
+                            <button class="btn-pro primary" id="btn-dl">Execute Sampling</button>
+                        </div>
                     </div>
 
-                    <div id="dl-monitor" class="hidden" style="margin-top:25px; padding:20px; background:#000; font-family:var(--font-mono); font-size:12px;">
+                    <span class="card-label">SAVE DIRECTORY</span>
+                    <div style="display:flex; gap:12px;">
+                        <input type="text" id="dl-folder" class="input-pro"
+                            style="flex:1; background: rgba(255,255,255,0.05); color: var(--text-dim); cursor: not-allowed;"
+                            placeholder="Default Downloads Folder" disabled>
+                        <button class="btn-pro" id="btn-dl-folder" style="width: auto;">CHANGE</button>
+                    </div>
+
+                    <div id="dl-monitor" class="hidden"
+                        style="margin-top:25px; padding:20px; background:#000; font-family:var(--font-mono); font-size:12px; border: 1px solid var(--border);">
                         <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
                             <span id="dl-status">...</span>
                             <span id="dl-progress">0%</span>
                         </div>
-                        <div style="height:2px; background:#222;"><div id="dl-fill" style="height:100%; background:var(--accent); width:0%;"></div></div>
+                        <div style="height:3px; background:#222; border-radius:2px;">
+                            <div id="dl-fill"
+                                style="height:100%; background:var(--accent); width:0%; transition: width 0.3s ease; border-radius:2px;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <!-- SETTINGS / SYSTEM -->
             <section id="v-settings" class="view-section">
-                <div class="section-header"><h1>System Config</h1></div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
+                <div class="section-header">
+                    <h1>System Config</h1>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px;">
+                    <!-- Row 1: Accent + Language -->
                     <div class="pro-card">
                         <span class="card-label">UI_ACCENT</span>
                         <div class="theme-selector">
@@ -141,19 +216,73 @@
                             <div class="color-block" style="background:#d500f9" data-c="#d500f9"></div>
                             <div class="color-block" style="background:#facc15" data-c="#facc15"></div>
                         </div>
-                        <br>
-                        <button class="btn-pro" id="btn-reset-fx-pro">Reset All Config</button>
                     </div>
                     <div class="pro-card">
+                        <span class="card-label">LANGUAGE</span>
+                        <select id="lang-select-pro" class="select-pro" style="max-width:220px;">
+                            <option value="de">Deutsch</option>
+                            <option value="en">English</option>
+                            <option value="tr">Türkçe</option>
+                            <option value="fr">Français</option>
+                            <option value="es">Español</option>
+                            <option value="it">Italiano</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Cover Art + Folder Setup -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px; margin-top: 25px;">
+                    <div class="pro-card">
+                        <span class="card-label">COVER_ART</span>
+                        <select id="cover-fallback-select" class="select-pro" style="max-width:220px;">
+                            <option value="cover">Album Cover (from file)</option>
+                            <option value="dino">Animated Dino</option>
+                            <option value="emoji">Music Emoji (🎵)</option>
+                        </select>
+                        <span class="btn-desc" style="margin-top:12px; display:block;">Select the default cover art
+                            style. 'Album Cover' uses the embedded metadata image. If unavailable, the chosen fallback
+                            is shown.</span>
+                    </div>
+                    <div class="pro-card">
+                        <span class="card-label">MUSIC FOLDER PATHS</span>
+                        <div id="folder-list-container"
+                            style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
+                            <!-- Dynamically filled list of folders -->
+                        </div>
+                        <button class="btn-pro primary" id="btn-add-folder" style="width: auto;">+ Add Folder</button>
+                        <span class="btn-desc" style="margin-top:12px; display:block;">Add multiple paths to include in
+                            your library</span>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr; gap:25px; margin-top: 25px;">
+                    <!-- Row 3: Logs (full width) -->
+                    <div class="pro-card" style="grid-column: 1 / -1;">
                         <span class="card-label">PRO_SESSION_LOGS</span>
                         <div id="system-log-box" class="log-box"></div>
                     </div>
-                    <div class="pro-card">
+
+                    <!-- Row 3: Operations (full width) -->
+                    <div class="pro-card" style="grid-column: 1 / -1;">
                         <span class="card-label">CORE_OPERATIONS</span>
-                        <div style="display:flex; flex-direction:column; gap:12px;">
-                            <button class="btn-pro" id="btn-legacy">Legacy Interface</button>
-                            <button class="btn-pro" id="btn-restart">Warm Reboot</button>
-                            <button class="btn-pro danger" id="btn-quit">Shutdown</button>
+                        <div class="ops-grid">
+                            <button class="btn-pro" id="btn-legacy">
+                                Legacy Interface
+                                <span class="btn-desc">switch to the classic NovaWave UI</span>
+                            </button>
+                            <button class="btn-pro" id="btn-restart">
+                                Warm Reboot
+                                <span class="btn-desc">restart the application without losing data</span>
+                            </button>
+                            <button class="btn-pro" id="btn-reset-fx-pro">
+                                Reset All Config
+                                <span class="btn-desc">removes all saved preferences and resets to factory
+                                    defaults</span>
+                            </button>
+                            <button class="btn-pro danger" id="btn-quit">
+                                Shutdown
+                                <span class="btn-desc">completely close NovaWave</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -163,44 +292,85 @@
         <!-- Master Player Bar -->
         <footer id="master-bar">
             <div class="m-info">
-                <div class="m-art-wrap" id="m-art-box">
-                    <span class="dino-dance" id="m-dino">🦖</span>
+                <div class="m-art-wrap cover-clickable" id="m-art-box" title="Click to change cover art">
+                    <img class="dino-dance" id="m-dino" src="./src/assets/Two_Loving_Cute_Dinos.png" alt="Dino">
                     <img id="m-art" src="" class="hidden">
                 </div>
                 <div class="m-meta">
-                    <div id="m-title">STANDBY</div>
+                    <div class="title-wrap">
+                        <div id="m-title">STANDBY</div>
+                    </div>
                     <div id="m-artist">OFFLINE</div>
                 </div>
             </div>
             <div class="m-controls">
                 <div class="m-btns">
-                    <button class="btn-transport" id="m-shuf" title="Shuffle">
-                        <span style="font-size: 14px; font-weight: 800;">SHUF</span>
-                    </button>
-                    <button class="btn-transport" id="m-prev" title="Previous">
-                        <img src="./src/assets/previous.svg" alt="Prev">
-                    </button>
-                    <button class="btn-transport btn-play-main" id="m-play" title="Play/Pause">
-                        <img id="icon-play" src="./src/assets/play.svg" alt="Play">
-                        <img id="icon-pause" src="./src/assets/pause.svg" alt="Pause" class="hidden">
-                    </button>
-                    <button class="btn-transport" id="m-next" title="Next">
-                        <img src="./src/assets/next.svg" alt="Next">
-                    </button>
-                    <button class="btn-transport" id="m-loop" title="Loop">
-                        <span style="font-size: 14px; font-weight: 800;">LOOP</span>
-                    </button>
+                    <button class="btn-transport" id="m-shuf" title="Shuffle"><span
+                            style="font-size:10px; font-weight:800; font-family:var(--font-mono);">SHUF</span></button>
+                    <button class="btn-transport" id="m-prev" title="Previous"><img src="./src/assets/previous.svg"
+                            alt=""></button>
+                    <button class="btn-play-main" id="m-play" title="Play/Pause"><img src="./src/assets/play.svg"
+                            id="m-play-img" alt=""></button>
+                    <button class="btn-transport" id="m-next" title="Next"><img src="./src/assets/next.svg"
+                            alt=""></button>
+                    <button class="btn-transport" id="m-loop" title="Loop"><span
+                            style="font-size:10px; font-weight:800; font-family:var(--font-mono);">LOOP</span></button>
                 </div>
                 <div class="m-timeline">
                     <span class="m-time" id="m-cur">00:00</span>
-                    <div class="m-slider" id="m-rail"><div id="m-fill"></div></div>
+                    <div class="m-slider" id="m-rail">
+                        <div id="m-fill"></div>
+                    </div>
                     <span class="m-time" id="m-tot">00:00</span>
                 </div>
             </div>
-            <div class="m-extra"><input type="range" id="m-vol" min="0" max="1" step="0.01" value="0.5" class="vol-slider"></div>
+            <div class="m-extra">
+                <button class="btn-transport" id="m-fav" title="Favorite">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="fav-icon">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                        </path>
+                    </svg>
+                </button>
+                <input type="range" id="m-vol" min="0" max="1" step="0.01" value="0.5" class="vol-slider"
+                    title="Volume">
+            </div>
         </footer>
+    </div>
+    <!-- Context Menu (Hidden by default) -->
+    <div id="context-menu" class="hidden">
+        <div class="cm-item" id="cm-play"><span style="margin-right:8px;">▶</span> Play</div>
+        <div class="cm-item" id="cm-fav"><span style="margin-right:8px;">❤️</span> Toggle Favorite</div>
+        <div class="cm-item" id="cm-cover"><span style="margin-right:8px;">🖼️</span> Change Cover</div>
+    </div>
+
+    <!-- On-Boarding Modal -->
+    <div id="onboarding-modal" class="pro-modal-overlay hidden">
+        <div class="pro-modal">
+            <div style="text-align:center; margin-bottom:30px;">
+                <img src="./src/assets/icon.png" alt="Logo" style="width:64px; height:64px; margin-bottom:15px;">
+                <h2 style="font-size:24px; font-weight:900; margin:0;">NW-V2.PRO</h2>
+                <p style="color:var(--text-dim); font-size:13px; margin-top:8px;">Select your language / Sprache wählen
+                </p>
+            </div>
+            <div id="onboarding-langs" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+        </div>
+    </div>
+
+    <!-- Version Modal -->
+    <div id="version-modal" class="pro-modal-overlay hidden">
+        <div class="pro-modal" style="max-width:500px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="font-size:20px; font-weight:900; margin:0;">NovaWave</h2>
+                <button class="btn-transport" id="version-modal-close" style="font-size:18px;">✕</button>
+            </div>
+            <div id="version-modal-body"></div>
+        </div>
     </div>
 
     <script type="module" src="./src/NovaWave_Pro/pro_main.js"></script>
 </body>
+
 </html>

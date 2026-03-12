@@ -10,7 +10,6 @@ export class DynamicIsland {
     show(message, type = 'info', duration = 3000) {
         if (!this.element || !this.messageEl) return;
 
-        // Skip if in mini player mode
         if (document.body.classList.contains('is-mini')) {
             return;
         }

@@ -23,7 +23,6 @@ import { AppPerformance } from './app_performance.js';
 import { AudioFeaturesPanel } from './audio_extras/audio_features_panel.js';
 import './audio_extras/audio_features_panel.css';
 
-// Wails API Mapping
 const windowApi = {
     getSettings: App.GetSettings,
     getAppMeta: App.GetAppMeta,
@@ -47,8 +46,8 @@ const windowApi = {
     setWindowSize: App.SetWindowSize,
     resetConfig: App.ResetConfig,
     restartApp: App.RestartApp,
-    onMediaControl: (cb) => { /* Not implemented */ },
-    onDownloadProgress: (cb) => { /* Not implemented */ },
+    onMediaControl: (cb) => {  },
+    onDownloadProgress: (cb) => {  },
     sendPlaybackState: App.SendPlaybackState
 };
 
@@ -68,7 +67,6 @@ window.switchUI = async function (key, target) {
         console.error('[Global] Error saving UI setting:', e);
     }
 
-    // Force navigation
     setTimeout(() => {
         console.log(`[Global] Navigating to ${target}`);
         try {
@@ -81,12 +79,11 @@ window.switchUI = async function (key, target) {
 
 // --- GLOBAL HOTKEYS ---
 document.addEventListener('keydown', (e) => {
-    // Stage 1: Ctrl + U
+
     if (e.ctrlKey && e.key.toLowerCase() === 'u') {
         window.__uiHotkeyStage = true;
         console.log('[Hotkeys] UI Switch Stage 1 Activated (Waiting for 1 or 2)');
 
-        // Reset after 1 second
         if (window.__uiHotkeyTimeout) clearTimeout(window.__uiHotkeyTimeout);
         window.__uiHotkeyTimeout = setTimeout(() => {
             window.__uiHotkeyStage = false;
@@ -95,7 +92,6 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    // Stage 2: 1 or 2
     if (window.__uiHotkeyStage) {
         if (e.key === '1') {
             console.log('[Hotkeys] Triggering Legacy UI');
@@ -109,7 +105,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// App State
 let playlist = [];
 let basePlaylist = [];
 let currentIndex = -1;
@@ -135,17 +130,14 @@ let sleepTimerId = null;
 let lastNotifiedPath = null;
 let activeDownloaderMode = 'youtube';
 
-
-// Visualizer State
 let visualizer;
 let audioExtras;
 let audioFeaturesPanel;
 let dynamicIsland;
 let miniPlayer;
 
-// DOM Elements
 let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, editArtistInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, audioExtrasToggleBtn;
-// Spotify & Tabs
+
 let spotifyUrlInput, tabYtBtn, tabSpotifyBtn, viewYt, viewSpotify;
 let musicUrlInput, musicNameInput, tabMusicBtn, viewMusic;
 let favorites = [];
@@ -160,7 +152,6 @@ let reverbToggle, reverbSlider, reverbValueEl, reverbContainer;
 let toggleCinemaMode, btnExportPlaylist, playlistPositionSelect, toggleGradientTitle;
 let renderPlaylistRequestId = null;
 
-// Performance
 let lastFrameTime = performance.now();
 let downloadManager;
 let frameCount = 0;
@@ -223,7 +214,6 @@ function openFolderModal(mode, folderId = null) {
     const titleKey = mode === 'rename' ? 'folderModalTitleRename' : 'folderModalTitleCreate';
     if (folderModalTitle) folderModalTitle.textContent = tr(titleKey);
 
-    // Reset Palette
     selectedFolderColor = (mode === 'rename' && folder) ? folder.color : '#38bdf8';
     document.querySelectorAll('.color-swatch').forEach(swatch => {
         swatch.classList.toggle('active', swatch.dataset.color === selectedFolderColor);
@@ -274,7 +264,6 @@ function showDeleteConfirmation(mode, id) {
         const msgEl = confirmDeleteOverlay.querySelector('.confirm-message');
         const titleEl = confirmDeleteOverlay.querySelector('h3');
 
-        // Reset Button State
         if (confirmDeleteBtn) {
             confirmDeleteBtn.disabled = (mode === 'track');
             confirmDeleteBtn.textContent = tr('confirmDeleteButton');
@@ -303,7 +292,7 @@ function handleDeleteTrack(fp) {
     if (countdownWrapper) countdownWrapper.classList.add('active');
     if (countdownBar) {
         countdownBar.classList.remove('animate');
-        void countdownBar.offsetWidth; // Trigger reflow
+        void countdownBar.offsetWidth;
         countdownBar.classList.add('animate');
     }
 
@@ -407,7 +396,6 @@ function tr(key, ...args) {
     return LangHandler.tr(key, ...args);
 }
 
-// Player Logic
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
     currentIndex = index;
@@ -431,8 +419,23 @@ function playTrack(index) {
 }
 
 function playNext() {
-    let nextIndex = shuffleOn ? Math.floor(Math.random() * playlist.length) : currentIndex + 1;
-    if (nextIndex >= playlist.length) { if (loopMode === 'all') nextIndex = 0; else { isPlaying = false; updatePlayPauseUI(); return; } }
+    // FIX: Shuffle can no longer repeat the currently playing track.
+    // The do-while loop ensures a different index is picked when the
+    // playlist has more than one track.
+    if (shuffleOn) {
+        if (playlist.length <= 1) { playTrack(0); return; }
+        let nextIndex;
+        do {
+            nextIndex = Math.floor(Math.random() * playlist.length);
+        } while (nextIndex === currentIndex);
+        playTrack(nextIndex);
+        return;
+    }
+    let nextIndex = currentIndex + 1;
+    if (nextIndex >= playlist.length) {
+        if (loopMode === 'all') nextIndex = 0;
+        else { isPlaying = false; updatePlayPauseUI(); return; }
+    }
     playTrack(nextIndex);
 }
 
@@ -650,7 +653,7 @@ function renderPlaylist() {
         if (renderIndex < renderItems.length) {
             renderPlaylistRequestId = requestAnimationFrame(renderChunk);
         } else {
-            // Render complete
+
             renderPlaylistRequestId = null;
             updateActiveTrackInPlaylist();
         }
@@ -762,7 +765,7 @@ function updateEmoji(emojiType, customEmoji) {
             };
             img.onerror = () => {
                 const fallbackType = settings.lastCoverEmoji || 'note';
-                // Call updateEmoji with fallback but avoid 'auto' to prevent loop
+
                 const finalFallback = (fallbackType === 'auto') ? 'note' : fallbackType;
                 renderEmoji(finalFallback, settings.customCoverEmoji);
             };
@@ -842,7 +845,6 @@ function updateQueueStatsUI(stats) {
     }
 }
 
-
 function setDownloaderState(state, message) {
     const statusDot = document.getElementById('status-dot');
     const statusText = document.getElementById('info-status-text');
@@ -854,7 +856,6 @@ function setDownloaderState(state, message) {
 
     statusDot.className = 'status-dot';
     btn.classList.remove('loading');
-    // REMOVED: btn.disabled = false; // We handle this differently now
 
     if (toggleTerminal) toggleTerminal.style.display = 'flex';
 
@@ -866,7 +867,7 @@ function setDownloaderState(state, message) {
         statusDot.classList.add('processing');
         statusText.textContent = message || tr('statusStarting');
         btn.classList.add('loading');
-        btn.disabled = false; // ALLOW ADDING TO QUEUE
+        btn.disabled = false;
     } else if (state === 'success') {
         statusDot.classList.add('success');
         statusText.textContent = message || tr('statusSuccess');
@@ -939,7 +940,7 @@ function closeQueuePanel() {
     if (queuePanel) {
         queuePanel.style.display = 'none';
         isQueueModalOpen = false;
-        if (downOverlay && !document.getElementById('terminal-panel').style.display === 'flex') {
+        if (downOverlay && document.getElementById('terminal-panel')?.style.display !== 'flex') {
             downOverlay.classList.remove('with-queue');
         }
     }
@@ -1147,7 +1148,6 @@ async function loadSettings() {
     const s = await windowApi.getSettings();
     if (s) settings = s;
 
-    // Restore Language
     if (settings.language) {
         currentLanguage = settings.language;
     } else {
@@ -1156,7 +1156,6 @@ async function loadSettings() {
     document.documentElement.lang = currentLanguage;
     localStorage.setItem('language', currentLanguage);
 
-    // Restore Favorites
     if (settings.favorites) {
         favorites = settings.favorites;
         favoritesSet = new Set(favorites.map(p => p.replace(/\\/g, '/')));
@@ -1165,7 +1164,6 @@ async function loadSettings() {
         favoritesSet = new Set();
     }
 
-    // Restore Volume
     currentVolume = settings.volume !== undefined ? settings.volume : 0.2;
     audio.volume = currentVolume;
     if (volumeSlider) volumeSlider.value = currentVolume;
@@ -1212,24 +1210,19 @@ async function loadSettings() {
         document.body.classList.add('playlist-hidden');
     }
 
-    // Performance Mode
     if (settings.performanceMode) {
         AppPerformance.setPerformanceMode(true, true);
     }
 
-    // Stats Overlay
     showStatsOverlay = !!settings.showStatsOverlay;
     const statsOverlay = document.getElementById('stats-overlay');
     if (statsOverlay) statsOverlay.classList.toggle('hidden', !showStatsOverlay);
 
     if (settings.targetFps) targetFps = settings.targetFps;
 
-
-    // Restore Audio Extras Logic (AudioNodes)
     updateAudioEffects();
     updateActiveFeaturesIndicator();
 
-    // Auto Load Folder
     if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
         AppLoader.update(50, tr('loaderLoadingLibrary'));
         currentFolderPath = settings.currentFolderPath;
@@ -1277,7 +1270,7 @@ function getVolumeIcon(v) {
 
 function cleanTitleDisplay(title) {
     if (!title) return "";
-    // Remove common audio extensions and also generic versions like .mp3 (1)
+
     return title.replace(/\.(mp3|wav|flac|ogg|m4a|aac|wma|alac|dsd|pcm)(\s*\(\d+\))?$/gi, '').trim();
 }
 
@@ -1293,10 +1286,9 @@ async function toggleFavorite(path) {
         favoritesSet.delete(normalizedPath);
     }
 
-    // Await ensures the backend actually wrote the file before we re-render
     await windowApi.setSetting('favorites', favorites);
     
-    // Manual sync: Ensure the basePlaylist objects reflect the change immediately
+
     basePlaylist.forEach(track => {
         if (track.path === path) {
             track.isFavorite = (index === -1);
@@ -1307,10 +1299,6 @@ async function toggleFavorite(path) {
     
     renderPlaylist();
     updateUIForCurrentTrack();
-    
-    if (isFavoritesFilterActive) {
-        renderPlaylist();
-    }
 
     if (playlistEl) {
         requestAnimationFrame(() => {
@@ -1376,7 +1364,7 @@ function setupEventListeners() {
         if (currentTrackPath) {
             LyricsManager.fetchAndShow(currentTrackPath);
         } else {
-            showNotification('Kein Song ausgewählt.');
+            showNotification(tr('noTrackSelected'));
         }
     });
     bind(progressBar, 'click', (e) => { if (!isNaN(audio.duration)) { const r = progressBar.getBoundingClientRect(); audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; } });
@@ -1525,7 +1513,6 @@ function setupEventListeners() {
     bind(toggleEnableFocus, 'change', (e) => { saveSetting('enableFocusMode', e.target.checked); if (toggleFocusModeBtn) toggleFocusModeBtn.style.display = e.target.checked ? 'flex' : 'none'; });
     bind(toggleEnableDrag, 'change', (e) => { saveSetting('enableDragAndDrop', e.target.checked); });
 
-
     bind(playlistEl, 'click', (e) => {
         const fb = e.target.closest('.fav-track-btn');
         if (fb) { e.stopPropagation(); toggleFavorite(fb.dataset.path); return; }
@@ -1555,7 +1542,6 @@ function setupEventListeners() {
         if (editTitleInput) editTitleInput.value = t.title;
         if (editArtistInput) editArtistInput.value = t.artist || '';
 
-        // Load Cover
         const img = document.getElementById('edit-cover-img');
         if (img) {
             let rawPath = t.path.replace(/\\/g, '/');
@@ -1585,14 +1571,12 @@ function setupEventListeners() {
         downloaderOverlay.classList.add('visible');
     });
 
-    // Toggle Legend
     const toggleLegendBtn = document.getElementById('toggle-legend-btn');
     bind(toggleLegendBtn, 'click', () => {
         const legend = document.getElementById('clean-legend');
         if (legend) legend.classList.toggle('collapsed');
     });
 
-    // Toggle Terminal (Manually)
     const toggleTerminalBtn = document.getElementById('toggle-terminal-btn');
     bind(toggleTerminalBtn, 'click', () => {
         const term = document.getElementById('terminal-view');
@@ -1606,7 +1590,6 @@ function setupEventListeners() {
     bind(infoBtn, 'click', () => infoOverlay.classList.add('visible'));
     bind(infoCloseBtn, 'click', () => infoOverlay.classList.remove('visible'));
     bind(infoOverlay, 'click', (e) => { if (e.target === infoOverlay) infoOverlay.classList.remove('visible'); });
-
 
     function resetDownloaderUI() {
         if (ytUrlInput) ytUrlInput.value = '';
@@ -1627,7 +1610,6 @@ function setupEventListeners() {
         renderPlaylist();
     });
 
-    // Event Bindings for Folders & Delete
     bind($('#toggle-remember-themepack'), 'change', (e) => {
         saveSetting('rememberThemePack', e.target.checked);
     });
@@ -1676,7 +1658,6 @@ function setupEventListeners() {
             return;
         }
 
-        // Track Delete Logic (Async)
         if (!trackToDeletePath) return;
 
         confirmDeleteBtn.disabled = true;
@@ -1754,11 +1735,10 @@ function setupEventListeners() {
             audio.load();
         }
 
-        // Save Cover if changed
         if (selectedCoverPath) {
             const res = await windowApi.setCoverArt(t.path, selectedCoverPath);
             if (!res.success) {
-                if (isCurrent && wasPlaying) playTrack(currentIndex); // Restore if failed
+                if (isCurrent && wasPlaying) playTrack(currentIndex);
                 showNotification('Cover Error: ' + res.error, 'error');
                 return;
             }
@@ -1801,8 +1781,8 @@ function setupEventListeners() {
     });
 
     document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && isPlaying && visualizerEnabled && !visualizerRunning) {
-            startVisualizer();
+        if (!document.hidden && isPlaying && visualizer) {
+            visualizer.start();
         }
     });
 }
@@ -1838,7 +1818,7 @@ function initSettingsLogic() {
         },
         onEmojiChange: (mode, customVal) => {
             updateEmoji(mode, customVal);
-            showNotification(tr('coverEmoji') + ': ' + mode.toUpperCase(), 'info', 1500);
+            if(!window._isRestoring) showNotification(tr('coverEmoji') + ': ' + mode.toUpperCase(), 'info', 1500);
         },
         onSleepTimerChange: (mins) => {
             if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; }
@@ -1961,7 +1941,7 @@ function initSettingsLogic() {
         },
         onAnimationChange: (val) => {
             applyAnimationSetting(val);
-            showNotification(tr('backgroundAnimation') + ': ' + val.toUpperCase(), 'info', 2000);
+            if (!window._isRestoring) showNotification(tr('backgroundAnimation') + ': ' + val.toUpperCase(), 'info', 2000);
         }
     };
 
@@ -2060,9 +2040,9 @@ document.addEventListener('DOMContentLoaded', () => {
         langSelect.addEventListener('change', (e) => {
             const newLang = e.target.value;
             LangHandler.setLanguage(newLang);
-            currentLanguage = newLang; // State updaten
-            api.setSetting('language', newLang);
-            applyTranslations(); // Live Update ohne Reload
+            currentLanguage = newLang;
+            windowApi.setSetting('language', newLang);
+            applyTranslations();
         });
     }
     settingsBtn = $('#settings-btn'); settingsOverlay = $('#settings-overlay');
@@ -2275,7 +2255,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Intro Settings
     const introCards = document.querySelectorAll('.intro-card');
     introCards.forEach(card => {
         const btn = card.querySelector('.apply-intro-btn');
@@ -2365,10 +2344,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settings.activeIntro) localStorage.setItem('activeIntro', settings.activeIntro);
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
-            // Set select value but don't re-trigger animation logic
             if (animationSelect) animationSelect.value = settings.animationMode || 'flow';
 
-            // Initialize Theme Packs
             ThemePackListener.init({
                 visualizer,
                 ui: {
@@ -2399,37 +2376,11 @@ document.addEventListener('DOMContentLoaded', () => {
             AppLoader.update(90, tr('loaderAudio'));
             initVisualizerEngine();
 
-            if (settings.activeThemePack) {
-                setTimeout(() => {
-                    ThemePackListener.restoreState(settings.activeThemePack, {
-                        visualizer,
-                        ui: {
-                            updateEmoji,
-                            applyAnimationSetting
-                        },
-                        settings
-                    });
-                }, 500);
-            }
-
     AppLoader.update(100, tr('loaderReady'));
     AppLoader.finish();
 
     const finalizeApp = () => {
         document.body.classList.add('ready');
-        // Restore Theme Pack AFTER Intro
-        if (settings.rememberThemePack !== false && settings.activeThemePack) {
-            setTimeout(() => {
-                ThemePackListener.restoreState(settings.activeThemePack, {
-                    visualizer,
-                    ui: {
-                        updateEmoji,
-                        applyAnimationSetting
-                    },
-                    settings
-                });
-            }, 100);
-        }
     };
 
     const activeIntro = settings.activeIntro || 'waterdrop';
@@ -2453,66 +2404,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 
-    setTimeout(() => {
-        const btn = document.getElementById('open-library-btn');
-        if (btn) {
-            const newBtn = btn.cloneNode(true);
-            if (btn.parentNode) btn.parentNode.replaceChild(newBtn, btn);
-
-            newBtn.addEventListener('click', async () => {
-                try {
-                    const res = await windowApi.selectMusicFolder();
-                    if (res && res.folderPath) {
-                        saveSetting('currentFolderPath', res.folderPath);
-                        currentFolderPath = res.folderPath;
-
-                        basePlaylist = res.tracks || [];
-                        playlist = [...basePlaylist];
-                        sortPlaylist(sortMode);
-                        renderPlaylist();
-                        updateUIForCurrentTrack();
-                        showNotification(tr('folderLoaded', res.folderPath));
-
-                        const libOverlay = document.getElementById('library-overlay');
-                        if (libOverlay) libOverlay.classList.remove('visible');
-                    }
-                } catch (e) {
-                    console.error("Load folder failed:", e);
-                }
-            });
-        }
-
-        const refBtn = document.getElementById('refresh-folder-btn');
-        if (refBtn) {
-            const newRefBtn = refBtn.cloneNode(true);
-            if (refBtn.parentNode) refBtn.parentNode.replaceChild(newRefBtn, refBtn);
-
-            newRefBtn.addEventListener('click', async () => {
-                let path = currentFolderPath || settings.currentFolderPath;
-                if (!path) {
-                    const btn = document.getElementById('open-library-btn');
-                    if (btn) btn.click();
-                    return;
-                }
-
-                const res = await windowApi.refreshMusicFolder(path);
-                if (res && res.tracks) {
+    // FIX: Removed cloneNode() anti-pattern. Previously, open-library-btn and
+    // refresh-folder-btn were cloned to strip old listeners, which caused the
+    // module-scoped openLibraryBtn/refreshFolderBtn variables to point at
+    // detached DOM nodes. We now attach these handlers directly here, after
+    // the DOM is fully ready, which is the correct pattern.
+    if (openLibraryBtn) {
+        openLibraryBtn.addEventListener('click', async () => {
+            try {
+                const res = await windowApi.selectMusicFolder();
+                if (res && res.folderPath) {
+                    saveSetting('currentFolderPath', res.folderPath);
                     currentFolderPath = res.folderPath;
-                    saveSetting('currentFolderPath', currentFolderPath);
-                    basePlaylist = res.tracks;
+
+                    basePlaylist = res.tracks || [];
                     playlist = [...basePlaylist];
                     sortPlaylist(sortMode);
                     renderPlaylist();
-                    showNotification(tr('folderRefreshed'));
-                }
-            });
-        }
-    }, 500);
+                    updateUIForCurrentTrack();
+                    showNotification(tr('folderLoaded', res.folderPath));
 
-    // Dynamic Island
+                    if (libraryOverlay) libraryOverlay.classList.remove('visible');
+                }
+            } catch (e) {
+                console.error('Load folder failed:', e);
+            }
+        });
+    }
+
+    if (refreshFolderBtn) {
+        refreshFolderBtn.addEventListener('click', async () => {
+            let path = currentFolderPath || settings.currentFolderPath;
+            if (!path) {
+                if (openLibraryBtn) openLibraryBtn.click();
+                return;
+            }
+
+            const res = await windowApi.refreshMusicFolder(path);
+            if (res && res.tracks) {
+                currentFolderPath = res.folderPath;
+                saveSetting('currentFolderPath', currentFolderPath);
+                basePlaylist = res.tracks;
+                playlist = [...basePlaylist];
+                sortPlaylist(sortMode);
+                renderPlaylist();
+                showNotification(tr('folderRefreshed'));
+            }
+        });
+    }
+
     dynamicIsland = new DynamicIsland();
 
-    // Global showNotification wrapper
     window.showNotification = function (message, type = 'info', duration = 3000) {
         if (dynamicIsland) dynamicIsland.show(message, type, duration);
     };

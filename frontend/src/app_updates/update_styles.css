@@ -1,6 +1,6 @@
-/* UPDATE MODAL & ANIMATIONS */
 
-/* === Footer Update Button === */
+
+
 .footer-update-btn {
     background: transparent;
     border: 1px solid var(--border-soft);
@@ -48,7 +48,7 @@
     }
 }
 
-/* === Update Modal === */
+
 .update-modal {
     max-width: 500px !important;
     background: var(--bg-card) !important;

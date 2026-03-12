@@ -1,4 +1,4 @@
-// Snowfall Logic
+
 let snowInterval;
 
 export default {

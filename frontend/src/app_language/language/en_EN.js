@@ -285,10 +285,10 @@ export const en_EN = {
     sortNewest: 'Newest first',
     designLegacyLabel: 'Legacy UI',
     designLegacyDesc: 'The classic NovaWave interface.',
-    designV2Label: 'Liquid UI',
-    designV2Desc: 'Modern redesign with sidebar.',
+    designV2Label: 'NW-V2.PRO',
+    designV2Desc: 'Professional redesign with PRO Engine.',
     designLegacyBadge: 'STABLE',
-    designV2Badge: 'V2 LIQUID',
+    designV2Badge: 'V2-PRO',
     designActiveBadge: 'ACTIVE',
 
     // --- Player Button Tooltips ---

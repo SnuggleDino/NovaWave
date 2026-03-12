@@ -207,7 +207,7 @@ body.audio-panel-open .side-toggle-btn.right {
     right: 60px;
 }
 
-/* Playlist Left Mode: Switch Button to Right */
+
 body.playlist-left .side-toggle-btn.left {
     left: auto;
     right: 0;
@@ -221,7 +221,7 @@ body.playlist-left.audio-panel-open .side-toggle-btn.left {
     left: auto;
 }
 
-/* Mini Player Optimierung */
+
 body.is-mini .side-toggle-btn {
     width: 30px;
     height: 40px;
@@ -258,7 +258,7 @@ body.is-mini.playlist-left.audio-panel-open .side-toggle-btn.left {
     left: auto;
 }
 
-/* Adjust Panel Position based on Body Class */
+
 body.playlist-left .audio-features-panel {
     left: auto;
     right: -200px;
@@ -669,10 +669,10 @@ textarea {
     display: none !important;
 }
 
-/* ============================================== */
-/* THEME PACK INTROS                              */
 
-/* Base overlay styles for all theme intros */
+
+
+
 .sleep-intro-overlay,
 .snuggle-intro-overlay,
 .cyber-intro-overlay,
@@ -703,7 +703,7 @@ textarea {
     pointer-events: auto;
 }
 
-/* ===== SLEEP TIME INTRO ===== */
+
 .sleep-intro-overlay {
     background: radial-gradient(circle at center, #1e1e2e 0%, #05050a 100%);
     overflow: hidden;
@@ -751,7 +751,7 @@ textarea {
     }
 }
 
-/* ===== SNUGGLE TIME INTRO ===== */
+
 .snuggle-intro-overlay {
     background: linear-gradient(180deg, #2a1b22 0%, #4a2c36 100%);
 }
@@ -784,7 +784,7 @@ textarea {
     text-shadow: 0 0 20px rgba(193, 211, 127, 0.5);
 }
 
-/* ===== CYBERPUNK INTRO ===== */
+
 .cyber-intro-overlay {
     background: linear-gradient(180deg, #0f0f1a 0%, #1a0a2e 100%);
 }
@@ -901,7 +901,7 @@ textarea {
     opacity: 0.8;
 }
 
-/* ===== SUNSET DRIVE INTRO (Synthwave) ===== */
+
 .sunset-intro-overlay {
     background: linear-gradient(180deg, #1f0b2e 0%, #4c1d95 60%, #ec4899 100%);
     overflow: hidden;
@@ -988,7 +988,7 @@ textarea {
     transform: skewX(-10deg);
 }
 
-/* ===== SAKURA SPIRIT INTRO ===== */
+
 .sakura-intro-overlay {
     background: linear-gradient(180deg, #2a1b22 0%, #4a2c36 100%);
     overflow: hidden;
@@ -1448,7 +1448,7 @@ body.gradient-title-active .app-title-text p {
     filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
 }
 
-/* === Floating Lyrics Button === */
+
 .lyrics-floating-btn {
     position: absolute;
     bottom: -10px;
@@ -1594,8 +1594,8 @@ body.sunset-active .music-emoji img {
     }
 }
 
-/* === INTRO OVERLAYS BASE STYLES === */
-/* All intro overlays are hidden by default and shown via JS adding .visible class */
+
+
 .sleep-intro-overlay,
 .snuggle-intro-overlay,
 .cyber-intro-overlay,
@@ -1624,7 +1624,7 @@ body.sunset-active .music-emoji img {
     opacity: 1;
 }
 
-/* Individual intro overlay backgrounds */
+
 .sleep-intro-overlay {
     background: radial-gradient(circle at center, #1a1a3e 0%, #0d0d1a 100%);
 }
@@ -2513,7 +2513,7 @@ input[type=range].volume-slider::-moz-range-thumb {
     gap: 10px;
 }
 
-/* === SUB NAVIGATION STYLES === */
+
 .sub-nav-container {
     display: flex;
     gap: 10px;
@@ -2707,7 +2707,7 @@ input[type=range].volume-slider::-moz-range-thumb {
 }
 
 .settings-select option {
-    background-color: var(--bg-card);
+    background-color: var(--bg-main, #111);
     color: var(--text-main);
 }
 
@@ -3088,7 +3088,7 @@ body.focus-active .focus-mode-btn {
     position: fixed;
 }
 
-/* ================= THEME CARD STYLES ================= */
+
 .theme-card {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -3152,7 +3152,7 @@ body.focus-active .focus-mode-btn {
     align-items: center;
 }
 
-/* ================= INTRO CARD STYLES (Startup Intros Tab) ================= */
+
 .intro-card {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -3191,7 +3191,7 @@ body.focus-active .focus-mode-btn {
     flex-direction: column;
     gap: 4px;
     overflow: hidden;
-    /* Prevent text overflow */
+    
 }
 
 .intro-info strong {
@@ -3233,7 +3233,7 @@ body.focus-active .focus-mode-btn {
     border-color: var(--accent);
 }
 
-/* ================= HELP & CONTROLS GRID ================= */
+
 .help-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -3316,7 +3316,7 @@ body.focus-active .focus-mode-btn {
     justify-content: center;
 }
 
-/* ================= MINI-PLAYER MODE (LANDSCAPE FIXED) ================= */
+
 body.is-mini {
     overflow: hidden !important;
     background: transparent !important;
@@ -3536,9 +3536,9 @@ body.is-mini #loop-btn {
     display: none !important;
 }
 
-/* ============================================== */
-/* DOWNLOADER TABS                                */
-/* ============================================== */
+
+
+
 .downloader-tabs {
     display: flex;
     gap: 8px;
@@ -3580,9 +3580,9 @@ body.is-mini #loop-btn {
     color: var(--bg-main) !important;
 }
 
-/* ============================================== */
-/* HELP MODAL                                     */
-/* ============================================== */
+
+
+
 .help-list {
     list-style: none;
     padding: 0;
@@ -3620,9 +3620,9 @@ body.is-mini #loop-btn {
     line-height: 1.5;
 }
 
-/* ============================================== */
-/* DEV MODAL & HOTKEYS                            */
-/* ============================================== */
+
+
+
 .dev-hotkey-list {
     display: flex;
     flex-direction: column;
@@ -3675,9 +3675,9 @@ kbd {
     font-weight: 500;
 }
 
-/* ============================================== */
-/* TOGGLE SWITCHES (Apple Style)                  */
-/* ============================================== */
+
+
+
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -3726,15 +3726,15 @@ input:checked+.slider:before {
     transform: translateX(20px);
 }
 
-/* ============================================== */
-/* DYNAMIC ISLAND STYLE NOTIFICATIONS             */
-/* ============================================== */
+
+
+
 .dynamic-island-hint {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%) translateY(-150%);
-    /* Hidden by default */
+    
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -3761,9 +3761,9 @@ input:checked+.slider:before {
     font-size: 0.9rem;
 }
 
-/* ============================================== */
-/* TRACK CONTEXT MENU                             */
-/* ============================================== */
+
+
+
 #context-menu {
     position: fixed;
     display: none;
@@ -3806,9 +3806,9 @@ input:checked+.slider:before {
     color: var(--text-muted);
 }
 
-/* ============================================== */
-/* NOTIFICATION BAR (Dynamic Island)              */
-/* ============================================== */
+
+
+
 #notification-bar {
     position: fixed;
     top: 20px;
@@ -3840,9 +3840,9 @@ input:checked+.slider:before {
     font-weight: 500;
 }
 
-/* ============================================== */
-/* LIGHT THEME ACCESSIBILITY                      */
-/* ============================================== */
+
+
+
 :root[data-theme="glacier"] .background-animation,
 :root[data-theme="lavender"] .background-animation {
     background: var(--bg-main) !important;
@@ -3870,11 +3870,11 @@ input:checked+.slider:before {
     background: linear-gradient(transparent, var(--accent)) !important;
 }
 
-/* ============================================== */
-/* THEME PACK STYLES                              */
-/* ============================================== */
 
-/* Sunset Drive */
+
+
+
+
 body.theme-sunset {
     --bg-main: #2b1055;
     --bg-card: #3b2166;
@@ -3896,7 +3896,7 @@ body.theme-sunset .cover-art-wrapper {
     border: 2px solid #ff00cc;
 }
 
-/* Cyberpunk */
+
 body.theme-cyberpunk {
     --bg-main: #050505;
     --bg-card: #121212;
@@ -3919,7 +3919,7 @@ body.theme-cyberpunk .cover-art-container {
     border: 1px solid #ffee00;
 }
 
-/* Sakura Spirit */
+
 body.theme-sakura {
     --bg-main: #fff0f5;
     --bg-card: #ffffff;
@@ -3942,7 +3942,7 @@ body.theme-sakura .nav-btn {
     border: 1px solid rgba(255, 182, 193, 0.5);
 }
 
-/* Sleep Time */
+
 body.theme-sleep {
     --bg-main: #0a0a1f;
     --bg-card: #15152e;
@@ -3958,9 +3958,9 @@ body.theme-sleep .control-btn.playing {
     box-shadow: 0 0 15px rgba(123, 104, 238, 0.6);
 }
 
-/* ============================================== */
-/* MODAL POLISH (Help & Dev)                      */
-/* ============================================== */
+
+
+
 .help-list,
 .dev-hotkey-list {
     display: grid;
@@ -4001,9 +4001,9 @@ kbd {
     background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(30, 30, 40, 0.95));
 }
 
-/* ============================================== */
-/* DYNAMIC ISLAND STYLE                           */
-/* ============================================== */
+
+
+
 .dynamic-island {
     position: fixed;
     top: 20px;
@@ -4119,9 +4119,9 @@ kbd {
     opacity: 1;
 }
 
-/* ============================================== */
-/* NEW GLASS CONTEXT MENU                         */
-/* ============================================== */
+
+
+
 .glass-context-menu {
     position: fixed;
     display: none;
@@ -4377,7 +4377,7 @@ kbd {
     margin-top: 25px;
 }
 
-/* === Folder Color Palette === */
+
 .color-palette {
     display: flex;
     flex-wrap: wrap;
@@ -4404,7 +4404,7 @@ kbd {
     transform: scale(1.1);
 }
 
-/* === Delete Modal Refinement === */
+
 #confirm-delete-overlay .settings-modal {
     text-align: center;
 }
@@ -4455,7 +4455,7 @@ kbd {
     filter: brightness(1.1);
 }
 
-/* ===== DINO LOVE INTRO ===== */
+
 .dino-intro-overlay {
     position: fixed;
     top: 0;
@@ -4526,7 +4526,7 @@ kbd {
     bottom: -10%;
 }
 
-/* Specific heart animations */
+
 .heart-particle:nth-child(1) {
     left: 20%;
     animation: float-heart 4s ease-in infinite;
@@ -4623,7 +4623,7 @@ kbd {
     }
 }
 
-/* Preview Pulse (Waterdrop) */
+
 .preview-pulse {
     width: 20px;
     height: 20px;
@@ -4651,7 +4651,7 @@ kbd {
     }
 }
 
-/* Preview NovaWave 95 */
+
 .preview-win95 {
     width: 30px;
     height: 30px;
@@ -4674,7 +4674,7 @@ kbd {
 }
 
 
-/* ===== ROCKET INTRO ===== */
+
 .rocket-intro-overlay {
     position: fixed;
     top: 0;
@@ -4796,15 +4796,15 @@ kbd {
     0% {
         transform: translateY(100vh) rotate(0deg) scale(0.8);
     }
-    /* Mitte */
+    
     40% {
         transform: translateY(0) rotate(0deg) scale(1.1);
     }
-    /* Kleiner Dip */
+    
     55% {
         transform: translateY(20px) rotate(0deg) scale(1);
     }
-    /* Abflug */
+    
     100% {
         transform: translateY(-150vh) rotate(0deg) scale(1.2);
     }
@@ -4822,7 +4822,7 @@ kbd {
 }
 
 
-/* ===== 8-BIT INTRO ===== */
+
 .intro-overlay-8bit {
     position: fixed;
     top: 0;
@@ -4918,7 +4918,7 @@ kbd {
 }
 
 
-/* 8-Bit Start Button */
+
 .pixel-start-btn {
     background: transparent;
     border: 4px solid #39ff14;
@@ -4952,7 +4952,7 @@ kbd {
 }
 
 
-/* Rocket Intro Dynamic Stars */
+
 .star-field {
     position: absolute;
     top: 0;

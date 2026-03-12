@@ -1,9 +1,15 @@
-/**
- * Lyrics Manager
- * Handles loading and displaying lyrics.
- * Currently supports:
- * - Local .lrc files (via Backend)
- */
+// FIX: Replaced all hardcoded German strings with translation keys via window.tr().
+// Affected: showLoading(), fetchAndShow() error/empty states.
+// New translation keys needed in all language files:
+//   'lyricsLoading'   -> "Lade..." / "Loading..." / etc.
+//   'lyricsNotFound'  -> "Keine Songtexte gefunden..."
+//   'lyricsError'     -> "Fehler beim Laden der Songtexte."
+//   'noTrackSelected' -> "Kein Song ausgewählt." (also used in main.js)
+
+function tr(key) {
+    if (typeof window !== 'undefined' && window.tr) return window.tr(key);
+    return key;
+}
 
 export const LyricsManager = {
     overlay: null,
@@ -34,7 +40,7 @@ export const LyricsManager = {
             const has = await window.api.hasLyrics(trackPath);
             this.btn.style.display = has ? 'flex' : 'none';
         } catch (e) {
-            console.error("Lyrics check failed", e);
+            console.error('Lyrics check failed', e);
             this.btn.style.display = 'none';
         }
     },
@@ -52,10 +58,12 @@ export const LyricsManager = {
             if (lyrics && lyrics.trim().length > 0) {
                 this.updateUI(lyrics);
             } else {
-                this.updateUI('Keine Songtexte gefunden. (Erstelle eine .lrc Datei im Ordner)');
+                // FIX: was hardcoded German — now uses translation key
+                this.updateUI(tr('lyricsNotFound'));
             }
         } catch (e) {
-            this.updateUI('Fehler beim Laden der Songtexte.');
+            // FIX: was hardcoded German — now uses translation key
+            this.updateUI(tr('lyricsError'));
             console.error(e);
         }
         this.showLyrics();
@@ -76,6 +84,7 @@ export const LyricsManager = {
     },
 
     showLoading() {
-        if (this.content) this.content.textContent = 'Lade...';
+        // FIX: was hardcoded German "Lade..." — now uses translation key
+        if (this.content) this.content.textContent = tr('lyricsLoading');
     }
 };

@@ -5,17 +5,18 @@ export class DownloadManager {
         this.concurrencyLimit = 2;
         this.history = [];
         this.callbacks = callbacks || {};
-        // callbacks: { onStatsUpdate: (stats) => void, onLog: (msg, type) => void }
+
     }
 
     add(url, type, customName = "") {
-        const id = Date.now() + Math.random().toString(36).substr(2, 9);
+        // FIX: .substr() is deprecated; use .substring() instead
+        const id = Date.now() + Math.random().toString(36).substring(2, 11);
         const task = {
             id,
             url,
             type,
             customName,
-            status: 'pending', // pending, processing, success, error
+            status: 'pending',
             addedAt: new Date()
         };
 

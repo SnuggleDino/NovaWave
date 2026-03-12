@@ -6,7 +6,7 @@ export default defineConfig({
         outDir: 'dist',
         assetsDir: 'assets',
         emptyOutDir: true,
-        cssCodeSplit: false,
+        cssCodeSplit: true,
         minify: 'esbuild',
         cssMinify: false,
         rollupOptions: {
@@ -18,6 +18,6 @@ export default defineConfig({
     },
     server: {
         port: 34115,
-        strictPort: true,
+        strictPort: false,
     }
 })

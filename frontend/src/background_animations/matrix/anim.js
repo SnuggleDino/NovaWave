@@ -1,4 +1,4 @@
-// Matrix Logic
+
 let matrixInterval;
 
 export default {

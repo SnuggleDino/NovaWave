@@ -1,10 +1,23 @@
 export const PlaylistManager = {
     items: [],
     favOnly: false,
+    currentSortMode: 'name',
+
+    // FIX: Reusable compare function — avoids duplicating the same sort logic
+    // across sortItems(), _sortList(), and getAllTracks().
+    _buildCompare(mode) {
+        return (a, b) => {
+            if (mode === 'name')     return a.data.title.localeCompare(b.data.title, undefined, { numeric: true });
+            if (mode === 'nameDesc') return b.data.title.localeCompare(a.data.title, undefined, { numeric: true });
+            if (mode === 'newest')   return (b.data.mtime || 0) - (a.data.mtime || 0);
+            return 0;
+        };
+    },
 
     init() {
         this.items = [];
         this.favOnly = false;
+        this.currentSortMode = 'name';
     },
 
     loadTracks(tracks) {
@@ -17,6 +30,21 @@ export const PlaylistManager = {
         }));
     },
 
+    appendTracks(tracks) {
+        const existingIds = new Set(this.items.filter(i => i.type === 'track').map(i => i.id));
+        tracks.forEach(t => {
+            if (!existingIds.has(t.path)) {
+                this.items.push({
+                    type: 'track',
+                    id: t.path,
+                    data: t,
+                    groupId: null,
+                    searchString: (t.title + ' ' + (t.artist || '')).toLowerCase()
+                });
+            }
+        });
+    },
+
     toggleFavOnly() {
         this.favOnly = !this.favOnly;
     },
@@ -25,7 +53,11 @@ export const PlaylistManager = {
         let uniqueName = name;
         let counter = 1;
 
-        const exists = (n) => this.items.some(i => i.type === 'folder' && i.name.toLowerCase() === n.toLowerCase() && i.id !== excludeId);
+        const exists = (n) => this.items.some(
+            i => i.type === 'folder' &&
+                 i.name.toLowerCase() === n.toLowerCase() &&
+                 i.id !== excludeId
+        );
 
         while (exists(uniqueName)) {
             uniqueName = `${name} (${counter})`;
@@ -36,7 +68,6 @@ export const PlaylistManager = {
 
     addFolder(name, color = null) {
         const uniqueName = this.getUniqueName(name);
-
         const folderId = 'folder-' + Date.now();
         const folder = {
             type: 'folder',
@@ -50,6 +81,7 @@ export const PlaylistManager = {
     },
 
     deleteFolder(folderId) {
+        // Ungroup all tracks that belonged to this folder
         this.items.forEach(item => {
             if (item.type === 'track' && item.groupId === folderId) {
                 item.groupId = null;
@@ -71,21 +103,37 @@ export const PlaylistManager = {
         if (folder) folder.collapsed = !folder.collapsed;
     },
 
+    // FIX: Previously sorted only a filtered local copy, leaving this.items
+    // untouched. The sort therefore had no persistent effect — only _sortList()
+    // calls inside getRenderList() and getAllTracks() were actually doing work.
+    // Now sortItems() mutates this.items directly so the order is consistent
+    // everywhere (e.g. moveItem(), exportStructure(), iterators in main.js).
     sortItems(mode) {
-        const compare = (a, b) => {
-            if (mode === 'name') return a.data.title.localeCompare(b.data.title, undefined, { numeric: true });
-            if (mode === 'nameDesc') return b.data.title.localeCompare(a.data.title, undefined, { numeric: true });
-            if (mode === 'newest') return (b.data.mtime || 0) - (a.data.mtime || 0);
-            return 0;
-        };
-
-        const tracks = this.items.filter(i => i.type === 'track');
-        tracks.sort(compare);
         this.currentSortMode = mode;
+
+        const compare = this._buildCompare(mode);
+
+        // Sort tracks within each group independently, then rebuild items:
+        // folders keep their relative order; their child tracks are sorted,
+        // as are the root-level (ungrouped) tracks.
+        const folders   = this.items.filter(i => i.type === 'folder');
+        const rootTracks = this.items.filter(i => i.type === 'track' && !i.groupId);
+        rootTracks.sort(compare);
+
+        const newItems = [];
+        folders.forEach(folder => {
+            newItems.push(folder);
+            const children = this.items.filter(i => i.type === 'track' && i.groupId === folder.id);
+            children.sort(compare);
+            newItems.push(...children);
+        });
+        newItems.push(...rootTracks);
+
+        this.items = newItems;
     },
 
     getRenderList(filterText = '', favoritesSet = null) {
-        let activeFilter = filterText.trim().toLowerCase();
+        const activeFilter = filterText.trim().toLowerCase();
 
         if (favoritesSet) {
             return this.items.filter(i => {
@@ -100,38 +148,33 @@ export const PlaylistManager = {
             return this.items.filter(i => i.type === 'track' && i.searchString.includes(activeFilter));
         }
 
+        // No filter — return the full structured list (folders + their children
+        // + root tracks). Because sortItems() now keeps this.items sorted, we
+        // no longer need to re-sort here on every render call.
+        const renderList = [];
         const folders = this.items.filter(i => i.type === 'folder');
         const rootTracks = this.items.filter(i => i.type === 'track' && !i.groupId);
-
-        if (this.currentSortMode) this._sortList(rootTracks, this.currentSortMode);
-
-        const renderList = [];
 
         folders.forEach(folder => {
             renderList.push(folder);
             if (!folder.collapsed) {
                 const children = this.items.filter(i => i.type === 'track' && i.groupId === folder.id);
-                if (this.currentSortMode) this._sortList(children, this.currentSortMode);
                 renderList.push(...children);
             }
         });
 
         renderList.push(...rootTracks);
-
         return renderList;
     },
 
+    // Internal helper — sorts a list in-place. Still used by getAllTracks()
+    // for cases where items may arrive unsorted (e.g. after importStructure).
     _sortList(list, mode) {
-        list.sort((a, b) => {
-            if (mode === 'name') return a.data.title.localeCompare(b.data.title, undefined, { numeric: true });
-            if (mode === 'nameDesc') return b.data.title.localeCompare(a.data.title, undefined, { numeric: true });
-            if (mode === 'newest') return (b.data.mtime || 0) - (a.data.mtime || 0);
-            return 0;
-        });
+        list.sort(this._buildCompare(mode));
     },
 
     moveItemToFolder(trackId, folderId) {
-        const item = this.items.find(i => i.type === 'track' && i.id === trackId);
+        const item   = this.items.find(i => i.type === 'track'  && i.id === trackId);
         const folder = this.items.find(i => i.type === 'folder' && i.id === folderId);
 
         if (item && folder) {
@@ -141,7 +184,10 @@ export const PlaylistManager = {
     },
 
     moveItem(fromIndex, toIndex) {
-        if (fromIndex < 0 || fromIndex >= this.items.length || toIndex < 0 || toIndex >= this.items.length) return;
+        if (
+            fromIndex < 0 || fromIndex >= this.items.length ||
+            toIndex   < 0 || toIndex   >= this.items.length
+        ) return;
         const item = this.items.splice(fromIndex, 1)[0];
         this.items.splice(toIndex, 0, item);
     },

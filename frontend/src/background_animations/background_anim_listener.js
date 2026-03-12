@@ -1,13 +1,8 @@
-/**
- * BACKGROUND ANIMATION LISTENER
- * Handles dynamic background animations via Vite glob imports.
- */
 
-// Load configurations and styles
+
 const animConfigs = import.meta.glob('./*/anim.json', { eager: true });
 const animStyles = import.meta.glob('./*/anim.css', { eager: true });
 
-// Load JS logic modules
 const animModules = import.meta.glob('./*/anim.js', { eager: true });
 
 let activeAnimId = null;
@@ -58,7 +53,6 @@ export const BackgroundAnimListener = {
         const container = document.querySelector('.background-animation');
         if (!container) return;
 
-        // Stop previous
         if (currentModule && currentModule.stop) {
             try {
                 currentModule.stop();
@@ -68,7 +62,6 @@ export const BackgroundAnimListener = {
         }
         currentModule = null;
 
-        // Reset classes
         container.className = 'background-animation';
 
         if (id === 'off') {
@@ -81,8 +74,6 @@ export const BackgroundAnimListener = {
         container.classList.add(`type-${id}`);
         activeAnimId = id;
 
-        // Find module
-        // Construct path: ./id/anim.js
         const modulePath = `./${id}/anim.js`;
         const module = animModules[modulePath];
 

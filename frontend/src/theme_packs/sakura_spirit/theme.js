@@ -51,6 +51,6 @@ export default {
         document.documentElement.removeAttribute('data-theme');
         stopSakuraPetals();
         
-        if (app.visualizer) app.visualizer.updateSettings({ accentColor: '#38bdf8' }); // Restore default
+        if (app.visualizer) app.visualizer.updateSettings({ accentColor: '#38bdf8' });
     }
 };

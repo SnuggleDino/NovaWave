@@ -1,6 +1,9 @@
-import { translations } from '../translations.js';
+// FIX: The original file imported from '../translations.js' which does not exist
+// in the repository. This would cause an immediate module resolution error.
+// We now use the global window.tr() function (provided by LangHandler) which
+// is already available at the time design_tab functions are called.
+// setDesignTabLanguage() is kept for API compatibility but is no longer needed.
 
-// --- Helpers ---
 let _currentLanguage = 'de';
 
 export function setDesignTabLanguage(lang) {
@@ -8,8 +11,11 @@ export function setDesignTabLanguage(lang) {
 }
 
 function tr(key) {
-    const lang = translations[_currentLanguage] || translations.de;
-    return (lang && lang[key]) || (translations.de[key]) || key;
+    if (typeof window !== 'undefined' && typeof window.tr === 'function') {
+        return window.tr(key);
+    }
+    // Graceful fallback if called before LangHandler is ready
+    return key;
 }
 
 // --- Icons ---
@@ -32,7 +38,6 @@ export function renderDesignCards() {
     const container = document.getElementById('design-ui-cards');
     if (!container) return;
 
-    // Detect actual active UI via filename
     const isV2 = window.location.pathname.includes('v2.html');
     const activeUi = isV2 ? 'v2' : 'legacy';
 

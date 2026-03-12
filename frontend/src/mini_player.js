@@ -20,7 +20,9 @@ export class MiniPlayer {
         if (this.onUpdate) this.onUpdate();
 
         if (this.visualizer) {
+            // FIX: Save both style AND maxBars so we can fully restore them on disable()
             this.savedSettings.style = this.visualizer.style;
+            this.savedSettings.maxBars = this.visualizer.maxBars;
             this.visualizer.updateSettings({
                 style: 'bars',
                 maxBars: 5
@@ -36,9 +38,14 @@ export class MiniPlayer {
         this.api.setWindowSize(1300, 900);
 
         if (this.visualizer) {
+            // FIX: Restore the user's actual maxBars value instead of always 0.
+            // 0 would silently fall back to the engine default (64), ignoring
+            // any custom bar count the user had configured.
             this.visualizer.updateSettings({
                 style: this.savedSettings.style || 'bars',
-                maxBars: 0
+                maxBars: this.savedSettings.maxBars !== undefined
+                    ? this.savedSettings.maxBars
+                    : 64
             });
         }
     }

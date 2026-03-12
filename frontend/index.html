@@ -6,6 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-lang-key="appTitle">NovaWave</title>
     <link rel="icon" type="image/png" href="/src/assets/icon.png">
+    <!-- NOTE: Early V2 redirect — must run before any CSS/animations load -->
+    <script>
+        (function () {
+            try {
+                if (window.go && window.go.main && window.go.main.App) {
+                    window.go.main.App.GetSettings().then(function (s) {
+                        if (s && s.uiVersion === 'v2') window.location.replace('v2.html');
+                    });
+                }
+            } catch (e) { }
+        })();
+    </script>
+    <script src="/wails/ipc.js"></script>
+    <script src="/wails/runtime.js"></script>
+    <script>
+        // NOTE: Retry redirect after Wails runtime loads
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.go && window.go.main && window.go.main.App) {
+                window.go.main.App.GetSettings().then(function (s) {
+                    if (s && s.uiVersion === 'v2') window.location.replace('v2.html');
+                }).catch(function () { });
+            }
+        });
+    </script>
     <link rel="stylesheet" href="/src/style.css">
     <link rel="stylesheet" href="/src/downloader.css">
     <link rel="stylesheet" href="/src/app_updates/update_styles.css">
@@ -136,7 +160,9 @@
                 <img src="/src/assets/icon.png" alt="App Icon" class="logo-icon">
                 <div class="app-title-text">
                     <h1 data-lang-key="appTitle">NovaWave</h1>
-                    <p data-lang-key="appSubtitle">Your Music • Your Style • Your Rules</p>
+                    <p data-lang-key="appSubtitle"
+                        style="font-size: 11px; opacity: 0.5; margin: 0; letter-spacing: 0.5px;">Your Music • Your Style
+                        • Your Rules</p>
                 </div>
             </div>
             <div class="header-right">
@@ -1535,7 +1561,8 @@
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <strong data-lang-key="rememberThemePack">Theme-Packs merken</strong>
-                                    <p data-lang-key="rememberThemePackDesc">Soll das zuletzt gewählte Theme-Pack beim nächsten Start automatisch geladen werden?</p>
+                                    <p data-lang-key="rememberThemePackDesc">Soll das zuletzt gewählte Theme-Pack beim
+                                        nächsten Start automatisch geladen werden?</p>
                                 </div>
                                 <div class="setting-control">
                                     <label class="toggle-switch">
@@ -1596,7 +1623,8 @@
                                             data-lang-key="resetWarning"></span></p>
                                 </div>
 
-                                <div class="system-actions-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="system-actions-grid"
+                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                     <button id="btn-restart-app" class="settings-button primary-btn"
                                         style="background: #3b82f6; color: white; padding: 12px;">
                                         <span data-lang-key="restart">RESTART APP</span>
@@ -1680,7 +1708,8 @@
             <div class="settings-content">
                 <div class="edit-field-group">
                     <label class="edit-label" data-lang-key="folderNamePlaceholder">Name</label>
-                    <input type="text" id="folder-input" class="edit-input-modern" data-lang-placeholder="FOLDERNAMEPLACEHOLDER" placeholder="..." autocomplete="off">
+                    <input type="text" id="folder-input" class="edit-input-modern"
+                        data-lang-placeholder="FOLDERNAMEPLACEHOLDER" placeholder="..." autocomplete="off">
                 </div>
                 <div class="edit-field-group" style="margin-top: 15px;">
                     <label class="edit-label" data-lang-key="folderColorLabel"></label>
@@ -1847,80 +1876,82 @@
                         <path d="m14.5 4-5 16"></path>
                     </svg>
                     <span data-lang-key="devTitle">Developer Toolkit</span>
-                    </h3>
-                    <button id="dev-modal-close-btn" class="close-modal-btn">&times;</button>
-                    </div>
-                    <div class="settings-content">
-                    <div class="settings-section">
+                </h3>
+                <button id="dev-modal-close-btn" class="close-modal-btn">&times;</button>
+            </div>
+            <div class="settings-content">
+                <div class="settings-section">
                     <h4 class="settings-section-title" data-lang-key="devStandardHotkeys">Player Hotkeys</h4>
                     <div class="help-grid">
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4 data-lang-key="devPlayPause">Wiedergabe / Pause</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4 data-lang-key="devPlayPause">Wiedergabe / Pause</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>Space</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>Space</kbd></div>
-                    </div>
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4 data-lang-key="devNavTitle">Navigation (Songs)</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4 data-lang-key="devNavTitle">Navigation (Songs)</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>&#8592;</kbd> <kbd>&#8594;</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>&#8592;</kbd> <kbd>&#8594;</kbd></div>
-                    </div>
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4 data-lang-key="devVolTitle">Lautst&auml;rke</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4 data-lang-key="devVolTitle">Lautst&auml;rke</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>&#8593;</kbd> <kbd>&#8595;</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>&#8593;</kbd> <kbd>&#8595;</kbd></div>
-                    </div>
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4 data-lang-key="devSeekTitle">Spulen</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4 data-lang-key="devSeekTitle">Spulen</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>Shift</kbd> + <kbd>&#8592;/&#8594;</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>Shift</kbd> + <kbd>&#8592;/&#8594;</kbd></div>
                     </div>
-                    </div>
-                    </div>
+                </div>
 
-                    <div class="settings-section">
+                <div class="settings-section">
                     <h4 class="settings-section-title" data-lang-key="devDebugHotkeys">System Hotkeys</h4>
                     <div class="help-grid">
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4 data-lang-key="devTitle">Developer Toolkit</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4 data-lang-key="devTitle">Developer Toolkit</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd></div>
-                    </div>
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4 data-lang-key="devMenuTitle">Legacy UI</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4 data-lang-key="devMenuTitle">Legacy UI</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>U</kbd> <span
+                                    style="opacity:0.5; margin:0 5px;">then</span> <kbd>1</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>U</kbd> <span style="opacity:0.5; margin:0 5px;">then</span> <kbd>1</kbd></div>
-                    </div>
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4 data-lang-key="devPerfTitle">V2 UI</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4 data-lang-key="devPerfTitle">V2 UI</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>U</kbd> <span
+                                    style="opacity:0.5; margin:0 5px;">then</span> <kbd>2</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>U</kbd> <span style="opacity:0.5; margin:0 5px;">then</span> <kbd>2</kbd></div>
-                    </div>
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4 data-lang-key="devWinTitle">Debug Overlay</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4 data-lang-key="devWinTitle">Debug Overlay</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>H</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>H</kbd></div>
-                    </div>
-                    <div class="help-card">
-                        <div class="help-card-content">
-                            <h4>Performance Mode</h4>
+                        <div class="help-card">
+                            <div class="help-card-content">
+                                <h4>Performance Mode</h4>
+                            </div>
+                            <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>X</kbd></div>
                         </div>
-                        <div class="hotkey-display"><kbd>STRG</kbd> + <kbd>1</kbd> + <kbd>X</kbd></div>
                     </div>
-                    </div>
-                    </div>
+                </div>
 
-                    <p
+                <p
                     style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 20px; opacity: 0.7;">
                     NovaWave
-                    </p>
+                </p>
             </div>
         </div>
     </div>

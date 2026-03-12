@@ -1,4 +1,4 @@
-// Stellar Logic
+
 export default {
     start: () => {
         const container = document.querySelector('.background-animation');

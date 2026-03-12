@@ -120,8 +120,9 @@ export class VisualizerEngine {
     }
 
     drawBars(width, height, ac, boost) {
-        let bl = 64; // Fixed minimum count for V2
-        if (this.maxBars > 0 && this.maxBars > bl) bl = this.maxBars;
+        // FIX: Previously, maxBars was only applied when it was larger than 64,
+        // so setting e.g. 32 bars had no effect. Now any positive value is respected.
+        let bl = this.maxBars > 0 ? this.maxBars : 64;
         const bw = (width / bl) * 0.8;
         for (let i = 0; i < bl; i++) {
             const dataIdx = Math.floor(i * (this.dataArray.length / 2 / bl));
