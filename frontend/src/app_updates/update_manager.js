@@ -53,11 +53,18 @@ export const UpdateManager = {
 
     checkIfUpdateIsNew: async function () {
         let lastSeen = localStorage.getItem('lastSeenUpdateVersion');
-        
+
         if (this.api && this.api.getSettings) {
-            const config = await this.api.getSettings();
-            if (config && config.lastSeenUpdateVersion) {
-                lastSeen = config.lastSeenUpdateVersion;
+            try {
+                const timeout = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('timeout')), 3000)
+                );
+                const config = await Promise.race([this.api.getSettings(), timeout]);
+                if (config && config.lastSeenUpdateVersion) {
+                    lastSeen = config.lastSeenUpdateVersion;
+                }
+            } catch (e) {
+                console.warn('UpdateManager: getSettings timed out or failed', e);
             }
         }
 

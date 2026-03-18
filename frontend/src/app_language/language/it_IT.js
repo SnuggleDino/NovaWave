@@ -297,5 +297,16 @@ export const it_IT = {
     playPause: 'Riproduci / Pausa',
     next: 'Brano Successivo',
     previous: 'Brano Precedente',
+
+    // --- Lyrics ---
+    lyricsLoading: 'Caricamento testo...',
+    lyricsNotFound: 'Nessun testo trovato.',
+    lyricsError: 'Errore durante il caricamento del testo.',
+    noTrackSelected: 'Nessuna traccia selezionata.',
+
+    // --- Download Log ---
+    logStartingDownload: 'Avvio del download...',
+    logDownloadComplete: 'Download completato.',
+    logDownloadFailed: 'Download fallito.',
     focusMode: 'Modalità Focus'
 };

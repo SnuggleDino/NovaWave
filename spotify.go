@@ -3,11 +3,26 @@ package main
 import (
 	"context"
 	"fmt"
+	"html"
 	"io"
 	"net/http"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
+
+func sanitizeMeta(s string) string {
+	s = html.UnescapeString(s)
+	s = strings.TrimSpace(s)
+	if !utf8.ValidString(s) {
+		s = strings.ToValidUTF8(s, "")
+	}
+	if len([]rune(s)) > 200 {
+		runes := []rune(s)
+		s = string(runes[:200])
+	}
+	return s
+}
 
 type SpotifyTrack struct {
 	Title  string `json:"title"`
@@ -61,7 +76,7 @@ func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 		start := idx + len(titleTag)
 		end := strings.Index(html[start:], "\"")
 		if end != -1 {
-			track.Title = strings.TrimSuffix(html[start:start+end], " | Spotify")
+			track.Title = sanitizeMeta(strings.TrimSuffix(html[start:start+end], " | Spotify"))
 		}
 	}
 
@@ -74,7 +89,7 @@ func (s *SpotifyService) GetTrackMetadata(url string) (*SpotifyTrack, error) {
 			desc := html[start : start+end]
 			parts := strings.Split(desc, " · ")
 			if len(parts) > 0 {
-				track.Artist = parts[0]
+				track.Artist = sanitizeMeta(parts[0])
 			}
 		}
 	}

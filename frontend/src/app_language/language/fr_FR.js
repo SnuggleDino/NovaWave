@@ -297,5 +297,16 @@ export const fr_FR = {
     playPause: 'Lecture / Pause',
     next: 'Piste Suivante',
     previous: 'Piste Pr\u00E9c\u00E9dente',
+
+    // --- Lyrics ---
+    lyricsLoading: 'Chargement des paroles...',
+    lyricsNotFound: 'Aucune parole trouvée.',
+    lyricsError: 'Erreur lors du chargement des paroles.',
+    noTrackSelected: 'Aucune piste sélectionnée.',
+
+    // --- Download Log ---
+    logStartingDownload: 'Démarrage du téléchargement...',
+    logDownloadComplete: 'Téléchargement terminé.',
+    logDownloadFailed: 'Téléchargement échoué.',
     focusMode: 'Mode Focus'
 };

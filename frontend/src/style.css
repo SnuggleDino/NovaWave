@@ -9,10 +9,12 @@
 
 .main-grid {
     transition: grid-template-columns 0.5s cubic-bezier(0.4, 0, 0.2, 1), gap 0.5s ease;
+    will-change: grid-template-columns;
     grid-template-columns: 1fr minmax(300px, 480px);
 }
 
 .extras-column {
+    will-change: transform, opacity;
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.5s ease,
         padding 0.5s ease,
@@ -1010,6 +1012,7 @@ textarea {
     background: radial-gradient(ellipse at center, #fbcfe8 0%, #f9a8d4 100%);
     border-radius: 50% 0 50% 50%;
     opacity: 0.8;
+    will-change: transform;
     animation: sakura-fall linear infinite;
 }
 
@@ -1062,7 +1065,7 @@ textarea {
     position: relative;
     z-index: 1;
     transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity;
+    will-change: opacity, transform;
     opacity: 0;
     transform: translateY(10px);
 }
@@ -1301,6 +1304,7 @@ body.gradient-title-active .app-title-text p {
             var(--accent),
             #8b5cf6,
             transparent 30%);
+    will-change: transform;
     animation: rotate-border 4s linear infinite;
 }
 

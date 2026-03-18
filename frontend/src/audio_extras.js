@@ -130,7 +130,31 @@ export class AudioExtras {
 
     resume() {
         if (this.audioContext && this.audioContext.state === 'suspended') {
-            this.audioContext.resume();
+            this.audioContext.resume().catch(e =>
+                console.warn('[AudioExtras] resume failed:', e)
+            );
+        }
+    }
+
+    // FIX: Register a visibilitychange listener so the AudioContext is
+    // reliably resumed whenever the tab becomes visible again — not only
+    // when the user explicitly interacts with the player controls.
+    bindVisibilityResume() {
+        this._visibilityHandler = () => {
+            if (!document.hidden) this.resume();
+        };
+        document.addEventListener('visibilitychange', this._visibilityHandler);
+    }
+
+    // Clean up the listener if the instance is ever destroyed.
+    destroy() {
+        if (this._visibilityHandler) {
+            document.removeEventListener('visibilitychange', this._visibilityHandler);
+            this._visibilityHandler = null;
+        }
+        if (this.audioContext) {
+            this.audioContext.close().catch(() => {});
+            this.audioContext = null;
         }
     }
 

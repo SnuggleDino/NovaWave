@@ -1,11 +1,3 @@
-// FIX: Replaced all hardcoded German strings with translation keys via window.tr().
-// Affected: showLoading(), fetchAndShow() error/empty states.
-// New translation keys needed in all language files:
-//   'lyricsLoading'   -> "Lade..." / "Loading..." / etc.
-//   'lyricsNotFound'  -> "Keine Songtexte gefunden..."
-//   'lyricsError'     -> "Fehler beim Laden der Songtexte."
-//   'noTrackSelected' -> "Kein Song ausgewählt." (also used in main.js)
-
 function tr(key) {
     if (typeof window !== 'undefined' && window.tr) return window.tr(key);
     return key;
@@ -50,7 +42,11 @@ export const LyricsManager = {
     },
 
     async fetchAndShow(trackPath) {
-        if (!trackPath) return;
+        if (!trackPath) {
+            this.updateUI(tr('noTrackSelected'));
+            this.showLyrics();
+            return;
+        }
 
         this.showLoading();
         try {
@@ -58,11 +54,9 @@ export const LyricsManager = {
             if (lyrics && lyrics.trim().length > 0) {
                 this.updateUI(lyrics);
             } else {
-                // FIX: was hardcoded German — now uses translation key
                 this.updateUI(tr('lyricsNotFound'));
             }
         } catch (e) {
-            // FIX: was hardcoded German — now uses translation key
             this.updateUI(tr('lyricsError'));
             console.error(e);
         }
@@ -84,7 +78,6 @@ export const LyricsManager = {
     },
 
     showLoading() {
-        // FIX: was hardcoded German "Lade..." — now uses translation key
         if (this.content) this.content.textContent = tr('lyricsLoading');
     }
 };

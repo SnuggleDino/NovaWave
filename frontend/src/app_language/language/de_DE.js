@@ -297,5 +297,16 @@ export const de_DE = {
     playPause: 'Wiedergabe / Pause',
     next: 'Nächster Titel',
     previous: 'Vorheriger Titel',
+
+    // --- Lyrics ---
+    lyricsLoading: 'Lade Songtext...',
+    lyricsNotFound: 'Keine Songtexte gefunden.',
+    lyricsError: 'Fehler beim Laden der Songtexte.',
+    noTrackSelected: 'Kein Song ausgewählt.',
+
+    // --- Download Log ---
+    logStartingDownload: 'Download wird gestartet...',
+    logDownloadComplete: 'Download abgeschlossen.',
+    logDownloadFailed: 'Download fehlgeschlagen.',
     focusMode: 'Fokus-Modus'
 };

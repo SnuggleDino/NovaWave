@@ -297,5 +297,16 @@ export const en_EN = {
     playPause: 'Play / Pause',
     next: 'Next Track',
     previous: 'Previous Track',
+
+    // --- Lyrics ---
+    lyricsLoading: 'Loading lyrics...',
+    lyricsNotFound: 'No lyrics found.',
+    lyricsError: 'Error loading lyrics.',
+    noTrackSelected: 'No track selected.',
+
+    // --- Download Log ---
+    logStartingDownload: 'Starting download...',
+    logDownloadComplete: 'Download complete.',
+    logDownloadFailed: 'Download failed.',
     focusMode: 'Focus Mode'
 };

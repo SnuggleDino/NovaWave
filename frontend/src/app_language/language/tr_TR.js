@@ -297,5 +297,16 @@ export const tr_TR = {
     playPause: 'Oynat / Duraklat',
     next: 'Sonraki \u015Eark\u0131',
     previous: '\u00D6nceki \u015Eark\u0131',
+
+    // --- Lyrics ---
+    lyricsLoading: 'Sözler yükleniyor...',
+    lyricsNotFound: 'Söz bulunamadı.',
+    lyricsError: 'Sözler yüklenirken hata oluştu.',
+    noTrackSelected: 'Hiçbir parça seçilmedi.',
+
+    // --- Download Log ---
+    logStartingDownload: 'İndirme başlıyor...',
+    logDownloadComplete: 'İndirme tamamlandı.',
+    logDownloadFailed: 'İndirme başarısız oldu.',
     focusMode: 'Odak Modu'
 };

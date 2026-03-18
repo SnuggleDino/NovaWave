@@ -61,11 +61,31 @@ export const AppPerformance = {
     },
 
     startLoop() {
+        // Track visibility changes so updateLoop() can skip the first
+        // stale frame after the app is restored from minimize/hide.
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this._wasHidden = true;
+            }
+        });
         requestAnimationFrame(() => this.updateLoop());
     },
 
     updateLoop() {
         if (document.hidden) {
+            requestAnimationFrame(() => this.updateLoop());
+            return;
+        }
+
+        // FIX: If the tab/window was hidden and just became visible again,
+        // the elapsed time (now - lastFrameTime) could be seconds or minutes,
+        // making appFps = 0 and falsely triggering the performance hint.
+        // Reset lastFrameTime and appFrameCount on first frame after restore.
+        if (this._wasHidden) {
+            this._wasHidden = false;
+            this.lastFrameTime = performance.now();
+            this.lastStatsTime = performance.now();
+            this.appFrameCount = 0;
             requestAnimationFrame(() => this.updateLoop());
             return;
         }

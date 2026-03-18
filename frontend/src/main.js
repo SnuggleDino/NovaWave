@@ -23,6 +23,19 @@ import { AppPerformance } from './app_performance.js';
 import { AudioFeaturesPanel } from './audio_extras/audio_features_panel.js';
 import './audio_extras/audio_features_panel.css';
 
+
+// FIX: escapeHtml sanitizes untrusted strings before inserting via innerHTML.
+// Prevents XSS from crafted audio file metadata (title, artist, folder name).
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 const windowApi = {
     getSettings: App.GetSettings,
     getAppMeta: App.GetAppMeta,
@@ -159,7 +172,7 @@ let appFrameCount = 0;
 let fps = 0;
 let avgFps = 60;
 let perfHintShown = false;
-let performanceMode = false;
+// NOTE: performanceMode state is managed by AppPerformance module.
 let showStatsOverlay = false;
 let targetFps = 60;
 let lastRenderTime = 0;
@@ -614,7 +627,7 @@ function renderPlaylist() {
                 row.style.background = `linear-gradient(90deg, ${color}26, transparent)`;
 
                 const arrow = item.collapsed ? '▶' : '▼';
-                row.innerHTML = `<div class="track-index" style="width:30px;">${arrow}</div><div class="track-info-block" style="font-size:0.9rem;">${item.name}</div>`;
+                row.innerHTML = `<div class="track-index" style="width:30px;">${arrow}</div><div class="track-info-block" style="font-size:0.9rem;">${escapeHtml(item.name)}</div>`;
 
                 row.onclick = () => {
                     PlaylistManager.toggleFolder(item.id);
@@ -645,7 +658,7 @@ function renderPlaylist() {
                 const displayIdx = (isPlaying && globalIndex === currentIndex) ? `<div class="playing-bars"><span></span><span></span><span></span></div>` : (globalIndex + 1);
                 const titlePrefix = (!searchInput.value && item.groupId) ? '<span style="opacity:0.6; margin-right:5px;">↳</span> ' : '';
 
-                row.innerHTML = `<div class="track-index">${displayIdx}</div><div class="track-info-block"><div class="track-title-small">${titlePrefix}${displayTitle}</div><div class="track-artist-small">${track.artist || tr('unknownArtist')}</div></div>${favBtn}<div class="track-duration">${formatTime(track.duration)}</div>`;
+                row.innerHTML = `<div class="track-index">${displayIdx}</div><div class="track-info-block"><div class="track-title-small">${titlePrefix}${escapeHtml(displayTitle)}</div><div class="track-artist-small">${escapeHtml(track.artist || tr('unknownArtist'))}</div></div>${favBtn}<div class="track-duration">${formatTime(track.duration)}</div>`;
                 fragment.appendChild(row);
             }
         }
@@ -1042,24 +1055,21 @@ function logToTerminal(msg, type = 'info') {
     const terminal = document.getElementById('terminal-view');
     if (!terminal) return;
 
+    // FIX: Always create a new line per logToTerminal() call.
+    // Previously, messages without \n were appended to the last DOM line,
+    // causing separate log entries to merge (e.g. "logStartingDownloadlogDownloadComplete").
     const lines = msg.split(/\r?\n/);
 
     lines.forEach((line, idx) => {
         if (line.trim() === '' && idx > 0) return;
 
-        let lastLine = terminal.lastElementChild;
+        const div = document.createElement('div');
+        div.className = 'terminal-line';
+        if (type === 'error') div.classList.add('log-error');
+        else if (type === 'success') div.classList.add('log-success');
 
-        if (lastLine && !msg.includes('\n') && idx === 0) {
-            lastLine.textContent += line;
-        } else {
-            const div = document.createElement('div');
-            div.className = 'terminal-line';
-            if (type === 'error') div.classList.add('log-error');
-            else if (type === 'success') div.classList.add('log-success');
-
-            div.textContent = (idx === 0 && !lastLine ? '> ' : '') + line;
-            terminal.appendChild(div);
-        }
+        div.textContent = '> ' + line;
+        terminal.appendChild(div);
     });
 
     terminal.scrollTop = terminal.scrollHeight;
@@ -1084,9 +1094,19 @@ async function handleDownload() {
         return;
     }
 
-    const isYtMusic = url.includes('music.youtube.com');
-    const isYtStandard = (url.includes('youtube.com') || url.includes('youtu.be')) && !isYtMusic;
-    const isSpotify = url.includes('spotify.com');
+    // FIX: Use URL parser instead of string matching — prevents bypass via
+    // crafted URLs like "evil.com?ref=youtube.com"
+    let parsedUrl;
+    try { parsedUrl = new URL(url); } catch (_) { parsedUrl = null; }
+    const hostname = parsedUrl ? parsedUrl.hostname.toLowerCase() : '';
+    const isYtMusic = hostname === 'music.youtube.com';
+    const isYtStandard = (hostname === 'www.youtube.com' || hostname === 'youtube.com' || hostname === 'youtu.be') && !isYtMusic;
+    const isSpotify = hostname === 'open.spotify.com' || hostname === 'spotify.com';
+
+    if (!parsedUrl || !['https:', 'http:'].includes(parsedUrl.protocol)) {
+        setDownloaderState('error', tr('statusUrlInvalid'));
+        return;
+    }
 
     if (activeDownloaderMode === 'youtube' && !isYtStandard) {
         const msg = tr('errorOnlyYtLinks');
@@ -1211,6 +1231,7 @@ async function loadSettings() {
     }
 
     // NOTE: Performance Mode startup restore is handled inside AppPerformance.init()
+    // to ensure visualizer and applyAnimation are fully assigned before applying.
 
     showStatsOverlay = !!settings.showStatsOverlay;
     const statsOverlay = document.getElementById('stats-overlay');
@@ -1779,8 +1800,11 @@ function setupEventListeners() {
     });
 
     document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && isPlaying && visualizer) {
-            visualizer.start();
+        if (!document.hidden) {
+            // FIX: Resume AudioContext on tab focus — browsers suspend it
+            // when the tab is hidden, causing audio/analyser to freeze.
+            if (audioExtras) audioExtras.resume();
+            if (isPlaying && visualizer) visualizer.start();
         }
     });
 }

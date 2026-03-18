@@ -297,5 +297,16 @@ export const es_ES = {
     playPause: 'Reproducir / Pausa',
     next: 'Siguiente Pista',
     previous: 'Pista Anterior',
+
+    // --- Lyrics ---
+    lyricsLoading: 'Cargando letra...',
+    lyricsNotFound: 'No se encontró letra.',
+    lyricsError: 'Error al cargar la letra.',
+    noTrackSelected: 'Ninguna pista seleccionada.',
+
+    // --- Download Log ---
+    logStartingDownload: 'Iniciando descarga...',
+    logDownloadComplete: 'Descarga completada.',
+    logDownloadFailed: 'Descarga fallida.',
     focusMode: 'Modo Foco'
 };

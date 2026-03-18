@@ -1,109 +1,109 @@
 {
-    "version": "2.8.4",
-    "date": "1. März 2026",
+    "version": "2.8.6",
+    "date": "18. März 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Legacy UI Stabilit\u00E4t & Globale Sprachen",
-        "en": "Legacy UI Stability & Global Languages",
-        "tr": "Legacy UI Kararl\u0131l\u0131\u011F\u0131 ve K\u00FCresel Diller",
-        "es": "Estabilidad de la IU heredada y idiomas globales",
-        "fr": "Stabilit\u00E9 de l'interface h\u00E9rit\u00E9e et langues mondiales",
-        "it": "Stabilit\u00E0 dell'interfaccia legacy e lingue globali"
+        "de": "Sicherheit, Stabilität & Bug-Fixes",
+        "en": "Security, Stability & Bug Fixes",
+        "tr": "Güvenlik, Kararlılık ve Hata Düzeltmeleri",
+        "es": "Seguridad, Estabilidad y Correcciones",
+        "fr": "Sécurité, Stabilité et Corrections",
+        "it": "Sicurezza, Stabilità e Correzioni"
     },
     "changes": [
         {
-            "icon": "🛡\uFE0F",
+            "icon": "🔒",
             "title": {
-                "de": "Legacy UI Stabilit\u00E4t",
-                "en": "Legacy UI Stability",
-                "tr": "Legacy UI Kararl\u0131l\u0131\u011F\u0131",
-                "es": "Estabilidad de la IU",
-                "fr": "Stabilit\u00E9 de l'interface",
-                "it": "Stabilit\u00E0 dell'interfaccia"
+                "de": "Sicherheits-Updates",
+                "en": "Security Updates",
+                "tr": "Güvenlik Güncellemeleri",
+                "es": "Actualizaciones de Seguridad",
+                "fr": "Mises à Jour de Sécurité",
+                "it": "Aggiornamenti di Sicurezza"
             },
             "desc": {
-                "de": "Massive Verbesserungen an der Playlist-Synchronisation, Favoriten-Speicherung und fl\u00FCssigere Animationen.",
-                "en": "Massive improvements to playlist sync, favorites saving, and smoother animations.",
-                "tr": "\u00C7alma listesi senkronizasyonu, favori kaydetme und daha ak\u0131c\u0131 animasyonlarda b\u00FCy\u00FCk iyile\u015Ftirmeler.",
-                "es": "Mejoras masivas en la sincronizaci\u00F3n de la lista, guardado de favoritos y animaciones m\u00E1s fluidas.",
-                "fr": "Am\u00E9liorations massives de la synchronisation, de l'enregistrement des favoris et des animations plus fluides.",
-                "it": "Miglioramenti massicci alla sincronizzazione, al salvataggio dei preferiti e animazioni pi\u00F9 fluide."
+                "de": "XSS-Schutz für Tracktitel und Künstlernamen, Content Security Policy, Path-Traversal-Schutz beim Löschen und Verschieben von Dateien sowie URL-Validierung beim Downloader.",
+                "en": "XSS protection for track titles and artist names, Content Security Policy, path traversal protection for file delete and move operations, and URL validation in the downloader.",
+                "tr": "Parça başlıkları ve sanatçı adları için XSS koruması, İçerik Güvenlik Politikası, dosya silme ve taşıma işlemleri için yol geçiş koruması ve indiricide URL doğrulaması.",
+                "es": "Protección XSS para títulos y artistas, política de seguridad de contenido, protección contra path traversal al eliminar y mover archivos, y validación de URL en el descargador.",
+                "fr": "Protection XSS pour les titres et artistes, politique de sécurité du contenu, protection contre le path traversal lors de la suppression et du déplacement de fichiers, et validation d'URL dans le téléchargeur.",
+                "it": "Protezione XSS per titoli e artisti, Content Security Policy, protezione path traversal per eliminazione e spostamento file, e validazione URL nel downloader."
             }
         },
         {
-            "icon": "\uD83C\uDF0D",
+            "icon": "⚡",
             "title": {
-                "de": "3 Neue Sprachen",
-                "en": "3 New Languages",
-                "tr": "3 Yeni Dil",
-                "es": "3 Nuevos Idiomas",
-                "fr": "3 Nouvelles Langues",
-                "it": "3 Nuove Lingue"
+                "de": "Performance Mode Fix",
+                "en": "Performance Mode Fix",
+                "tr": "Performans Modu Düzeltmesi",
+                "es": "Corrección del Modo Rendimiento",
+                "fr": "Correction du Mode Performance",
+                "it": "Correzione Modalità Prestazioni"
             },
             "desc": {
-                "de": "NovaWave unterst\u00FCtzt jetzt offiziell Spanisch (ES), Franz\u00F6sisch (FR) und Italienisch (IT).",
-                "en": "NovaWave now officially supports Spanish (ES), French (FR), and Italian (IT).",
-                "tr": "NovaWave art\u0131k resmi olarak \u0130spanyolca (ES), Frans\u0131zca (FR) ve \u0130talyanca (IT) dillerini destekliyor.",
-                "es": "NovaWave ahora soporta oficialmente espa\u00F1ol (ES), franc\u00E9s (FR) e italiano (IT).",
-                "fr": "NovaWave supporte d\u00E9sormais officiellement l'espagnol (ES), le fran\u00E7ais (FR) et l'italien (IT).",
-                "it": "NovaWave ora supporta ufficialmente lo spagnolo (ES), il francese (FR) e l'italiano (IT)."
+                "de": "Der OK-Button im System-Lag-Banner reagiert jetzt korrekt. Der Performance Mode wird beim Neustart zuverlässig wiederhergestellt und deaktiviert Visualizer sowie Animationen wie erwartet.",
+                "en": "The OK button in the system lag banner now responds correctly. Performance Mode is reliably restored on restart and disables the visualizer and animations as expected.",
+                "tr": "Sistem gecikmesi bannerındaki Tamam düğmesi artık doğru yanıt veriyor. Performans Modu yeniden başlatmada güvenilir şekilde geri yükleniyor ve görselleştiriciyi ve animasyonları beklendiği gibi devre dışı bırakıyor.",
+                "es": "El botón OK en el banner de lag del sistema ahora responde correctamente. El Modo Rendimiento se restaura de forma fiable al reiniciar y desactiva el visualizador y las animaciones como se esperaba.",
+                "fr": "Le bouton OK dans la bannière de lag système répond maintenant correctement. Le Mode Performance est restauré de manière fiable au redémarrage et désactive le visualiseur et les animations comme prévu.",
+                "it": "Il pulsante OK nel banner di lag di sistema ora risponde correttamente. La Modalità Prestazioni viene ripristinata in modo affidabile al riavvio e disabilita il visualizzatore e le animazioni come previsto."
             }
         },
         {
-            "icon": "\uD83D\uDCE5",
+            "icon": "🖥️",
             "title": {
-                "de": "Multi-Downloader + Zeit",
-                "en": "Multi-Downloader + Time",
-                "tr": "Multi-Downloader + Zaman",
-                "es": "Multi-Descargador + Tiempo",
-                "fr": "Multi-T\u00E9l\u00E9chargeur + Temps",
-                "it": "Multi-Downloader + Tempo"
+                "de": "Minimize/Restore Fix",
+                "en": "Minimize/Restore Fix",
+                "tr": "Küçültme/Geri Yükleme Düzeltmesi",
+                "es": "Corrección de Minimizar/Restaurar",
+                "fr": "Correction Réduction/Restauration",
+                "it": "Correzione Minimizza/Ripristina"
             },
             "desc": {
-                "de": "Lade mehrere Links gleichzeitig in die Warteschlange und sieh genau, wann dein Song fertig wurde.",
-                "en": "Queue multiple links simultaneously and see exactly when your song finished downloading.",
-                "tr": "Ayn\u0131 anda birden fazla ba\u011Flant\u0131y\u0131 s\u0131raya ekleyin ve \u015Fark\u0131n\u0131z\u0131n ne zaman indi\u011Fini tam olarak g\u00F6r\u00FCn.",
-                "es": "Pon en cola varios enlaces simult\u00E1neamente y mira exactamente cu\u00E1ndo termin\u00F3 la descarga.",
-                "fr": "Mettez en file d'attente plusieurs liens simultan\u00E9ment et voyez exactement quand le t\u00E9l\u00E9chargement est fini.",
-                "it": "Metti in coda pi\u00F9 link contemporaneamente e vedi esattamente quando il brano \u00E8 stato scaricato."
+                "de": "Nach dem Minimieren und Wiederherstellen der App wird kein falscher Performance-Hinweis mehr angezeigt. Der FPS-Zähler setzt sich jetzt korrekt zurück.",
+                "en": "Restoring the app from minimize no longer triggers a false performance hint. The FPS counter now resets correctly on restore.",
+                "tr": "Uygulamayı küçülttükten sonra geri yüklemek artık yanlış bir performans ipucu tetiklemiyor. FPS sayacı artık geri yüklemede doğru şekilde sıfırlanıyor.",
+                "es": "Restaurar la app desde minimizado ya no activa una advertencia de rendimiento falsa. El contador de FPS ahora se reinicia correctamente al restaurar.",
+                "fr": "La restauration de l'application depuis la réduction ne déclenche plus de fausse alerte de performance. Le compteur FPS se réinitialise maintenant correctement à la restauration.",
+                "it": "Il ripristino dell'app dalla minimizzazione non attiva più un falso avviso di prestazioni. Il contatore FPS ora si reimposta correttamente al ripristino."
             }
         },
         {
-            "icon": "\uD83E\uDDF9",
+            "icon": "📥",
             "title": {
-                "de": "Saubere Titel",
-                "en": "Clean Titles",
-                "tr": "Temiz Ba\u015Fl\u0131klar",
-                "es": "T\u00EDtulos Limpios",
-                "fr": "Titres Propres",
-                "it": "Titoli Puliti"
+                "de": "Download Terminal Fix",
+                "en": "Download Terminal Fix",
+                "tr": "İndirme Terminali Düzeltmesi",
+                "es": "Corrección del Terminal de Descarga",
+                "fr": "Correction du Terminal de Téléchargement",
+                "it": "Correzione Terminale Download"
             },
             "desc": {
-                "de": "Dateiendungen wie .mp3 oder .wav werden nun radikal aus allen Anzeigen entfernt f\u00FCr einen modernen Look.",
-                "en": "File extensions like .mp3 or .wav are now radically removed from all displays for a modern look.",
-                "tr": "Modern bir g\u00F6r\u00FCn\u00FCm i\u00E7in .mp3 veya .wav gibi dosya uzant\u0131lar\u0131 art\u0131k t\u00FCm ekranlardan tamamen kald\u0131r\u0131l\u0131yor.",
-                "es": "Las extensiones como .mp3 o .wav ahora se eliminan radicalmente de todas las pantallas.",
-                "fr": "Les extensions comme .mp3 ou .wav sont d\u00E9sormais radicalement supprim\u00E9es de tous les affichages.",
-                "it": "Le estensioni come .mp3 o .wav sono ora rimosse radicalmente da tutti i display."
+                "de": "Download-Statusmeldungen werden jetzt korrekt in eigenen Zeilen angezeigt und nicht mehr zusammengeführt. Alle Meldungen sind in 6 Sprachen übersetzt.",
+                "en": "Download status messages are now correctly displayed on separate lines and no longer merged together. All messages are translated in 6 languages.",
+                "tr": "İndirme durum mesajları artık ayrı satırlarda doğru şekilde görüntüleniyor ve artık birleştirilmiyor. Tüm mesajlar 6 dilde çevrilmiştir.",
+                "es": "Los mensajes de estado de descarga ahora se muestran correctamente en líneas separadas y ya no se fusionan. Todos los mensajes están traducidos en 6 idiomas.",
+                "fr": "Les messages de statut de téléchargement sont maintenant affichés correctement sur des lignes séparées et ne sont plus fusionnés. Tous les messages sont traduits en 6 langues.",
+                "it": "I messaggi di stato del download vengono ora visualizzati correttamente su righe separate e non vengono più uniti. Tutti i messaggi sono tradotti in 6 lingue."
             }
         },
         {
-            "icon": "\uD83D\uDEE0\uFE0F",
+            "icon": "🛠️",
             "title": {
-                "de": "Developer Toolkit",
-                "en": "Developer Toolkit",
-                "tr": "Geli\u015Ftirici Ara\u00E7 Tak\u0131m\u0131",
-                "es": "Centro de Desarrolladores",
-                "fr": "Centre de D\u00E9veloppement",
-                "it": "Hub per Sviluppatori"
+                "de": "Weitere Verbesserungen",
+                "en": "Further Improvements",
+                "tr": "Diğer İyileştirmeler",
+                "es": "Mejoras Adicionales",
+                "fr": "Améliorations Supplémentaires",
+                "it": "Ulteriori Miglioramenti"
             },
             "desc": {
-                "de": "Die neue Entwickler-Zentrale mit allen Hotkeys und System-Statistiken auf einen Blick.",
-                "en": "The new developer hub with all hotkeys and system statistics at a glance.",
-                "tr": "T\u00FCm k\u0131sayollar\u0131n ve sistem istatistiklerinin bir bak\u0131\u015Fta g\u00F6r\u00FClebilece\u011Fi yeni geli\u015Ftirici merkezi.",
-                "es": "El nuevo centro con todos los atajos y estad\u00EDsticas del sistema de un vistazo.",
-                "fr": "Le nouveau centre avec tous les raccourcis et statistiques syst\u00E8me en un coup d'\u0153il.",
-                "it": "Il nuovo hub con tutte le scorciatoie e le statistiche di sistema a colpo d'occhio."
+                "de": "GPU-Compositing-Hints für flüssigere Animationen, Timeout-Schutz beim Downloader, AudioContext-Resume bei Tab-Wechsel sowie Sanitierung von Spotify-Metadaten und ffmpeg-Argumenten.",
+                "en": "GPU compositing hints for smoother animations, timeout protection in the downloader, AudioContext resume on tab switch, and sanitization of Spotify metadata and ffmpeg arguments.",
+                "tr": "Daha akıcı animasyonlar için GPU birleştirme ipuçları, indiricide zaman aşımı koruması, sekme geçişinde AudioContext özgeçmişi ve Spotify meta verileri ile ffmpeg argümanlarının temizlenmesi.",
+                "es": "Hints de composición GPU para animaciones más fluidas, protección de tiempo de espera en el descargador, reanudación de AudioContext al cambiar de pestaña y saneamiento de metadatos de Spotify y argumentos ffmpeg.",
+                "fr": "Hints de composition GPU pour des animations plus fluides, protection par délai d'expiration dans le téléchargeur, reprise de l'AudioContext lors du changement d'onglet, et assainissement des métadonnées Spotify et des arguments ffmpeg.",
+                "it": "Hint di compositing GPU per animazioni più fluide, protezione timeout nel downloader, ripresa AudioContext al cambio scheda e sanificazione dei metadati Spotify e degli argomenti ffmpeg."
             }
         }
     ]

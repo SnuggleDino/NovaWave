@@ -23,6 +23,17 @@ import (
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+func isAllowedPath(path string, allowedBases []string) bool {
+	clean := filepath.Clean(path)
+	for _, base := range allowedBases {
+		cleanBase := filepath.Clean(base)
+		if strings.HasPrefix(clean, cleanBase+string(filepath.Separator)) || clean == cleanBase {
+			return true
+		}
+	}
+	return false
+}
+
 //go:embed bin/*.exe
 var embeddedBinaries embed.FS
 
@@ -395,12 +406,12 @@ func (a *App) GetImageBase64(path string) string {
 	if err != nil {
 		return ""
 	}
-	
+
 	contentType := "image/jpeg"
 	if strings.HasSuffix(strings.ToLower(path), ".png") {
 		contentType = "image/png"
 	}
-	
+
 	return "data:" + contentType + ";base64," + base64.StdEncoding.EncodeToString(data)
 }
 
@@ -603,6 +614,12 @@ func (a *App) ShowInFolder(path string) {
 }
 
 func (a *App) DeleteTrack(path string) SimpleResult {
+	cfg := a.LoadConfig()
+	allowed := []string{cfg.CurrentFolderPath, cfg.DownloadFolder}
+	if !isAllowedPath(path, allowed) {
+		return SimpleResult{Success: false, Error: "access denied: path outside allowed directories"}
+	}
+
 	err := os.Remove(path)
 	if err != nil {
 		return SimpleResult{Success: false, Error: err.Error()}
@@ -617,6 +634,12 @@ func (a *App) DeleteTrack(path string) SimpleResult {
 }
 
 func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
+	cfg := a.LoadConfig()
+	allowed := []string{cfg.CurrentFolderPath, cfg.DownloadFolder}
+	if !isAllowedPath(sourcePath, allowed) {
+		return SimpleResult{Success: false, Error: "access denied: source path outside allowed directories"}
+	}
+
 	fileName := filepath.Base(sourcePath)
 	destPath := filepath.Join(destFolder, fileName)
 	if sourcePath == destPath {
@@ -625,14 +648,38 @@ func (a *App) MoveFile(sourcePath string, destFolder string) SimpleResult {
 
 	err := os.Rename(sourcePath, destPath)
 	if err != nil {
-		input, _ := os.ReadFile(sourcePath)
-		os.WriteFile(destPath, input, 0644)
-		os.Remove(sourcePath)
+		// Fallback: copy + delete (cross-device move)
+		input, readErr := os.ReadFile(sourcePath)
+		if readErr != nil {
+			return SimpleResult{Success: false, Error: "could not read source file: " + readErr.Error()}
+		}
+		if writeErr := os.WriteFile(destPath, input, 0644); writeErr != nil {
+			return SimpleResult{Success: false, Error: "could not write destination file: " + writeErr.Error()}
+		}
+		if removeErr := os.Remove(sourcePath); removeErr != nil {
+			return SimpleResult{Success: false, Error: "move incomplete: could not remove source: " + removeErr.Error()}
+		}
 	}
 	return SimpleResult{Success: true, NewPath: destPath}
 }
 
 func (a *App) UpdateMetadata(pathStr string, newTitle string, newArtist string) SimpleResult {
+	sanitizeTag := func(s string) string {
+		s = strings.Map(func(r rune) rune {
+			if r < 0x20 || r == 0x7F {
+				return -1
+			}
+			return r
+		}, s)
+		if len([]rune(s)) > 200 {
+			runes := []rune(s)
+			s = string(runes[:200])
+		}
+		return strings.TrimSpace(s)
+	}
+	newTitle = sanitizeTag(newTitle)
+	newArtist = sanitizeTag(newArtist)
+
 	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
 	ext := filepath.Ext(pathStr)
 	tempPath := strings.TrimSuffix(pathStr, ext) + "_temp" + ext
@@ -687,7 +734,7 @@ func (a *App) SetCoverArt(audioPath string, imagePath string) SimpleResult {
 
 	cmd := exec.Command(ffmpegPath, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	
+
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return SimpleResult{Success: false, Error: "FFmpeg Error: " + err.Error() + " | Log: " + string(output)}
@@ -773,7 +820,11 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	}
 
 	go func() {
-		tCmd := exec.Command(ytPath, "--get-title", "--no-warnings", opts.Url)
+		// FIX: use a context with timeout so this goroutine cannot hang
+		// indefinitely on a slow or unreachable network connection.
+		ctx, cancel := context.WithTimeout(a.ctx, 15*time.Second)
+		defer cancel()
+		tCmd := exec.CommandContext(ctx, ytPath, "--get-title", "--no-warnings", opts.Url)
 		tCmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 		if out, err := tCmd.Output(); err == nil {
 			title := strings.TrimSpace(string(out))
