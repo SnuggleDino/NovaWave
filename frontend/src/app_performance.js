@@ -36,11 +36,26 @@ export const AppPerformance = {
         this.showStatsOverlay = !!this.settings.showStatsOverlay;
         this.performanceMode = !!this.settings.performanceMode;
 
-        // FIX: Cache DOM elements once instead of querying on every frame
+        // Cache DOM elements once instead of querying on every frame
         this._fpsEl = document.getElementById('stat-fps');
         this._timeEl = document.getElementById('stat-time');
         this._lagEl = document.getElementById('stat-lag');
         this._perfInfoEl = document.getElementById('stat-perf-info');
+
+        // FIX #1: Restore Performance Mode state on startup.
+        if (this.performanceMode) {
+            this.setPerformanceMode(true, true);
+        }
+
+        // FIX #2: Register the OK button click handler for the lag hint banner.
+        const perfBtn = document.getElementById('enable-perf-mode-btn');
+        if (perfBtn) {
+            perfBtn.addEventListener('click', () => {
+                this.setPerformanceMode(true);
+                const hint = document.getElementById('performance-hint');
+                if (hint) hint.classList.remove('visible');
+            });
+        }
 
         this.startLoop();
     },
@@ -66,10 +81,6 @@ export const AppPerformance = {
         }
         this.lastStatsTime = now - (delta % interval);
         this.appFrameCount++;
-
-        // FIX: warmupFrames was never incremented — triggerPerformanceHint()
-        // could therefore never fire (without force=true), since the guard
-        // condition `this.warmupFrames < 1200` was always true.
         this.warmupFrames++;
 
         const timeSinceLastLog = now - this.lastFrameTime;
@@ -96,7 +107,6 @@ export const AppPerformance = {
     },
 
     updateUI(appFps, frameTime) {
-        // FIX: Use cached DOM refs instead of getElementById on every frame tick
         const fpsEl = this._fpsEl;
         const timeEl = this._timeEl;
         const lagEl = this._lagEl;
@@ -145,6 +155,7 @@ export const AppPerformance = {
             document.body.classList.add('perf-mode-active');
             if (!silent) this.showNotification(this.tr('perfModeOn'));
         } else {
+            if (this.visualizer) this.visualizer.start?.();
             this.applyAnimation(this.settings.animationMode || 'flow');
             document.body.classList.remove('perf-mode-active');
         }

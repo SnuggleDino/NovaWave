@@ -1210,9 +1210,7 @@ async function loadSettings() {
         document.body.classList.add('playlist-hidden');
     }
 
-    if (settings.performanceMode) {
-        AppPerformance.setPerformanceMode(true, true);
-    }
+    // NOTE: Performance Mode startup restore is handled inside AppPerformance.init()
 
     showStatsOverlay = !!settings.showStatsOverlay;
     const statsOverlay = document.getElementById('stats-overlay');
