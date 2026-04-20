@@ -308,5 +308,12 @@ export const fr_FR = {
     logStartingDownload: 'Démarrage du téléchargement...',
     logDownloadComplete: 'Téléchargement terminé.',
     logDownloadFailed: 'Téléchargement échoué.',
-    focusMode: 'Mode Focus'
+    focusMode: 'Mode Focus',
+
+    // --- Lite Ui ---
+    designLiteLabel: 'Lite UI',
+    designLiteDesc: 'Lecteur minimaliste. Chargez de la musique et écoutez.',
+    designLiteBadge: 'LITE',
+    designBtnActive: 'Actif',
+    designBtnSwitch: 'Changer',
 };

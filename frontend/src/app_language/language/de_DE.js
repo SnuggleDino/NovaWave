@@ -293,6 +293,8 @@ export const de_DE = {
 
     // --- Player Button Tooltips ---
     loop: 'Wiederholen',
+    loopAll: 'Alle',
+    loopOne: 'Titel',
     shuffle: 'Zufallswiedergabe',
     playPause: 'Wiedergabe / Pause',
     next: 'Nächster Titel',
@@ -308,5 +310,39 @@ export const de_DE = {
     logStartingDownload: 'Download wird gestartet...',
     logDownloadComplete: 'Download abgeschlossen.',
     logDownloadFailed: 'Download fehlgeschlagen.',
-    focusMode: 'Fokus-Modus'
+    focusMode: 'Fokus-Modus',
+
+    // --- Lite Ui ---
+    designLiteLabel: 'Lite UI',
+    designLiteDesc: 'Minimaler Player. Musik laden und hören – sonst nichts.',
+    designLiteBadge: 'LITE',
+    designBtnActive: 'Aktiv',
+    designBtnSwitch: 'Wechseln',
+
+    // --- Friday Night Funkin' Theme ---
+    fnfTitle: "Friday Night Funkin'",
+    fnfModeBtn: 'FNF MODUS',
+    fnfStartGame: 'Spiel Starten',
+    fnfSettings: 'Game Einstellungen',
+    fnfExit: 'Beenden',
+    fnfScore: 'Score',
+    fnfCombo: 'Combo',
+    fnfMisses: 'Misses',
+    fnfSick: 'SICK!',
+    fnfGood: 'GOOD',
+    fnfBad: 'BAD',
+    fnfShit: 'SHiT',
+    fnfLaneOpacity: 'Lane Deckkraft',
+    fnfScrollSpeed: 'Scroll-Geschwindigkeit',
+    fnfDownscroll: 'Downscroll',
+    fnfUpscroll: 'Upscroll',
+    fnfOffset: 'Note Offset',
+    fnfKeybinds: 'Tastenbelegung',
+    fnfSaveSettings: 'Spiel-Einstellungen speichern',
+    fnfReset: 'Standard',
+    fnfPressKey: 'Taste drücken...',
+    fnfLeft: 'Links',
+    fnfDown: 'Unten',
+    fnfUp: 'Oben',
+    fnfRight: 'Rechts'
 };

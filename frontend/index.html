@@ -3,21 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-lang-key="appTitle">NovaWave</title>
     <link rel="icon" type="image/png" href="/src/assets/icon.png">
-    <!-- NOTE: V2 redirect runs after Wails IPC/runtime are loaded -->
     <script src="/wails/ipc.js"></script>
     <script src="/wails/runtime.js"></script>
     <script>
-        // FIX: Moved redirect here so window.go is guaranteed to exist.
-        // Previously the first call ran before ipc.js loaded, causing
-        // "Callback not registered" errors in the WebView2 console.
         document.addEventListener('DOMContentLoaded', function () {
             if (window.go && window.go.main && window.go.main.App) {
                 window.go.main.App.GetSettings().then(function (s) {
                     if (s && s.uiVersion === 'v2') window.location.replace('v2.html');
+                    if (s && s.uiVersion === 'lite') window.location.replace('lite.html');
                 }).catch(function () { });
             }
         });
@@ -321,6 +319,16 @@
                         <div class="playlist-top-row">
                             <h2 class="panel-title" style="margin:0; border:none;" data-lang-key="playlistTitle"></h2>
                             <div class="playlist-header-actions" style="display: flex; gap: 8px; align-items: center;">
+                                <button id="playlist-refresh-btn" class="add-folder-btn" data-lang-title="refreshFolder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <polyline points="1 20 1 14 7 14"></polyline>
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15">
+                                        </path>
+                                    </svg>
+                                </button>
                                 <button id="add-folder-btn" class="add-folder-btn"
                                     data-lang-title="folderModalTitleCreate">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -1256,7 +1264,7 @@
                     <!-- TAB: DESIGN & UI -->
                     <div id="tab-design" class="settings-tab-content">
                         <h4 class="settings-section-title"><span data-lang-key="navDesign">Design & UI</span></h4>
-                        <div id="design-ui-cards" class="design-grid"></div>
+                        <div id="design-ui-cards"></div>
                     </div>
 
                     <!-- TAB 4: AUDIO EXTRAS -->

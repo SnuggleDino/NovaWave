@@ -455,6 +455,7 @@ body.playlist-left .audio-features-panel.visible {
     user-select: none;
 }
 
+
 body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background-color: var(--bg-main);

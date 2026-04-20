@@ -59,8 +59,8 @@ const windowApi = {
     setWindowSize: App.SetWindowSize,
     resetConfig: App.ResetConfig,
     restartApp: App.RestartApp,
-    onMediaControl: (cb) => {  },
-    onDownloadProgress: (cb) => {  },
+    onMediaControl: (cb) => { },
+    onDownloadProgress: (cb) => { },
     sendPlaybackState: App.SendPlaybackState
 };
 
@@ -114,6 +114,10 @@ document.addEventListener('keydown', (e) => {
             console.log('[Hotkeys] Triggering V2 UI');
             window.switchUI('v2', 'v2.html');
             window.__uiHotkeyStage = false;
+        } else if (e.key === '3') {
+            console.log('[Hotkeys] Triggering Lite UI');
+            window.switchUI('lite', 'lite.html');
+            window.__uiHotkeyStage = false;
         }
     }
 });
@@ -149,7 +153,7 @@ let audioFeaturesPanel;
 let dynamicIsland;
 let miniPlayer;
 
-let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, editArtistInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, audioExtrasToggleBtn;
+let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, playlistRefreshBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, editArtistInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, audioExtrasToggleBtn;
 
 let spotifyUrlInput, tabYtBtn, tabSpotifyBtn, viewYt, viewSpotify;
 let musicUrlInput, musicNameInput, tabMusicBtn, viewMusic;
@@ -457,6 +461,13 @@ function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else pla
 // --- UI & DOM MANIPULATION ---
 function deactivateAllThemePacks(excludeKey) {
     const packs = [
+        { key: 'snuggleTimeEnabled', toggleId: 'toggle-snuggle-time' },
+        { key: 'sleepTimeEnabled', toggleId: 'toggle-sleep-time' },
+        { key: 'cyberpunkEnabled', toggleId: 'toggle-cyberpunk' },
+        { key: 'sunsetEnabled', toggleId: 'toggle-sunset' },
+        { key: 'sakuraEnabled', toggleId: 'toggle-sakura' },
+        { key: 'eightBitEnabled', toggleId: 'toggle-8-bit' },
+        { key: 'fridayNightFunkinEnabled', toggleId: 'toggle-friday-night-funkin' }
     ];
 
     packs.forEach(pack => {
@@ -471,16 +482,21 @@ function deactivateAllThemePacks(excludeKey) {
 function resetToDefaultTheme() {
     document.body.classList.remove(
         'snuggle-time-active', 'sleeptime-active', 'cyberpunk-active',
-        'sunset-active', 'sakura-active'
+        'sunset-active', 'sakura-active', 'friday-night-funkin-active'
     );
 
     document.documentElement.style.removeProperty('--accent');
     document.documentElement.style.removeProperty('--bg-main');
 
-    const th = settings.theme || 'midnight';
-    document.documentElement.setAttribute('data-theme', th);
-    localStorage.setItem('theme', th);
-    if (themeSelect) { themeSelect.disabled = false; themeSelect.value = th; }
+    // FIX: Do not reset data-theme if a theme pack is currently active
+    if (!settings.activeThemePack) {
+        const th = settings.theme || 'midnight';
+        document.documentElement.setAttribute('data-theme', th);
+        localStorage.setItem('theme', th);
+        if (themeSelect) { themeSelect.disabled = false; themeSelect.value = th; }
+    } else {
+        document.documentElement.setAttribute('data-theme', settings.activeThemePack);
+    }
 
     if (settings.useCustomColor && settings.customAccentColor) {
         document.documentElement.style.setProperty('--accent', settings.customAccentColor);
@@ -539,7 +555,7 @@ function updateUIForCurrentTrack() {
         return;
     }
     const track = playlist[currentIndex];
-    
+
     let cleanTitle = cleanTitleDisplay(track.title || "");
 
     if (trackTitleEl) trackTitleEl.textContent = cleanTitle;
@@ -550,9 +566,9 @@ function updateUIForCurrentTrack() {
     updateEmoji(emojiMode, customEmoji);
     updateActiveTrackInPlaylist();
     updateTrackTitleScroll();
-    if (isPlaying && lastNotifiedPath !== track.path) { 
-        showNotification(`${tr('nowPlaying')}: ${cleanTitle}`); 
-        lastNotifiedPath = track.path; 
+    if (isPlaying && lastNotifiedPath !== track.path) {
+        showNotification(`${tr('nowPlaying')}: ${cleanTitle}`);
+        lastNotifiedPath = track.path;
     }
 }
 
@@ -683,7 +699,7 @@ function applyTranslations() {
                 const isActive = card.classList.contains('active');
                 const introKey = isActive ? 'introActiveBtn' : 'introApplyBtn';
                 const text = tr(introKey);
-                if(text) el.textContent = text;
+                if (text) el.textContent = text;
                 return;
             }
         }
@@ -703,7 +719,7 @@ function applyTranslations() {
 
     document.querySelectorAll('[data-lang-placeholder]').forEach(el => { el.placeholder = tr(el.dataset.langPlaceholder); });
     document.querySelectorAll('[data-lang-title]').forEach(el => { el.title = tr(el.dataset.langTitle); });
-    
+
     const langSelect = document.getElementById('lang-select');
     if (langSelect) {
         langSelect.value = currentLanguage;
@@ -771,7 +787,7 @@ function updateEmoji(emojiType, customEmoji) {
             let rawPath = currentTrackPath.replace(/\\/g, '/');
             let safeUrlPath = encodeURI(rawPath).replace(/#/g, '%23').replace(/\?/g, '%3F');
             const coverUrl = '/cover/' + safeUrlPath + '?t=' + Date.now();
-            
+
             const img = new Image();
             img.onload = () => {
                 musicEmojiEl.innerHTML = `<img src="${coverUrl}" alt="Cover" draggable="false" ondragstart="return false;" style="background: transparent !important; border: none !important; width: 100%; height: 100%; object-fit: contain;">`;
@@ -1027,7 +1043,7 @@ function renderQueueModal() {
         else if (item.status === 'success') pText = tr('statusSuccess');
         else if (item.status === 'error') pText = tr('statusError');
 
-        const timeStr = item.finishedAt 
+        const timeStr = item.finishedAt
             ? tr('finishedAt', new Date(item.finishedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
             : new Date(item.addedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -1306,7 +1322,7 @@ async function toggleFavorite(path) {
     }
 
     await windowApi.setSetting('favorites', favorites);
-    
+
 
     basePlaylist.forEach(track => {
         if (track.path === path) {
@@ -1315,7 +1331,7 @@ async function toggleFavorite(path) {
     });
 
     const currentScroll = playlistEl ? playlistEl.scrollTop : 0;
-    
+
     renderPlaylist();
     updateUIForCurrentTrack();
 
@@ -1366,17 +1382,17 @@ function setupEventListeners() {
     const bind = (el, ev, h) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, h); };
     bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) audio.pause(); else (currentIndex === -1) ? playTrack(0) : audio.play(); });
     bind(nextBtn, 'click', playNext); bind(prevBtn, 'click', playPrev);
-    bind(shuffleBtn, 'click', () => { 
-        shuffleOn = !shuffleOn; 
-        shuffleBtn.classList.toggle('mode-btn--active', shuffleOn); 
-        saveSetting('shuffle', shuffleOn); 
+    bind(shuffleBtn, 'click', () => {
+        shuffleOn = !shuffleOn;
+        shuffleBtn.classList.toggle('mode-btn--active', shuffleOn);
+        saveSetting('shuffle', shuffleOn);
         showNotification(tr('shuffle') + ': ' + (shuffleOn ? 'ON' : 'OFF'), 'info', 1500);
     });
-    bind(loopBtn, 'click', () => { 
-        loopMode = (loopMode === 'off' ? 'all' : (loopMode === 'all' ? 'one' : 'off')); 
-        loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off'); 
-        updateLoopIcon(); 
-        saveSetting('loop', loopMode); 
+    bind(loopBtn, 'click', () => {
+        loopMode = (loopMode === 'off' ? 'all' : (loopMode === 'all' ? 'one' : 'off'));
+        loopBtn.classList.toggle('mode-btn--active', loopMode !== 'off');
+        updateLoopIcon();
+        saveSetting('loop', loopMode);
         showNotification(tr('loop') + ': ' + loopMode.toUpperCase(), 'info', 1500);
     });
     bind($('#lyrics-btn'), 'click', () => {
@@ -1840,7 +1856,7 @@ function initSettingsLogic() {
         },
         onEmojiChange: (mode, customVal) => {
             updateEmoji(mode, customVal);
-            if(!window._isRestoring) showNotification(tr('coverEmoji') + ': ' + mode.toUpperCase(), 'info', 1500);
+            if (!window._isRestoring) showNotification(tr('coverEmoji') + ': ' + mode.toUpperCase(), 'info', 1500);
         },
         onSleepTimerChange: (mins) => {
             if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; }
@@ -2047,7 +2063,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loopBtn = $('#loop-btn'); shuffleBtn = $('#shuffle-btn'); volumeSlider = $('.volume-slider'); volumeIcon = $('.volume-icon');
     playlistEl = $('.playlist-scroll-area'); playlistInfoBar = $('.playlist-info-bar'); openLibraryBtn = $('#open-library-btn');
     libraryOverlay = $('#library-overlay'); libraryCloseBtn = $('#library-close-btn'); loadFolderBtn = $('#load-folder-btn');
-    refreshFolderBtn = $('#refresh-folder-btn'); searchInput = $('.playlist-search-input'); sortSelect = $('#sort-select');
+    refreshFolderBtn = $('#refresh-folder-btn');
+    playlistRefreshBtn = $('#playlist-refresh-btn');
+    searchInput = $('.playlist-search-input');
     ytUrlInput = $('#yt-url-input'); ytNameInput = $('#yt-name-input'); downloadBtn = $('#download-btn');
     musicUrlInput = $('#music-url-input'); musicNameInput = $('#music-name-input');
     spotifyUrlInput = $('#spotify-url-input');
@@ -2398,22 +2416,22 @@ document.addEventListener('DOMContentLoaded', () => {
             AppLoader.update(90, tr('loaderAudio'));
             initVisualizerEngine();
 
-    AppLoader.update(100, tr('loaderReady'));
-    AppLoader.finish();
+            AppLoader.update(100, tr('loaderReady'));
+            AppLoader.finish();
 
-    const finalizeApp = () => {
-        document.body.classList.add('ready');
-    };
+            const finalizeApp = () => {
+                document.body.classList.add('ready');
+            };
 
-    const activeIntro = settings.activeIntro || 'waterdrop';
-    if (activeIntro !== 'none') {
-        const introMgr = new IntroManager({ activeIntro: activeIntro });
-        introMgr.play().then(finalizeApp);
-    } else {
-        setTimeout(finalizeApp, 500);
-    }
+            const activeIntro = settings.activeIntro || 'waterdrop';
+            if (activeIntro !== 'none') {
+                const introMgr = new IntroManager({ activeIntro: activeIntro });
+                introMgr.play().then(finalizeApp);
+            } else {
+                setTimeout(finalizeApp, 500);
+            }
 
-    } catch (err) {
+        } catch (err) {
             console.error("Initialization failed:", err);
             const loader = document.getElementById('app-loader');
             if (loader) loader.remove();
@@ -2426,11 +2444,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 
-    // FIX: Removed cloneNode() anti-pattern. Previously, open-library-btn and
-    // refresh-folder-btn were cloned to strip old listeners, which caused the
-    // module-scoped openLibraryBtn/refreshFolderBtn variables to point at
-    // detached DOM nodes. We now attach these handlers directly here, after
-    // the DOM is fully ready, which is the correct pattern.
     if (openLibraryBtn) {
         openLibraryBtn.addEventListener('click', async () => {
             try {
@@ -2454,26 +2467,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (refreshFolderBtn) {
-        refreshFolderBtn.addEventListener('click', async () => {
-            let path = currentFolderPath || settings.currentFolderPath;
-            if (!path) {
-                if (openLibraryBtn) openLibraryBtn.click();
-                return;
-            }
+    const handleRefresh = async () => {
+        let path = currentFolderPath || settings.currentFolderPath;
+        if (!path) {
+            if (openLibraryBtn) openLibraryBtn.click();
+            return;
+        }
 
-            const res = await windowApi.refreshMusicFolder(path);
-            if (res && res.tracks) {
-                currentFolderPath = res.folderPath;
-                saveSetting('currentFolderPath', currentFolderPath);
-                basePlaylist = res.tracks;
-                playlist = [...basePlaylist];
-                sortPlaylist(sortMode);
-                renderPlaylist();
-                showNotification(tr('folderRefreshed'));
-            }
-        });
-    }
+        const res = await windowApi.refreshMusicFolder(path);
+        if (res && res.tracks) {
+            currentFolderPath = res.folderPath;
+            saveSetting('currentFolderPath', currentFolderPath);
+            basePlaylist = res.tracks;
+            playlist = [...basePlaylist];
+            sortPlaylist(sortMode);
+            renderPlaylist();
+            showNotification(tr('folderRefreshed'));
+        }
+    };
+
+    if (refreshFolderBtn) refreshFolderBtn.addEventListener('click', handleRefresh);
+    if (playlistRefreshBtn) playlistRefreshBtn.addEventListener('click', handleRefresh);
 
     dynamicIsland = new DynamicIsland();
 

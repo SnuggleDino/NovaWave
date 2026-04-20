@@ -1,6 +1,26 @@
 import './app_settings.css';
 import { LangHandler } from '../app_language/lang_handler.js';
 
+// --- Icons for Design Cards ---
+const LEGACY_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <path d="M3 9h18"/>
+    <path d="M9 21V9"/>
+</svg>`;
+
+const V2_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+</svg>`;
+
+const LITE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <polygon points="10 8 16 12 10 16 10 8"/>
+</svg>`;
+
 export const AppSettings = {
 
     init: function (api, settings, callbacks = {}, uiRefs = {}) {
@@ -284,7 +304,7 @@ export const AppSettings = {
                 const val = e.target.value;
                 if (customEmojiContainer) customEmojiContainer.style.display = val === 'custom' ? 'flex' : 'none';
                 this.saveSetting('coverMode', val);
-                
+
                 if (val !== 'auto') {
                     this.saveSetting('lastCoverEmoji', val);
                 }
@@ -774,31 +794,42 @@ export const AppSettings = {
         const container = document.getElementById('design-ui-cards');
         if (!container) return;
 
+        // Apply grid class to container
+        container.className = 'design-ui-grid';
         container.innerHTML = '';
 
-        // --- SECTION 1: DESIGN CARDS ---
         const tr = (key) => LangHandler.tr(key);
-        
 
         const isV2 = window.location.pathname.includes('v2.html');
-        const activeUi = isV2 ? 'v2' : 'legacy';
-        
+        const isLite = window.location.pathname.includes('lite.html');
+        const activeUi = isV2 ? 'v2' : isLite ? 'lite' : 'legacy';
+
         const activeBadgeText = tr('designActiveBadge');
 
         const cards = [
             {
                 key: 'legacy',
                 label: tr('designLegacyLabel'),
-                badge: tr('designLegacyBadge'),
+                badge: tr('designLegacyBadge') || 'STABLE',
                 desc: tr('designLegacyDesc'),
+                icon: LEGACY_ICON,
                 target: 'index.html'
             },
             {
                 key: 'v2',
                 label: tr('designV2Label'),
-                badge: tr('designV2Badge'),
+                badge: tr('designV2Badge') || 'V2-PRO',
                 desc: tr('designV2Desc'),
+                icon: V2_ICON,
                 target: 'v2.html'
+            },
+            {
+                key: 'lite',
+                label: tr('designLiteLabel'),
+                badge: tr('designLiteBadge') || 'LITE',
+                desc: tr('designLiteDesc'),
+                icon: LITE_ICON,
+                target: 'lite.html'
             }
         ];
 
@@ -806,41 +837,75 @@ export const AppSettings = {
             const isActive = card.key === activeUi;
 
             const cardEl = document.createElement('div');
-            cardEl.className = `design-card ${isActive ? 'active' : ''}`;
+            cardEl.className = `design-ui-card ${isActive ? 'active' : ''}`;
 
+            // Badge (Top Left)
             const badgeEl = document.createElement('div');
-            badgeEl.className = 'design-card-badge';
+            badgeEl.className = 'design-active-badge';
+            badgeEl.style.background = isActive ? 'var(--accent)' : 'rgba(255,255,255,0.1)';
+            badgeEl.style.color = isActive ? '#000' : 'var(--text-muted)';
+            badgeEl.style.left = '12px';
+            badgeEl.style.right = 'auto';
             badgeEl.textContent = card.badge;
+            cardEl.appendChild(badgeEl);
 
+            // Icon
+            const iconEl = document.createElement('div');
+            iconEl.className = 'design-card-icon';
+            iconEl.innerHTML = card.icon;
+            cardEl.appendChild(iconEl);
+
+            // Content
             const contentEl = document.createElement('div');
-            contentEl.className = 'design-card-content';
+            contentEl.style.textAlign = 'center';
+            contentEl.style.flex = '1';
 
             const titleEl = document.createElement('div');
-            titleEl.className = 'design-card-title';
+            titleEl.style.fontWeight = 'bold';
+            titleEl.style.fontSize = '1.1rem';
+            titleEl.style.marginBottom = '8px';
             titleEl.textContent = card.label;
 
             const descEl = document.createElement('div');
-            descEl.className = 'design-card-desc';
+            descEl.style.fontSize = '0.85rem';
+            descEl.style.color = 'var(--text-muted)';
+            descEl.style.lineHeight = '1.4';
             descEl.textContent = card.desc;
 
             contentEl.appendChild(titleEl);
             contentEl.appendChild(descEl);
-
-            cardEl.appendChild(badgeEl);
             cardEl.appendChild(contentEl);
 
+            // Status Badge (Top Right)
             if (isActive) {
                 const statusEl = document.createElement('div');
-                statusEl.className = 'design-card-status';
+                statusEl.className = 'design-active-badge';
                 statusEl.textContent = activeBadgeText;
                 cardEl.appendChild(statusEl);
             }
 
+            // Button / Switch logic
+            const btnEl = document.createElement('button');
+            btnEl.textContent = isActive ? tr('designBtnActive') : tr('designBtnSwitch');
+            btnEl.disabled = isActive;
+            btnEl.style.width = '100%';
+            btnEl.style.padding = '12px';
+            btnEl.style.borderRadius = '8px';
+            btnEl.style.border = 'none';
+            btnEl.style.fontWeight = 'bold';
+            btnEl.style.cursor = isActive ? 'default' : 'pointer';
+            btnEl.style.background = isActive ? 'rgba(255,255,255,0.05)' : 'var(--accent)';
+            btnEl.style.color = isActive ? 'var(--text-muted)' : '#000';
+            btnEl.style.marginTop = '10px';
+            btnEl.style.transition = 'all 0.2s';
+
+            cardEl.appendChild(btnEl);
+
             cardEl.addEventListener('click', () => {
+                if (isActive) return;
                 if (window.switchUI) {
                     window.switchUI(card.key, card.target);
                 } else {
-
                     localStorage.setItem('uiVersion', card.key);
                     window.location.href = card.target;
                 }
@@ -849,39 +914,36 @@ export const AppSettings = {
             container.appendChild(cardEl);
         });
 
-        // --- SECTION 2: HOTKEY INFO ---
-        const hotkeySection = document.createElement('div');
-        hotkeySection.className = 'setting-item';
-        hotkeySection.style.marginTop = '24px';
-        hotkeySection.style.borderTop = '1px solid var(--border-soft)';
-        hotkeySection.style.paddingTop = '24px';
-        hotkeySection.style.display = 'block';
+        // --- UI Shortcuts Section ---
+        const existingShortcuts = container.parentElement.querySelector('.ui-shortcuts-section');
+        if (existingShortcuts) existingShortcuts.remove();
 
-        hotkeySection.innerHTML = `
-            <div class="setting-label" style="margin-bottom: 15px;">
+        const shortcutSection = document.createElement('div');
+        shortcutSection.className = 'ui-shortcuts-section';
+        shortcutSection.innerHTML = `
+            <div class="setting-label">
                 <strong>UI Shortcuts</strong>
                 <p>Quickly switch between interfaces using your keyboard</p>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: space-between;">
-                    <span style="font-size: 0.85rem; font-weight: 600;">Legacy UI</span>
-                    <div style="display: flex; gap: 4px;">
-                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">CTRL</kbd>
-                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">U</kbd>
-                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">1</kbd>
-                    </div>
-                </div>
-                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border-soft); display: flex; align-items: center; justify-content: space-between;">
-                    <span style="font-size: 0.85rem; font-weight: 600;">NovaWave V2</span>
-                    <div style="display: flex; gap: 4px;">
-                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">CTRL</kbd>
-                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">U</kbd>
-                        <kbd style="background: #222; padding: 4px 8px; border-radius: 4px; border: 1px solid #444; font-family: monospace; font-size: 0.8rem; color: var(--accent);">2</kbd>
-                    </div>
+            <div class="shortcut-grid">
+                ${this._renderShortcutItem('Legacy UI', '1')}
+                ${this._renderShortcutItem('NovaWave V2', '2')}
+                ${this._renderShortcutItem('Lite UI', '3')}
+            </div>
+        `;
+        container.parentElement.appendChild(shortcutSection);
+    },
+
+    _renderShortcutItem: function (label, key) {
+        return `
+            <div class="shortcut-item">
+                <span class="shortcut-label">${label}</span>
+                <div class="shortcut-keys">
+                    <kbd>CTRL</kbd>
+                    <kbd>U</kbd>
+                    <kbd>${key}</kbd>
                 </div>
             </div>
         `;
-
-        container.appendChild(hotkeySection);
     }
 };

@@ -308,5 +308,12 @@ export const tr_TR = {
     logStartingDownload: 'İndirme başlıyor...',
     logDownloadComplete: 'İndirme tamamlandı.',
     logDownloadFailed: 'İndirme başarısız oldu.',
-    focusMode: 'Odak Modu'
+    focusMode: 'Odak Modu',
+
+    // --- Lite Ui ---
+    designLiteLabel: 'Lite UI',
+    designLiteDesc: 'Minimal oynatıcı. Müzik yükle ve dinle – başka bir şey yok.',
+    designLiteBadge: 'LITE',
+    designBtnActive: 'Aktif',
+    designBtnSwitch: 'Geçiş',
 };

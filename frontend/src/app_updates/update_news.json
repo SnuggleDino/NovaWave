@@ -1,109 +1,90 @@
 {
-    "version": "2.8.6",
-    "date": "18. März 2026",
+    "version": "2.8.7",
+    "date": "20. April 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Sicherheit, Stabilität & Bug-Fixes",
-        "en": "Security, Stability & Bug Fixes",
-        "tr": "Güvenlik, Kararlılık ve Hata Düzeltmeleri",
-        "es": "Seguridad, Estabilidad y Correcciones",
-        "fr": "Sécurité, Stabilité et Corrections",
-        "it": "Sicurezza, Stabilità e Correzioni"
+        "de": "Neues Design & Lite UI",
+        "en": "New Design & Lite UI",
+        "tr": "Yeni Tasarım ve Lite Kullanıcı Arayüzü",
+        "es": "Nuevo Diseño y Lite UI",
+        "fr": "Nouveau Design et Lite UI",
+        "it": "Nuovo Design e Lite UI"
     },
     "changes": [
         {
-            "icon": "🔒",
+            "icon": "🎨",
             "title": {
-                "de": "Sicherheits-Updates",
-                "en": "Security Updates",
-                "tr": "Güvenlik Güncellemeleri",
-                "es": "Actualizaciones de Seguridad",
-                "fr": "Mises à Jour de Sécurité",
-                "it": "Aggiornamenti di Sicurezza"
+                "de": "Neues UI-Switch Design (Beta)",
+                "en": "New UI-Switch Design (Beta)",
+                "tr": "Yeni Kullanıcı Arayüzü Anahtarı Tasarımı (Beta)",
+                "es": "Nuevo Diseño de Cambio de UI (Beta)",
+                "fr": "Nouveau Design du Sélecteur d'Interface (Beta)",
+                "it": "Nuovo Design del Selettore Interfaccia (Beta)"
             },
             "desc": {
-                "de": "XSS-Schutz für Tracktitel und Künstlernamen, Content Security Policy, Path-Traversal-Schutz beim Löschen und Verschieben von Dateien sowie URL-Validierung beim Downloader.",
-                "en": "XSS protection for track titles and artist names, Content Security Policy, path traversal protection for file delete and move operations, and URL validation in the downloader.",
-                "tr": "Parça başlıkları ve sanatçı adları için XSS koruması, İçerik Güvenlik Politikası, dosya silme ve taşıma işlemleri için yol geçiş koruması ve indiricide URL doğrulaması.",
-                "es": "Protección XSS para títulos y artistas, política de seguridad de contenido, protección contra path traversal al eliminar y mover archivos, y validación de URL en el descargador.",
-                "fr": "Protection XSS pour les titres et artistes, politique de sécurité du contenu, protection contre le path traversal lors de la suppression et du déplacement de fichiers, et validation d'URL dans le téléchargeur.",
-                "it": "Protezione XSS per titoli e artisti, Content Security Policy, protezione path traversal per eliminazione e spostamento file, e validazione URL nel downloader."
+                "de": "Das Design-Tab in den Einstellungen wurde komplett überarbeitet. Es bietet nun eine moderne Karten-Ansicht mit Icons zur Auswahl der Benutzeroberfläche.",
+                "en": "The design tab in settings has been completely redesigned. It now features a modern card view with icons for selecting the user interface.",
+                "tr": "Ayarlardaki tasarım sekmesi tamamen yeniden tasarlandı. Artık kullanıcı arayüzünü seçmek için simgeler içeren modern bir kart görünümüne sahip.",
+                "es": "La pestaña de diseño en los ajustes ha sido completamente rediseñada. Ahora cuenta con una vista de tarjetas moderna con iconos para seleccionar la interfaz de usuario.",
+                "fr": "L'onglet de design dans les paramètres a été entièrement repensé. Il propose désormais une vue par cartes moderne avec des icônes pour choisir l'interface.",
+                "it": "La scheda design nelle impostazioni è stata completamente riprogettata. Ora presenta una vista a schede moderna con icone per selezionare l'interfaccia utente."
             }
         },
         {
-            "icon": "⚡",
+            "icon": "📱",
             "title": {
-                "de": "Performance Mode Fix",
-                "en": "Performance Mode Fix",
-                "tr": "Performans Modu Düzeltmesi",
-                "es": "Corrección del Modo Rendimiento",
-                "fr": "Correction du Mode Performance",
-                "it": "Correzione Modalità Prestazioni"
+                "de": "LITE-UI hinzugefügt",
+                "en": "LITE-UI Added",
+                "tr": "LITE-UI Eklendi",
+                "es": "LITE-UI Añadida",
+                "fr": "LITE-UI Ajoutée",
+                "it": "LITE-UI Aggiunta"
             },
             "desc": {
-                "de": "Der OK-Button im System-Lag-Banner reagiert jetzt korrekt. Der Performance Mode wird beim Neustart zuverlässig wiederhergestellt und deaktiviert Visualizer sowie Animationen wie erwartet.",
-                "en": "The OK button in the system lag banner now responds correctly. Performance Mode is reliably restored on restart and disables the visualizer and animations as expected.",
-                "tr": "Sistem gecikmesi bannerındaki Tamam düğmesi artık doğru yanıt veriyor. Performans Modu yeniden başlatmada güvenilir şekilde geri yükleniyor ve görselleştiriciyi ve animasyonları beklendiği gibi devre dışı bırakıyor.",
-                "es": "El botón OK en el banner de lag del sistema ahora responde correctamente. El Modo Rendimiento se restaura de forma fiable al reiniciar y desactiva el visualizador y las animaciones como se esperaba.",
-                "fr": "Le bouton OK dans la bannière de lag système répond maintenant correctement. Le Mode Performance est restauré de manière fiable au redémarrage et désactive le visualiseur et les animations comme prévu.",
-                "it": "Il pulsante OK nel banner di lag di sistema ora risponde correttamente. La Modalità Prestazioni viene ripristinata in modo affidabile al riavvio e disabilita il visualizzatore e le animazioni come previsto."
+                "de": "Eine neue, ressourcensparende Benutzeroberfläche für maximale Performance auf älteren Geräten oder für ein minimalistisches Erlebnis.",
+                "en": "A new, resource-saving user interface for maximum performance on older devices or for a minimalist experience.",
+                "tr": "Eski cihazlarda maksimum performans veya minimalist bir deneyim için yeni, kaynak tasarrufu sağlayan bir kullanıcı arayüzü.",
+                "es": "Una nueva interfaz de usuario que ahorra recursos para un rendimiento máximo en dispositivos antiguos o para una experiencia minimalista.",
+                "fr": "Une nouvelle interface utilisateur économe en ressources pour une performance maximale sur les anciens appareils ou pour une expérience minimaliste.",
+                "it": "Una nuova interfaccia utente a risparmio di risorse per le massime prestazioni su dispositivi meno recenti o per un'esperienza minimalista."
             }
         },
         {
-            "icon": "🖥️",
+            "icon": "⌨️",
             "title": {
-                "de": "Minimize/Restore Fix",
-                "en": "Minimize/Restore Fix",
-                "tr": "Küçültme/Geri Yükleme Düzeltmesi",
-                "es": "Corrección de Minimizar/Restaurar",
-                "fr": "Correction Réduction/Restauration",
-                "it": "Correzione Minimizza/Ripristina"
+                "de": "UI Shortcuts",
+                "en": "UI Shortcuts",
+                "tr": "UI Kısayolları",
+                "es": "Atajos de UI",
+                "fr": "Raccourcis d'Interface",
+                "it": "Scorciatoie Interfaccia"
             },
             "desc": {
-                "de": "Nach dem Minimieren und Wiederherstellen der App wird kein falscher Performance-Hinweis mehr angezeigt. Der FPS-Zähler setzt sich jetzt korrekt zurück.",
-                "en": "Restoring the app from minimize no longer triggers a false performance hint. The FPS counter now resets correctly on restore.",
-                "tr": "Uygulamayı küçülttükten sonra geri yüklemek artık yanlış bir performans ipucu tetiklemiyor. FPS sayacı artık geri yüklemede doğru şekilde sıfırlanıyor.",
-                "es": "Restaurar la app desde minimizado ya no activa una advertencia de rendimiento falsa. El contador de FPS ahora se reinicia correctamente al restaurar.",
-                "fr": "La restauration de l'application depuis la réduction ne déclenche plus de fausse alerte de performance. Le compteur FPS se réinitialise maintenant correctement à la restauration.",
-                "it": "Il ripristino dell'app dalla minimizzazione non attiva più un falso avviso di prestazioni. Il contatore FPS ora si reimposta correttamente al ripristino."
+                "de": "Schneller Wechsel zwischen den Oberflächen mittels Tastenkombination (CTRL+U+1/2/3). Die Infos dazu findest du im Design-Tab.",
+                "en": "Quickly switch between interfaces using keyboard shortcuts (CTRL+U+1/2/3). Info can be found in the Design tab.",
+                "tr": "Klavye kısayollarını (CTRL+U+1/2/3) kullanarak arayüzler arasında hızlıca geçiş yapın. Bilgiler Tasarım sekmesinde bulunabilir.",
+                "es": "Cambia rápidamente entre interfaces usando atajos de teclado (CTRL+U+1/2/3). La información se encuentra en la pestaña de Diseño.",
+                "fr": "Basculez rapidement entre les interfaces à l'aide de raccourcis clavier (CTRL+U+1/2/3). Les informations se trouvent dans l'onglet Design.",
+                "it": "Passa rapidamente da un'interfaccia all'altra usando le scorciatoie da tastiera (CTRL+U+1/2/3). Le info sono nella scheda Design."
             }
         },
         {
-            "icon": "📥",
+            "icon": "🔄",
             "title": {
-                "de": "Download Terminal Fix",
-                "en": "Download Terminal Fix",
-                "tr": "İndirme Terminali Düzeltmesi",
-                "es": "Corrección del Terminal de Descarga",
-                "fr": "Correction du Terminal de Téléchargement",
-                "it": "Correzione Terminale Download"
+                "de": "Playlist Refresh Button",
+                "en": "Playlist Refresh Button",
+                "tr": "Oynatma Listesi Yenileme Düğmesi",
+                "es": "Botón de Actualizar Playlist",
+                "fr": "Bouton d'Actualisation Playlist",
+                "it": "Pulsante Refresh Playlist"
             },
             "desc": {
-                "de": "Download-Statusmeldungen werden jetzt korrekt in eigenen Zeilen angezeigt und nicht mehr zusammengeführt. Alle Meldungen sind in 6 Sprachen übersetzt.",
-                "en": "Download status messages are now correctly displayed on separate lines and no longer merged together. All messages are translated in 6 languages.",
-                "tr": "İndirme durum mesajları artık ayrı satırlarda doğru şekilde görüntüleniyor ve artık birleştirilmiyor. Tüm mesajlar 6 dilde çevrilmiştir.",
-                "es": "Los mensajes de estado de descarga ahora se muestran correctamente en líneas separadas y ya no se fusionan. Todos los mensajes están traducidos en 6 idiomas.",
-                "fr": "Les messages de statut de téléchargement sont maintenant affichés correctement sur des lignes séparées et ne sont plus fusionnés. Tous les messages sont traduits en 6 langues.",
-                "it": "I messaggi di stato del download vengono ora visualizzati correttamente su righe separate e non vengono più uniti. Tutti i messaggi sono tradotti in 6 lingue."
-            }
-        },
-        {
-            "icon": "🛠️",
-            "title": {
-                "de": "Weitere Verbesserungen",
-                "en": "Further Improvements",
-                "tr": "Diğer İyileştirmeler",
-                "es": "Mejoras Adicionales",
-                "fr": "Améliorations Supplémentaires",
-                "it": "Ulteriori Miglioramenti"
-            },
-            "desc": {
-                "de": "GPU-Compositing-Hints für flüssigere Animationen, Timeout-Schutz beim Downloader, AudioContext-Resume bei Tab-Wechsel sowie Sanitierung von Spotify-Metadaten und ffmpeg-Argumenten.",
-                "en": "GPU compositing hints for smoother animations, timeout protection in the downloader, AudioContext resume on tab switch, and sanitization of Spotify metadata and ffmpeg arguments.",
-                "tr": "Daha akıcı animasyonlar için GPU birleştirme ipuçları, indiricide zaman aşımı koruması, sekme geçişinde AudioContext özgeçmişi ve Spotify meta verileri ile ffmpeg argümanlarının temizlenmesi.",
-                "es": "Hints de composición GPU para animaciones más fluidas, protección de tiempo de espera en el descargador, reanudación de AudioContext al cambiar de pestaña y saneamiento de metadatos de Spotify y argumentos ffmpeg.",
-                "fr": "Hints de composition GPU pour des animations plus fluides, protection par délai d'expiration dans le téléchargeur, reprise de l'AudioContext lors du changement d'onglet, et assainissement des métadonnées Spotify et des arguments ffmpeg.",
-                "it": "Hint di compositing GPU per animazioni più fluide, protezione timeout nel downloader, ripresa AudioContext al cambio scheda e sanificazione dei metadati Spotify e degli argomenti ffmpeg."
+                "de": "Ein neuer Refresh-Button im Playlist-Modal ermöglicht es, die Liste sofort zu aktualisieren, ohne das Fenster schließen zu müssen.",
+                "en": "A new refresh button in the playlist modal allows you to update the list immediately without closing the window.",
+                "tr": "Oynatma listesi modalındaki yeni yenileme düğmesi, pencereyi kapatmadan listeyi anında güncellemenizi sağlar.",
+                "es": "Un nuevo botón de actualización en el modal de lista de reproducción permite actualizar la lista inmediatamente sin cerrar la ventana.",
+                "fr": "Un nouveau bouton d'actualisation dans le modal de playlist permet de mettre à jour la liste immédiatement sans fermer la fenêtre.",
+                "it": "Un nuovo pulsante di aggiornamento nel modal della playlist consente di aggiornare immediatamente l'elenco senza chiudere la finestra."
             }
         }
     ]

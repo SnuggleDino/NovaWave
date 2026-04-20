@@ -1,9 +1,3 @@
-// FIX: The original file imported from '../translations.js' which does not exist
-// in the repository. This would cause an immediate module resolution error.
-// We now use the global window.tr() function (provided by LangHandler) which
-// is already available at the time design_tab functions are called.
-// setDesignTabLanguage() is kept for API compatibility but is no longer needed.
-
 let _currentLanguage = 'de';
 
 export function setDesignTabLanguage(lang) {
@@ -14,7 +8,6 @@ function tr(key) {
     if (typeof window !== 'undefined' && typeof window.tr === 'function') {
         return window.tr(key);
     }
-    // Graceful fallback if called before LangHandler is ready
     return key;
 }
 
@@ -33,19 +26,26 @@ const V2_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" 
     <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
 </svg>`;
 
+// --- NEU: Lite UI Icon ---
+const LITE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <polygon points="10 8 16 12 10 16 10 8"/>
+</svg>`;
+
 // --- Render ---
 export function renderDesignCards() {
     const container = document.getElementById('design-ui-cards');
     if (!container) return;
 
     const isV2 = window.location.pathname.includes('v2.html');
-    const activeUi = isV2 ? 'v2' : 'legacy';
+    const isLite = window.location.pathname.includes('lite.html');
+    const activeUi = isV2 ? 'v2' : isLite ? 'lite' : 'legacy';
 
     const cards = [
         {
             key: 'legacy',
             label: tr('designLegacyLabel'),
-            badge: tr('designLegacyBadge'),
+            badge: 'STABLE',
             desc: tr('designLegacyDesc'),
             icon: LEGACY_ICON,
             target: 'index.html'
@@ -53,62 +53,131 @@ export function renderDesignCards() {
         {
             key: 'v2',
             label: tr('designV2Label'),
-            badge: tr('designV2Badge'),
+            badge: 'V2-PRO',
             desc: tr('designV2Desc'),
             icon: V2_ICON,
             target: 'v2.html'
+        },
+        {
+            key: 'lite',
+            label: tr('designLiteLabel'),
+            badge: 'LITE',
+            desc: tr('designLiteDesc'),
+            icon: LITE_ICON,
+            target: 'lite.html'
         }
     ];
 
-    container.innerHTML = cards.map(card => {
-        const isActive = card.key === activeUi;
-        return buildCard(card, isActive, tr('designActiveBadge'), tr('designBtnActive'), tr('designBtnSwitch'));
-    }).join('');
+    // --- Sector: UI Selection Grid ---
+    container.innerHTML = `
+        <style>
+            .nw-design-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 2.5px;
+                width: 100%;
+                margin-top: 10px;
+            }
+            .nw-design-card {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 25px;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                min-height: 260px;
+                position: relative;
+                transition: all 0.2s ease;
+            }
+            .nw-design-card.active {
+                border-color: var(--accent);
+                background: rgba(56, 189, 248, 0.05);
+            }
+            .nw-design-badge {
+                align-self: flex-start;
+                font-size: 0.65rem;
+                font-weight: 800;
+                padding: 3px 8px;
+                border-radius: 4px;
+                background: rgba(255, 255, 255, 0.1);
+                color: var(--text-muted);
+                letter-spacing: 1px;
+            }
+            .nw-design-card.active .nw-design-badge {
+                background: var(--accent);
+                color: #000;
+            }
+            .nw-shortcut-row {
+                background: rgba(255, 255, 255, 0.03);
+                padding: 15px 20px;
+                border-radius: 8px;
+                border: 1px solid var(--border-soft);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 10px;
+            }
+        </style>
 
-    // NOTE: Attach click handlers after innerHTML (avoids inline onclick in ES modules)
+        <div class="nw-design-grid">
+            ${cards.map(card => buildCard(card, card.key === activeUi)).join('')}
+        </div>
+
+        <div style="margin-top: 50px; padding-top: 30px; border-top: 1px solid var(--border-soft); width: 100%;">
+            <div class="setting-label" style="margin-bottom: 25px;">
+                <strong>UI Shortcuts</strong>
+                <p>Quickly switch between interfaces using your keyboard</p>
+            </div>
+            
+            <div>
+                ${_hotkeyItem('Legacy UI', '1')}
+                ${_hotkeyItem('NovaWave V2', '2')}
+                ${_hotkeyItem('Lite UI', '3')}
+            </div>
+        </div>
+    `;
+
+    // Re-bind click handlers
     container.querySelectorAll('.design-switch-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const key = btn.dataset.uiKey;
-            const target = btn.dataset.uiTarget;
-            switchUiVersion(key, target);
+            switchUiVersion(btn.dataset.uiKey, btn.dataset.uiTarget);
         });
     });
 }
 
-function buildCard(card, isActive, activeBadgeText, btnActiveText, btnSwitchText) {
-    const cardBg = isActive ? 'rgba(56,189,248,0.08)' : 'rgba(255,255,255,0.03)';
-    const cardBorder = isActive ? 'var(--accent)' : 'rgba(255,255,255,0.08)';
-    const cardShadow = isActive ? '0 0 20px rgba(56,189,248,0.15)' : 'none';
-    const iconColor = isActive ? 'var(--accent)' : 'var(--text-muted)';
-    const badgeBg = card.key === 'v2' ? 'rgba(99,179,237,0.15)' : 'rgba(255,255,255,0.08)';
-    const badgeColor = card.key === 'v2' ? '#63b3ed' : 'var(--text-muted)';
-    const btnBg = isActive ? 'rgba(255,255,255,0.05)' : 'var(--accent)';
-    const btnColor = isActive ? 'var(--text-muted)' : '#000';
-    const btnOpacity = isActive ? '0.5' : '1';
-    const btnCursor = isActive ? 'default' : 'pointer';
-    const btnText = isActive ? btnActiveText : btnSwitchText;
+function _hotkeyItem(label, key) {
+    const kbdStyle = `background: rgba(0,0,0,0.4); border: 1px solid var(--border-soft); padding: 4px 8px; border-radius: 4px; color: var(--accent); font-family: monospace; font-weight: bold;`;
+    const plus = `<span style="margin: 0 8px; opacity: 0.5;">+</span>`;
+    
+    return `
+        <div class="nw-shortcut-row">
+            <span style="font-weight: 600;">${label}</span>
+            <div style="display: flex; align-items: center;">
+                <kbd style="${kbdStyle}">CTRL</kbd>${plus}<kbd style="${kbdStyle}">U</kbd>${plus}<kbd style="${kbdStyle}">${key}</kbd>
+            </div>
+        </div>`;
+}
 
-    const activeBadge = isActive
-        ? `<div style="position:absolute;top:10px;right:10px;background:var(--accent);color:#000;font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:0.05em;">${activeBadgeText}</div>`
-        : '';
+function buildCard(card, isActive) {
+    const btnText = isActive ? tr('designBtnActive') : tr('designBtnSwitch');
+    const badgeText = isActive ? tr('designActiveBadge') : card.badge;
 
     return `
-        <div class="design-ui-card${isActive ? ' active' : ''}" style="flex:1;min-width:200px;max-width:280px;background:${cardBg};border:1.5px solid ${cardBorder};border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:${cardShadow};transition:all 0.2s ease;position:relative;overflow:hidden;">
-            ${activeBadge}
-            <div style="color:${iconColor};">${card.icon}</div>
-            <div>
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                    <strong style="font-size:0.95rem;color:var(--text-primary,#f0f4f8);">${card.label}</strong>
-                    <span style="font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:20px;background:${badgeBg};color:${badgeColor};letter-spacing:0.05em;">${card.badge}</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.5;margin:0;">${card.desc}</p>
+        <div class="nw-design-card ${isActive ? 'active' : ''}">
+            <div class="nw-design-badge">${badgeText}</div>
+            <div style="color: ${isActive ? 'var(--accent)' : 'var(--text-muted)'}; opacity: 0.8; text-align: center;">
+                ${card.icon}
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <strong style="display: block; font-size: 1rem; margin-bottom: 8px;">${card.label}</strong>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0; line-height: 1.5;">${card.desc}</p>
             </div>
             <button
                 class="design-switch-btn"
                 data-ui-key="${card.key}"
                 data-ui-target="${card.target}"
                 ${isActive ? 'disabled' : ''}
-                style="margin-top:auto;padding:8px 16px;border-radius:8px;border:none;cursor:${btnCursor};font-size:0.8rem;font-weight:600;font-family:inherit;background:${btnBg};color:${btnColor};opacity:${btnOpacity};transition:all 0.2s ease;">
+                style="width: 100%; padding: 10px; border-radius: 6px; border: none; cursor: ${isActive ? 'default' : 'pointer'}; background: ${isActive ? 'rgba(255,255,255,0.05)' : 'var(--accent)'}; color: ${isActive ? 'var(--text-muted)' : '#000'}; font-weight: bold; text-transform: uppercase; font-size: 0.7rem;">
                 ${btnText}
             </button>
         </div>`;
@@ -116,14 +185,16 @@ function buildCard(card, isActive, activeBadgeText, btnActiveText, btnSwitchText
 
 // --- Switch ---
 export function switchUiVersion(key, target) {
-    localStorage.setItem('uiVersion', key);
-    window.location.href = target;
+    if (window.switchUI) {
+        window.switchUI(key, target);
+    } else {
+        localStorage.setItem('uiVersion', key);
+        window.location.href = target;
+    }
 }
 
 // --- Init ---
 export function initDesignTab() {
     const designNavBtn = document.getElementById('design-tab-nav-btn');
-    if (designNavBtn) {
-        designNavBtn.addEventListener('click', renderDesignCards);
-    }
+    if (designNavBtn) designNavBtn.addEventListener('click', renderDesignCards);
 }

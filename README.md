@@ -1,9 +1,9 @@
-# 🎵 NovaWave `v2.8.6 PRO Evolution`
+# 🎵 NovaWave `v2.8.7 PRO Evolution`
 
 > **Your Music · Your Style · Your Rules** - No ads, no clutter. Just your music, beautifully presented.  
 > Built with ❤️ in **Go (Wails)** + Web Tech · Free & Open Source
 
-![Version](https://img.shields.io/badge/Version-2.8.6--PRO_Evolution-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.8.7--PRO_Evolution-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -17,22 +17,31 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-### 🌓 Two UIs - One Player
+### 🌓 Three UIs - One Player
 
-NovaWave now ships with **two completely different interfaces**, each designed for a different kind of user:
+NovaWave now ships with **three completely different interfaces**, each designed for a different kind of user:
 
-| | 🎨 Legacy UI | 🚀 V2 PRO UI |
-|---|---|---|
-| **Philosophy** | Vibes & Aesthetics | Workflow & Power |
-| **Best for** | Theme lovers, casual listening | Large libraries, power users |
-| **Highlights** | Theme Packs, intro animations, heavy customization | Grid layout, sorting, multi-folder, terminal logs |
-| **Switch with** | `CTRL + U + 1` | `CTRL + U + 2` |
+| | 🎨 Legacy UI | 🚀 V2 PRO UI | 📱 Lite UI |
+|---|---|---|---|
+| **Philosophy** | Vibes & Aesthetics | Workflow & Power | Speed & Simplicity |
+| **Best for** | Theme lovers, casual listening | Large libraries, power users | Minimalists, low-end PCs |
+| **Highlights** | Theme Packs, animations | Grid layout, sorting, logs | Ultra-fast, resource saving |
+| **Switch with** | `CTRL + U + 1` | `CTRL + U + 2` | `CTRL + U + 3` |
 
-You can switch between both UIs **at any time** without restarting the app.
+You can switch between all UIs **at any time** using the new **Design Switcher** in the settings.
 
 ---
 
-### 🌊 V2 PRO UI - The New Standard
+### 📱 Lite UI - Minimalist Performance
+
+A ultra-lightweight interface for those who just want to listen to music without any distractions:
+- **Zero Bloat** - Only the essential controls for playback and library management
+- **Resource Saving** - Perfect for older hardware or background listening
+- **Fastest Startup** - Loads instantly with minimal memory footprint
+
+---
+
+### 🚀 V2 PRO UI - The New Standard
 
 A ground-up redesign built for modern screens and larger libraries:
 
@@ -58,9 +67,10 @@ Download music directly from your favorite platforms:
 
 ### 🚀 Performance & Stability
 
-- **Wails v2 Events** - Background workers (downloader, scanner, logger) now use direct event streams for lightning-fast UI updates
-- **Optimized Rendering** - Smoother animations and faster transitions in both UIs
-- **Clean Codebase** - Frontend CSS/JS fully cleaned up for a proper open-source repository
+- **New Design Switcher** - A modernized card-based UI for switching between interfaces with ease.
+- **Playlist Refresh** - Added a dedicated refresh button in the playlist modal for instant updates.
+- **Wails v2 Events** - Background workers (downloader, scanner, logger) now use direct event streams for lightning-fast UI updates.
+- **Optimized Rendering** - Smoother animations and faster transitions across all UIs.
 
 ---
 
@@ -119,7 +129,7 @@ NovaWave gives you real control over your audio and visuals:
 
 ## 🌍 Languages
 
-NovaWave is fully localized in **6 languages** - both UIs included:
+NovaWave is fully localized in **6 languages** - all UIs included:
 
 🇩🇪 German · 🇺🇸 English · 🇹🇷 Turkish · 🇮🇹 Italian · 🇫🇷 French · 🇪🇸 Spanish
 
@@ -169,6 +179,7 @@ wails build
 | `CTRL + 1` | Toggle PRO Console Logs (V2) |
 | `CTRL + U + 1` | Switch to Legacy UI |
 | `CTRL + U + 2` | Switch to V2 PRO UI |
+| `CTRL + U + 3` | Switch to Lite UI |
 
 ---
 
