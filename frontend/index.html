@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self';">
+        content="default-src 'self' wails:; script-src 'self' 'unsafe-inline' wails:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self' data:; connect-src 'self' wails:; object-src 'none'; base-uri 'self';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-lang-key="appTitle">NovaWave</title>
     <link rel="icon" type="image/png" href="/src/assets/icon.png">
@@ -319,7 +319,8 @@
                         <div class="playlist-top-row">
                             <h2 class="panel-title" style="margin:0; border:none;" data-lang-key="playlistTitle"></h2>
                             <div class="playlist-header-actions" style="display: flex; gap: 8px; align-items: center;">
-                                <button id="playlist-refresh-btn" class="add-folder-btn" data-lang-title="refreshFolder">
+                                <button id="playlist-refresh-btn" class="add-folder-btn"
+                                    data-lang-title="refreshFolder">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round">

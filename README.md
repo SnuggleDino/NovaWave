@@ -1,9 +1,9 @@
-# 🎵 NovaWave `v2.8.7 PRO Evolution`
+# 🎵 NovaWave `v2.8.8 PRO Evolution`
 
 > **Your Music · Your Style · Your Rules** - No ads, no clutter. Just your music, beautifully presented.  
 > Built with ❤️ in **Go (Wails)** + Web Tech · Free & Open Source
 
-![Version](https://img.shields.io/badge/Version-2.8.7--PRO_Evolution-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.8.8--PRO_Evolution-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
