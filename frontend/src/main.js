@@ -24,8 +24,6 @@ import { AudioFeaturesPanel } from './audio_extras/audio_features_panel.js';
 import './audio_extras/audio_features_panel.css';
 
 
-// FIX: escapeHtml sanitizes untrusted strings before inserting via innerHTML.
-// Prevents XSS from crafted audio file metadata (title, artist, folder name).
 function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -59,14 +57,11 @@ const windowApi = {
     setWindowSize: App.SetWindowSize,
     resetConfig: App.ResetConfig,
     restartApp: App.RestartApp,
-    onMediaControl: (cb) => { },
-    onDownloadProgress: (cb) => { },
-    sendPlaybackState: App.SendPlaybackState
 };
 
 window.api = windowApi;
 
-// --- GLOBAL UI SWITCHER ---
+//--- Global UI Switcher ---------------
 window.switchUI = async function (key, target) {
     console.log(`[Global] switchUI called: key=${key}, target=${target}`);
     try {
@@ -90,7 +85,7 @@ window.switchUI = async function (key, target) {
     }, 50);
 };
 
-// --- GLOBAL HOTKEYS ---
+//--- Global Hotkeys ---------------
 document.addEventListener('keydown', (e) => {
 
     if (e.ctrlKey && e.key.toLowerCase() === 'u') {
@@ -176,7 +171,6 @@ let appFrameCount = 0;
 let fps = 0;
 let avgFps = 60;
 let perfHintShown = false;
-// NOTE: performanceMode state is managed by AppPerformance module.
 let showStatsOverlay = false;
 let targetFps = 60;
 let lastRenderTime = 0;
@@ -185,7 +179,7 @@ let cachedAccentColor = '#38bdf8';
 let isStatsLoopRunning = false;
 let warmupFrames = 0;
 
-// --- Helper Functions & Variables (Module Scope) ---
+//--- Helper Functions ---------------
 
 let activeFolderId = null;
 let selectedFolderColor = '#38bdf8';
@@ -235,6 +229,51 @@ function openFolderModal(mode, folderId = null) {
     document.querySelectorAll('.color-swatch').forEach(swatch => {
         swatch.classList.toggle('active', swatch.dataset.color === selectedFolderColor);
     });
+}
+
+function openMoveToGroupModal(trackPath) {
+    const overlay = document.getElementById('move-to-group-overlay');
+    const list = document.getElementById('move-to-group-list');
+    if (!overlay || !list) return;
+
+    const folders = PlaylistManager.items.filter(i => i.type === 'folder');
+    const trackItem = PlaylistManager.items.find(i => i.type === 'track' && i.id === trackPath);
+    const currentGroupId = trackItem ? trackItem.groupId : null;
+
+    list.innerHTML = '';
+
+    if (currentGroupId) {
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'move-to-group-btn remove-from-group';
+        removeBtn.textContent = tr('removeFromGroup');
+        removeBtn.onclick = () => {
+            PlaylistManager.moveItemToFolder(trackPath, null);
+            savePlaylistState();
+            renderPlaylist();
+            overlay.classList.remove('visible');
+        };
+        list.appendChild(removeBtn);
+
+        const divider = document.createElement('div');
+        divider.className = 'context-divider';
+        divider.style.margin = '8px 0';
+        list.appendChild(divider);
+    }
+
+    folders.forEach(folder => {
+        const btn = document.createElement('button');
+        btn.className = 'move-to-group-btn' + (folder.id === currentGroupId ? ' active' : '');
+        btn.innerHTML = `<span class="move-to-group-dot" style="background:${folder.color}"></span>${folder.name}`;
+        btn.onclick = () => {
+            PlaylistManager.moveItemToFolder(trackPath, folder.id);
+            savePlaylistState();
+            renderPlaylist();
+            overlay.classList.remove('visible');
+        };
+        list.appendChild(btn);
+    });
+
+    overlay.classList.add('visible');
 }
 
 function showFolderContextMenu(e, folderId) {
@@ -370,7 +409,6 @@ function updateAudioEffects() {
         audioExtras.setBass(settings.bassBoostValue, settings.bassBoostEnabled);
         audioExtras.setTreble(settings.trebleBoostValue, settings.trebleBoostEnabled);
         audioExtras.setReverb(settings.reverbValue, settings.reverbEnabled);
-        // --- 5 BiquadFilterNode ---
         if (settings.eqValues) {
             audioExtras.setEq(settings.eqValues, settings.eqEnabled);
         }
@@ -408,7 +446,7 @@ function updateCachedColor() {
     }
 }
 
-// --- Sector: App Core Functions ---
+//--- App Core Functions ---------------
 function tr(key, ...args) {
     return LangHandler.tr(key, ...args);
 }
@@ -436,9 +474,6 @@ function playTrack(index) {
 }
 
 function playNext() {
-    // FIX: Shuffle can no longer repeat the currently playing track.
-    // The do-while loop ensures a different index is picked when the
-    // playlist has more than one track.
     if (shuffleOn) {
         if (playlist.length <= 1) { playTrack(0); return; }
         let nextIndex;
@@ -458,7 +493,7 @@ function playNext() {
 
 function playPrev() { if (audio.currentTime > 3) audio.currentTime = 0; else playTrack(currentIndex - 1 < 0 ? playlist.length - 1 : currentIndex - 1); }
 
-// --- UI & DOM MANIPULATION ---
+//--- UI & DOM Manipulation ---------------
 function deactivateAllThemePacks(excludeKey) {
     const packs = [
         { key: 'snuggleTimeEnabled', toggleId: 'toggle-snuggle-time' },
@@ -488,7 +523,6 @@ function resetToDefaultTheme() {
     document.documentElement.style.removeProperty('--accent');
     document.documentElement.style.removeProperty('--bg-main');
 
-    // FIX: Do not reset data-theme if a theme pack is currently active
     if (!settings.activeThemePack) {
         const th = settings.theme || 'midnight';
         document.documentElement.setAttribute('data-theme', th);
@@ -603,7 +637,7 @@ function renderPlaylist() {
     );
 
     if (renderItems.length === 0) {
-        const msg = isFavoritesFilterActive ? tr('noFavoritesFound') : tr('emptyPlaylist');
+        const msg = isLibraryLoading ? tr('loaderLoadingLibrary') : (isFavoritesFilterActive ? tr('noFavoritesFound') : tr('emptyPlaylist'));
         playlistEl.innerHTML = `<div class="empty-state">${msg}</div>`;
         if (playlistInfoBar) playlistInfoBar.textContent = `0 ${tr('playlistTitle')}`;
         return;
@@ -663,7 +697,6 @@ function renderPlaylist() {
                 row.dataset.index = globalIndex;
                 if (globalIndex === currentIndex) row.classList.add('active');
 
-                // --- Robust Extension Stripping ---
                 let displayTitle = cleanTitleDisplay(track.title || "");
 
                 const isFav = favoritesSet.has(track.path.replace(/\\/g, '/'));
@@ -853,7 +886,7 @@ function renderEmoji(emojiType, customEmoji) {
     }
 }
 
-// --- UI Utility Functions for Downloader ---
+//--- Downloader UI Utilities ---------------
 function updateQueueStatsUI(stats) {
     const pEl = document.getElementById('qs-pending');
     const rEl = document.getElementById('qs-processing');
@@ -916,7 +949,7 @@ function setDownloaderState(state, message) {
     }
 }
 
-// --- Queue Modal Logic ---
+//--- Queue Modal ---------------
 function setupQueueUI() {
     const queueOverlay = document.getElementById('queue-overlay');
     const openBtn = document.getElementById('open-queue-btn');
@@ -1071,9 +1104,6 @@ function logToTerminal(msg, type = 'info') {
     const terminal = document.getElementById('terminal-view');
     if (!terminal) return;
 
-    // FIX: Always create a new line per logToTerminal() call.
-    // Previously, messages without \n were appended to the last DOM line,
-    // causing separate log entries to merge (e.g. "logStartingDownloadlogDownloadComplete").
     const lines = msg.split(/\r?\n/);
 
     lines.forEach((line, idx) => {
@@ -1110,8 +1140,6 @@ async function handleDownload() {
         return;
     }
 
-    // FIX: Use URL parser instead of string matching — prevents bypass via
-    // crafted URLs like "evil.com?ref=youtube.com"
     let parsedUrl;
     try { parsedUrl = new URL(url); } catch (_) { parsedUrl = null; }
     const hostname = parsedUrl ? parsedUrl.hostname.toLowerCase() : '';
@@ -1143,7 +1171,22 @@ async function handleDownload() {
 
     const type = (activeDownloaderMode === 'music') ? 'youtube' : activeDownloaderMode;
 
-    downloadManager.add(url, type, name);
+    if (type === 'spotify' && url.includes('/playlist/')) {
+        setDownloaderState('pending', tr('statusFetchingPlaylist'));
+        try {
+            const trackUrls = await window.go.main.App.GetSpotifyPlaylistTracks(url);
+            const quality = settings.audioQuality || 'best';
+            for (const trackUrl of trackUrls) {
+                downloadManager.add(trackUrl, 'spotify', '', quality);
+            }
+            showNotification(`${trackUrls.length} ${tr('playlistTracksQueued')}`, 'success', 2500);
+        } catch (e) {
+            setDownloaderState('error', e.message || tr('statusUrlInvalid'));
+            return;
+        }
+    } else {
+        downloadManager.add(url, type, name, settings.audioQuality || 'best');
+    }
 
     if (activeDownloaderMode === 'youtube') {
         ytUrlInput.value = '';
@@ -1178,6 +1221,37 @@ function setupAudioEvents() {
     });
     audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); });
     audio.addEventListener('volumechange', () => { currentVolume = audio.volume; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
+}
+
+async function performFolderRefresh() {
+    const path = currentFolderPath || settings.currentFolderPath;
+    if (!path) return;
+
+    showNotification(tr('refreshFolder'), 'loading', 0);
+    const startTime = performance.now();
+
+    const r = await windowApi.refreshMusicFolder(path);
+    if (r && r.tracks) {
+        const duration = Math.round(performance.now() - startTime);
+
+        currentFolderPath = r.folderPath;
+        saveSetting('currentFolderPath', currentFolderPath);
+        basePlaylist = r.tracks;
+
+        PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
+        playlist = PlaylistManager.getAllTracks();
+
+        sortPlaylist(sortMode);
+
+        if (currentTrackPath) {
+            currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
+        }
+
+        updateUIForCurrentTrack();
+        renderPlaylist();
+
+        showNotification(`${tr('folderRefreshed')} (${duration}ms)`, 'success', 3000);
+    }
 }
 
 async function loadSettings() {
@@ -1246,8 +1320,7 @@ async function loadSettings() {
         document.body.classList.add('playlist-hidden');
     }
 
-    // NOTE: Performance Mode startup restore is handled inside AppPerformance.init()
-    // to ensure visualizer and applyAnimation are fully assigned before applying.
+
 
     showStatsOverlay = !!settings.showStatsOverlay;
     const statsOverlay = document.getElementById('stats-overlay');
@@ -1258,22 +1331,28 @@ async function loadSettings() {
     updateAudioEffects();
     updateActiveFeaturesIndicator();
 
-    if (settings.currentFolderPath && (settings.autoLoadLastFolder !== false)) {
-        AppLoader.update(50, tr('loaderLoadingLibrary'));
-        currentFolderPath = settings.currentFolderPath;
-        try {
-            const result = await windowApi.refreshMusicFolder(currentFolderPath);
-            if (result && result.folderPath) {
-                basePlaylist = result.tracks || [];
-                PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
-                playlist = PlaylistManager.getAllTracks();
+}
 
-                sortPlaylist(sortMode);
-                updateUIForCurrentTrack();
-            }
-        } catch (e) {
-            console.error("Auto-load failed:", e);
+let isLibraryLoading = false;
+
+async function loadLibrary() {
+    if (!settings.currentFolderPath || settings.autoLoadLastFolder === false) return;
+    isLibraryLoading = true;
+    currentFolderPath = settings.currentFolderPath;
+    try {
+        const result = await windowApi.refreshMusicFolder(currentFolderPath);
+        if (result && result.folderPath) {
+            basePlaylist = result.tracks || [];
+            PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
+            playlist = PlaylistManager.getAllTracks();
+            sortPlaylist(sortMode);
+            updateUIForCurrentTrack();
         }
+    } catch (e) {
+        console.error("Auto-load failed:", e);
+    } finally {
+        isLibraryLoading = false;
+        renderPlaylist();
     }
 }
 
@@ -1356,9 +1435,10 @@ function showContextMenu(e, idx) {
     }
 
     const deleteBtn = document.getElementById('cm-delete');
-    if (deleteBtn) {
-        deleteBtn.style.display = deleteSongsEnabled ? 'flex' : 'none';
-    }
+    if (deleteBtn) deleteBtn.style.display = deleteSongsEnabled ? 'flex' : 'none';
+
+    const moveToGroupBtn = document.getElementById('cm-move-to-group');
+    if (moveToGroupBtn) moveToGroupBtn.style.display = PlaylistManager.getFolderCount() > 0 ? 'flex' : 'none';
 
     contextMenu.style.display = 'block';
     const menuHeight = contextMenu.offsetHeight;
@@ -1566,7 +1646,7 @@ function setupEventListeners() {
         }
     });
 
-    // --- CONTEXT MENU ITEM BINDINGS ---
+    //--- Context Menu Bindings ---------------
     bind($('#cm-play'), 'click', () => {
         if (contextTrackIndex !== null && playlist[contextTrackIndex]) playTrack(contextTrackIndex);
     });
@@ -1594,6 +1674,18 @@ function setupEventListeners() {
 
     bind($('#cm-folder'), 'click', () => {
         if (contextTrackIndex !== null && playlist[contextTrackIndex]) windowApi.showInFolder(playlist[contextTrackIndex].path);
+    });
+
+    bind($('#cm-move-to-group'), 'click', () => {
+        if (contextTrackIndex !== null && playlist[contextTrackIndex]) {
+            contextMenu.style.display = 'none';
+            openMoveToGroupModal(playlist[contextTrackIndex].path);
+        }
+    });
+
+    bind($('#move-to-group-close-btn'), 'click', () => {
+        const overlay = document.getElementById('move-to-group-overlay');
+        if (overlay) overlay.classList.remove('visible');
     });
 
     bind($('#cm-delete'), 'click', () => {
@@ -1636,7 +1728,6 @@ function setupEventListeners() {
         }
     }
 
-    // --- End Helper Functions ---
 
     bind(toggleFavoritesBtn, 'click', () => {
         isFavoritesFilterActive = !isFavoritesFilterActive;
@@ -1699,7 +1790,6 @@ function setupEventListeners() {
 
         const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null;
 
-        // --- RELEASE FILE LOCK ---
         if (trackToDeletePath === ctp) {
             audio.pause();
             audio.src = '';
@@ -1817,8 +1907,6 @@ function setupEventListeners() {
 
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) {
-            // FIX: Resume AudioContext on tab focus — browsers suspend it
-            // when the tab is hidden, causing audio/analyser to freeze.
             if (audioExtras) audioExtras.resume();
             if (isPlaying && visualizer) visualizer.start();
         }
@@ -1881,37 +1969,7 @@ function initSettingsLogic() {
             renderPlaylist();
             showNotification(tr('enableDeleteSongs') + ': ' + (enabled ? 'ON' : 'OFF'), enabled ? 'success' : 'info', 2000);
         },
-        onRefreshFolder: async () => {
-            let path = currentFolderPath || settings.currentFolderPath;
-            if (!path) return;
-
-            showNotification(tr('refreshFolder'), 'loading', 0);
-            const startTime = performance.now();
-
-            const r = await windowApi.refreshMusicFolder(path);
-            if (r && r.tracks) {
-                const endTime = performance.now();
-                const duration = Math.round(endTime - startTime);
-
-                currentFolderPath = r.folderPath;
-                saveSetting('currentFolderPath', currentFolderPath);
-                basePlaylist = r.tracks;
-
-                PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
-                playlist = PlaylistManager.getAllTracks();
-
-                sortPlaylist(sortMode);
-
-                if (currentTrackPath) {
-                    currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
-                }
-
-                updateUIForCurrentTrack();
-                renderPlaylist();
-
-                showNotification(`${tr('folderRefreshed')} (${duration}ms)`, 'success', 3000);
-            }
-        },
+        onRefreshFolder: () => performFolderRefresh(),
         onAudioEffectChange: (type, enabled, val) => {
             updateAudioEffects();
             if (type) {
@@ -2066,6 +2124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     refreshFolderBtn = $('#refresh-folder-btn');
     playlistRefreshBtn = $('#playlist-refresh-btn');
     searchInput = $('.playlist-search-input');
+    sortSelect = $('#sort-select');
     ytUrlInput = $('#yt-url-input'); ytNameInput = $('#yt-name-input'); downloadBtn = $('#download-btn');
     musicUrlInput = $('#music-url-input'); musicNameInput = $('#music-name-input');
     spotifyUrlInput = $('#spotify-url-input');
@@ -2105,7 +2164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     notificationBar = $('#notification-bar'); notificationMessage = $('#notification-message');
 
     loadAppMeta();
-    LyricsManager.init();
+    LyricsManager.init(audio);
 
     audioFeaturesPanel = new AudioFeaturesPanel();
     audioFeaturesPanel.init();
@@ -2317,11 +2376,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const onboardingDone = config && config.onboardingComplete === true;
 
         if (!onboardingDone) {
-            if (OnBoarding.init((lang) => {
+            if (OnBoarding.init((lang, theme) => {
                 saveSetting('onboardingComplete', true);
                 saveSetting('language', lang);
+                if (theme) saveSetting('theme', theme);
                 localStorage.setItem('on_boarding_complete', 'true');
                 localStorage.setItem('language', lang);
+                if (theme) localStorage.setItem('theme', theme);
                 setTimeout(() => location.reload(), 1000);
             })) return;
         }
@@ -2419,17 +2480,15 @@ document.addEventListener('DOMContentLoaded', () => {
             AppLoader.update(100, tr('loaderReady'));
             AppLoader.finish();
 
-            const finalizeApp = () => {
-                document.body.classList.add('ready');
-            };
-
             const activeIntro = settings.activeIntro || 'waterdrop';
-            if (activeIntro !== 'none') {
-                const introMgr = new IntroManager({ activeIntro: activeIntro });
-                introMgr.play().then(finalizeApp);
-            } else {
-                setTimeout(finalizeApp, 500);
-            }
+            const introPromise = activeIntro !== 'none'
+                ? new IntroManager({ activeIntro }).play()
+                : new Promise(r => setTimeout(r, 500));
+
+            loadLibrary();
+
+            await introPromise;
+            document.body.classList.add('ready');
 
         } catch (err) {
             console.error("Initialization failed:", err);
@@ -2444,50 +2503,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 
-    if (openLibraryBtn) {
-        openLibraryBtn.addEventListener('click', async () => {
-            try {
-                const res = await windowApi.selectMusicFolder();
-                if (res && res.folderPath) {
-                    saveSetting('currentFolderPath', res.folderPath);
-                    currentFolderPath = res.folderPath;
-
-                    basePlaylist = res.tracks || [];
-                    playlist = [...basePlaylist];
-                    sortPlaylist(sortMode);
-                    renderPlaylist();
-                    updateUIForCurrentTrack();
-                    showNotification(tr('folderLoaded', res.folderPath));
-
-                    if (libraryOverlay) libraryOverlay.classList.remove('visible');
-                }
-            } catch (e) {
-                console.error('Load folder failed:', e);
-            }
-        });
-    }
-
-    const handleRefresh = async () => {
-        let path = currentFolderPath || settings.currentFolderPath;
-        if (!path) {
-            if (openLibraryBtn) openLibraryBtn.click();
-            return;
-        }
-
-        const res = await windowApi.refreshMusicFolder(path);
-        if (res && res.tracks) {
-            currentFolderPath = res.folderPath;
-            saveSetting('currentFolderPath', currentFolderPath);
-            basePlaylist = res.tracks;
-            playlist = [...basePlaylist];
-            sortPlaylist(sortMode);
-            renderPlaylist();
-            showNotification(tr('folderRefreshed'));
-        }
-    };
-
-    if (refreshFolderBtn) refreshFolderBtn.addEventListener('click', handleRefresh);
-    if (playlistRefreshBtn) playlistRefreshBtn.addEventListener('click', handleRefresh);
+    if (refreshFolderBtn) refreshFolderBtn.addEventListener('click', () => performFolderRefresh());
+    if (playlistRefreshBtn) playlistRefreshBtn.addEventListener('click', () => performFolderRefresh());
 
     dynamicIsland = new DynamicIsland();
 
@@ -2498,8 +2515,5 @@ document.addEventListener('DOMContentLoaded', () => {
     window.hideNotification = function () {
         if (dynamicIsland) dynamicIsland.hide();
     };
-
-    // --- Design Tab: Smart UI Switcher ---
-    // NOTE: initDesignTab is handled by app_settings.js setupEventListeners
 
 });

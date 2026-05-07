@@ -3,3 +3,5 @@ node_modules
 frontend/dist
 repo.xml
 *.txt
+novawave.exe
+NOVAWAVE_ANALYSIS.md

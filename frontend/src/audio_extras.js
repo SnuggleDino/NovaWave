@@ -37,7 +37,7 @@ export class AudioExtras {
             this.trebleFilter.frequency.value = 3000;
             this.trebleFilter.gain.value = 0;
 
-            // --- 5 BiquadFilterNode ---
+            //--- Equalizer ---------------
             const eqFrequencies = [60, 230, 910, 4000, 14000];
             this.eqFilters = eqFrequencies.map(freq => {
                 const filter = this.audioContext.createBiquadFilter();
@@ -67,10 +67,6 @@ export class AudioExtras {
             // lastNode is now the final EQ filter
             lastNode.connect(this.analyser);
 
-            // FIX: Reverb was previously branched off this.trebleFilter (before
-            // the EQ filters), meaning EQ had no effect on the reverb signal.
-            // It is now correctly branched off lastNode (after the full EQ chain),
-            // so Bass + Treble + EQ all feed into the reverb as intended.
             lastNode.connect(this.reverbNode);
             this.reverbNode.connect(this.reverbGain);
             this.reverbGain.connect(this.analyser);
@@ -110,7 +106,7 @@ export class AudioExtras {
         this.trebleFilter.gain.setTargetAtTime(gain, now, 0.1);
     }
 
-    // --- 5 BiquadFilterNode ---
+    //--- Equalizer ---------------
     setEq(values, enabled) {
         if (!this.audioContext || !this.eqFilters.length) return;
         const now = this.audioContext.currentTime;
@@ -136,9 +132,6 @@ export class AudioExtras {
         }
     }
 
-    // FIX: Register a visibilitychange listener so the AudioContext is
-    // reliably resumed whenever the tab becomes visible again — not only
-    // when the user explicitly interacts with the player controls.
     bindVisibilityResume() {
         this._visibilityHandler = () => {
             if (!document.hidden) this.resume();
@@ -146,7 +139,6 @@ export class AudioExtras {
         document.addEventListener('visibilitychange', this._visibilityHandler);
     }
 
-    // Clean up the listener if the instance is ever destroyed.
     destroy() {
         if (this._visibilityHandler) {
             document.removeEventListener('visibilitychange', this._visibilityHandler);

@@ -1,90 +1,109 @@
 {
-    "version": "2.8.8",
-    "date": "24. April 2026",
+    "version": "2.9.0",
+    "date": "07. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Neues Design & Lite UI",
-        "en": "New Design & Lite UI",
-        "tr": "Yeni Tasarım ve Lite Kullanıcı Arayüzü",
-        "es": "Nuevo Diseño y Lite UI",
-        "fr": "Nouveau Design et Lite UI",
-        "it": "Nuovo Design e Lite UI"
+        "de": "Bugfixes, Performance & neue Features",
+        "en": "Bug Fixes, Performance & New Features",
+        "tr": "Hata Düzeltmeleri, Performans ve Yeni Özellikler",
+        "es": "Correcciones, Rendimiento y Nuevas Funciones",
+        "fr": "Corrections, Performance et Nouvelles Fonctionnalités",
+        "it": "Correzioni, Prestazioni e Nuove Funzionalità"
     },
     "changes": [
         {
-            "icon": "🎨",
+            "icon": "🔧",
             "title": {
-                "de": "Neues UI-Switch Design (Beta)",
-                "en": "New UI-Switch Design (Beta)",
-                "tr": "Yeni Kullanıcı Arayüzü Anahtarı Tasarımı (Beta)",
-                "es": "Nuevo Diseño de Cambio de UI (Beta)",
-                "fr": "Nouveau Design du Sélecteur d'Interface (Beta)",
-                "it": "Nuovo Design del Selettore Interfaccia (Beta)"
+                "de": "Playlist Refresh Fix",
+                "en": "Playlist Refresh Fix",
+                "tr": "Oynatma Listesi Yenileme Düzeltmesi",
+                "es": "Corrección del Refresco de Playlist",
+                "fr": "Correction du Rafraîchissement Playlist",
+                "it": "Fix del Refresh Playlist"
             },
             "desc": {
-                "de": "Das Design-Tab in den Einstellungen wurde komplett überarbeitet. Es bietet nun eine moderne Karten-Ansicht mit Icons zur Auswahl der Benutzeroberfläche.",
-                "en": "The design tab in settings has been completely redesigned. It now features a modern card view with icons for selecting the user interface.",
-                "tr": "Ayarlardaki tasarım sekmesi tamamen yeniden tasarlandı. Artık kullanıcı arayüzünü seçmek için simgeler içeren modern bir kart görünümüne sahip.",
-                "es": "La pestaña de diseño en los ajustes ha sido completamente rediseñada. Ahora cuenta con una vista de tarjetas moderna con iconos para seleccionar la interfaz de usuario.",
-                "fr": "L'onglet de design dans les paramètres a été entièrement repensé. Il propose désormais une vue par cartes moderne avec des icônes pour choisir l'interface.",
-                "it": "La scheda design nelle impostazioni è stata completamente riprogettata. Ora presenta una vista a schede moderna con icone per selezionare l'interfaccia utente."
+                "de": "Der Refresh-Button im Playlist-Modal zeigt jetzt korrekt neue Songs an. Vorher wurden neu hinzugefügte Dateien ignoriert.",
+                "en": "The refresh button in the playlist modal now correctly displays new songs. Previously, newly added files were ignored.",
+                "tr": "Oynatma listesi modalındaki yenileme düğmesi artık yeni şarkıları doğru şekilde gösteriyor. Daha önce yeni eklenen dosyalar yoksayılıyordu.",
+                "es": "El botón de actualización en el modal de playlist ahora muestra correctamente las nuevas canciones. Anteriormente, los archivos recién añadidos eran ignorados.",
+                "fr": "Le bouton d'actualisation dans le modal de playlist affiche désormais correctement les nouvelles chansons. Auparavant, les fichiers nouvellement ajoutés étaient ignorés.",
+                "it": "Il pulsante di aggiornamento nel modal della playlist ora mostra correttamente i nuovi brani. In precedenza, i file aggiunti di recente venivano ignorati."
             }
         },
         {
-            "icon": "📱",
+            "icon": "⚡",
             "title": {
-                "de": "LITE-UI hinzugefügt",
-                "en": "LITE-UI Added",
-                "tr": "LITE-UI Eklendi",
-                "es": "LITE-UI Añadida",
-                "fr": "LITE-UI Ajoutée",
-                "it": "LITE-UI Aggiunta"
+                "de": "Deutlich schnellerer App-Start",
+                "en": "Much Faster App Start",
+                "tr": "Çok Daha Hızlı Uygulama Başlangıcı",
+                "es": "Inicio de Aplicación Mucho Más Rápido",
+                "fr": "Démarrage de l'Application Bien Plus Rapide",
+                "it": "Avvio dell'App Molto Più Veloce"
             },
             "desc": {
-                "de": "Eine neue, ressourcensparende Benutzeroberfläche für maximale Performance auf älteren Geräten oder für ein minimalistisches Erlebnis.",
-                "en": "A new, resource-saving user interface for maximum performance on older devices or for a minimalist experience.",
-                "tr": "Eski cihazlarda maksimum performans veya minimalist bir deneyim için yeni, kaynak tasarrufu sağlayan bir kullanıcı arayüzü.",
-                "es": "Una nueva interfaz de usuario que ahorra recursos para un rendimiento máximo en dispositivos antiguos o para una experiencia minimalista.",
-                "fr": "Une nouvelle interface utilisateur économe en ressources pour une performance maximale sur les anciens appareils ou pour une expérience minimaliste.",
-                "it": "Una nuova interfaccia utente a risparmio di risorse per le massime prestazioni su dispositivi meno recenti o per un'esperienza minimalista."
+                "de": "Songs werden beim Start aus einem persistenten Cache geladen. 200+ Lieder laden jetzt in ~1 Sekunde statt ~30 Sekunden.",
+                "en": "Songs are now loaded from a persistent cache on startup. 200+ songs load in ~1 second instead of ~30 seconds.",
+                "tr": "Başlangıçta şarkılar artık kalıcı bir önbellekten yükleniyor. 200'den fazla şarkı yaklaşık 30 saniye yerine yaklaşık 1 saniyede yükleniyor.",
+                "es": "Las canciones ahora se cargan desde una caché persistente al iniciar. Más de 200 canciones se cargan en ~1 segundo en lugar de ~30 segundos.",
+                "fr": "Les chansons sont maintenant chargées depuis un cache persistant au démarrage. Plus de 200 chansons se chargent en ~1 seconde au lieu de ~30 secondes.",
+                "it": "Le canzoni vengono ora caricate da una cache persistente all'avvio. Oltre 200 brani si caricano in ~1 secondo invece di ~30 secondi."
             }
         },
         {
-            "icon": "⌨️",
+            "icon": "🎵",
             "title": {
-                "de": "UI Shortcuts",
-                "en": "UI Shortcuts",
-                "tr": "UI Kısayolları",
-                "es": "Atajos de UI",
-                "fr": "Raccourcis d'Interface",
-                "it": "Scorciatoie Interfaccia"
+                "de": "Synchronisierte Lyrics",
+                "en": "Synchronized Lyrics",
+                "tr": "Senkronize Sözler",
+                "es": "Letras Sincronizadas",
+                "fr": "Paroles Synchronisées",
+                "it": "Testi Sincronizzati"
             },
             "desc": {
-                "de": "Schneller Wechsel zwischen den Oberflächen mittels Tastenkombination (CTRL+U+1/2/3). Die Infos dazu findest du im Design-Tab.",
-                "en": "Quickly switch between interfaces using keyboard shortcuts (CTRL+U+1/2/3). Info can be found in the Design tab.",
-                "tr": "Klavye kısayollarını (CTRL+U+1/2/3) kullanarak arayüzler arasında hızlıca geçiş yapın. Bilgiler Tasarım sekmesinde bulunabilir.",
-                "es": "Cambia rápidamente entre interfaces usando atajos de teclado (CTRL+U+1/2/3). La información se encuentra en la pestaña de Diseño.",
-                "fr": "Basculez rapidement entre les interfaces à l'aide de raccourcis clavier (CTRL+U+1/2/3). Les informations se trouvent dans l'onglet Design.",
-                "it": "Passa rapidamente da un'interfaccia all'altra usando le scorciatoie da tastiera (CTRL+U+1/2/3). Le info sono nella scheda Design."
+                "de": "LRC-Dateien mit Zeitstempeln werden jetzt synchron zur Musik hervorgehoben. Die aktuelle Zeile wird automatisch mitgescrollt.",
+                "en": "LRC files with timestamps are now highlighted in sync with the music. The current line scrolls into view automatically.",
+                "tr": "Zaman damgalı LRC dosyaları artık müzikle senkronize olarak vurgulanıyor. Mevcut satır otomatik olarak kaydırılıyor.",
+                "es": "Los archivos LRC con marcas de tiempo ahora se resaltan en sincronía con la música. La línea actual se desplaza automáticamente.",
+                "fr": "Les fichiers LRC avec horodatages sont maintenant mis en évidence en synchronisation avec la musique. La ligne actuelle défile automatiquement.",
+                "it": "I file LRC con timestamp vengono ora evidenziati in sincronia con la musica. La riga corrente scorre automaticamente."
             }
         },
         {
-            "icon": "🔄",
+            "icon": "🎧",
             "title": {
-                "de": "Playlist Refresh Button",
-                "en": "Playlist Refresh Button",
-                "tr": "Oynatma Listesi Yenileme Düğmesi",
-                "es": "Botón de Actualizar Playlist",
-                "fr": "Bouton d'Actualisation Playlist",
-                "it": "Pulsante Refresh Playlist"
+                "de": "Spotify Playlist-Download",
+                "en": "Spotify Playlist Download",
+                "tr": "Spotify Oynatma Listesi İndirme",
+                "es": "Descarga de Playlist de Spotify",
+                "fr": "Téléchargement de Playlist Spotify",
+                "it": "Download Playlist Spotify"
             },
             "desc": {
-                "de": "Ein neuer Refresh-Button im Playlist-Modal ermöglicht es, die Liste sofort zu aktualisieren, ohne das Fenster schließen zu müssen.",
-                "en": "A new refresh button in the playlist modal allows you to update the list immediately without closing the window.",
-                "tr": "Oynatma listesi modalındaki yeni yenileme düğmesi, pencereyi kapatmadan listeyi anında güncellemenizi sağlar.",
-                "es": "Un nuevo botón de actualización en el modal de lista de reproducción permite actualizar la lista inmediatamente sin cerrar la ventana.",
-                "fr": "Un nouveau bouton d'actualisation dans le modal de playlist permet de mettre à jour la liste immédiatement sans fermer la fenêtre.",
-                "it": "Un nuovo pulsante di aggiornamento nel modal della playlist consente di aggiornare immediatamente l'elenco senza chiudere la finestra."
+                "de": "Komplette Spotify-Playlists können jetzt auf einmal heruntergeladen werden. Einfach den Playlist-Link einfügen — alle Songs werden automatisch in die Download-Warteschlange eingereiht.",
+                "en": "Complete Spotify playlists can now be downloaded at once. Simply paste the playlist link — all songs are automatically queued for download.",
+                "tr": "Eksiksiz Spotify çalma listeleri artık aynı anda indirilebilir. Çalma listesi bağlantısını yapıştırın — tüm şarkılar otomatik olarak indirme kuyruğuna eklenir.",
+                "es": "Las playlists completas de Spotify ahora se pueden descargar de una vez. Simplemente pega el enlace de la playlist — todas las canciones se añaden automáticamente a la cola de descarga.",
+                "fr": "Les playlists Spotify complètes peuvent maintenant être téléchargées d'un coup. Collez simplement le lien de la playlist — toutes les chansons sont automatiquement mises en file d'attente.",
+                "it": "Le playlist Spotify complete possono ora essere scaricate tutte in una volta. Incolla semplicemente il link della playlist — tutti i brani vengono automaticamente accodati per il download."
+            }
+        },
+        {
+            "icon": "🔗",
+            "title": {
+                "de": "Favoriten UI-übergreifend",
+                "en": "Cross-UI Favorites Sync",
+                "tr": "Arayüzler Arası Favori Senkronizasyonu",
+                "es": "Sincronización de Favoritos entre Interfaces",
+                "fr": "Synchronisation des Favoris entre Interfaces",
+                "it": "Sincronizzazione Preferiti tra Interfacce"
+            },
+            "desc": {
+                "de": "Favoriten werden jetzt zwischen Legacy-UI und Pro-UI geteilt. Als Favorit markierte Songs sind in beiden Oberflächen sichtbar.",
+                "en": "Favorites are now shared between the Legacy UI and Pro UI. Songs marked as favorites are visible in both interfaces.",
+                "tr": "Favoriler artık Eski Arayüz ve Pro Arayüz arasında paylaşılıyor. Favori olarak işaretlenen şarkılar her iki arayüzde de görünür.",
+                "es": "Los favoritos ahora se comparten entre la UI Legacy y la Pro UI. Las canciones marcadas como favoritas son visibles en ambas interfaces.",
+                "fr": "Les favoris sont maintenant partagés entre l'interface Legacy et la Pro UI. Les chansons marquées comme favorites sont visibles dans les deux interfaces.",
+                "it": "I preferiti sono ora condivisi tra la UI Legacy e la Pro UI. I brani contrassegnati come preferiti sono visibili in entrambe le interfacce."
             }
         }
     ]

@@ -17,11 +17,13 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-type FileLoader struct{}
+type FileLoader struct {
+	app *App
+}
 
 func (h *FileLoader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
-	
+
 	if strings.HasPrefix(path, "/music/") {
 		rawPath := strings.TrimPrefix(path, "/music/")
 		filePath, err := url.PathUnescape(rawPath)
@@ -29,9 +31,8 @@ func (h *FileLoader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid path encoding", http.StatusBadRequest)
 			return
 		}
-		// Security: Check if file exists before serving
-		if _, err := os.Stat(filePath); err != nil {
-			http.Error(w, "File not found", http.StatusNotFound)
+		if !isAllowedPath(filePath, h.app.getAllowedDirs()) {
+			http.Error(w, "Access denied", http.StatusForbidden)
 			return
 		}
 		http.ServeFile(w, r, filePath)
@@ -45,7 +46,11 @@ func (h *FileLoader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid path encoding", http.StatusBadRequest)
 			return
 		}
-		
+		if !isAllowedPath(filePath, h.app.getAllowedDirs()) {
+			http.Error(w, "Access denied", http.StatusForbidden)
+			return
+		}
+
 		f, err := os.Open(filePath)
 		if err != nil {
 			http.Error(w, "File not found", http.StatusNotFound)
@@ -61,7 +66,7 @@ func (h *FileLoader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		pic := m.Picture()
 		w.Header().Set("Content-Type", pic.MIMEType)
-		w.Header().Set("Cache-Control", "public, max-age=86400") // Cache cover for 24h
+		w.Header().Set("Cache-Control", "public, max-age=86400")
 		w.Write(pic.Data)
 		return
 	}
@@ -82,7 +87,7 @@ func main() {
 
 		AssetServer: &assetserver.Options{
 			Assets:  assets,
-			Handler: &FileLoader{},
+			Handler: &FileLoader{app: app},
 		},
 
 		DragAndDrop: &options.DragAndDrop{
@@ -90,7 +95,8 @@ func main() {
 			DisableWebViewDrop: true,
 		},
 
-		OnStartup: app.startup,
+		OnStartup:  app.startup,
+		OnShutdown: app.shutdown,
 		Bind: []interface{}{
 			app,
 		},

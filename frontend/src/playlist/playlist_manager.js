@@ -3,8 +3,6 @@ export const PlaylistManager = {
     favOnly: false,
     currentSortMode: 'name',
 
-    // FIX: Reusable compare function — avoids duplicating the same sort logic
-    // across sortItems(), _sortList(), and getAllTracks().
     _buildCompare(mode) {
         return (a, b) => {
             if (mode === 'name')     return a.data.title.localeCompare(b.data.title, undefined, { numeric: true });
@@ -81,7 +79,6 @@ export const PlaylistManager = {
     },
 
     deleteFolder(folderId) {
-        // Ungroup all tracks that belonged to this folder
         this.items.forEach(item => {
             if (item.type === 'track' && item.groupId === folderId) {
                 item.groupId = null;
@@ -103,19 +100,11 @@ export const PlaylistManager = {
         if (folder) folder.collapsed = !folder.collapsed;
     },
 
-    // FIX: Previously sorted only a filtered local copy, leaving this.items
-    // untouched. The sort therefore had no persistent effect — only _sortList()
-    // calls inside getRenderList() and getAllTracks() were actually doing work.
-    // Now sortItems() mutates this.items directly so the order is consistent
-    // everywhere (e.g. moveItem(), exportStructure(), iterators in main.js).
     sortItems(mode) {
         this.currentSortMode = mode;
 
         const compare = this._buildCompare(mode);
 
-        // Sort tracks within each group independently, then rebuild items:
-        // folders keep their relative order; their child tracks are sorted,
-        // as are the root-level (ungrouped) tracks.
         const folders   = this.items.filter(i => i.type === 'folder');
         const rootTracks = this.items.filter(i => i.type === 'track' && !i.groupId);
         rootTracks.sort(compare);
@@ -148,9 +137,6 @@ export const PlaylistManager = {
             return this.items.filter(i => i.type === 'track' && i.searchString.includes(activeFilter));
         }
 
-        // No filter — return the full structured list (folders + their children
-        // + root tracks). Because sortItems() now keeps this.items sorted, we
-        // no longer need to re-sort here on every render call.
         const renderList = [];
         const folders = this.items.filter(i => i.type === 'folder');
         const rootTracks = this.items.filter(i => i.type === 'track' && !i.groupId);
@@ -167,17 +153,21 @@ export const PlaylistManager = {
         return renderList;
     },
 
-    // Internal helper — sorts a list in-place. Still used by getAllTracks()
-    // for cases where items may arrive unsorted (e.g. after importStructure).
     _sortList(list, mode) {
         list.sort(this._buildCompare(mode));
     },
 
     moveItemToFolder(trackId, folderId) {
-        const item   = this.items.find(i => i.type === 'track'  && i.id === trackId);
-        const folder = this.items.find(i => i.type === 'folder' && i.id === folderId);
+        const item = this.items.find(i => i.type === 'track' && i.id === trackId);
+        if (!item) return;
 
-        if (item && folder) {
+        if (folderId === null) {
+            item.groupId = null;
+            return;
+        }
+
+        const folder = this.items.find(i => i.type === 'folder' && i.id === folderId);
+        if (folder) {
             item.groupId = folderId;
             folder.collapsed = false;
         }

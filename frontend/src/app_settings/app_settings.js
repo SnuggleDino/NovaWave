@@ -457,7 +457,7 @@ export const AppSettings = {
         resetAudio('treble-boost-reset-btn', 'treble-boost-slider', 'treble-boost-value', 'trebleBoostValue', 6);
         resetAudio('reverb-reset-btn', 'reverb-slider', 'reverb-value', 'reverbValue', 30);
 
-        // --- 5 BiquadFilterNode ---
+        //--- Equalizer ---------------
         const toggleEq = $('toggle-equalizer');
         const eqContainer = $('eq-sliders-container');
         if (toggleEq) {
@@ -741,7 +741,7 @@ export const AppSettings = {
         restoreAudio('toggle-treble-boost', 'treble-boost-slider-container', 'treble-boost-slider', 'treble-boost-value', 'trebleBoostEnabled', 'trebleBoostValue', 'dB');
         restoreAudio('toggle-reverb', 'reverb-slider-container', 'reverb-slider', 'reverb-value', 'reverbEnabled', 'reverbValue', '%');
 
-        // --- 5 BiquadFilterNode ---
+        //--- Equalizer ---------------
         const toggleEq = $('toggle-equalizer');
         const eqContainer = $('eq-sliders-container');
         if (toggleEq) {

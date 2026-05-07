@@ -1485,6 +1485,59 @@ body.gradient-title-active .app-title-text p {
     height: 18px;
 }
 
+.lrc-line {
+    padding: 6px 0;
+    opacity: 0.35;
+    transition: opacity 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+    font-size: 1rem;
+    cursor: default;
+}
+
+.lrc-line.lrc-active {
+    opacity: 1;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.move-to-group-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    text-align: left;
+}
+
+.move-to-group-btn:hover {
+    background: var(--hover);
+    border-color: var(--border);
+}
+
+.move-to-group-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.move-to-group-btn.remove-from-group {
+    color: var(--danger, #f87171);
+    opacity: 0.85;
+}
+
+.move-to-group-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
 body.sunset-active .music-emoji img {
     mix-blend-mode: screen;
     filter: drop-shadow(0 0 15px rgba(249, 115, 22, 0.6));

@@ -93,7 +93,7 @@ type Config struct {
 	SakuraEnabled           bool          `json:"sakuraEnabled"`
 	NovaWave95Enabled       bool          `json:"novaWave95Enabled"`
 	PlaylistStructure       []interface{} `json:"playlistStructure"`
-	// --- 5 BiquadFilterNode ---
+	// --- Equalizer ---
 	EqEnabled bool      `json:"eqEnabled"`
 	EqValues  []float64 `json:"eqValues"`
 }
@@ -135,7 +135,12 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	a.ensureBinaries()
+	a.loadTrackCache()
 	a.setupMediaKeys()
+}
+
+func (a *App) shutdown(ctx context.Context) {
+	a.saveTrackCache()
 }
 
 func (a *App) ensureBinaries() {
@@ -224,18 +229,95 @@ func getConfigPath() string {
 	return filepath.Join(configDir, "NovaWave", "settings.json")
 }
 
+func getCachePath() string {
+	configDir, _ := os.UserConfigDir()
+	return filepath.Join(configDir, "NovaWave", "track_cache.json")
+}
+
+func (a *App) loadTrackCache() {
+	data, err := os.ReadFile(getCachePath())
+	if err != nil {
+		return
+	}
+	var cache map[string]Track
+	if json.Unmarshal(data, &cache) != nil {
+		return
+	}
+	a.cacheMu.Lock()
+	a.trackCache = cache
+	a.cacheMu.Unlock()
+}
+
+func (a *App) saveTrackCache() {
+	a.cacheMu.RLock()
+	data, err := json.Marshal(a.trackCache)
+	a.cacheMu.RUnlock()
+	if err != nil {
+		return
+	}
+	path := getCachePath()
+	os.MkdirAll(filepath.Dir(path), 0755)
+	os.WriteFile(path, data, 0644)
+}
+
+func (a *App) ClearTrackCache() {
+	a.cacheMu.Lock()
+	a.trackCache = make(map[string]Track)
+	a.cacheMu.Unlock()
+	os.Remove(getCachePath())
+}
+
+func (a *App) getAllowedDirs() []string {
+	a.mu.Lock()
+	data, err := os.ReadFile(getConfigPath())
+	a.mu.Unlock()
+
+	dirs := make([]string, 0, 4)
+	if err != nil {
+		return dirs
+	}
+
+	var cfg Config
+	if json.Unmarshal(data, &cfg) == nil {
+		if cfg.DownloadFolder != "" {
+			dirs = append(dirs, cfg.DownloadFolder)
+		}
+		if cfg.CurrentFolderPath != "" {
+			dirs = append(dirs, cfg.CurrentFolderPath)
+		}
+	}
+
+	// Pro UI stores multiple folders as a JSON array string in v2_folders
+	var raw map[string]interface{}
+	if json.Unmarshal(data, &raw) == nil {
+		if v2f, ok := raw["v2_folders"].(string); ok && v2f != "" {
+			var folders []string
+			if json.Unmarshal([]byte(v2f), &folders) == nil {
+				dirs = append(dirs, folders...)
+			}
+		}
+	}
+
+	return dirs
+}
+
 func (a *App) GetAppMeta() AppMeta {
 	return CurrentMeta
 }
 
-func (a *App) LoadConfig() Config {
-	a.mu.Lock()
-	defer a.mu.Unlock()
+func defaultDownloadFolder() string {
+	if home, err := os.UserHomeDir(); err == nil {
+		dl := filepath.Join(home, "Downloads")
+		if info, err := os.Stat(dl); err == nil && info.IsDir() {
+			return dl
+		}
+	}
+	cwd, _ := os.Getwd()
+	return cwd
+}
 
-	path := getConfigPath()
-	data, err := os.ReadFile(path)
-
-	defaultConf := Config{
+func getDefaultConfig() Config {
+	return Config{
 		Theme:                   "midnight",
 		Volume:                  0.2,
 		Language:                "de",
@@ -257,7 +339,18 @@ func (a *App) LoadConfig() Config {
 		EnableFavoritesPlaylist: true,
 		AudioQuality:            "best",
 		ActiveIntro:             "waterdrop",
+		DownloadFolder:          defaultDownloadFolder(),
 	}
+}
+
+func (a *App) LoadConfig() Config {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	path := getConfigPath()
+	data, err := os.ReadFile(path)
+
+	defaultConf := getDefaultConfig()
 
 	if err != nil {
 		return defaultConf
@@ -276,9 +369,7 @@ func (a *App) LoadConfig() Config {
 		loadedConf.TargetFps = 60
 	}
 	if loadedConf.DownloadFolder == "" {
-
-		cwd, _ := os.Getwd()
-		loadedConf.DownloadFolder = cwd
+		loadedConf.DownloadFolder = defaultDownloadFolder()
 	}
 
 	return loadedConf
@@ -288,32 +379,7 @@ func (a *App) ResetConfig() SimpleResult {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	defaultConf := Config{
-		Theme:                   "midnight",
-		Volume:                  0.2,
-		Language:                "de",
-		CoverMode:               "note",
-		CustomCoverEmoji:        "🎵",
-		AnimationMode:           "flow",
-		VisualizerEnabled:       true,
-		VisualizerStyle:         "bars",
-		VisSensitivity:          1.5,
-		AutoLoadLastFolder:      true,
-		EnableFocusMode:         true,
-		EnableDragAndDrop:       true,
-		CustomAccentColor:       "#38bdf8",
-		TargetFps:               60,
-		BassBoostValue:          6,
-		TrebleBoostValue:        6,
-		ReverbValue:             30,
-		PlaybackSpeed:           1.0,
-		EnableFavoritesPlaylist: true,
-		AudioQuality:            "best",
-		ActiveIntro:             "waterdrop",
-	}
-
-	cwd, _ := os.Getwd()
-	defaultConf.DownloadFolder = cwd
+	defaultConf := getDefaultConfig()
 
 	path := getConfigPath()
 	os.MkdirAll(filepath.Dir(path), 0755)
@@ -424,7 +490,6 @@ func (a *App) SelectMusicFolder() FolderResult {
 }
 
 func (a *App) getBinaryPath(name string) string {
-	// 1. Check local bin folder first (Development)
 	cwd, _ := os.Getwd()
 	localPath := filepath.Join(cwd, "bin", name)
 	if info, err := os.Stat(localPath); err == nil && !info.IsDir() {
@@ -432,14 +497,12 @@ func (a *App) getBinaryPath(name string) string {
 		return abs
 	}
 
-	// 2. Check AppData (Production)
 	configDir, _ := os.UserConfigDir()
 	appDataPath := filepath.Join(configDir, "NovaWave", "bin", name)
 	if info, err := os.Stat(appDataPath); err == nil && !info.IsDir() {
 		return appDataPath
 	}
 
-	// 3. Fallback to PATH
 	return name
 }
 
@@ -555,7 +618,6 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 				mtime = float64(info.ModTime().UnixMilli())
 			}
 
-			// 1. Check Cache first
 			a.cacheMu.RLock()
 			cached, exists := a.trackCache[fullPath]
 			a.cacheMu.RUnlock()
@@ -606,6 +668,7 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 	}
 
 	wg.Wait()
+	go a.saveTrackCache()
 	return tracks, nil
 }
 
@@ -625,10 +688,10 @@ func (a *App) DeleteTrack(path string) SimpleResult {
 		return SimpleResult{Success: false, Error: err.Error()}
 	}
 
-	// Remove from cache
 	a.cacheMu.Lock()
 	delete(a.trackCache, path)
 	a.cacheMu.Unlock()
+	go a.saveTrackCache()
 
 	return SimpleResult{Success: true}
 }
@@ -706,7 +769,14 @@ func (a *App) UpdateMetadata(pathStr string, newTitle string, newArtist string) 
 }
 
 func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
-	return a.UpdateMetadata(pathStr, newTitle, "")
+	currentArtist := ""
+	if f, err := os.Open(pathStr); err == nil {
+		if m, err := tag.ReadFrom(f); err == nil {
+			currentArtist = m.Artist()
+		}
+		f.Close()
+	}
+	return a.UpdateMetadata(pathStr, newTitle, currentArtist)
 }
 
 func (a *App) SetCoverArt(audioPath string, imagePath string) SimpleResult {
@@ -714,11 +784,6 @@ func (a *App) SetCoverArt(audioPath string, imagePath string) SimpleResult {
 	ext := filepath.Ext(audioPath)
 	tempPath := strings.TrimSuffix(audioPath, ext) + "_cover_temp" + ext
 
-	// ffmpeg command to attach picture (ID3v2 for MP3)
-	// -map 0:a -map 1:v -> Take audio from file 0, video (image) from file 1
-	// -c copy -> Copy streams without re-encoding (fast)
-	// -id3v2_version 3 -> Maximum compatibility
-	// -metadata:s:v title="Album cover" -metadata:s:v comment="Cover (front)" -> Tags
 	args := []string{
 		"-i", audioPath,
 		"-i", imagePath,
@@ -740,7 +805,6 @@ func (a *App) SetCoverArt(audioPath string, imagePath string) SimpleResult {
 		return SimpleResult{Success: false, Error: "FFmpeg Error: " + err.Error() + " | Log: " + string(output)}
 	}
 
-	// Replace original file
 	err = os.Remove(audioPath)
 	if err != nil {
 		os.Remove(tempPath)
@@ -755,7 +819,7 @@ func (a *App) SetCoverArt(audioPath string, imagePath string) SimpleResult {
 	return SimpleResult{Success: true}
 }
 
-// --- Lyrics Function ---
+// --- Lyrics ---
 func (a *App) GetLyrics(pathStr string) string {
 	ext := filepath.Ext(pathStr)
 	lrcPath := strings.TrimSuffix(pathStr, ext) + ".lrc"
@@ -820,8 +884,6 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	}
 
 	go func() {
-		// FIX: use a context with timeout so this goroutine cannot hang
-		// indefinitely on a slow or unreachable network connection.
 		ctx, cancel := context.WithTimeout(a.ctx, 15*time.Second)
 		defer cancel()
 		tCmd := exec.CommandContext(ctx, ytPath, "--get-title", "--no-warnings", opts.Url)
@@ -883,7 +945,6 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 		return SimpleResult{Success: false, Error: fmt.Sprintf("Download failed: %v", err)}, nil
 	}
 
-	// Try to find the downloaded file to send path to frontend
 	wailsRuntime.EventsEmit(a.ctx, "download-success", map[string]string{
 		"id":   opts.Id,
 		"path": folderPath,
@@ -892,10 +953,13 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	return SimpleResult{Success: true}, nil
 }
 
-func (a *App) SendPlaybackState(isPlaying bool) {}
 
 func (a *App) IsSpotifyUrl(url string) bool {
 	return a.spotifyService.IsSpotifyUrl(url)
+}
+
+func (a *App) GetSpotifyPlaylistTracks(url string) ([]string, error) {
+	return a.spotifyService.GetPlaylistTracks(url)
 }
 
 func (a *App) DownloadFromSpotify(id string, url string, quality string) (SimpleResult, error) {

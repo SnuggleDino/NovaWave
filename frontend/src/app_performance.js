@@ -11,13 +11,13 @@ export const AppPerformance = {
     lastStatsTime: performance.now(),
     warmupFrames: 0,
 
-    // --- Cached DOM Refs (populated in init) ---
+    //--- DOM Refs ---------------
     _fpsEl: null,
     _timeEl: null,
     _lagEl: null,
     _perfInfoEl: null,
 
-    // --- External Refs ---
+    //--- External Refs ---------------
     visualizer: null,
     settings: {},
     tr: (key) => key,
@@ -42,12 +42,10 @@ export const AppPerformance = {
         this._lagEl = document.getElementById('stat-lag');
         this._perfInfoEl = document.getElementById('stat-perf-info');
 
-        // FIX #1: Restore Performance Mode state on startup.
         if (this.performanceMode) {
             this.setPerformanceMode(true, true);
         }
 
-        // FIX #2: Register the OK button click handler for the lag hint banner.
         const perfBtn = document.getElementById('enable-perf-mode-btn');
         if (perfBtn) {
             perfBtn.addEventListener('click', () => {
@@ -77,10 +75,6 @@ export const AppPerformance = {
             return;
         }
 
-        // FIX: If the tab/window was hidden and just became visible again,
-        // the elapsed time (now - lastFrameTime) could be seconds or minutes,
-        // making appFps = 0 and falsely triggering the performance hint.
-        // Reset lastFrameTime and appFrameCount on first frame after restore.
         if (this._wasHidden) {
             this._wasHidden = false;
             this.lastFrameTime = performance.now();

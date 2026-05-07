@@ -8,14 +8,14 @@ export class DownloadManager {
 
     }
 
-    add(url, type, customName = "") {
-        // FIX: .substr() is deprecated; use .substring() instead
+    add(url, type, customName = "", quality = "best") {
         const id = Date.now() + Math.random().toString(36).substring(2, 11);
         const task = {
             id,
             url,
             type,
             customName,
+            quality,
             status: 'pending',
             addedAt: new Date()
         };
@@ -48,10 +48,10 @@ export class DownloadManager {
                     id: nextTask.id,
                     url: nextTask.url,
                     customName: nextTask.customName,
-                    quality: "best"
+                    quality: nextTask.quality
                 });
             } else if (nextTask.type === 'spotify') {
-                result = await window.go.main.App.DownloadFromSpotify(nextTask.id, nextTask.url, "best");
+                result = await window.go.main.App.DownloadFromSpotify(nextTask.id, nextTask.url, nextTask.quality);
             }
 
             if (result && result.success) {

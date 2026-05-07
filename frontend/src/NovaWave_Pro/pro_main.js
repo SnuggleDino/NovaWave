@@ -1,4 +1,4 @@
-// --- NOVA WAVE PRO - ADVANCED ENGINE ---
+//--- Nova Wave Pro Engine ---------------
 import * as App from '../../wailsjs/go/main/App.js';
 import { PlaylistManager } from '../playlist/playlist_manager.js';
 import { de_pro } from './language_pro/de_pro.js';
@@ -43,7 +43,7 @@ function logPro(msg, type = '') {
     logBox.scrollTop = logBox.scrollHeight;
 }
 
-// --- WAILS BACKEND BRIDGE ---
+//--- Wails Backend Bridge ---------------
 function waitForWails() {
     return new Promise(resolve => {
         const check = () => {
@@ -57,7 +57,7 @@ function waitForWails() {
     });
 }
 
-// --- BOOT ---
+//--- Boot ---------------
 document.addEventListener('DOMContentLoaded', async () => {
     logPro("PRO_ENGINE: BOOT_SEQUENCE_START");
     
@@ -72,16 +72,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     applyTranslations();
     
     logPro("UI_INIT: ✓");
-    logPro("WAILS_BRIDGE: Warte auf Backend...");
-    
+    logPro("WAILS_BRIDGE: connecting...");
+
     await waitForWails();
-    logPro("WAILS_BRIDGE: Verbindung hergestellt ✓");
+    logPro("WAILS_BRIDGE: connected ✓");
     
-    // --- Load Settings ---
+    //--- Load Settings ---------------
     try {
         const s = await App.GetSettings();
         if(s) {
-            state.lang = s.language || s.v2_lang || 'de';
+            state.lang = s.language || 'de';
             state.proKeys = LANG_MAP[state.lang] || de_pro;
             applyTranslations();
             
@@ -99,13 +99,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if(fbSel) fbSel.value = state.coverFallback;
             }
 
-            if(s.v2_favorites) {
-                try { state.favorites = JSON.parse(s.v2_favorites); } catch(e) {}
-            } else if(s.favorites) {
+            if(s.favorites) {
                 try {
-                    const legacyFavs = typeof s.favorites === 'string' ? JSON.parse(s.favorites) : s.favorites;
-                    if(Array.isArray(legacyFavs)) state.favorites = legacyFavs;
+                    const favs = typeof s.favorites === 'string' ? JSON.parse(s.favorites) : s.favorites;
+                    if(Array.isArray(favs)) state.favorites = favs;
                 } catch(e) {}
+            } else if(s.v2_favorites) {
+                // one-time migration from old v2_favorites key
+                try { state.favorites = JSON.parse(s.v2_favorites); } catch(e) {}
+                App.SetSetting('favorites', state.favorites).catch(() => {});
             }
 
             state.shuffle = !!s.v2_shuffle;
@@ -162,7 +164,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-// --- NAVIGATION ---
+//--- Navigation ---------------
 function initNavigation() {
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.onclick = () => {
@@ -174,7 +176,7 @@ function initNavigation() {
     });
 }
 
-// --- MEDIA KEYS ---
+//--- Media Keys ---------------
 function initMediaKeys() {
     window.addEventListener('wails:event:media-key', e => {
         const key = Array.isArray(e.detail) ? e.detail[0] : e.detail;
@@ -184,7 +186,7 @@ function initMediaKeys() {
     });
 }
 
-// --- GITHUB COMMITS ---
+//--- GitHub Commits ---------------
 async function fetchGitHubCommits() {
     const feed = $('news-feed');
     if(!feed) return;
@@ -203,7 +205,7 @@ async function fetchGitHubCommits() {
     }
 }
 
-// --- AUDIO ---
+//--- Audio ---------------
 function initAudio() {
     const audio = state.audio;
 
@@ -276,7 +278,6 @@ function initAudio() {
             logPro("FAV: ADDED");
         }
         
-        App.SetSetting('v2_favorites', JSON.stringify(state.favorites)).catch(()=>{});
         App.SetSetting('favorites', state.favorites).catch(()=>{});
         render();
     };
@@ -293,7 +294,7 @@ function initAudio() {
         audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
     };
 
-    // --- Cover Art Selection ---
+    //--- Cover Art Selection ---------------
     const handleChangeCover = async () => {
         if(state.idx < 0 || !state.tracks[state.idx]) return;
         const t = state.tracks[state.idx];
@@ -352,7 +353,7 @@ function updateModeIcons() {
     }
 }
 
-// --- LIBRARY ---
+//--- Library ---------------
 function initLibraryUI() {
     $('btn-open-folder').onclick = async () => addFolder();
     
@@ -439,7 +440,6 @@ function play(i) {
         if(state.coverFallback === 'emoji') {
             dinoEl.src = '';
             dinoEl.style.display = 'none';
-            // NOTE: Create a text node for emoji fallback
             const parent = dinoEl.parentElement;
             let emojiSpan = parent.querySelector('.emoji-fallback');
             if(!emojiSpan) { emojiSpan = document.createElement('span'); emojiSpan.className = 'emoji-fallback'; emojiSpan.style.cssText = 'font-size:42px; display:flex; align-items:center; justify-content:center; width:100%; height:100%;'; parent.appendChild(emojiSpan); }
@@ -525,7 +525,6 @@ window.v2cm = (e, idx) => {
             if(state.idx === idx) $('m-fav').classList.add('active');
             logPro("FAV: ADDED");
         }
-        App.SetSetting('v2_favorites', JSON.stringify(state.favorites)).catch(()=>{});
         App.SetSetting('favorites', state.favorites).catch(()=>{});
         render();
     };
@@ -558,7 +557,7 @@ function applyMarquee(el) {
     }
 }
 
-// --- SAMPLER ---
+//--- Sampler ---------------
 function initDownloaderUI() {
 
     App.GetSettings().then(s => {
@@ -708,7 +707,7 @@ function renderFolderSetup() {
 
 window.v2rmf = removeFolder;
 
-// --- SETTINGS ---
+//--- Settings ---------------
 function initSettingsUI() {
     document.querySelectorAll('.color-block').forEach(cb => {
         cb.onclick = () => {
@@ -778,7 +777,7 @@ function applyTheme(c) {
     });
 }
 
-// --- HOTKEYS ---
+//--- Hotkeys ---------------
 function initHotkeys() {
     window.addEventListener('keydown', e => {
         if(e.ctrlKey && e.key.toLowerCase() === 'u') {
@@ -794,14 +793,14 @@ function initHotkeys() {
     });
 }
 
-// --- TRANSLATIONS ---
+//--- Translations ---------------
 function applyTranslations() {
-    // --- Nav ---
+    //--- Nav ---------------
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.textContent = tr('pro_nav_' + btn.getAttribute('data-v'));
     });
 
-    // --- Dashboard ---
+    //--- Dashboard ---------------
     setText('#v-home .section-header h1', tr('pro_nav_home'));
     $('dash-status-label').textContent = tr('pro_status_ok');
     $('dash-source-monitor').textContent = tr('pro_source_monitor');
@@ -810,7 +809,7 @@ function applyTranslations() {
         el.textContent = tr(['pro_stat_tracks', 'pro_stat_folders', 'pro_stat_uptime'][i]);
     });
 
-    // --- Library ---
+    //--- Library ---------------
     setText('#v-library .section-header h1', tr('pro_nav_library'));
     $('btn-open-folder').textContent = tr('pro_mount_path');
     $('lib-search').placeholder = tr('pro_search_db');
@@ -818,22 +817,21 @@ function applyTranslations() {
         el.textContent = tr(['pro_th_idx', 'pro_th_title', 'pro_th_artist', 'pro_th_length'][i]);
     });
 
-    // --- Sampler ---
+    //--- Sampler ---------------
     setText('#v-downloader .section-header h1', tr('pro_sampler_title'));
     setText('.info-box h4', tr('pro_sampler_howto_title'));
     setText('.info-box p', tr('pro_sampler_howto_text'));
     $('dl-url').placeholder = tr('pro_sampler_url_placeholder');
     setBtnText('btn-dl', tr('pro_sampler_execute'));
 
-    // --- Settings ---
+    //--- Settings ---------------
     setText('#v-settings .section-header h1', tr('pro_nav_settings'));
-    // NOTE: card labels now match the new v2.html layout (Row1: Accent+Language, Row2: Cover+Folders, Row3: Logs)
     setBtnText('btn-reset-fx-pro', tr('pro_reset_config'));
     setBtnText('btn-legacy', tr('pro_legacy_interface'));
     setBtnText('btn-restart', tr('pro_warm_reboot'));
     setBtnText('btn-quit', tr('pro_shutdown'));
 
-    // --- Player ---
+    //--- Player ---------------
     $('m-play').title = tr('pro_btn_playpause');
     $('m-next').title = tr('pro_btn_next');
     $('m-prev').title = tr('pro_btn_prev');
@@ -879,14 +877,13 @@ window.v2fav = i => {
         if(state.idx === i) $('m-fav').classList.add('active');
         logPro("FAV: ADDED");
     }
-    App.SetSetting('v2_favorites', JSON.stringify(state.favorites)).catch(()=>{});
     App.SetSetting('favorites', state.favorites).catch(()=>{});
     render();
 };
 window.v2rmf = p => removeFolder(p);
 const fmt = s => { if(!s||isNaN(s)) return "00:00"; return `${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`; };
 
-// --- LANGUAGE SWITCH ---
+//--- Language Switch ---------------
 function initLanguageSwitch() {
     const sel = $('lang-select-pro');
     if(!sel) return;
@@ -895,13 +892,12 @@ function initLanguageSwitch() {
         state.lang = lang;
         state.proKeys = LANG_MAP[lang] || de_pro;
         App.SetSetting('language', lang).catch(()=>{});
-        App.SetSetting('v2_lang', lang).catch(()=>{});
         applyTranslations();
         logPro(`LANG: ${lang.toUpperCase()}`);
     });
 }
 
-// --- ON-BOARDING ---
+//--- Onboarding ---------------
 function initOnboarding(config) {
     if (config && (config.onboardingComplete === true || config.language)) {
         localStorage.setItem('pro_onboarding_done', '1');
@@ -922,7 +918,6 @@ function initOnboarding(config) {
             state.lang = code;
             state.proKeys = LANG_MAP[code] || de_pro;
             App.SetSetting('language', code).catch(()=>{});
-            App.SetSetting('v2_lang', code).catch(()=>{});
             const sel = $('lang-select-pro');
             if(sel) sel.value = code;
             applyTranslations();
@@ -934,7 +929,7 @@ function initOnboarding(config) {
     });
 }
 
-// --- VERSION DISPLAY ---
+//--- Version Display ---------------
 async function initVersionDisplay() {
     try {
         const meta = await App.GetAppMeta();
@@ -987,7 +982,7 @@ async function showVersionModal(meta) {
     if(repoLink && meta.repoLink) { repoLink.onclick = (e) => { e.preventDefault(); window.open(meta.repoLink, '_blank'); }; }
 }
 
-// --- REFRESH ANIMATION ---
+//--- Refresh Animation ---------------
 function showRefreshAnimation() {
     const el = $('refresh-status');
     if(!el) return;
