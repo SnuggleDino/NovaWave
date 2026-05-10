@@ -113,6 +113,15 @@
                                 <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.44l5.5 5.5" />
                             </svg>
                         </button>
+                        <button class="btn-transport" id="btn-create-group" title="Create Group">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                <line x1="12" y1="11" x2="12" y2="17"></line>
+                                <line x1="9" y1="14" x2="15" y2="14"></line>
+                            </svg>
+                        </button>
                         <span id="refresh-status" class="refresh-status hidden"></span>
                     </div>
                 </div>
@@ -341,11 +350,47 @@
             </div>
         </footer>
     </div>
-    <!-- Context Menu (Hidden by default) -->
+    <!-- Context Menu -->
     <div id="context-menu" class="hidden">
         <div class="cm-item" id="cm-play"><span style="margin-right:8px;">▶</span> Play</div>
         <div class="cm-item" id="cm-fav"><span style="margin-right:8px;">❤️</span> Toggle Favorite</div>
         <div class="cm-item" id="cm-cover"><span style="margin-right:8px;">🖼️</span> Change Cover</div>
+        <div class="cm-divider" id="cm-group-divider"></div>
+        <div class="cm-item" id="cm-move-to-group"><span style="margin-right:8px;">📂</span> Move to Group</div>
+    </div>
+
+    <!-- Folder Context Menu -->
+    <div id="pro-folder-cm" class="hidden">
+        <div class="cm-item" id="pfcm-rename"><span style="margin-right:8px;">✏</span> Rename</div>
+        <div class="cm-divider"></div>
+        <div class="cm-item danger" id="pfcm-delete"><span style="margin-right:8px;">✕</span> Delete Group</div>
+    </div>
+
+    <!-- Folder Modal (Create / Rename) -->
+    <div id="pro-folder-modal" class="pro-modal-overlay hidden">
+        <div class="pro-modal" style="max-width:380px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 id="pfm-title" style="font-size:14px; font-weight:900; margin:0; font-family:var(--font-mono);">CREATE_GROUP</h2>
+                <button class="btn-transport" id="pfm-close" style="font-size:18px;">✕</button>
+            </div>
+            <input type="text" id="pfm-input" class="input-pro" placeholder="Group name..." style="margin-bottom:16px; width:100%; box-sizing:border-box;">
+            <div id="pfm-colors" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;"></div>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="btn-pro" id="pfm-cancel">Cancel</button>
+                <button class="btn-pro primary" id="pfm-save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Move to Group Modal -->
+    <div id="pro-move-modal" class="pro-modal-overlay hidden">
+        <div class="pro-modal" style="max-width:340px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h2 style="font-size:13px; font-weight:900; margin:0; font-family:var(--font-mono);">MOVE_TO_GROUP</h2>
+                <button class="btn-transport" id="pmm-close" style="font-size:18px;">✕</button>
+            </div>
+            <div id="pmm-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
     </div>
 
     <!-- On-Boarding Modal -->

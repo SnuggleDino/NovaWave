@@ -10,8 +10,8 @@ type AppMeta struct {
 }
 
 var CurrentMeta = AppMeta{
-	Version:    "2.9.0",
-	BuildDate:  "07.05.2026",
+	Version:    "2.9.1",
+	BuildDate:  "10.05.2026",
 	Author:     "SnuggleDino",
 	GoVersion:  "v2.9.2 (Go 1.23)",
 	GithubUser: "SnuggleDino",

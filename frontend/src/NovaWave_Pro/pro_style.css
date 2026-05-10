@@ -309,6 +309,41 @@ select.select-pro option { background: #141417; color: #fff; }
     user-select: none;
 }
 .cm-item:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.cm-item.danger { color: #ff5252; }
+.cm-item.danger:hover { background: rgba(255, 82, 82, 0.12); color: #ff5252; }
+.cm-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 2px 0; }
+
+/* --- FOLDER CONTEXT MENU --- */
+#pro-folder-cm {
+    position: fixed;
+    z-index: 10000;
+    width: 180px;
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transform-origin: top left;
+    animation: cm-fade 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+#pro-folder-cm.hidden { display: none; }
+
+/* --- FOLDER COLOR DOTS --- */
+.pfm-color-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.pfm-color-dot:hover { transform: scale(1.2); }
+.pfm-color-dot.active { border-color: #fff; transform: scale(1.15); }
 
 /* --- TRANSPORT LABELS --- */
 .transport-label { font-size: 12px; font-weight: 800; letter-spacing: 1px; line-height: 1; }

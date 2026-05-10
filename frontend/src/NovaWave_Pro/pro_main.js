@@ -17,19 +17,30 @@ import updateNews from '../app_updates/update_news.json';
 const LANG_MAP = { de: de_pro, en: en_pro, tr: tr_pro, fr: fr_pro, es: es_pro, it: it_pro };
 const LANG_LABELS = { de: 'Deutsch', en: 'English', tr: 'Türkçe', fr: 'Français', es: 'Español', it: 'Italiano' };
 
-const state = { 
-    audio: new Audio(), 
-    tracks: [], 
-    idx: -1, 
-    folders: [], 
-    lang: 'de', 
+const state = {
+    audio: new Audio(),
+    tracks: [],
+    idx: -1,
+    folders: [],
+    lang: 'de',
     proKeys: de_pro,
     shuffle: false,
     loop: 'none',
     coverFallback: 'dino',
     favorites: [],
-    startTime: Date.now()
+    startTime: Date.now(),
+    playlistStructure: null
 };
+
+const vfState = {
+    activeFolderId: null,
+    contextFolderId: null,
+    contextTrackPath: null,
+    selectedColor: '#38bdf8',
+    folderModalMode: 'create'
+};
+
+const FOLDER_COLORS = ['#38bdf8', '#ff5722', '#76ff03', '#facc15', '#d500f9', '#ff5252', '#00e5ff', '#ff9800'];
 
 function tr(key) { return state.proKeys[key] || key; }
 
@@ -67,6 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initDownloaderUI();
     initSettingsUI();
     initLibraryUI();
+    initVirtualFolders();
     startUptimeCounter();
     applyTheme('#ff5722');
     applyTranslations();
@@ -123,22 +135,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if(s.currentFolderPath || s.CurrentFolderPath) {
                 savedFolders = [s.currentFolderPath || s.CurrentFolderPath];
             }
-            
+
+            if(s.v2_playlist_structure) {
+                try { state.playlistStructure = JSON.parse(s.v2_playlist_structure); } catch(e) {}
+            }
+
             if(savedFolders.length > 0) {
                 state.folders = savedFolders;
                 logPro(`AUTO_MOUNT: [${savedFolders.length}] FOLDERS`);
                 PlaylistManager.init();
                 let loaded = 0;
+                const allTracks = [];
                 for(let fp of savedFolders) {
                     try {
                         const res = await App.RefreshMusicFolder(fp);
                         if(res && res.tracks) {
-                            PlaylistManager.appendTracks(res.tracks);
+                            allTracks.push(...res.tracks);
                             loaded++;
                         }
                     } catch(e) { logPro(`AUTO_MOUNT_FAILED: ${fp}`, "err"); }
                 }
-                if(loaded > 0) handleTracksRefresh();
+                if(loaded > 0) {
+                    if(state.playlistStructure) {
+                        PlaylistManager.importStructure(state.playlistStructure, allTracks);
+                    } else {
+                        PlaylistManager.appendTracks(allTracks);
+                    }
+                    handleTracksRefresh();
+                }
             }
             renderFolderSetup();
             initOnboarding(s);
@@ -161,6 +185,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('click', () => {
         const cm = $('context-menu');
         if(cm && !cm.classList.contains('hidden')) cm.classList.add('hidden');
+        const fcm = $('pro-folder-cm');
+        if(fcm && !fcm.classList.contains('hidden')) fcm.classList.add('hidden');
     });
 });
 
@@ -381,16 +407,24 @@ function initLibraryUI() {
         showRefreshAnimation();
         PlaylistManager.init();
         let loaded = 0;
+        const allTracks = [];
         for(let fp of state.folders) {
             try {
                 const res = await App.RefreshMusicFolder(fp);
                 if(res && res.tracks) {
-                    PlaylistManager.appendTracks(res.tracks);
+                    allTracks.push(...res.tracks);
                     loaded++;
                 }
             } catch(e) { logPro(`REFRESH_ERROR: ${fp}`, "err"); }
         }
-        if(loaded > 0) handleTracksRefresh();
+        if(loaded > 0) {
+            if(state.playlistStructure) {
+                PlaylistManager.importStructure(state.playlistStructure, allTracks);
+            } else {
+                PlaylistManager.appendTracks(allTracks);
+            }
+            handleTracksRefresh();
+        }
         showRefreshComplete();
     };
     
@@ -474,7 +508,17 @@ function render(q = '') {
     
     let displayIdx = 1;
     tbody.innerHTML = items.map(item => {
-        if(item.type === 'folder') return `<tr class="folder-header"><td colspan="5">📂 ${item.name.toUpperCase()}</td></tr>`;
+        if(item.type === 'folder') {
+            const arrow = item.collapsed ? '▶' : '▼';
+            const col = item.color || '#38bdf8';
+            return `<tr class="folder-header" onclick="window.v2ftoggle('${item.id}')" oncontextmenu="window.v2fcm(event,'${item.id}')">
+                <td colspan="5" style="cursor:pointer;">
+                    <span style="font-size:9px; margin-right:6px; opacity:0.6;">${arrow}</span>
+                    <span style="width:8px; height:8px; border-radius:50%; background:${col}; display:inline-block; margin-right:8px; vertical-align:middle;"></span>
+                    <span style="color:${col};">${escHtml(item.name).toUpperCase()}</span>
+                </td>
+            </tr>`;
+        }
         const t = item.data;
         const realIdx = state.tracks.indexOf(t);
         const active = realIdx === state.idx;
@@ -495,25 +539,30 @@ function render(q = '') {
 
 window.v2cm = (e, idx) => {
     e.preventDefault();
+    const t = state.tracks[idx];
+    vfState.contextTrackPath = t ? t.path : null;
+
     const cm = $('context-menu');
     cm.classList.remove('hidden');
-    
+
+    const hasFolders = PlaylistManager.getFolderCount() > 0;
+    const moveBtn = $('cm-move-to-group');
+    const divider = $('cm-group-divider');
+    if(moveBtn) moveBtn.style.display = hasFolders ? '' : 'none';
+    if(divider) divider.style.display = hasFolders ? '' : 'none';
 
     let x = e.clientX;
     let y = e.clientY;
-    
-
     const cw = 200;
-    const ch = 120;
+    const ch = hasFolders ? 170 : 130;
     if(x + cw > window.innerWidth) x = window.innerWidth - cw - 10;
     if(y + ch > window.innerHeight) y = window.innerHeight - ch - 10;
-    
+
     cm.style.left = x + 'px';
     cm.style.top = y + 'px';
-    
+
     $('cm-play').onclick = () => play(idx);
     $('cm-fav').onclick = () => {
-        const t = state.tracks[idx];
         if(!t) return;
         const curFav = state.favorites.indexOf(t.path);
         if(curFav > -1) {
@@ -529,7 +578,6 @@ window.v2cm = (e, idx) => {
         render();
     };
     $('cm-cover').onclick = async () => {
-        const t = state.tracks[idx];
         if(!t) return;
         const imgPath = await App.SelectImage();
         if(imgPath) {
@@ -980,6 +1028,173 @@ async function showVersionModal(meta) {
     modal.onclick = e => { if(e.target === modal) modal.classList.add('hidden'); };
     const repoLink = $('version-repo-link');
     if(repoLink && meta.repoLink) { repoLink.onclick = (e) => { e.preventDefault(); window.open(meta.repoLink, '_blank'); }; }
+}
+
+//--- Virtual Folders ---------------
+function savePlaylistStructure() {
+    const s = PlaylistManager.exportStructure();
+    state.playlistStructure = s;
+    App.SetSetting('v2_playlist_structure', JSON.stringify(s)).catch(() => {});
+}
+
+function initVirtualFolders() {
+    const createBtn = $('btn-create-group');
+    if(createBtn) createBtn.onclick = () => openFolderModal('create');
+
+    $('pfm-close').onclick = () => $('pro-folder-modal').classList.add('hidden');
+    $('pfm-cancel').onclick = () => $('pro-folder-modal').classList.add('hidden');
+    $('pfm-save').onclick = () => {
+        const name = $('pfm-input').value.trim();
+        if(!name) return;
+        if(vfState.folderModalMode === 'rename' && vfState.activeFolderId) {
+            PlaylistManager.renameFolder(vfState.activeFolderId, name, vfState.selectedColor);
+            logPro(`GROUP: RENAMED -> ${name.toUpperCase()}`);
+        } else {
+            PlaylistManager.addFolder(name, vfState.selectedColor);
+            logPro(`GROUP: CREATED -> ${name.toUpperCase()}`);
+        }
+        savePlaylistStructure();
+        render();
+        $('pro-folder-modal').classList.add('hidden');
+    };
+    $('pfm-input').addEventListener('keydown', e => { if(e.key === 'Enter') $('pfm-save').click(); });
+
+    const palette = $('pfm-colors');
+    FOLDER_COLORS.forEach(c => {
+        const dot = document.createElement('div');
+        dot.className = 'pfm-color-dot';
+        dot.style.background = c;
+        dot.dataset.c = c;
+        dot.onclick = () => {
+            vfState.selectedColor = c;
+            palette.querySelectorAll('.pfm-color-dot').forEach(d => d.classList.toggle('active', d.dataset.c === c));
+        };
+        palette.appendChild(dot);
+    });
+
+    $('pmm-close').onclick = () => $('pro-move-modal').classList.add('hidden');
+
+    $('cm-move-to-group').onclick = () => {
+        $('context-menu').classList.add('hidden');
+        if(vfState.contextTrackPath) openMoveToGroupModal(vfState.contextTrackPath);
+    };
+
+    $('pfcm-rename').onclick = () => {
+        $('pro-folder-cm').classList.add('hidden');
+        openFolderModal('rename', vfState.contextFolderId);
+    };
+
+    $('pfcm-delete').onclick = () => {
+        $('pro-folder-cm').classList.add('hidden');
+        if(vfState.contextFolderId) {
+            PlaylistManager.deleteFolder(vfState.contextFolderId);
+            savePlaylistStructure();
+            render();
+            logPro("GROUP: DELETED");
+        }
+    };
+}
+
+function openFolderModal(mode, folderId = null) {
+    vfState.folderModalMode = mode;
+    vfState.activeFolderId = folderId;
+
+    const input = $('pfm-input');
+    const title = $('pfm-title');
+
+    if(mode === 'rename' && folderId) {
+        const folder = PlaylistManager.items.find(i => i.id === folderId);
+        input.value = folder ? folder.name : '';
+        vfState.selectedColor = folder ? folder.color : '#38bdf8';
+        title.textContent = 'RENAME_GROUP';
+    } else {
+        input.value = '';
+        vfState.selectedColor = '#38bdf8';
+        title.textContent = 'CREATE_GROUP';
+    }
+
+    $('pfm-colors').querySelectorAll('.pfm-color-dot').forEach(d => {
+        d.classList.toggle('active', d.dataset.c === vfState.selectedColor);
+    });
+
+    $('pro-folder-modal').classList.remove('hidden');
+    input.focus();
+}
+
+function openMoveToGroupModal(trackPath) {
+    const modal = $('pro-move-modal');
+    const list = $('pmm-list');
+    if(!modal || !list) return;
+
+    const folders = PlaylistManager.items.filter(i => i.type === 'folder');
+    const trackItem = PlaylistManager.items.find(i => i.type === 'track' && i.id === trackPath);
+    const currentGroupId = trackItem ? trackItem.groupId : null;
+
+    list.innerHTML = '';
+
+    if(currentGroupId) {
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn-pro';
+        removeBtn.style.cssText = 'width:100%; margin-bottom:4px;';
+        removeBtn.textContent = '✕ Remove from Group';
+        removeBtn.onclick = () => {
+            PlaylistManager.moveItemToFolder(trackPath, null);
+            savePlaylistStructure();
+            render();
+            modal.classList.add('hidden');
+            logPro("GROUP: TRACK REMOVED");
+        };
+        list.appendChild(removeBtn);
+    }
+
+    if(folders.length === 0) {
+        const msg = document.createElement('div');
+        msg.style.cssText = 'font-family:var(--font-mono); font-size:11px; color:var(--text-dim); text-align:center; padding:16px;';
+        msg.textContent = '[ NO_GROUPS_CREATED ]';
+        list.appendChild(msg);
+    } else {
+        folders.forEach(folder => {
+            const btn = document.createElement('button');
+            const isActive = folder.id === currentGroupId;
+            btn.className = 'btn-pro' + (isActive ? ' primary' : '');
+            btn.style.cssText = 'width:100%; display:flex; align-items:center; gap:10px;';
+            btn.innerHTML = `<span style="width:10px; height:10px; border-radius:50%; background:${folder.color}; flex-shrink:0;"></span>${escHtml(folder.name)}`;
+            btn.onclick = () => {
+                PlaylistManager.moveItemToFolder(trackPath, folder.id);
+                savePlaylistStructure();
+                render();
+                modal.classList.add('hidden');
+                logPro(`GROUP: TRACK -> ${folder.name.toUpperCase()}`);
+            };
+            list.appendChild(btn);
+        });
+    }
+
+    modal.classList.remove('hidden');
+}
+
+window.v2ftoggle = (folderId) => {
+    PlaylistManager.toggleFolder(folderId);
+    render();
+};
+
+window.v2fcm = (e, folderId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    vfState.contextFolderId = folderId;
+    const fcm = $('pro-folder-cm');
+    fcm.classList.remove('hidden');
+
+    let x = e.clientX;
+    let y = e.clientY;
+    if(x + 180 > window.innerWidth) x = window.innerWidth - 190;
+    if(y + 90 > window.innerHeight) y = window.innerHeight - 100;
+    fcm.style.left = x + 'px';
+    fcm.style.top = y + 'px';
+};
+
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 //--- Refresh Animation ---------------
