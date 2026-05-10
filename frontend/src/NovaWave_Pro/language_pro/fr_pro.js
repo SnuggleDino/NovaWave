@@ -60,6 +60,11 @@ export const fr_pro = {
     "pro_loop_none": "Boucle: NON",
     "pro_loop_all": "Boucle: TOUT",
     "pro_loop_one": "Boucle: UNE",
+    "pro_btn_lyrics": "Afficher les paroles",
+    "lyricsLoading": "Chargement des paroles...",
+    "lyricsNotFound": "Paroles introuvables.",
+    "lyricsError": "Impossible de charger les paroles.",
+    "noTrackSelected": "Aucun titre sélectionné.",
     "pro_wails_bridge": "Connexion Wails établie.",
     "pro_boot_error": "ERREUR_DÉMARRAGE: Connexion backend échouée.",
     "pro_audio_load_fail": "Impossible de charger le fichier audio."

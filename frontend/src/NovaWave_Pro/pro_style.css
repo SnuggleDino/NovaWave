@@ -333,6 +333,45 @@ select.select-pro option { background: #141417; color: #fff; }
 }
 #pro-folder-cm.hidden { display: none; }
 
+/* --- DRAG & DROP --- */
+.drag-over { background: rgba(var(--accent-rgb), 0.1) !important; outline: 1px solid var(--accent); }
+.dragging { opacity: 0.35; }
+
+/* --- LYRICS OVERLAY --- */
+#lyrics-overlay {
+    position: fixed; inset: 0; z-index: 99999;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+#lyrics-overlay.visible { display: flex; animation: cm-fade 0.2s ease-out; }
+.lyrics-scroll {
+    overflow-y: auto;
+    flex: 1;
+    text-align: center;
+    padding: 10px 0 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
+}
+.lrc-line {
+    padding: 7px 10px;
+    font-size: 14px;
+    color: var(--text-dim);
+    transition: color 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+    opacity: 0.45;
+    line-height: 1.6;
+}
+.lrc-line.lrc-active {
+    color: var(--accent);
+    opacity: 1;
+    font-weight: 700;
+    font-size: 15px;
+    transform: scale(1.04);
+}
+
 /* --- FOLDER COLOR DOTS --- */
 .pfm-color-dot {
     width: 22px;

@@ -181,6 +181,8 @@ let warmupFrames = 0;
 
 //--- Helper Functions ---------------
 
+let legacyDragId = null;
+let legacyFolders = [];
 let activeFolderId = null;
 let selectedFolderColor = '#38bdf8';
 let folderModal = null;
@@ -668,6 +670,8 @@ function renderPlaylist() {
                 const row = document.createElement('div');
                 row.className = 'track-row is-folder';
                 row.dataset.id = item.id;
+                row.dataset.itemId = item.id;
+                row.draggable = true;
 
                 const color = item.color || '#38bdf8';
                 row.style.setProperty('--folder-color', color);
@@ -695,6 +699,8 @@ function renderPlaylist() {
                 const row = document.createElement('div');
                 row.className = 'track-row';
                 row.dataset.index = globalIndex;
+                row.dataset.itemId = track.path;
+                row.draggable = true;
                 if (globalIndex === currentIndex) row.classList.add('active');
 
                 let displayTitle = cleanTitleDisplay(track.title || "");
@@ -1236,8 +1242,17 @@ async function performFolderRefresh() {
 
         currentFolderPath = r.folderPath;
         saveSetting('currentFolderPath', currentFolderPath);
-        basePlaylist = r.tracks;
+        let allTracks = r.tracks;
 
+        for (const fp of legacyFolders) {
+            if (fp === currentFolderPath) continue;
+            try {
+                const r2 = await windowApi.refreshMusicFolder(fp);
+                if (r2 && r2.tracks) allTracks = allTracks.concat(r2.tracks);
+            } catch (e2) { console.warn('[Legacy] Refresh failed for:', fp, e2); }
+        }
+
+        basePlaylist = allTracks;
         PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
         playlist = PlaylistManager.getAllTracks();
 
@@ -1328,6 +1343,14 @@ async function loadSettings() {
 
     if (settings.targetFps) targetFps = settings.targetFps;
 
+    if (settings.legacyFolders) {
+        try {
+            legacyFolders = Array.isArray(settings.legacyFolders)
+                ? settings.legacyFolders
+                : JSON.parse(settings.legacyFolders);
+        } catch (e) { legacyFolders = []; }
+    }
+
     updateAudioEffects();
     updateActiveFeaturesIndicator();
 
@@ -1342,7 +1365,18 @@ async function loadLibrary() {
     try {
         const result = await windowApi.refreshMusicFolder(currentFolderPath);
         if (result && result.folderPath) {
-            basePlaylist = result.tracks || [];
+            let allTracks = result.tracks || [];
+
+            // Load additional legacyFolders
+            for (const fp of legacyFolders) {
+                if (fp === currentFolderPath) continue;
+                try {
+                    const r2 = await windowApi.refreshMusicFolder(fp);
+                    if (r2 && r2.tracks) allTracks = allTracks.concat(r2.tracks);
+                } catch (e2) { console.warn('[Legacy] Failed to load folder:', fp, e2); }
+            }
+
+            basePlaylist = allTracks;
             PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
             playlist = PlaylistManager.getAllTracks();
             sortPlaylist(sortMode);
@@ -1354,6 +1388,56 @@ async function loadLibrary() {
         isLibraryLoading = false;
         renderPlaylist();
     }
+}
+
+function renderLegacyFolderList() {
+    const container = document.getElementById('legacy-folder-list');
+    if (!container) return;
+    container.innerHTML = '';
+    if (legacyFolders.length === 0) return;
+    legacyFolders.forEach(fp => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;background:rgba(255,255,255,0.05);border-radius:8px;font-size:13px;';
+        const label = document.createElement('span');
+        label.textContent = fp;
+        label.style.cssText = 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-secondary,#aaa);';
+        label.title = fp;
+        const btn = document.createElement('button');
+        btn.textContent = '✕';
+        btn.style.cssText = 'background:none;border:none;color:#f87171;cursor:pointer;font-size:14px;flex-shrink:0;';
+        btn.addEventListener('click', () => removeLegacyFolder(fp));
+        row.appendChild(label);
+        row.appendChild(btn);
+        container.appendChild(row);
+    });
+}
+
+async function removeLegacyFolder(fp) {
+    legacyFolders = legacyFolders.filter(f => f !== fp);
+    saveSetting('legacyFolders', legacyFolders);
+    renderLegacyFolderList();
+    // Reload library without this folder
+    const allTracks = [];
+    try {
+        if (currentFolderPath) {
+            const r = await windowApi.refreshMusicFolder(currentFolderPath);
+            if (r && r.tracks) allTracks.push(...r.tracks);
+        }
+    } catch (e) { /* ignore */ }
+    for (const f of legacyFolders) {
+        try {
+            const r2 = await windowApi.refreshMusicFolder(f);
+            if (r2 && r2.tracks) allTracks.push(...r2.tracks);
+        } catch (e2) { /* ignore */ }
+    }
+    basePlaylist = allTracks;
+    PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
+    playlist = PlaylistManager.getAllTracks();
+    sortPlaylist(sortMode);
+    currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
+    updateUIForCurrentTrack();
+    renderPlaylist();
+    savePlaylistState();
 }
 
 function updateLoopIcon() {
@@ -1489,6 +1573,13 @@ function setupEventListeners() {
     bind(loadFolderBtn, 'click', async () => {
         const r = await windowApi.selectMusicFolder();
         if (r && r.folderPath) {
+            currentFolderPath = r.folderPath;
+            saveSetting('currentFolderPath', currentFolderPath);
+            // Reset legacyFolders when selecting a brand new primary folder
+            legacyFolders = [];
+            saveSetting('legacyFolders', legacyFolders);
+            renderLegacyFolderList();
+
             basePlaylist = r.tracks || [];
             PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
             playlist = PlaylistManager.getAllTracks();
@@ -1496,12 +1587,27 @@ function setupEventListeners() {
             currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
             renderPlaylist();
             updateUIForCurrentTrack();
-            currentFolderPath = r.folderPath;
-            saveSetting('currentFolderPath', currentFolderPath);
             savePlaylistState();
 
             libraryOverlay.classList.remove('visible');
         }
+    });
+
+    bind($('#add-folder-lib-btn'), 'click', async () => {
+        const r = await windowApi.selectMusicFolder();
+        if (!r || !r.folderPath) return;
+        if (r.folderPath === currentFolderPath || legacyFolders.includes(r.folderPath)) return;
+        legacyFolders.push(r.folderPath);
+        saveSetting('legacyFolders', legacyFolders);
+        renderLegacyFolderList();
+        PlaylistManager.appendTracks(r.tracks || []);
+        basePlaylist = PlaylistManager.getAllTracks();
+        playlist = [...basePlaylist];
+        sortPlaylist(sortMode);
+        currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
+        renderPlaylist();
+        updateUIForCurrentTrack();
+        savePlaylistState();
     });
 
     let st; bind(searchInput, 'input', (e) => { clearTimeout(st); st = setTimeout(() => { renderPlaylist(); }, 250); });
@@ -1645,6 +1751,68 @@ function setupEventListeners() {
             }
         }
     });
+
+    //--- Drag & Drop Reorder ---------------
+    playlistEl.addEventListener('dragstart', e => {
+        const row = e.target.closest('.track-row');
+        if(!row || !row.dataset.itemId) return;
+        legacyDragId = row.dataset.itemId;
+        row.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    playlistEl.addEventListener('dragend', () => {
+        legacyDragId = null;
+        playlistEl.querySelectorAll('.drag-over, .dragging').forEach(el => el.classList.remove('drag-over', 'dragging'));
+    });
+    playlistEl.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const row = e.target.closest('.track-row');
+        if(!row || !row.dataset.itemId || row.dataset.itemId === legacyDragId) return;
+        playlistEl.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        row.classList.add('drag-over');
+    });
+    playlistEl.addEventListener('dragleave', e => {
+        if(!playlistEl.contains(e.relatedTarget)) {
+            playlistEl.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        }
+    });
+    playlistEl.addEventListener('drop', e => {
+        e.preventDefault();
+        const row = e.target.closest('.track-row');
+        if(!row || !row.dataset.itemId || !legacyDragId || row.dataset.itemId === legacyDragId) return;
+        const fromIdx = PlaylistManager.items.findIndex(i => i.id === legacyDragId);
+        const toIdx = PlaylistManager.items.findIndex(i => i.id === row.dataset.itemId);
+        if(fromIdx === -1 || toIdx === -1) return;
+        PlaylistManager.moveItem(fromIdx, toIdx);
+        savePlaylistState();
+        renderPlaylist();
+    });
+
+    //--- External File Drop via Wails OnFileDrop ---------------
+    if(window.runtime && window.runtime.OnFileDrop) {
+        window.runtime.OnFileDrop(async (x, y, paths) => {
+            if(!paths || paths.length === 0) return;
+            const filePath = paths[0];
+            const sep = filePath.includes('\\') ? '\\' : '/';
+            const folderPath = filePath.substring(0, filePath.lastIndexOf(sep));
+            if(!folderPath) return;
+            const r = await windowApi.refreshMusicFolder(folderPath);
+            if(r && r.folderPath) {
+                if(!legacyFolders.includes(r.folderPath)) {
+                    legacyFolders.push(r.folderPath);
+                    saveSetting('legacyFolders', legacyFolders);
+                    renderLegacyFolderList();
+                }
+                PlaylistManager.appendTracks(r.tracks || []);
+                basePlaylist = PlaylistManager.getAllTracks();
+                playlist = [...basePlaylist];
+                currentIndex = currentTrackPath ? playlist.findIndex(t => t.path === currentTrackPath) : -1;
+                renderPlaylist();
+                savePlaylistState();
+            }
+        }, false);
+    }
 
     //--- Context Menu Bindings ---------------
     bind($('#cm-play'), 'click', () => {
@@ -2485,6 +2653,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? new IntroManager({ activeIntro }).play()
                 : new Promise(r => setTimeout(r, 500));
 
+            renderLegacyFolderList();
             loadLibrary();
 
             await introPromise;

@@ -1,6 +1,7 @@
 //--- Nova Wave Pro Engine ---------------
 import * as App from '../../wailsjs/go/main/App.js';
 import { PlaylistManager } from '../playlist/playlist_manager.js';
+import { LyricsManager } from '../lyrics/lyrics_manager.js';
 import { de_pro } from './language_pro/de_pro.js';
 import { en_pro } from './language_pro/en_pro.js';
 import { tr_pro } from './language_pro/tr_pro.js';
@@ -31,6 +32,8 @@ const state = {
     startTime: Date.now(),
     playlistStructure: null
 };
+
+let proDragId = null;
 
 const vfState = {
     activeFolderId: null,
@@ -82,6 +85,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     startUptimeCounter();
     applyTheme('#ff5722');
     applyTranslations();
+
+    window.api = { getLyrics: App.GetLyrics, hasLyrics: App.HasLyrics };
+    window.tr = tr;
+    LyricsManager.init(state.audio);
+    $('lyrics-btn').onclick = () => {
+        if(state.idx >= 0 && state.tracks[state.idx]) {
+            LyricsManager.fetchAndShow(state.tracks[state.idx].path);
+        }
+    };
     
     logPro("UI_INIT: ✓");
     logPro("WAILS_BRIDGE: connecting...");
@@ -179,9 +191,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     initLanguageSwitch();
     initVersionDisplay();
 
-    
+    //--- External File Drop via Wails OnFileDrop ---------------
+    if(window.runtime && window.runtime.OnFileDrop) {
+        window.runtime.OnFileDrop(async (x, y, paths) => {
+            if(!paths || paths.length === 0) return;
+            const filePath = paths[0];
+            const sep = filePath.includes('\\') ? '\\' : '/';
+            const folderPath = filePath.substring(0, filePath.lastIndexOf(sep));
+            if(!folderPath) return;
+            logPro(`EXT_DROP: ${folderPath}`);
+            try {
+                const res = await App.RefreshMusicFolder(folderPath);
+                if(res && res.tracks && res.tracks.length > 0) {
+                    if(!state.folders.includes(res.folderPath)) {
+                        state.folders.push(res.folderPath);
+                        App.SetSetting('v2_folders', JSON.stringify(state.folders)).catch(()=>{});
+                    }
+                    PlaylistManager.appendTracks(res.tracks);
+                    handleTracksRefresh();
+                    renderFolderSetup();
+                    logPro(`EXT_DROP: ${res.tracks.length} TRACKS MOUNTED ✓`);
+                } else {
+                    logPro('EXT_DROP: NO TRACKS FOUND', 'err');
+                }
+            } catch(err) {
+                logPro('EXT_DROP_ERROR: ' + (err.message || err), 'err');
+            }
+        }, false);
+    }
+
     logPro(tr('pro_status_ready'));
-    
+
     document.addEventListener('click', () => {
         const cm = $('context-menu');
         if(cm && !cm.classList.contains('hidden')) cm.classList.add('hidden');
@@ -429,6 +469,46 @@ function initLibraryUI() {
     };
     
     $('lib-search').oninput = e => render(e.target.value);
+
+    //--- Drag & Drop Reorder ---------------
+    const tbody = $('track-body');
+    tbody.addEventListener('dragstart', e => {
+        const row = e.target.closest('tr');
+        if(!row || !row.dataset.id) return;
+        proDragId = row.dataset.id;
+        row.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    tbody.addEventListener('dragend', () => {
+        proDragId = null;
+        tbody.querySelectorAll('.drag-over, .dragging').forEach(el => el.classList.remove('drag-over', 'dragging'));
+    });
+    tbody.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const row = e.target.closest('tr');
+        if(!row || !row.dataset.id || row.dataset.id === proDragId) return;
+        tbody.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        row.classList.add('drag-over');
+    });
+    tbody.addEventListener('dragleave', e => {
+        if(!tbody.contains(e.relatedTarget)) {
+            tbody.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        }
+    });
+    tbody.addEventListener('drop', e => {
+        e.preventDefault();
+        const row = e.target.closest('tr');
+        if(!row || !row.dataset.id || !proDragId || row.dataset.id === proDragId) return;
+        const fromIdx = PlaylistManager.items.findIndex(i => i.id === proDragId);
+        const toIdx = PlaylistManager.items.findIndex(i => i.id === row.dataset.id);
+        if(fromIdx === -1 || toIdx === -1) return;
+        PlaylistManager.moveItem(fromIdx, toIdx);
+        savePlaylistStructure();
+        state.tracks = PlaylistManager.getAllTracks();
+        render();
+        logPro("REORDER: DONE");
+    });
 }
 
 function handleTracksRefresh() {
@@ -492,7 +572,10 @@ function play(i) {
     
     const isFav = state.favorites.includes(t.path);
     $('m-fav').classList.toggle('active', isFav);
-    
+
+    LyricsManager.checkAvailability(t.path);
+    LyricsManager.hideLyrics();
+
     render();
 }
 
@@ -511,8 +594,8 @@ function render(q = '') {
         if(item.type === 'folder') {
             const arrow = item.collapsed ? '▶' : '▼';
             const col = item.color || '#38bdf8';
-            return `<tr class="folder-header" onclick="window.v2ftoggle('${item.id}')" oncontextmenu="window.v2fcm(event,'${item.id}')">
-                <td colspan="5" style="cursor:pointer;">
+            return `<tr class="folder-header" draggable="true" data-id="${item.id}" onclick="window.v2ftoggle('${item.id}')" oncontextmenu="window.v2fcm(event,'${item.id}')">
+                <td colspan="5" style="cursor:grab;">
                     <span style="font-size:9px; margin-right:6px; opacity:0.6;">${arrow}</span>
                     <span style="width:8px; height:8px; border-radius:50%; background:${col}; display:inline-block; margin-right:8px; vertical-align:middle;"></span>
                     <span style="color:${col};">${escHtml(item.name).toUpperCase()}</span>
@@ -528,8 +611,8 @@ function render(q = '') {
             ? `<td style="text-align:center; color:var(--accent); cursor:pointer;" onclick="event.stopPropagation(); window.v2fav(${realIdx})">❤</td>`
             : `<td style="text-align:center; opacity:0.2; cursor:pointer;" onclick="event.stopPropagation(); window.v2fav(${realIdx})">♡</td>`;
         
-        return `<tr class="track-row ${active?'active':''}" onclick="window.v2p(${realIdx})" oncontextmenu="window.v2cm(event, ${realIdx})">
-            <td class="t-mono">${active ? '▶' : currentDisplayIdx}</td>
+        return `<tr class="track-row ${active?'active':''}" draggable="true" data-id="${escHtml(item.id)}" onclick="window.v2p(${realIdx})" oncontextmenu="window.v2cm(event, ${realIdx})">
+            <td class="t-mono" style="cursor:grab;">${active ? '▶' : currentDisplayIdx}</td>
             ${favCell}
             <td class="t-title">${t.title || t.path.split(/[\\/]/).pop()}</td>
             <td class="t-artist">${t.artist || '-'}</td>

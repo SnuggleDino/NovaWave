@@ -446,6 +446,9 @@ body {
     border-left: 3px solid var(--accent);
 }
 
+.lite-track-item.drag-over { border-top: 2px solid var(--accent); background: rgba(168, 85, 247, 0.08); }
+.lite-track-item.dragging { opacity: 0.35; cursor: grabbing !important; }
+
 .lite-track-num {
     font-size: 0.75rem;
     color: var(--text-muted);

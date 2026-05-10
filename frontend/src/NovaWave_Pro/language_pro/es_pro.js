@@ -60,6 +60,11 @@ export const es_pro = {
     "pro_loop_none": "Bucle: NO",
     "pro_loop_all": "Bucle: TODO",
     "pro_loop_one": "Bucle: UNO",
+    "pro_btn_lyrics": "Mostrar letra",
+    "lyricsLoading": "Cargando letra...",
+    "lyricsNotFound": "Letra no encontrada.",
+    "lyricsError": "Error al cargar la letra.",
+    "noTrackSelected": "Ninguna pista seleccionada.",
     "pro_wails_bridge": "Conexión Wails establecida.",
     "pro_boot_error": "ERROR_INICIO: Conexión backend fallida.",
     "pro_audio_load_fail": "No se pudo cargar el archivo de audio."

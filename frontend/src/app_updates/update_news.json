@@ -1,109 +1,109 @@
 {
-    "version": "2.9.0",
-    "date": "07. Mai 2026",
+    "version": "2.9.2",
+    "date": "10. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Bugfixes, Performance & neue Features",
-        "en": "Bug Fixes, Performance & New Features",
-        "tr": "Hata Düzeltmeleri, Performans ve Yeni Özellikler",
-        "es": "Correcciones, Rendimiento y Nuevas Funciones",
-        "fr": "Corrections, Performance et Nouvelles Fonctionnalités",
-        "it": "Correzioni, Prestazioni e Nuove Funzionalità"
+        "de": "Virtual Folders, Lyrics, Drag & Drop & Multi-Ordner",
+        "en": "Virtual Folders, Lyrics, Drag & Drop & Multi-Folder",
+        "tr": "Sanal Klasörler, Sözler, Sürükle & Bırak ve Çoklu Klasör",
+        "es": "Carpetas Virtuales, Letras, Arrastrar y Soltar y Multi-Carpeta",
+        "fr": "Dossiers Virtuels, Paroles, Glisser-Déposer et Multi-Dossier",
+        "it": "Cartelle Virtuali, Testi, Trascina e Rilascia e Multi-Cartella"
     },
     "changes": [
         {
-            "icon": "🔧",
+            "icon": "📁",
             "title": {
-                "de": "Playlist Refresh Fix",
-                "en": "Playlist Refresh Fix",
-                "tr": "Oynatma Listesi Yenileme Düzeltmesi",
-                "es": "Corrección del Refresco de Playlist",
-                "fr": "Correction du Rafraîchissement Playlist",
-                "it": "Fix del Refresh Playlist"
+                "de": "Virtuelle Ordner (Pro UI)",
+                "en": "Virtual Folders (Pro UI)",
+                "tr": "Sanal Klasörler (Pro Arayüz)",
+                "es": "Carpetas Virtuales (Pro UI)",
+                "fr": "Dossiers Virtuels (Pro UI)",
+                "it": "Cartelle Virtuali (Pro UI)"
             },
             "desc": {
-                "de": "Der Refresh-Button im Playlist-Modal zeigt jetzt korrekt neue Songs an. Vorher wurden neu hinzugefügte Dateien ignoriert.",
-                "en": "The refresh button in the playlist modal now correctly displays new songs. Previously, newly added files were ignored.",
-                "tr": "Oynatma listesi modalındaki yenileme düğmesi artık yeni şarkıları doğru şekilde gösteriyor. Daha önce yeni eklenen dosyalar yoksayılıyordu.",
-                "es": "El botón de actualización en el modal de playlist ahora muestra correctamente las nuevas canciones. Anteriormente, los archivos recién añadidos eran ignorados.",
-                "fr": "Le bouton d'actualisation dans le modal de playlist affiche désormais correctement les nouvelles chansons. Auparavant, les fichiers nouvellement ajoutés étaient ignorés.",
-                "it": "Il pulsante di aggiornamento nel modal della playlist ora mostra correttamente i nuovi brani. In precedenza, i file aggiunti di recente venivano ignorati."
-            }
-        },
-        {
-            "icon": "⚡",
-            "title": {
-                "de": "Deutlich schnellerer App-Start",
-                "en": "Much Faster App Start",
-                "tr": "Çok Daha Hızlı Uygulama Başlangıcı",
-                "es": "Inicio de Aplicación Mucho Más Rápido",
-                "fr": "Démarrage de l'Application Bien Plus Rapide",
-                "it": "Avvio dell'App Molto Più Veloce"
-            },
-            "desc": {
-                "de": "Songs werden beim Start aus einem persistenten Cache geladen. 200+ Lieder laden jetzt in ~1 Sekunde statt ~30 Sekunden.",
-                "en": "Songs are now loaded from a persistent cache on startup. 200+ songs load in ~1 second instead of ~30 seconds.",
-                "tr": "Başlangıçta şarkılar artık kalıcı bir önbellekten yükleniyor. 200'den fazla şarkı yaklaşık 30 saniye yerine yaklaşık 1 saniyede yükleniyor.",
-                "es": "Las canciones ahora se cargan desde una caché persistente al iniciar. Más de 200 canciones se cargan en ~1 segundo en lugar de ~30 segundos.",
-                "fr": "Les chansons sont maintenant chargées depuis un cache persistant au démarrage. Plus de 200 chansons se chargent en ~1 seconde au lieu de ~30 secondes.",
-                "it": "Le canzoni vengono ora caricate da una cache persistente all'avvio. Oltre 200 brani si caricano in ~1 secondo invece di ~30 secondi."
+                "de": "Songs können im Pro-UI in farbige Gruppen organisiert werden. Gruppen lassen sich erstellen, umbenennen, löschen und einklappen. Die Struktur wird gespeichert und beim nächsten Start wiederhergestellt.",
+                "en": "Songs can now be organized into colored groups in the Pro UI. Groups can be created, renamed, deleted and collapsed. The structure is saved and restored on the next launch.",
+                "tr": "Pro arayüzünde şarkılar artık renkli gruplara düzenlenebilir. Gruplar oluşturulabilir, yeniden adlandırılabilir, silinebilir ve daraltılabilir. Yapı kaydedilir ve bir sonraki başlatmada geri yüklenir.",
+                "es": "Las canciones ahora pueden organizarse en grupos de colores en la Pro UI. Los grupos se pueden crear, renombrar, eliminar y colapsar. La estructura se guarda y se restaura al siguiente inicio.",
+                "fr": "Les chansons peuvent maintenant être organisées en groupes colorés dans la Pro UI. Les groupes peuvent être créés, renommés, supprimés et réduits. La structure est sauvegardée et restaurée au prochain lancement.",
+                "it": "I brani possono ora essere organizzati in gruppi colorati nella Pro UI. I gruppi possono essere creati, rinominati, eliminati e compressi. La struttura viene salvata e ripristinata al prossimo avvio."
             }
         },
         {
             "icon": "🎵",
             "title": {
-                "de": "Synchronisierte Lyrics",
-                "en": "Synchronized Lyrics",
-                "tr": "Senkronize Sözler",
-                "es": "Letras Sincronizadas",
-                "fr": "Paroles Synchronisées",
-                "it": "Testi Sincronizzati"
+                "de": "LRC Lyrics (Pro UI)",
+                "en": "LRC Lyrics (Pro UI)",
+                "tr": "LRC Sözler (Pro Arayüz)",
+                "es": "Letras LRC (Pro UI)",
+                "fr": "Paroles LRC (Pro UI)",
+                "it": "Testi LRC (Pro UI)"
             },
             "desc": {
-                "de": "LRC-Dateien mit Zeitstempeln werden jetzt synchron zur Musik hervorgehoben. Die aktuelle Zeile wird automatisch mitgescrollt.",
-                "en": "LRC files with timestamps are now highlighted in sync with the music. The current line scrolls into view automatically.",
-                "tr": "Zaman damgalı LRC dosyaları artık müzikle senkronize olarak vurgulanıyor. Mevcut satır otomatik olarak kaydırılıyor.",
-                "es": "Los archivos LRC con marcas de tiempo ahora se resaltan en sincronía con la música. La línea actual se desplaza automáticamente.",
-                "fr": "Les fichiers LRC avec horodatages sont maintenant mis en évidence en synchronisation avec la musique. La ligne actuelle défile automatiquement.",
-                "it": "I file LRC con timestamp vengono ora evidenziati in sincronia con la musica. La riga corrente scorre automaticamente."
+                "de": "Synchronisierte Liedtexte aus LRC-Dateien werden im Pro-UI angezeigt. Die aktuelle Zeile wird hervorgehoben und automatisch mitgescrollt. Das Lyrics-Overlay öffnet sich per Klick auf die Notentaste in der Player-Leiste.",
+                "en": "Synchronized lyrics from LRC files are displayed in the Pro UI. The current line is highlighted and scrolls into view automatically. The lyrics overlay opens by clicking the music note button in the player bar.",
+                "tr": "LRC dosyalarından senkronize sözler Pro arayüzünde görüntülenir. Mevcut satır vurgulanır ve otomatik olarak kaydırılır. Sözler katmanı, oynatıcı çubuğundaki nota düğmesine tıklanarak açılır.",
+                "es": "Las letras sincronizadas de archivos LRC se muestran en la Pro UI. La línea actual se resalta y se desplaza automáticamente. La superposición de letras se abre haciendo clic en el botón de nota musical en la barra del reproductor.",
+                "fr": "Les paroles synchronisées des fichiers LRC sont affichées dans la Pro UI. La ligne actuelle est mise en évidence et défile automatiquement. L'overlay des paroles s'ouvre en cliquant sur le bouton note de musique dans la barre du lecteur.",
+                "it": "I testi sincronizzati dai file LRC vengono visualizzati nella Pro UI. La riga corrente viene evidenziata e scorre automaticamente. L'overlay dei testi si apre cliccando sul pulsante nota musicale nella barra del lettore."
             }
         },
         {
-            "icon": "🎧",
+            "icon": "↕️",
             "title": {
-                "de": "Spotify Playlist-Download",
-                "en": "Spotify Playlist Download",
-                "tr": "Spotify Oynatma Listesi İndirme",
-                "es": "Descarga de Playlist de Spotify",
-                "fr": "Téléchargement de Playlist Spotify",
-                "it": "Download Playlist Spotify"
+                "de": "Drag & Drop (Alle UIs)",
+                "en": "Drag & Drop (All UIs)",
+                "tr": "Sürükle & Bırak (Tüm Arayüzler)",
+                "es": "Arrastrar y Soltar (Todas las UIs)",
+                "fr": "Glisser-Déposer (Toutes les UIs)",
+                "it": "Trascina e Rilascia (Tutte le UI)"
             },
             "desc": {
-                "de": "Komplette Spotify-Playlists können jetzt auf einmal heruntergeladen werden. Einfach den Playlist-Link einfügen — alle Songs werden automatisch in die Download-Warteschlange eingereiht.",
-                "en": "Complete Spotify playlists can now be downloaded at once. Simply paste the playlist link — all songs are automatically queued for download.",
-                "tr": "Eksiksiz Spotify çalma listeleri artık aynı anda indirilebilir. Çalma listesi bağlantısını yapıştırın — tüm şarkılar otomatik olarak indirme kuyruğuna eklenir.",
-                "es": "Las playlists completas de Spotify ahora se pueden descargar de una vez. Simplemente pega el enlace de la playlist — todas las canciones se añaden automáticamente a la cola de descarga.",
-                "fr": "Les playlists Spotify complètes peuvent maintenant être téléchargées d'un coup. Collez simplement le lien de la playlist — toutes les chansons sont automatiquement mises en file d'attente.",
-                "it": "Le playlist Spotify complete possono ora essere scaricate tutte in una volta. Incolla semplicemente il link della playlist — tutti i brani vengono automaticamente accodati per il download."
+                "de": "Songs können per Drag & Drop in der Playlist umsortiert werden — in Legacy, Pro und Lite UI. Das Ablegen einer Musikdatei von außen lädt automatisch den entsprechenden Ordner in den Player.",
+                "en": "Songs can be reordered by dragging and dropping within the playlist — in Legacy, Pro and Lite UI. Dropping a music file from outside automatically loads the corresponding folder into the player.",
+                "tr": "Şarkılar, çalma listesinde sürükleyip bırakarak yeniden sıralanabilir — Legacy, Pro ve Lite arayüzlerinde. Dışarıdan bir müzik dosyası bırakmak, ilgili klasörü otomatik olarak oynatıcıya yükler.",
+                "es": "Las canciones pueden reordenarse arrastrando y soltando dentro de la playlist — en Legacy, Pro y Lite UI. Soltar un archivo de música desde fuera carga automáticamente la carpeta correspondiente en el reproductor.",
+                "fr": "Les chansons peuvent être réordonnées par glisser-déposer dans la playlist — dans les UI Legacy, Pro et Lite. Déposer un fichier musical depuis l'extérieur charge automatiquement le dossier correspondant dans le lecteur.",
+                "it": "I brani possono essere riordinati tramite trascinamento nella playlist — nelle UI Legacy, Pro e Lite. Rilasciare un file musicale dall'esterno carica automaticamente la cartella corrispondente nel lettore."
             }
         },
         {
-            "icon": "🔗",
+            "icon": "🗂️",
             "title": {
-                "de": "Favoriten UI-übergreifend",
-                "en": "Cross-UI Favorites Sync",
-                "tr": "Arayüzler Arası Favori Senkronizasyonu",
-                "es": "Sincronización de Favoritos entre Interfaces",
-                "fr": "Synchronisation des Favoris entre Interfaces",
-                "it": "Sincronizzazione Preferiti tra Interfacce"
+                "de": "Multi-Ordner Support (Legacy UI)",
+                "en": "Multi-Folder Support (Legacy UI)",
+                "tr": "Çoklu Klasör Desteği (Legacy Arayüz)",
+                "es": "Soporte Multi-Carpeta (Legacy UI)",
+                "fr": "Support Multi-Dossier (Legacy UI)",
+                "it": "Supporto Multi-Cartella (Legacy UI)"
             },
             "desc": {
-                "de": "Favoriten werden jetzt zwischen Legacy-UI und Pro-UI geteilt. Als Favorit markierte Songs sind in beiden Oberflächen sichtbar.",
-                "en": "Favorites are now shared between the Legacy UI and Pro UI. Songs marked as favorites are visible in both interfaces.",
-                "tr": "Favoriler artık Eski Arayüz ve Pro Arayüz arasında paylaşılıyor. Favori olarak işaretlenen şarkılar her iki arayüzde de görünür.",
-                "es": "Los favoritos ahora se comparten entre la UI Legacy y la Pro UI. Las canciones marcadas como favoritas son visibles en ambas interfaces.",
-                "fr": "Les favoris sont maintenant partagés entre l'interface Legacy et la Pro UI. Les chansons marquées comme favorites sont visibles dans les deux interfaces.",
-                "it": "I preferiti sono ora condivisi tra la UI Legacy e la Pro UI. I brani contrassegnati come preferiti sono visibili in entrambe le interfacce."
+                "de": "In der Legacy UI können jetzt mehrere Ordner gleichzeitig geladen werden. Über '+ Ordner hinzufügen' in der Bibliothek lassen sich beliebig viele Quellen einbinden. Jeder Ordner kann einzeln entfernt werden.",
+                "en": "Multiple folders can now be loaded simultaneously in the Legacy UI. Additional sources can be added via '+ Add Folder' in the library. Each folder can be removed individually.",
+                "tr": "Legacy arayüzünde artık birden fazla klasör aynı anda yüklenebilir. Kütüphanedeki '+ Klasör Ekle' seçeneği ile istediğiniz kadar kaynak eklenebilir. Her klasör ayrı ayrı kaldırılabilir.",
+                "es": "Ahora se pueden cargar múltiples carpetas simultáneamente en la Legacy UI. Se pueden añadir fuentes adicionales mediante '+ Añadir Carpeta' en la biblioteca. Cada carpeta puede eliminarse individualmente.",
+                "fr": "Plusieurs dossiers peuvent maintenant être chargés simultanément dans la Legacy UI. Des sources supplémentaires peuvent être ajoutées via '+ Ajouter un Dossier' dans la bibliothèque. Chaque dossier peut être supprimé individuellement.",
+                "it": "Più cartelle possono ora essere caricate simultaneamente nella Legacy UI. Sorgenti aggiuntive possono essere aggiunte tramite '+ Aggiungi Cartella' nella libreria. Ogni cartella può essere rimossa individualmente."
+            }
+        },
+        {
+            "icon": "🔧",
+            "title": {
+                "de": "Datei-Drop Fix",
+                "en": "File Drop Fix",
+                "tr": "Dosya Bırakma Düzeltmesi",
+                "es": "Corrección de Arrastrar Archivos",
+                "fr": "Correction du Glisser-Déposer de Fichiers",
+                "it": "Fix del Rilascio File"
+            },
+            "desc": {
+                "de": "Das Ziehen einer Musikdatei in das Fenster öffnet keine neue WebView mehr. Der Ordner der gezogenen Datei wird stattdessen direkt in den Player eingebunden.",
+                "en": "Dragging a music file into the window no longer opens a new WebView. The folder of the dragged file is now directly loaded into the player instead.",
+                "tr": "Bir müzik dosyasını pencereye sürüklemek artık yeni bir WebView açmıyor. Sürüklenen dosyanın klasörü bunun yerine doğrudan oynatıcıya yüklenir.",
+                "es": "Arrastrar un archivo de música a la ventana ya no abre un nuevo WebView. La carpeta del archivo arrastrado ahora se carga directamente en el reproductor.",
+                "fr": "Faire glisser un fichier musical dans la fenêtre n'ouvre plus un nouveau WebView. Le dossier du fichier glissé est maintenant chargé directement dans le lecteur.",
+                "it": "Trascinare un file musicale nella finestra non apre più un nuovo WebView. La cartella del file trascinato viene ora caricata direttamente nel lettore."
             }
         }
     ]

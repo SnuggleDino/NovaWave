@@ -74,6 +74,13 @@ export const de_pro = {
     "pro_loop_all": "Wiederholung: ALLE",
     "pro_loop_one": "Wiederholung: EINZELN",
 
+    // --- Lyrics ---
+    "pro_btn_lyrics": "Lyrics anzeigen",
+    "lyricsLoading": "Lade Lyrics...",
+    "lyricsNotFound": "Keine Lyrics gefunden.",
+    "lyricsError": "Lyrics konnten nicht geladen werden.",
+    "noTrackSelected": "Kein Track ausgewählt.",
+
     // --- System ---
     "pro_wails_bridge": "Wails-Bridge hergestellt.",
     "pro_boot_error": "BOOT_FEHLER: Backend-Verbindung fehlgeschlagen.",

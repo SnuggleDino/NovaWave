@@ -60,6 +60,11 @@ export const it_pro = {
     "pro_loop_none": "Ripeti: NO",
     "pro_loop_all": "Ripeti: TUTTO",
     "pro_loop_one": "Ripeti: UNO",
+    "pro_btn_lyrics": "Mostra testo",
+    "lyricsLoading": "Caricamento testo...",
+    "lyricsNotFound": "Testo non trovato.",
+    "lyricsError": "Errore caricamento testo.",
+    "noTrackSelected": "Nessuna traccia selezionata.",
     "pro_wails_bridge": "Connessione Wails stabilita.",
     "pro_boot_error": "ERRORE_AVVIO: Connessione backend fallita.",
     "pro_audio_load_fail": "Impossibile caricare il file audio."

@@ -74,6 +74,13 @@ export const en_pro = {
     "pro_loop_all": "Loop: ALL",
     "pro_loop_one": "Loop: ONE",
 
+    // --- Lyrics ---
+    "pro_btn_lyrics": "Show Lyrics",
+    "lyricsLoading": "Loading lyrics...",
+    "lyricsNotFound": "No lyrics found.",
+    "lyricsError": "Could not load lyrics.",
+    "noTrackSelected": "No track selected.",
+
     // --- System ---
     "pro_wails_bridge": "Wails bridge established.",
     "pro_boot_error": "BOOT_ERROR: Backend interaction failed.",

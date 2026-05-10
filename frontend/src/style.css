@@ -2378,6 +2378,9 @@ input[type=range].volume-slider::-moz-range-thumb {
     transform: scale(1.02);
 }
 
+.track-row.drag-over { border-top: 2px solid var(--accent) !important; background: var(--accent-soft) !important; }
+.track-row.dragging { opacity: 0.35; cursor: grabbing !important; }
+
 .track-index {
     width: 24px;
     font-size: 0.75rem;

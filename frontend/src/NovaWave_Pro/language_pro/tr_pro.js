@@ -60,6 +60,11 @@ export const tr_pro = {
     "pro_loop_none": "Döngü: KAPALI",
     "pro_loop_all": "Döngü: HEPSİ",
     "pro_loop_one": "Döngü: TEK",
+    "pro_btn_lyrics": "Sözleri göster",
+    "lyricsLoading": "Sözler yükleniyor...",
+    "lyricsNotFound": "Söz bulunamadı.",
+    "lyricsError": "Sözler yüklenemedi.",
+    "noTrackSelected": "Parça seçilmedi.",
     "pro_wails_bridge": "Wails bağlantısı kuruldu.",
     "pro_boot_error": "BOOT_HATASI: Backend bağlantısı başarısız.",
     "pro_audio_load_fail": "Ses dosyası yüklenemedi."

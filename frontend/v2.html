@@ -336,6 +336,14 @@
                 </div>
             </div>
             <div class="m-extra">
+                <button class="btn-transport" id="lyrics-btn" title="Show Lyrics" style="display:none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                </button>
                 <button class="btn-transport" id="m-fav" title="Favorite">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -379,6 +387,17 @@
                 <button class="btn-pro" id="pfm-cancel">Cancel</button>
                 <button class="btn-pro primary" id="pfm-save">Save</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Lyrics Overlay -->
+    <div id="lyrics-overlay">
+        <div class="pro-modal" style="max-width:560px; width:90%; max-height:80vh; display:flex; flex-direction:column;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-shrink:0;">
+                <h2 style="font-size:14px; font-weight:900; margin:0; font-family:var(--font-mono);">LYRICS</h2>
+                <button class="btn-transport" id="lyrics-close-btn" style="font-size:18px;">✕</button>
+            </div>
+            <div id="lyrics-content" class="lyrics-scroll"></div>
         </div>
     </div>
 

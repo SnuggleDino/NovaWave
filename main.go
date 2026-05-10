@@ -91,7 +91,7 @@ func main() {
 		},
 
 		DragAndDrop: &options.DragAndDrop{
-			EnableFileDrop:     false,
+			EnableFileDrop:     true,
 			DisableWebViewDrop: true,
 		},
 

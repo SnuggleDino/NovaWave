@@ -14,6 +14,7 @@ let isPlaying = false;
 let shuffleOn = false;
 let loopMode = 0; // 0 = Off, 1 = Loop All, 2 = Loop One
 let currentVolume = 0.2;
+let liteDragIdx = null;
 
 const audio = document.getElementById('lite-audio');
 
@@ -247,6 +248,42 @@ function renderTrackList(isReshuffle = false) {
             loadTrack(originalIndex);
             play();
         });
+
+        div.draggable = true;
+        div.dataset.liteDragIdx = String(originalIndex);
+
+        div.addEventListener('dragstart', e => {
+            liteDragIdx = originalIndex;
+            div.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        div.addEventListener('dragend', () => {
+            liteDragIdx = null;
+            elTrackList.querySelectorAll('.drag-over, .dragging').forEach(el => el.classList.remove('drag-over', 'dragging'));
+        });
+        div.addEventListener('dragover', e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if(parseInt(div.dataset.liteDragIdx) === liteDragIdx) return;
+            elTrackList.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            div.classList.add('drag-over');
+        });
+        div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
+        div.addEventListener('drop', e => {
+            e.preventDefault();
+            if(liteDragIdx === null) return;
+            const from = liteDragIdx;
+            const to = parseInt(div.dataset.liteDragIdx);
+            if(from === to) return;
+            const dragged = playlist.splice(from, 1)[0];
+            playlist.splice(to, 0, dragged);
+            if(currentIndex === from) currentIndex = to;
+            else if(from < to && currentIndex > from && currentIndex <= to) currentIndex--;
+            else if(from > to && currentIndex >= to && currentIndex < from) currentIndex++;
+            basePlaylist = [...playlist];
+            renderTrackList(true);
+        });
+
         fragment.appendChild(div);
     });
 
@@ -363,3 +400,22 @@ $('lite-switch-full-btn').addEventListener('click', async () => {
 
 // --- Initialization ---
 applyTranslations();
+
+// --- External File Drop via Wails OnFileDrop ---
+if(window.runtime && window.runtime.OnFileDrop) {
+    window.runtime.OnFileDrop(async (x, y, paths) => {
+        if(!paths || paths.length === 0) return;
+        const filePath = paths[0];
+        const sep = filePath.includes('\\') ? '\\' : '/';
+        const folderPath = filePath.substring(0, filePath.lastIndexOf(sep));
+        if(!folderPath) return;
+        try {
+            const result = await App.RefreshMusicFolder(folderPath);
+            if(result && result.tracks && result.tracks.length > 0) {
+                processNewTracks(result.tracks);
+            }
+        } catch(err) {
+            console.error('[LiteUI] EXT_DROP_ERROR:', err);
+        }
+    }, false);
+}
