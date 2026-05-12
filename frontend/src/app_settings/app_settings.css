@@ -16,7 +16,7 @@
     flex-direction: column !important;
     gap: 15px !important;
     min-height: 250px !important;
-    transition: all 0.3s ease !important;
+    transition: background 0.3s ease, border-color 0.3s ease !important;
 }
 
 .design-ui-card:hover {
@@ -74,7 +74,7 @@
     color: var(--text-main);
     font-size: 0.9rem;
     outline: none;
-    transition: all 0.2s;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
 #settings-search-input:focus {
@@ -143,7 +143,7 @@
     gap: 16px;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: background 0.3s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s cubic-bezier(0.23, 1, 0.32, 1), transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .design-ui-card.active {
@@ -211,7 +211,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .shortcut-item:hover {

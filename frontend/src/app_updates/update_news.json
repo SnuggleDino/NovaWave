@@ -1,109 +1,90 @@
 {
-    "version": "2.9.2",
-    "date": "10. Mai 2026",
+    "version": "2.9.3",
+    "date": "12. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Virtual Folders, Lyrics, Drag & Drop & Multi-Ordner",
-        "en": "Virtual Folders, Lyrics, Drag & Drop & Multi-Folder",
-        "tr": "Sanal Klasörler, Sözler, Sürükle & Bırak ve Çoklu Klasör",
-        "es": "Carpetas Virtuales, Letras, Arrastrar y Soltar y Multi-Carpeta",
-        "fr": "Dossiers Virtuels, Paroles, Glisser-Déposer et Multi-Dossier",
-        "it": "Cartelle Virtuali, Testi, Trascina e Rilascia e Multi-Cartella"
+        "de": "Miniplayer Redesign & Sprachvervollständigung",
+        "en": "Miniplayer Redesign & Language Completion",
+        "tr": "Mini Oynatıcı Yeniden Tasarımı & Dil Tamamlama",
+        "es": "Rediseño del Minireproductor y Completado de Idiomas",
+        "fr": "Refonte du Minilecteur et Complétion des Langues",
+        "it": "Redesign del Miniriproduttore e Completamento Lingue"
     },
     "changes": [
         {
-            "icon": "📁",
+            "icon": "🎛️",
             "title": {
-                "de": "Virtuelle Ordner (Pro UI)",
-                "en": "Virtual Folders (Pro UI)",
-                "tr": "Sanal Klasörler (Pro Arayüz)",
-                "es": "Carpetas Virtuales (Pro UI)",
-                "fr": "Dossiers Virtuels (Pro UI)",
-                "it": "Cartelle Virtuali (Pro UI)"
+                "de": "Miniplayer Redesign",
+                "en": "Miniplayer Redesign",
+                "tr": "Mini Oynatıcı Yeniden Tasarımı",
+                "es": "Rediseño del Minireproductor",
+                "fr": "Refonte du Minilecteur",
+                "it": "Redesign del Miniriproduttore"
             },
             "desc": {
-                "de": "Songs können im Pro-UI in farbige Gruppen organisiert werden. Gruppen lassen sich erstellen, umbenennen, löschen und einklappen. Die Struktur wird gespeichert und beim nächsten Start wiederhergestellt.",
-                "en": "Songs can now be organized into colored groups in the Pro UI. Groups can be created, renamed, deleted and collapsed. The structure is saved and restored on the next launch.",
-                "tr": "Pro arayüzünde şarkılar artık renkli gruplara düzenlenebilir. Gruplar oluşturulabilir, yeniden adlandırılabilir, silinebilir ve daraltılabilir. Yapı kaydedilir ve bir sonraki başlatmada geri yüklenir.",
-                "es": "Las canciones ahora pueden organizarse en grupos de colores en la Pro UI. Los grupos se pueden crear, renombrar, eliminar y colapsar. La estructura se guarda y se restaura al siguiente inicio.",
-                "fr": "Les chansons peuvent maintenant être organisées en groupes colorés dans la Pro UI. Les groupes peuvent être créés, renommés, supprimés et réduits. La structure est sauvegardée et restaurée au prochain lancement.",
-                "it": "I brani possono ora essere organizzati in gruppi colorati nella Pro UI. I gruppi possono essere creati, rinominati, eliminati e compressi. La struttura viene salvata e ripristinata al prossimo avvio."
+                "de": "Der Miniplayer wurde vollständig neu gestaltet. Das Album-Cover erscheint jetzt als quadratisches Element mit abgerundeten Ecken und freier Animations-Bewegung. Titel, Artist, Steuerbuttons, Lautstärke und Fortschrittsleiste sind übersichtlich in einem kompakten 600×200-Fenster angeordnet.",
+                "en": "The Miniplayer has been completely redesigned. The album cover now appears as a square element with rounded corners and free animation movement. Title, artist, control buttons, volume and progress bar are clearly arranged in a compact 600×200 window.",
+                "tr": "Mini oynatıcı tamamen yeniden tasarlandı. Albüm kapağı artık yuvarlatılmış köşeler ve serbest animasyon hareketiyle kare bir eleman olarak görünüyor. Başlık, sanatçı, kontrol düğmeleri, ses ve ilerleme çubuğu kompakt 600×200 pencerede düzenli şekilde sıralanıyor.",
+                "es": "El Minireproductor ha sido completamente rediseñado. La portada del álbum aparece ahora como un elemento cuadrado con esquinas redondeadas y movimiento de animación libre. El título, artista, botones de control, volumen y barra de progreso están claramente ordenados en una ventana compacta de 600×200.",
+                "fr": "Le Minilecteur a été entièrement repensé. La pochette d'album apparaît maintenant comme un élément carré avec des coins arrondis et un mouvement d'animation libre. Le titre, l'artiste, les boutons de contrôle, le volume et la barre de progression sont clairement disposés dans une fenêtre compacte de 600×200.",
+                "it": "Il Miniriproduttore è stato completamente riprogettato. La copertina dell'album appare ora come un elemento quadrato con angoli arrotondati e movimento di animazione libero. Titolo, artista, pulsanti di controllo, volume e barra di avanzamento sono chiaramente disposti in una finestra compatta 600×200."
             }
         },
         {
-            "icon": "🎵",
+            "icon": "🐛",
             "title": {
-                "de": "LRC Lyrics (Pro UI)",
-                "en": "LRC Lyrics (Pro UI)",
-                "tr": "LRC Sözler (Pro Arayüz)",
-                "es": "Letras LRC (Pro UI)",
-                "fr": "Paroles LRC (Pro UI)",
-                "it": "Testi LRC (Pro UI)"
+                "de": "Close-Button Bug behoben",
+                "en": "Close Button Bug Fixed",
+                "tr": "Kapat Düğmesi Hatası Düzeltildi",
+                "es": "Error del Botón Cerrar Corregido",
+                "fr": "Correction du Bouton Fermer",
+                "it": "Bug del Pulsante Chiudi Risolto"
             },
             "desc": {
-                "de": "Synchronisierte Liedtexte aus LRC-Dateien werden im Pro-UI angezeigt. Die aktuelle Zeile wird hervorgehoben und automatisch mitgescrollt. Das Lyrics-Overlay öffnet sich per Klick auf die Notentaste in der Player-Leiste.",
-                "en": "Synchronized lyrics from LRC files are displayed in the Pro UI. The current line is highlighted and scrolls into view automatically. The lyrics overlay opens by clicking the music note button in the player bar.",
-                "tr": "LRC dosyalarından senkronize sözler Pro arayüzünde görüntülenir. Mevcut satır vurgulanır ve otomatik olarak kaydırılır. Sözler katmanı, oynatıcı çubuğundaki nota düğmesine tıklanarak açılır.",
-                "es": "Las letras sincronizadas de archivos LRC se muestran en la Pro UI. La línea actual se resalta y se desplaza automáticamente. La superposición de letras se abre haciendo clic en el botón de nota musical en la barra del reproductor.",
-                "fr": "Les paroles synchronisées des fichiers LRC sont affichées dans la Pro UI. La ligne actuelle est mise en évidence et défile automatiquement. L'overlay des paroles s'ouvre en cliquant sur le bouton note de musique dans la barre du lecteur.",
-                "it": "I testi sincronizzati dai file LRC vengono visualizzati nella Pro UI. La riga corrente viene evidenziata e scorre automaticamente. L'overlay dei testi si apre cliccando sul pulsante nota musicale nella barra del lettore."
+                "de": "Die fehlerhafte Hover-Animation des Schließen-Buttons (×) wurde entfernt. Zusätzlich wurden alle `transition: all`-Regeln in den Einstellungen durch explizite Eigenschaften ersetzt, sodass keine unerwünschten Animationen mehr auf benachbarte Elemente übertragen werden.",
+                "en": "The faulty hover animation of the close button (×) has been removed. Additionally, all `transition: all` rules in the settings panel were replaced with explicit properties, preventing unwanted animations from propagating to neighbouring elements.",
+                "tr": "Kapat düğmesinin (×) hatalı hover animasyonu kaldırıldı. Ayrıca ayarlar panelindeki tüm `transition: all` kuralları, istenmeyen animasyonların komşu öğelere yayılmasını önlemek için açık özelliklerle değiştirildi.",
+                "es": "Se eliminó la animación hover defectuosa del botón cerrar (×). Además, todas las reglas `transition: all` del panel de ajustes fueron reemplazadas por propiedades explícitas para evitar que animaciones no deseadas se propaguen a elementos vecinos.",
+                "fr": "L'animation hover défectueuse du bouton fermer (×) a été supprimée. De plus, toutes les règles `transition: all` dans le panneau des paramètres ont été remplacées par des propriétés explicites pour éviter la propagation d'animations indésirables aux éléments voisins.",
+                "it": "L'animazione hover difettosa del pulsante chiudi (×) è stata rimossa. Inoltre, tutte le regole `transition: all` nel pannello delle impostazioni sono state sostituite con proprietà esplicite per evitare che animazioni indesiderate si propaghino agli elementi vicini."
             }
         },
         {
-            "icon": "↕️",
+            "icon": "✨",
             "title": {
-                "de": "Drag & Drop (Alle UIs)",
-                "en": "Drag & Drop (All UIs)",
-                "tr": "Sürükle & Bırak (Tüm Arayüzler)",
-                "es": "Arrastrar y Soltar (Todas las UIs)",
-                "fr": "Glisser-Déposer (Toutes les UIs)",
-                "it": "Trascina e Rilascia (Tutte le UI)"
+                "de": "Audio-Panel Animation",
+                "en": "Audio Panel Animation",
+                "tr": "Ses Paneli Animasyonu",
+                "es": "Animación del Panel de Audio",
+                "fr": "Animation du Panneau Audio",
+                "it": "Animazione del Pannello Audio"
             },
             "desc": {
-                "de": "Songs können per Drag & Drop in der Playlist umsortiert werden — in Legacy, Pro und Lite UI. Das Ablegen einer Musikdatei von außen lädt automatisch den entsprechenden Ordner in den Player.",
-                "en": "Songs can be reordered by dragging and dropping within the playlist — in Legacy, Pro and Lite UI. Dropping a music file from outside automatically loads the corresponding folder into the player.",
-                "tr": "Şarkılar, çalma listesinde sürükleyip bırakarak yeniden sıralanabilir — Legacy, Pro ve Lite arayüzlerinde. Dışarıdan bir müzik dosyası bırakmak, ilgili klasörü otomatik olarak oynatıcıya yükler.",
-                "es": "Las canciones pueden reordenarse arrastrando y soltando dentro de la playlist — en Legacy, Pro y Lite UI. Soltar un archivo de música desde fuera carga automáticamente la carpeta correspondiente en el reproductor.",
-                "fr": "Les chansons peuvent être réordonnées par glisser-déposer dans la playlist — dans les UI Legacy, Pro et Lite. Déposer un fichier musical depuis l'extérieur charge automatiquement le dossier correspondant dans le lecteur.",
-                "it": "I brani possono essere riordinati tramite trascinamento nella playlist — nelle UI Legacy, Pro e Lite. Rilasciare un file musicale dall'esterno carica automaticamente la cartella corrispondente nel lettore."
+                "de": "Das Audio-Features-Panel (Bass, Crystalizer, Reverb, EQ) blendet jetzt mit einer sanften Slide+Fade-Animation ein und aus. Die Bewegung ist GPU-beschleunigt via `transform` und `opacity` – je nach Playlist-Seite gleitet es von links oder rechts herein.",
+                "en": "The audio features panel (Bass, Crystalizer, Reverb, EQ) now shows and hides with a smooth slide and fade animation. The motion is GPU-accelerated via `transform` and `opacity` – sliding in from the left or right depending on the playlist side.",
+                "tr": "Ses özellikleri paneli (Bass, Crystalizer, Reverb, EQ) artık yumuşak bir kayma ve solma animasyonuyla gösterilip gizleniyor. Hareket, `transform` ve `opacity` ile GPU hızlandırmalı olup çalma listesi tarafına göre soldan veya sağdan kayıyor.",
+                "es": "El panel de características de audio (Bass, Crystalizer, Reverb, EQ) ahora se muestra y oculta con una suave animación de deslizamiento y fundido. El movimiento está acelerado por GPU mediante `transform` y `opacity`, deslizándose desde la izquierda o la derecha según el lado de la lista de reproducción.",
+                "fr": "Le panneau des fonctionnalités audio (Bass, Crystalizer, Reverb, EQ) s'affiche et se masque maintenant avec une douce animation de glissement et de fondu. Le mouvement est accéléré par GPU via `transform` et `opacity`, glissant depuis la gauche ou la droite selon le côté de la liste de lecture.",
+                "it": "Il pannello delle funzionalità audio (Bass, Crystalizer, Reverb, EQ) ora appare e scompare con una fluida animazione di scorrimento e dissolvenza. Il movimento è accelerato dalla GPU tramite `transform` e `opacity`, scivolando da sinistra o destra in base al lato della playlist."
             }
         },
         {
-            "icon": "🗂️",
+            "icon": "🌍",
             "title": {
-                "de": "Multi-Ordner Support (Legacy UI)",
-                "en": "Multi-Folder Support (Legacy UI)",
-                "tr": "Çoklu Klasör Desteği (Legacy Arayüz)",
-                "es": "Soporte Multi-Carpeta (Legacy UI)",
-                "fr": "Support Multi-Dossier (Legacy UI)",
-                "it": "Supporto Multi-Cartella (Legacy UI)"
+                "de": "Sprachvervollständigung (ES / FR / IT / TR)",
+                "en": "Language Completion (ES / FR / IT / TR)",
+                "tr": "Dil Tamamlama (ES / FR / IT / TR)",
+                "es": "Completado de Idiomas (ES / FR / IT / TR)",
+                "fr": "Complétion des Langues (ES / FR / IT / TR)",
+                "it": "Completamento Lingue (ES / FR / IT / TR)"
             },
             "desc": {
-                "de": "In der Legacy UI können jetzt mehrere Ordner gleichzeitig geladen werden. Über '+ Ordner hinzufügen' in der Bibliothek lassen sich beliebig viele Quellen einbinden. Jeder Ordner kann einzeln entfernt werden.",
-                "en": "Multiple folders can now be loaded simultaneously in the Legacy UI. Additional sources can be added via '+ Add Folder' in the library. Each folder can be removed individually.",
-                "tr": "Legacy arayüzünde artık birden fazla klasör aynı anda yüklenebilir. Kütüphanedeki '+ Klasör Ekle' seçeneği ile istediğiniz kadar kaynak eklenebilir. Her klasör ayrı ayrı kaldırılabilir.",
-                "es": "Ahora se pueden cargar múltiples carpetas simultáneamente en la Legacy UI. Se pueden añadir fuentes adicionales mediante '+ Añadir Carpeta' en la biblioteca. Cada carpeta puede eliminarse individualmente.",
-                "fr": "Plusieurs dossiers peuvent maintenant être chargés simultanément dans la Legacy UI. Des sources supplémentaires peuvent être ajoutées via '+ Ajouter un Dossier' dans la bibliothèque. Chaque dossier peut être supprimé individuellement.",
-                "it": "Più cartelle possono ora essere caricate simultaneamente nella Legacy UI. Sorgenti aggiuntive possono essere aggiunte tramite '+ Aggiungi Cartella' nella libreria. Ogni cartella può essere rimossa individualmente."
-            }
-        },
-        {
-            "icon": "🔧",
-            "title": {
-                "de": "Datei-Drop Fix",
-                "en": "File Drop Fix",
-                "tr": "Dosya Bırakma Düzeltmesi",
-                "es": "Corrección de Arrastrar Archivos",
-                "fr": "Correction du Glisser-Déposer de Fichiers",
-                "it": "Fix del Rilascio File"
-            },
-            "desc": {
-                "de": "Das Ziehen einer Musikdatei in das Fenster öffnet keine neue WebView mehr. Der Ordner der gezogenen Datei wird stattdessen direkt in den Player eingebunden.",
-                "en": "Dragging a music file into the window no longer opens a new WebView. The folder of the dragged file is now directly loaded into the player instead.",
-                "tr": "Bir müzik dosyasını pencereye sürüklemek artık yeni bir WebView açmıyor. Sürüklenen dosyanın klasörü bunun yerine doğrudan oynatıcıya yüklenir.",
-                "es": "Arrastrar un archivo de música a la ventana ya no abre un nuevo WebView. La carpeta del archivo arrastrado ahora se carga directamente en el reproductor.",
-                "fr": "Faire glisser un fichier musical dans la fenêtre n'ouvre plus un nouveau WebView. Le dossier du fichier glissé est maintenant chargé directement dans le lecteur.",
-                "it": "Trascinare un file musicale nella finestra non apre più un nuovo WebView. La cartella del file trascinato viene ora caricata direttamente nel lettore."
+                "de": "Fehlende Übersetzungsschlüssel in Spanisch, Französisch, Italienisch und Türkisch wurden nachgepflegt. Betroffen waren die Wiedergabemodi (Alle/Eine wiederholen) sowie die vollständige FNF-Sektion mit allen Spieleinstellungen.",
+                "en": "Missing translation keys in Spanish, French, Italian and Turkish have been added. Affected were the playback modes (loop all / loop one) and the complete FNF section with all game settings.",
+                "tr": "İspanyolca, Fransızca, İtalyanca ve Türkçe'deki eksik çeviri anahtarları eklendi. Etkilenen alanlar oynatma modları (tümünü/birini tekrarla) ve tüm oyun ayarlarıyla birlikte tam FNF bölümüydü.",
+                "es": "Se han añadido las claves de traducción faltantes en español, francés, italiano y turco. Afectados estaban los modos de reproducción (repetir todo / repetir uno) y la sección FNF completa con todos los ajustes del juego.",
+                "fr": "Les clés de traduction manquantes en espagnol, français, italien et turc ont été ajoutées. Les modes de lecture (répéter tout / répéter un) et la section FNF complète avec tous les paramètres du jeu étaient concernés.",
+                "it": "Le chiavi di traduzione mancanti in spagnolo, francese, italiano e turco sono state aggiunte. Interessati erano le modalità di riproduzione (ripeti tutto / ripeti uno) e la sezione FNF completa con tutte le impostazioni di gioco."
             }
         }
     ]

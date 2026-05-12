@@ -14,7 +14,7 @@ export class MiniPlayer {
 
         const isEightBit = document.body.classList.contains('8-bit-active');
         const w = isEightBit ? 630 : 600;
-        const h = isEightBit ? 230 : 200;
+        const h = isEightBit ? 225 : 200;
         this.api.setWindowSize(w, h);
 
         if (this.onUpdate) this.onUpdate();
@@ -24,7 +24,7 @@ export class MiniPlayer {
             this.savedSettings.maxBars = this.visualizer.maxBars;
             this.visualizer.updateSettings({
                 style: 'bars',
-                maxBars: 5
+                maxBars: 8
             });
         }
     }
