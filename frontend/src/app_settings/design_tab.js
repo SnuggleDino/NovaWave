@@ -137,7 +137,6 @@ export function renderDesignCards() {
         </div>
     `;
 
-    // Re-bind click handlers
     container.querySelectorAll('.design-switch-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             switchUiVersion(btn.dataset.uiKey, btn.dataset.uiTarget);

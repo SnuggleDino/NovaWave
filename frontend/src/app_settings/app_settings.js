@@ -48,7 +48,7 @@ export const AppSettings = {
     performSearch: function (query) {
         const items = document.querySelectorAll('.setting-item');
         const sections = document.querySelectorAll('.settings-tab-content');
-        const navBtns = document.querySelectorAll('.settings-nav-btn');
+        const navBtns = document.querySelectorAll('.drawer-tab-btn');
         const titles = document.querySelectorAll('.settings-section-title');
 
         items.forEach(item => {
@@ -68,7 +68,7 @@ export const AppSettings = {
         });
 
         if (!query) {
-            const activeBtn = document.querySelector('.settings-nav-btn.active');
+            const activeBtn = document.querySelector('.drawer-tab-btn.active');
             if (activeBtn) {
                 const target = activeBtn.dataset.target;
                 const targetContent = document.getElementById(target);
@@ -131,8 +131,7 @@ export const AppSettings = {
     setupEventListeners: function () {
         const $ = (id) => document.getElementById(id);
 
-        // --- NAVIGATION ---
-        const settingTabs = document.querySelectorAll('.settings-nav-btn');
+        const settingTabs = document.querySelectorAll('.drawer-tab-btn');
         const settingContents = document.querySelectorAll('.settings-tab-content');
 
         settingTabs.forEach(tab => {
@@ -150,32 +149,25 @@ export const AppSettings = {
         });
 
         const settingsBtn = $('settings-btn');
-        const settingsOverlay = $('settings-overlay');
+        const settingsDrawer = $('settings-drawer');
+        const settingsBackdrop = $('settings-drawer-backdrop');
         const settingsCloseBtn = $('settings-close-btn');
 
-        if (settingsBtn && settingsOverlay) {
-            settingsBtn.addEventListener('click', () => settingsOverlay.classList.add('visible'));
-        }
-        if (settingsCloseBtn && settingsOverlay) {
-            settingsCloseBtn.addEventListener('click', () => settingsOverlay.classList.remove('visible'));
-        }
+        const openDrawer = () => {
+            if (settingsDrawer) settingsDrawer.classList.add('open');
+            if (settingsBackdrop) settingsBackdrop.classList.add('open');
+        };
+        const closeDrawer = () => {
+            if (settingsDrawer) settingsDrawer.classList.remove('open');
+            if (settingsBackdrop) settingsBackdrop.classList.remove('open');
+        };
 
-        // --- SUB NAVIGATION ---
-        const subNavBtns = document.querySelectorAll('.sub-nav-btn');
-        subNavBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const targetId = btn.dataset.subTarget;
-                const parentTab = btn.closest('.settings-tab-content');
-                if (!parentTab) return;
+        if (settingsBtn) settingsBtn.addEventListener('click', openDrawer);
+        if (settingsCloseBtn) settingsCloseBtn.addEventListener('click', closeDrawer);
+        if (settingsBackdrop) settingsBackdrop.addEventListener('click', closeDrawer);
 
-                parentTab.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                parentTab.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
-                const targetContent = document.getElementById(targetId);
-                if (targetContent) targetContent.classList.add('active');
-            });
-        });
+        this._openDrawer = openDrawer;
+        this._closeDrawer = closeDrawer;
 
         // --- APPEARANCE TAB ---
 
@@ -794,8 +786,7 @@ export const AppSettings = {
         const container = document.getElementById('design-ui-cards');
         if (!container) return;
 
-        // Apply grid class to container
-        container.className = 'design-ui-grid';
+        container.className = 'duc-list';
         container.innerHTML = '';
 
         const tr = (key) => LangHandler.tr(key);
@@ -803,8 +794,6 @@ export const AppSettings = {
         const isV2 = window.location.pathname.includes('v2.html');
         const isLite = window.location.pathname.includes('lite.html');
         const activeUi = isV2 ? 'v2' : isLite ? 'lite' : 'legacy';
-
-        const activeBadgeText = tr('designActiveBadge');
 
         const cards = [
             {
@@ -837,84 +826,38 @@ export const AppSettings = {
             const isActive = card.key === activeUi;
 
             const cardEl = document.createElement('div');
-            cardEl.className = `design-ui-card ${isActive ? 'active' : ''}`;
+            cardEl.className = `duc-card${isActive ? ' active' : ''}`;
 
-            // Badge (Top Left)
-            const badgeEl = document.createElement('div');
-            badgeEl.className = 'design-active-badge';
-            badgeEl.style.background = isActive ? 'var(--accent)' : 'rgba(255,255,255,0.1)';
-            badgeEl.style.color = isActive ? '#000' : 'var(--text-muted)';
-            badgeEl.style.left = '12px';
-            badgeEl.style.right = 'auto';
-            badgeEl.textContent = card.badge;
-            cardEl.appendChild(badgeEl);
+            cardEl.innerHTML = `
+                <div class="duc-card-top">
+                    <div class="duc-icon">${card.icon}</div>
+                    <div class="duc-info">
+                        <div class="duc-header">
+                            <span class="duc-title">${card.label}</span>
+                            <span class="duc-badge">${card.badge}</span>
+                        </div>
+                        <p class="duc-desc">${card.desc}</p>
+                    </div>
+                </div>
+                <button class="duc-btn" ${isActive ? 'disabled' : ''}>
+                    ${isActive ? tr('designBtnActive') : tr('designBtnSwitch')}
+                </button>
+            `;
 
-            // Icon
-            const iconEl = document.createElement('div');
-            iconEl.className = 'design-card-icon';
-            iconEl.innerHTML = card.icon;
-            cardEl.appendChild(iconEl);
-
-            // Content
-            const contentEl = document.createElement('div');
-            contentEl.style.textAlign = 'center';
-            contentEl.style.flex = '1';
-
-            const titleEl = document.createElement('div');
-            titleEl.style.fontWeight = 'bold';
-            titleEl.style.fontSize = '1.1rem';
-            titleEl.style.marginBottom = '8px';
-            titleEl.textContent = card.label;
-
-            const descEl = document.createElement('div');
-            descEl.style.fontSize = '0.85rem';
-            descEl.style.color = 'var(--text-muted)';
-            descEl.style.lineHeight = '1.4';
-            descEl.textContent = card.desc;
-
-            contentEl.appendChild(titleEl);
-            contentEl.appendChild(descEl);
-            cardEl.appendChild(contentEl);
-
-            // Status Badge (Top Right)
-            if (isActive) {
-                const statusEl = document.createElement('div');
-                statusEl.className = 'design-active-badge';
-                statusEl.textContent = activeBadgeText;
-                cardEl.appendChild(statusEl);
+            if (!isActive) {
+                cardEl.addEventListener('click', () => {
+                    if (window.switchUI) {
+                        window.switchUI(card.key, card.target);
+                    } else {
+                        localStorage.setItem('uiVersion', card.key);
+                        window.location.href = card.target;
+                    }
+                });
             }
-
-            // Button / Switch logic
-            const btnEl = document.createElement('button');
-            btnEl.textContent = isActive ? tr('designBtnActive') : tr('designBtnSwitch');
-            btnEl.disabled = isActive;
-            btnEl.style.width = '100%';
-            btnEl.style.padding = '12px';
-            btnEl.style.borderRadius = '8px';
-            btnEl.style.border = 'none';
-            btnEl.style.fontWeight = 'bold';
-            btnEl.style.cursor = isActive ? 'default' : 'pointer';
-            btnEl.style.background = isActive ? 'rgba(255,255,255,0.05)' : 'var(--accent)';
-            btnEl.style.color = isActive ? 'var(--text-muted)' : '#000';
-            btnEl.style.marginTop = '10px';
-            btnEl.style.transition = 'all 0.2s';
-
-            cardEl.appendChild(btnEl);
-
-            cardEl.addEventListener('click', () => {
-                if (isActive) return;
-                if (window.switchUI) {
-                    window.switchUI(card.key, card.target);
-                } else {
-                    localStorage.setItem('uiVersion', card.key);
-                    window.location.href = card.target;
-                }
-            });
 
             container.appendChild(cardEl);
         });
 
-        // --- UI Shortcuts Section ---
         const existingShortcuts = container.parentElement.querySelector('.ui-shortcuts-section');
         if (existingShortcuts) existingShortcuts.remove();
 
@@ -925,7 +868,7 @@ export const AppSettings = {
                 <strong>UI Shortcuts</strong>
                 <p>Quickly switch between interfaces using your keyboard</p>
             </div>
-            <div class="shortcut-grid">
+            <div class="duc-shortcuts">
                 ${this._renderShortcutItem('Legacy UI', '1')}
                 ${this._renderShortcutItem('NovaWave V2', '2')}
                 ${this._renderShortcutItem('Lite UI', '3')}
@@ -936,12 +879,10 @@ export const AppSettings = {
 
     _renderShortcutItem: function (label, key) {
         return `
-            <div class="shortcut-item">
-                <span class="shortcut-label">${label}</span>
-                <div class="shortcut-keys">
-                    <kbd>CTRL</kbd>
-                    <kbd>U</kbd>
-                    <kbd>${key}</kbd>
+            <div class="duc-shortcut-row">
+                <span class="duc-shortcut-label">${label}</span>
+                <div class="duc-shortcut-keys">
+                    <kbd>CTRL</kbd><kbd>U</kbd><kbd>${key}</kbd>
                 </div>
             </div>
         `;

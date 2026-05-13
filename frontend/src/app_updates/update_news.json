@@ -1,33 +1,71 @@
 {
-    "version": "2.9.4",
+    "version": "2.9.5",
     "date": "13. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Playback Speed Control",
-        "en": "Playback Speed Control",
-        "tr": "Oynatma Hızı Kontrolü",
-        "es": "Control de Velocidad de Reproducción",
-        "fr": "Contrôle de la Vitesse de Lecture",
-        "it": "Controllo Velocità di Riproduzione"
+        "de": "Einstellungen neu gestaltet & NW95 Intro",
+        "en": "Settings Overhaul & NW95 Intro",
+        "tr": "Ayarlar Yenilendi & NW95 Intro",
+        "es": "Rediseño de Ajustes & Intro NW95",
+        "fr": "Refonte des Paramètres & Intro NW95",
+        "it": "Redesign Impostazioni & Intro NW95"
     },
     "changes": [
         {
-            "icon": "⚡",
+            "icon": "🎛️",
             "title": {
-                "de": "Playback Speed Control",
-                "en": "Playback Speed Control",
-                "tr": "Oynatma Hızı Kontrolü",
-                "es": "Control de Velocidad de Reproducción",
-                "fr": "Contrôle de la Vitesse de Lecture",
-                "it": "Controllo Velocità di Riproduzione"
+                "de": "Neues Einstellungs-Drawer",
+                "en": "New Settings Drawer",
+                "tr": "Yeni Ayarlar Paneli",
+                "es": "Nuevo Panel de Ajustes",
+                "fr": "Nouveau Tiroir de Paramètres",
+                "it": "Nuovo Pannello Impostazioni"
             },
             "desc": {
-                "de": "Im Audio-Features-Panel gibt es jetzt einen neuen Speed-Button. Ein Klick öffnet ein kompaktes Sub-Panel mit fünf Schnellwahl-Presets (Ultra Langsam 0.5×, Langsam 0.75×, Normal 1×, Schnell 1.5×, Ultra Schnell 2×) sowie einem freien Slider von 0.25× bis 3.0×. Der aktuelle Wert wird live angezeigt, die Einstellung wird gespeichert und beim nächsten Start wiederhergestellt. Die Tonhöhe bleibt dabei konstant – nur das Tempo ändert sich.",
-                "en": "The audio features panel now has a new Speed button. Clicking it opens a compact sub-panel with five quick-select presets (Ultra Slow 0.5×, Slow 0.75×, Normal 1×, Fast 1.5×, Ultra Fast 2×) and a free slider from 0.25× to 3.0×. The current value is displayed live, the setting is saved and restored on next launch. Pitch remains constant – only the tempo changes.",
-                "tr": "Ses özellikleri panelinde artık yeni bir Hız düğmesi var. Tıklandığında, beş hızlı seçim ön ayarı (Çok Yavaş 0.5×, Yavaş 0.75×, Normal 1×, Hızlı 1.5×, Çok Hızlı 2×) ve 0.25× ile 3.0× arasında serbest bir kaydırıcı içeren kompakt bir alt panel açılıyor. Mevcut değer canlı olarak gösteriliyor, ayar kaydediliyor ve bir sonraki başlatmada geri yükleniyor. Ses perdesi sabit kalıyor – yalnızca tempo değişiyor.",
-                "es": "El panel de características de audio ahora tiene un nuevo botón de Velocidad. Al hacer clic se abre un subpanel compacto con cinco presets de selección rápida (Muy Lento 0.5×, Lento 0.75×, Normal 1×, Rápido 1.5×, Muy Rápido 2×) y un slider libre de 0.25× a 3.0×. El valor actual se muestra en tiempo real, la configuración se guarda y se restaura al siguiente inicio. El tono permanece constante, solo cambia el tempo.",
-                "fr": "Le panneau des fonctionnalités audio dispose maintenant d'un nouveau bouton Vitesse. Un clic ouvre un sous-panneau compact avec cinq préréglages de sélection rapide (Très Lent 0.5×, Lent 0.75×, Normal 1×, Rapide 1.5×, Très Rapide 2×) et un curseur libre de 0.25× à 3.0×. La valeur actuelle est affichée en direct, le réglage est sauvegardé et restauré au prochain lancement. La hauteur tonale reste constante, seul le tempo change.",
-                "it": "Il pannello delle funzionalità audio ora ha un nuovo pulsante Velocità. Cliccandolo si apre un sotto-pannello compatto con cinque preset di selezione rapida (Molto Lento 0.5×, Lento 0.75×, Normale 1×, Veloce 1.5×, Molto Veloce 2×) e uno slider libero da 0.25× a 3.0×. Il valore attuale viene mostrato in tempo reale, l'impostazione viene salvata e ripristinata al prossimo avvio. L'altezza tonale rimane costante, cambia solo il tempo."
+                "de": "Die Einstellungen öffnen sich jetzt als schlanker Seitenbereich von rechts – mit Icon-Tabs oben, integrierter Suche und sanfter Slide-Animation. Die alten Unter-Navigations-Buttons wurden durch dezente Abschnitts-Trennlinien ersetzt, und redundante Tab-Titel wurden entfernt.",
+                "en": "Settings now open as a sleek side drawer from the right – with icon tabs at the top, integrated search, and a smooth slide animation. Old sub-navigation buttons were replaced with subtle section dividers, and redundant tab titles were removed.",
+                "tr": "Ayarlar artık sağdan kayan şık bir yan panel olarak açılıyor – üstte ikon sekmeleri, entegre arama ve yumuşak bir kayma animasyonu ile. Eski alt navigasyon düğmeleri bölüm ayırıcılarla değiştirildi ve gereksiz sekme başlıkları kaldırıldı.",
+                "es": "Los ajustes ahora se abren como un panel lateral desde la derecha, con pestañas de íconos en la parte superior, búsqueda integrada y una animación suave. Los antiguos botones de sub-navegación fueron reemplazados por separadores de sección y se eliminaron los títulos redundantes.",
+                "fr": "Les paramètres s'ouvrent désormais comme un tiroir latéral depuis la droite, avec des onglets à icônes en haut, une recherche intégrée et une animation fluide. Les anciens boutons de sous-navigation ont été remplacés par des séparateurs de section discrets.",
+                "it": "Le impostazioni si aprono ora come un pannello laterale dalla destra, con schede icona in alto, ricerca integrata e un'animazione fluida. I vecchi pulsanti di sotto-navigazione sono stati sostituiti con separatori di sezione e i titoli ridondanti sono stati rimossi."
+            }
+        },
+        {
+            "icon": "🪟",
+            "title": {
+                "de": "NovaWave 95 Intro",
+                "en": "NovaWave 95 Intro",
+                "tr": "NovaWave 95 Giriş Animasyonu",
+                "es": "Intro NovaWave 95",
+                "fr": "Intro NovaWave 95",
+                "it": "Intro NovaWave 95"
+            },
+            "desc": {
+                "de": "Das NovaWave 95 Startup-Intro ist jetzt vollständig implementiert. Im Windows 95-Stil erscheint das App-Icon neben dem NovaWave-Schriftzug, während sich ein klassischer Fortschrittsbalken mit blauen Blöcken langsam füllt – komplett mit CRT-Scanlines-Overlay.",
+                "en": "The NovaWave 95 startup intro is now fully implemented. In Windows 95 style, the app icon appears next to the NovaWave wordmark while a classic progress bar fills with blue blocks – complete with a CRT scanlines overlay.",
+                "tr": "NovaWave 95 başlangıç animasyonu artık tam olarak uygulandı. Windows 95 tarzında, uygulama ikonu NovaWave yazısının yanında görünürken klasik bir ilerleme çubuğu mavi bloklarla dolup taşıyor – CRT tarama çizgisi efektiyle birlikte.",
+                "es": "La intro de inicio de NovaWave 95 ahora está completamente implementada. Al estilo Windows 95, el ícono de la app aparece junto al logotipo de NovaWave mientras una barra de progreso clásica se llena con bloques azules, con un efecto de líneas de escaneo CRT.",
+                "fr": "L'intro de démarrage NovaWave 95 est maintenant entièrement implémentée. Dans le style Windows 95, l'icône de l'application apparaît à côté du logo NovaWave pendant qu'une barre de progression classique se remplit de blocs bleus, avec un effet de lignes de balayage CRT.",
+                "it": "L'intro di avvio NovaWave 95 è ora completamente implementata. In stile Windows 95, l'icona dell'app appare accanto al logo NovaWave mentre una barra di avanzamento classica si riempie di blocchi blu, con un overlay di scanline CRT."
+            }
+        },
+        {
+            "icon": "⚠️",
+            "title": {
+                "de": "Danger Zone neu gestaltet",
+                "en": "Danger Zone Redesign",
+                "tr": "Tehlike Bölgesi Yeniden Tasarlandı",
+                "es": "Rediseño de la Zona de Peligro",
+                "fr": "Refonte de la Zone Dangereuse",
+                "it": "Redesign della Zona Pericolo"
+            },
+            "desc": {
+                "de": "Der Danger-Zone-Bereich in den System-Einstellungen wurde vollständig überarbeitet. Jede Aktion (Neustart, Reset, Beenden) hat jetzt eine eigene Zeile mit Icon, Titel und Beschreibungstext. Restart ist blau hervorgehoben, Reset und Quit rot – alle als Ghost-Buttons mit Hover-Effekt.",
+                "en": "The Danger Zone section in System settings was completely redesigned. Each action (Restart, Reset, Quit) now has its own row with icon, title, and description. Restart is highlighted in blue, Reset and Quit in red – all as ghost buttons with hover effect.",
+                "tr": "Sistem ayarlarındaki Tehlike Bölgesi tamamen yeniden tasarlandı. Her eylem (Yeniden Başlat, Sıfırla, Kapat) artık kendi satırında ikon, başlık ve açıklama ile gösteriliyor. Yeniden Başlat mavi, Sıfırla ve Kapat kırmızı renkte – hepsi hover efektli ghost düğmeler.",
+                "es": "La sección Zona de Peligro en los ajustes del sistema fue completamente rediseñada. Cada acción (Reiniciar, Restablecer, Salir) ahora tiene su propia fila con ícono, título y descripción. Reiniciar está resaltado en azul, Restablecer y Salir en rojo, todos como botones fantasma con efecto hover.",
+                "fr": "La section Zone Dangereuse dans les paramètres système a été entièrement repensée. Chaque action (Redémarrer, Réinitialiser, Quitter) a maintenant sa propre ligne avec icône, titre et description. Redémarrer est mis en évidence en bleu, Réinitialiser et Quitter en rouge – tous en boutons fantômes avec effet de survol.",
+                "it": "La sezione Zona Pericolo nelle impostazioni di sistema è stata completamente ridisegnata. Ogni azione (Riavvia, Ripristina, Esci) ha ora la propria riga con icona, titolo e descrizione. Riavvia è evidenziato in blu, Ripristina ed Esci in rosso – tutti come ghost button con effetto hover."
             }
         }
     ]

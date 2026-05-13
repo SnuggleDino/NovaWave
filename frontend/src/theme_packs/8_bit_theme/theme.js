@@ -39,7 +39,6 @@ export default {
         document.documentElement.setAttribute('data-theme', '8_bit_theme');
         document.body.classList.add('8-bit-active');
         document.documentElement.style.setProperty('--accent', '#39ff14');
-        
 
         if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
 
@@ -54,7 +53,7 @@ export default {
             const elements = [
                 'visualizer-style-select', 'emoji-select', 'theme-select',
                 'animation-select', 'toggle-use-custom-color',
-                'toggle-gradient-title', 'accent-color-picker', 'visualizer-bars-input'
+                'toggle-gradient-title', 'accent-color-picker', 'visualizer-bars-select'
             ];
             elements.forEach(id => {
                 const el = document.getElementById(id);
@@ -97,7 +96,8 @@ export default {
     },
 
     onDisable: (app) => {
-        document.documentElement.removeAttribute('data-theme');
+        const savedTheme = localStorage.getItem('theme') || 'blue';
+        document.documentElement.setAttribute('data-theme', savedTheme);
         document.body.classList.remove('8-bit-active');
 
         if (app.visualizer) {
@@ -107,7 +107,7 @@ export default {
         const elements = [
             'visualizer-style-select', 'emoji-select', 'theme-select',
             'animation-select', 'toggle-use-custom-color',
-            'toggle-gradient-title', 'accent-color-picker', 'visualizer-bars-input'
+            'toggle-gradient-title', 'accent-color-picker', 'visualizer-bars-select'
         ];
         elements.forEach(id => {
             const el = document.getElementById(id);

@@ -752,8 +752,7 @@ function applyTranslations() {
 
     const newBadgeEl = document.getElementById('snuggle-new-badge');
     if (newBadgeEl) {
-        const text = tr('newBadge');
-        newBadgeEl.innerHTML = text.split('').map(char => `<span>${char}</span>`).join('');
+        newBadgeEl.textContent = 'NEW UI';
     }
 
     document.querySelectorAll('[data-lang-placeholder]').forEach(el => { el.placeholder = tr(el.dataset.langPlaceholder); });
@@ -1367,7 +1366,6 @@ async function loadLibrary() {
         if (result && result.folderPath) {
             let allTracks = result.tracks || [];
 
-            // Load additional legacyFolders
             for (const fp of legacyFolders) {
                 if (fp === currentFolderPath) continue;
                 try {
@@ -1575,7 +1573,6 @@ function setupEventListeners() {
         if (r && r.folderPath) {
             currentFolderPath = r.folderPath;
             saveSetting('currentFolderPath', currentFolderPath);
-            // Reset legacyFolders when selecting a brand new primary folder
             legacyFolders = [];
             saveSetting('legacyFolders', legacyFolders);
             renderLegacyFolderList();
@@ -2313,7 +2310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyTranslations();
         });
     }
-    settingsBtn = $('#settings-btn'); settingsOverlay = $('#settings-overlay');
+    settingsBtn = $('#settings-btn'); settingsOverlay = $('#settings-drawer');
     settingsCloseBtn = $('#settings-close-btn'); downloadFolderInput = $('#default-download-folder'); changeFolderBtn = $('#change-download-folder-btn');
     qualitySelect = $('#audio-quality-select'); themeSelect = $('#theme-select'); visualizerToggle = $('#toggle-visualizer');
     visualizerStyleSelect = $('#visualizer-style-select'); visualizerSensitivity = $('#visualizer-sensitivity');
@@ -2371,7 +2368,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (settingsBtn && settingsOverlay) {
         settingsBtn.addEventListener('click', () => {
-            settingsOverlay.classList.add('visible');
+            settingsOverlay.classList.add('open');
         });
     }
 
@@ -2380,7 +2377,9 @@ document.addEventListener('DOMContentLoaded', () => {
         helpToSettingsBtn.addEventListener('click', () => {
             if (userHelpOverlay) userHelpOverlay.classList.remove('visible');
             setTimeout(() => {
-                if (settingsOverlay) settingsOverlay.classList.add('visible');
+                if (settingsOverlay) settingsOverlay.classList.add('open');
+                const backdrop = $('#settings-drawer-backdrop');
+                if (backdrop) backdrop.classList.add('open');
             }, 300);
         });
     }
@@ -2493,7 +2492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const overlays = [settingsOverlay, libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay'), document.getElementById('error-modal-overlay')];
+    const overlays = [libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay'), document.getElementById('error-modal-overlay')];
     overlays.forEach(ov => {
         if (ov) {
             let modal = ov.querySelector('.settings-modal');

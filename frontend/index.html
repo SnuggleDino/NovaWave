@@ -818,13 +818,22 @@
     <!-- ================= QUEUE MODAL ================= -->
 
 
-    <!-- ================= SETTINGS MODAL ================= -->
-    <div id="settings-overlay" class="overlay-container">
-        <div class="glass-panel settings-modal">
-            <div class="settings-header">
+    <!-- ================= SETTINGS DRAWER ================= -->
+    <div id="settings-drawer-backdrop"></div>
+    <div id="settings-drawer">
+        <div class="drawer-header">
+            <div class="drawer-title-group">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
                 <h3 data-lang-key="settingsTitle"></h3>
+            </div>
+            <div class="drawer-search-close">
                 <div class="settings-search-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="search-icon">
                         <circle cx="11" cy="11" r="8"></circle>
@@ -835,111 +844,99 @@
                 </div>
                 <button id="settings-close-btn" data-lang-title="close">&times;</button>
             </div>
+        </div>
 
-            <div class="settings-body">
-                <!-- SIDEBAR NAVIGATION -->
-                <div class="settings-sidebar">
-                    <button class="settings-nav-btn active" data-target="tab-appearance">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
-                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
-                            <path d="M2 2l7.5 1.5"></path>
-                        </svg>
-                        <span data-lang-key="sectionAppearance"></span>
-                    </button>
-                    <button class="settings-nav-btn" data-target="tab-player">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                        <span data-lang-key="sectionPlayer"></span>
-                    </button>
-                    <button class="settings-nav-btn" data-target="tab-audio">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 18v-6" />
-                            <path d="M8 18V6" />
-                            <path d="M13 18V10" />
-                            <path d="M18 18V4" />
-                        </svg>
-                        <span data-lang-key="sectionAudioExtras">Audio Extras</span>
-                    </button>
-                    <button class="settings-nav-btn" data-target="tab-downloads">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        <span data-lang-key="sectionDownloads"></span>
-                    </button>
-                    <button class="settings-nav-btn" data-target="tab-intros">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path
-                                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z">
-                            </path>
-                            <path
-                                d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z">
-                            </path>
-                            <path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3"></path>
-                            <path d="M12 15v5s3.03-.55 5-2c2.2-1.62 3-5 3-5"></path>
-                        </svg>
-                        <span data-lang-key="sectionIntros">Startup Intros</span>
-                    </button>
-                    <button class="settings-nav-btn" data-target="tab-themepacks">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path
-                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                            </path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                        <span data-lang-key="sectionThemePacks">Theme Packs</span>
-                    </button>
-                    <!-- NEW: Design Tab Button -->
-                    <button class="settings-nav-btn" data-target="tab-design">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
-                            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
-                            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
-                            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
-                            <path
-                                d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
-                        </svg>
-                        <span data-lang-key="navDesign">User Interface</span>
-                        <div id="snuggle-new-badge" class="new-badge-dancing"></div>
-                    </button>
-                    <button class="settings-nav-btn" data-target="tab-system">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                            <line x1="6" y1="6" x2="6.01" y2="6"></line>
-                            <line x1="6" y1="18" x2="6.01" y2="18"></line>
-                        </svg>
-                        <span data-lang-key="sectionSystem">System & Performance</span>
-                    </button>
-                </div>
+        <div class="drawer-tabs">
+            <button class="drawer-tab-btn active" data-target="tab-appearance" data-lang-title="sectionAppearance">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                    <path d="M2 2l7.5 1.5"></path>
+                </svg>
+                <span class="drawer-tab-label">Style</span>
+            </button>
+            <button class="drawer-tab-btn" data-target="tab-player" data-lang-title="sectionPlayer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span class="drawer-tab-label">Player</span>
+            </button>
+            <button class="drawer-tab-btn" data-target="tab-audio" data-lang-title="sectionAudioExtras">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 18v-6" />
+                    <path d="M8 18V6" />
+                    <path d="M13 18V10" />
+                    <path d="M18 18V4" />
+                </svg>
+                <span class="drawer-tab-label">Audio</span>
+            </button>
+            <button class="drawer-tab-btn" data-target="tab-downloads" data-lang-title="sectionDownloads">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span class="drawer-tab-label">Files</span>
+            </button>
+            <button class="drawer-tab-btn" data-target="tab-intros" data-lang-title="sectionIntros">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z">
+                    </path>
+                    <path
+                        d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z">
+                    </path>
+                    <path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3"></path>
+                    <path d="M12 15v5s3.03-.55 5-2c2.2-1.62 3-5 3-5"></path>
+                </svg>
+                <span class="drawer-tab-label">Intros</span>
+            </button>
+            <button class="drawer-tab-btn" data-target="tab-themepacks" data-lang-title="sectionThemePacks">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                    </path>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                <span class="drawer-tab-label">Packs</span>
+            </button>
+            <button class="drawer-tab-btn" data-target="tab-design" data-lang-title="navDesign">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+                    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+                    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+                    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+                    <path
+                        d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+                </svg>
+                <span class="drawer-tab-label">UI</span>
+                <div id="snuggle-new-badge" class="new-badge-dancing"></div>
+            </button>
+            <button class="drawer-tab-btn" data-target="tab-system" data-lang-title="sectionSystem">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                </svg>
+                <span class="drawer-tab-label">System</span>
+            </button>
+        </div>
 
-                <!-- CONTENT AREA -->
-                <div class="settings-content-container">
+        <div class="drawer-content">
 
                     <!-- TAB 1: APPEARANCE -->
                     <div id="tab-appearance" class="settings-tab-content active">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionAppearance"></span></h4>
-
-                        <!-- Sub Navigation -->
-                        <div class="sub-nav-container">
-                            <button class="sub-nav-btn active" data-sub-target="sub-app-interface">Interface</button>
-                            <button class="sub-nav-btn" data-sub-target="sub-app-visualizer">Visualizer</button>
-                        </div>
-
-                        <!-- Sub Content: Interface -->
-                        <div id="sub-app-interface" class="sub-tab-content active">
+                        <div class="settings-section-divider"><span>Interface</span></div>
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <strong data-lang-key="theme"></strong>
@@ -1056,10 +1053,7 @@
                                         placeholder="&#127925;">
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Sub Content: Visualizer -->
-                        <div id="sub-app-visualizer" class="sub-tab-content">
+                        <div class="settings-section-divider"><span>Visualizer</span></div>
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <strong data-lang-key="visualizer"></strong>
@@ -1126,13 +1120,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
 
                     <!-- TAB 2: PLAYER -->
                     <div id="tab-player" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionPlayer"></span></h4>
-
                         <div class="setting-item">
                             <div class="setting-label">
                                 <strong data-lang-key="sleepTimer"></strong>
@@ -1196,16 +1187,7 @@
 
                     <!-- TAB 3: DOWNLOADS -->
                     <div id="tab-downloads" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionDownloads"></span></h4>
-
-                        <!-- Sub Navigation -->
-                        <div class="sub-nav-container">
-                            <button class="sub-nav-btn active" data-sub-target="sub-dl-library">Library</button>
-                            <button class="sub-nav-btn" data-sub-target="sub-dl-downloader">Downloader</button>
-                        </div>
-
-                        <!-- Sub Content: Library -->
-                        <div id="sub-dl-library" class="sub-tab-content active">
+                        <div class="settings-section-divider"><span>Library</span></div>
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <strong data-lang-key="refreshFolder"></strong>
@@ -1229,10 +1211,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Sub Content: Downloader -->
-                        <div id="sub-dl-downloader" class="sub-tab-content">
+                        <div class="settings-section-divider"><span>Downloader</span></div>
                             <div class="setting-item" style="display: block;">
                                 <div class="setting-label">
                                     <strong data-lang-key="defaultDownloadFolder"></strong>
@@ -1261,14 +1240,10 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
                     </div>
 
                     <!-- TAB: THEME PACKS -->
                     <div id="tab-themepacks" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionThemePacks">Theme
-                                Packs</span>
-                        </h4>
                         <!-- Dynamic Grid populated by theme_pack_listener.js -->
                         <div class="theme-grid" id="theme-pack-grid">
                         </div>
@@ -1276,16 +1251,11 @@
 
                     <!-- TAB: DESIGN & UI -->
                     <div id="tab-design" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="navDesign">Design & UI</span></h4>
                         <div id="design-ui-cards"></div>
                     </div>
 
                     <!-- TAB 4: AUDIO EXTRAS -->
                     <div id="tab-audio" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionAudioExtras">Audio
-                                Extras</span>
-                        </h4>
-
                         <div class="setting-item">
                             <div class="setting-label">
                                 <strong data-lang-key="bassBoost">Bass Boost</strong>
@@ -1440,8 +1410,6 @@
 
                     <!-- TAB: STARTUP INTROS -->
                     <div id="tab-intros" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionIntros">Startup Intros</span>
-                        </h4>
                         <div class="intro-grid">
                             <!-- Waterdrop Intro Card -->
                             <div class="intro-card active" data-intro="waterdrop">
@@ -1533,17 +1501,7 @@
 
                     <!-- TAB: SYSTEM & PERFORMANCE -->
                     <div id="tab-system" class="settings-tab-content">
-                        <h4 class="settings-section-title"><span data-lang-key="sectionSystem">System & Perf.</span>
-                        </h4>
-
-                        <!-- Sub Navigation -->
-                        <div class="sub-nav-container">
-                            <button class="sub-nav-btn active" data-sub-target="sub-sys-perf">Performance</button>
-                            <button class="sub-nav-btn" data-sub-target="sub-sys-data">Data & Power</button>
-                        </div>
-
-                        <!-- Sub Content: Performance -->
-                        <div id="sub-sys-perf" class="sub-tab-content active">
+                        <div class="settings-section-divider"><span>Performance</span></div>
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <strong data-lang-key="perfModeLabel">Performance Mode</strong>
@@ -1599,10 +1557,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Sub Content: Data & Power -->
-                        <div id="sub-sys-data" class="sub-tab-content">
+                        <div class="settings-section-divider"><span>Data & Power</span></div>
                             <div class="setting-item">
                                 <div class="setting-label">
                                     <strong data-lang-key="exportPlaylist">Playlist Export</strong>
@@ -1624,39 +1579,61 @@
                                 </div>
                             </div>
 
-                            <h4 class="settings-section-title" style="color: #ef4444; margin-top: 30px;"><span
-                                    data-lang-key="sectionDangerZone">Danger Zone</span></h4>
-
-                            <div class="setting-item" style="display: block;">
-                                <div class="info-box"
-                                    style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                                    <strong style="color: #ef4444; display: block; margin-bottom: 5px;">&#9888; <span
-                                            data-lang-key="warningTitle">Warning</span></strong>
-                                    <p style="font-size: 0.85rem; color: var(--text-muted);"><span
-                                            data-lang-key="resetWarning"></span></p>
+                            <div class="danger-zone">
+                                <div class="settings-section-divider danger-divider">
+                                    <span data-lang-key="sectionDangerZone">Danger Zone</span>
                                 </div>
 
-                                <div class="system-actions-grid"
-                                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                    <button id="btn-restart-app" class="settings-button primary-btn"
-                                        style="background: #3b82f6; color: white; padding: 12px;">
-                                        <span data-lang-key="restart">RESTART APP</span>
+                                <div class="danger-row">
+                                    <div class="danger-row-icon restart">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                            <path d="M3 3v5h5"/>
+                                        </svg>
+                                    </div>
+                                    <div class="danger-row-info">
+                                        <span class="danger-row-title" data-lang-key="restart">Restart App</span>
+                                        <span class="danger-row-desc" data-lang-key="restartDesc">Restarts NovaWave without losing your settings.</span>
+                                    </div>
+                                    <button id="btn-restart-app" class="danger-btn danger-btn-blue">
+                                        <span data-lang-key="restart">Restart</span>
                                     </button>
-                                    <button id="btn-reset-app" class="settings-button primary-btn"
-                                        style="background: #ef4444; color: white; padding: 12px;">
-                                        <span data-lang-key="reset">RESET APP</span>
+                                </div>
+
+                                <div class="danger-row">
+                                    <div class="danger-row-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                        </svg>
+                                    </div>
+                                    <div class="danger-row-info">
+                                        <span class="danger-row-title" data-lang-key="reset">Reset</span>
+                                        <span class="danger-row-desc" data-lang-key="resetDesc">Clears all settings permanently. Cannot be undone.</span>
+                                    </div>
+                                    <button id="btn-reset-app" class="danger-btn danger-btn-red">
+                                        <span data-lang-key="reset">Reset</span>
                                     </button>
-                                    <button id="btn-quit-app" class="settings-button primary-btn"
-                                        style="background: #f87171; color: white; padding: 12px; grid-column: span 2;">
-                                        <span data-lang-key="quit">QUIT NOVAWAVE</span>
+                                </div>
+
+                                <div class="danger-row">
+                                    <div class="danger-row-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+                                            <line x1="12" y1="2" x2="12" y2="12"/>
+                                        </svg>
+                                    </div>
+                                    <div class="danger-row-info">
+                                        <span class="danger-row-title" data-lang-key="quit">Quit</span>
+                                        <span class="danger-row-desc" data-lang-key="quitDesc">Closes NovaWave immediately.</span>
+                                    </div>
+                                    <button id="btn-quit-app" class="danger-btn danger-btn-red">
+                                        <span data-lang-key="quit">Quit</span>
                                     </button>
                                 </div>
                             </div>
-                        </div>
                     </div>
 
-                </div>
-            </div>
         </div>
     </div>
 

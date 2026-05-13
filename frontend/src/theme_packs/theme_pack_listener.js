@@ -101,7 +101,6 @@ export const ThemePackListener = {
     enableTheme: function (id, app) {
         if (activeThemeId && activeThemeId !== id) this.disableTheme(activeThemeId, app);
 
-        // Sync UI toggles
         const allToggles = document.querySelectorAll('.theme-action-box input[type="checkbox"]');
         allToggles.forEach(t => { if (t.id !== `toggle-${id}`) t.checked = false; });
 

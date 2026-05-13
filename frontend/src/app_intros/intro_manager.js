@@ -1,6 +1,7 @@
 import { WaterdropIntro } from './intro_waterdrop.js';
 import { CssBasedIntro, InteractiveIntro } from './intro_css_adapter.js';
 import { RocketIntro } from './intro_rocket.js';
+import { NovaWave95Intro } from './intro_novawave95.js';
 
 export class IntroManager {
     constructor(settings) {
@@ -22,13 +23,12 @@ export class IntroManager {
             'sunset': () => new CssBasedIntro('sunset-intro'),
             'sakura': () => new CssBasedIntro('sakura-intro'),
 
-            'novawave95': WaterdropIntro
+            'novawave95': () => new NovaWave95Intro()
         };
     }
 
     play() {
         const introKey = this.settings.activeIntro || 'waterdrop';
-        console.log('[IntroManager] Playing intro:', introKey);
 
         if (introKey === 'none') {
             return Promise.resolve();

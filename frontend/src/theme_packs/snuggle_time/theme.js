@@ -11,29 +11,27 @@ export default {
             setTimeout(() => intro.classList.remove('visible'), 3000);
         }
 
-                if (app.visualizer) {
-                    app.visualizer.updateSettings({ 
-                        enabled: true, 
-                        style: 'retro',
-                        accentColor: '#c1d37f' 
-                    });
-                }
-        
-                // --- Sector: Animation ---
-                if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('snowfall');
-                
+        if (app.visualizer) {
+            app.visualizer.updateSettings({
+                enabled: true,
+                style: 'retro',
+                accentColor: '#c1d37f'
+            });
+        }
 
-                setTimeout(() => {
-                    const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'visualizer-bars-input'];
-                    elements.forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el) el.disabled = true;
-                    });
-                    const anim = document.getElementById('animation-select');
-                    if (anim) anim.value = 'snowfall';
-                    
+        if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('snowfall');
 
-                    const emojiSelect = document.getElementById('emoji-select');            if (emojiSelect) {
+        setTimeout(() => {
+            const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'visualizer-bars-select'];
+            elements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.disabled = true;
+            });
+            const anim = document.getElementById('animation-select');
+            if (anim) anim.value = 'snowfall';
+
+            const emojiSelect = document.getElementById('emoji-select');
+            if (emojiSelect) {
                 emojiSelect.value = 'loving_dinos';
                 emojiSelect.disabled = true;
                 if (app.ui && app.ui.updateEmoji) app.ui.updateEmoji('loving_dinos');
@@ -43,13 +41,15 @@ export default {
 
     onDisable: (app) => {
         document.body.classList.remove('snuggle-time-active');
-        document.documentElement.removeAttribute('data-theme');
+
+        const savedTheme = localStorage.getItem('theme') || 'blue';
+        document.documentElement.setAttribute('data-theme', savedTheme);
 
         if (app.visualizer) {
             app.visualizer.updateSettings({ accentColor: '#38bdf8' });
         }
 
-        const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'emoji-select', 'visualizer-bars-input'];
+        const elements = ['visualizer-style-select', 'theme-select', 'animation-select', 'toggle-use-custom-color', 'emoji-select', 'visualizer-bars-select'];
         elements.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.disabled = false;
