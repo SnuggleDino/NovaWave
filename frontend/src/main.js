@@ -2130,6 +2130,7 @@ function initSettingsLogic() {
         onSpeedChange: (val) => {
             audio.defaultPlaybackRate = val;
             audio.playbackRate = val;
+            if (audioFeaturesPanel) audioFeaturesPanel.syncSpeed(val);
             showNotification(tr('playbackSpeed') + ': ' + val + 'x', 'info', 1500);
         },
         onDeleteSongsToggle: (enabled) => {
@@ -2336,6 +2337,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audioFeaturesPanel = new AudioFeaturesPanel();
     audioFeaturesPanel.init();
+    audioFeaturesPanel.onSpeedChange = (rate) => {
+        audio.defaultPlaybackRate = rate;
+        audio.playbackRate = rate;
+        settings.playbackSpeed = rate;
+        AppSettings.saveSetting('playbackSpeed', rate);
+        showNotification(tr('playbackSpeed') + ': ' + rate + 'x', 'info', 1500);
+    };
+    audioFeaturesPanel.syncSpeed(settings.playbackSpeed || 1.0);
 
     if (audioExtrasToggleBtn) {
         audioExtrasToggleBtn.addEventListener('click', () => {

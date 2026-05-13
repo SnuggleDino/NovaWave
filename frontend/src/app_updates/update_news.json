@@ -1,90 +1,33 @@
 {
-    "version": "2.9.3",
-    "date": "12. Mai 2026",
+    "version": "2.9.4",
+    "date": "13. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Miniplayer Redesign & Sprachvervollständigung",
-        "en": "Miniplayer Redesign & Language Completion",
-        "tr": "Mini Oynatıcı Yeniden Tasarımı & Dil Tamamlama",
-        "es": "Rediseño del Minireproductor y Completado de Idiomas",
-        "fr": "Refonte du Minilecteur et Complétion des Langues",
-        "it": "Redesign del Miniriproduttore e Completamento Lingue"
+        "de": "Playback Speed Control",
+        "en": "Playback Speed Control",
+        "tr": "Oynatma Hızı Kontrolü",
+        "es": "Control de Velocidad de Reproducción",
+        "fr": "Contrôle de la Vitesse de Lecture",
+        "it": "Controllo Velocità di Riproduzione"
     },
     "changes": [
         {
-            "icon": "🎛️",
+            "icon": "⚡",
             "title": {
-                "de": "Miniplayer Redesign",
-                "en": "Miniplayer Redesign",
-                "tr": "Mini Oynatıcı Yeniden Tasarımı",
-                "es": "Rediseño del Minireproductor",
-                "fr": "Refonte du Minilecteur",
-                "it": "Redesign del Miniriproduttore"
+                "de": "Playback Speed Control",
+                "en": "Playback Speed Control",
+                "tr": "Oynatma Hızı Kontrolü",
+                "es": "Control de Velocidad de Reproducción",
+                "fr": "Contrôle de la Vitesse de Lecture",
+                "it": "Controllo Velocità di Riproduzione"
             },
             "desc": {
-                "de": "Der Miniplayer wurde vollständig neu gestaltet. Das Album-Cover erscheint jetzt als quadratisches Element mit abgerundeten Ecken und freier Animations-Bewegung. Titel, Artist, Steuerbuttons, Lautstärke und Fortschrittsleiste sind übersichtlich in einem kompakten 600×200-Fenster angeordnet.",
-                "en": "The Miniplayer has been completely redesigned. The album cover now appears as a square element with rounded corners and free animation movement. Title, artist, control buttons, volume and progress bar are clearly arranged in a compact 600×200 window.",
-                "tr": "Mini oynatıcı tamamen yeniden tasarlandı. Albüm kapağı artık yuvarlatılmış köşeler ve serbest animasyon hareketiyle kare bir eleman olarak görünüyor. Başlık, sanatçı, kontrol düğmeleri, ses ve ilerleme çubuğu kompakt 600×200 pencerede düzenli şekilde sıralanıyor.",
-                "es": "El Minireproductor ha sido completamente rediseñado. La portada del álbum aparece ahora como un elemento cuadrado con esquinas redondeadas y movimiento de animación libre. El título, artista, botones de control, volumen y barra de progreso están claramente ordenados en una ventana compacta de 600×200.",
-                "fr": "Le Minilecteur a été entièrement repensé. La pochette d'album apparaît maintenant comme un élément carré avec des coins arrondis et un mouvement d'animation libre. Le titre, l'artiste, les boutons de contrôle, le volume et la barre de progression sont clairement disposés dans une fenêtre compacte de 600×200.",
-                "it": "Il Miniriproduttore è stato completamente riprogettato. La copertina dell'album appare ora come un elemento quadrato con angoli arrotondati e movimento di animazione libero. Titolo, artista, pulsanti di controllo, volume e barra di avanzamento sono chiaramente disposti in una finestra compatta 600×200."
-            }
-        },
-        {
-            "icon": "🐛",
-            "title": {
-                "de": "Close-Button Bug behoben",
-                "en": "Close Button Bug Fixed",
-                "tr": "Kapat Düğmesi Hatası Düzeltildi",
-                "es": "Error del Botón Cerrar Corregido",
-                "fr": "Correction du Bouton Fermer",
-                "it": "Bug del Pulsante Chiudi Risolto"
-            },
-            "desc": {
-                "de": "Die fehlerhafte Hover-Animation des Schließen-Buttons (×) wurde entfernt. Zusätzlich wurden alle `transition: all`-Regeln in den Einstellungen durch explizite Eigenschaften ersetzt, sodass keine unerwünschten Animationen mehr auf benachbarte Elemente übertragen werden.",
-                "en": "The faulty hover animation of the close button (×) has been removed. Additionally, all `transition: all` rules in the settings panel were replaced with explicit properties, preventing unwanted animations from propagating to neighbouring elements.",
-                "tr": "Kapat düğmesinin (×) hatalı hover animasyonu kaldırıldı. Ayrıca ayarlar panelindeki tüm `transition: all` kuralları, istenmeyen animasyonların komşu öğelere yayılmasını önlemek için açık özelliklerle değiştirildi.",
-                "es": "Se eliminó la animación hover defectuosa del botón cerrar (×). Además, todas las reglas `transition: all` del panel de ajustes fueron reemplazadas por propiedades explícitas para evitar que animaciones no deseadas se propaguen a elementos vecinos.",
-                "fr": "L'animation hover défectueuse du bouton fermer (×) a été supprimée. De plus, toutes les règles `transition: all` dans le panneau des paramètres ont été remplacées par des propriétés explicites pour éviter la propagation d'animations indésirables aux éléments voisins.",
-                "it": "L'animazione hover difettosa del pulsante chiudi (×) è stata rimossa. Inoltre, tutte le regole `transition: all` nel pannello delle impostazioni sono state sostituite con proprietà esplicite per evitare che animazioni indesiderate si propaghino agli elementi vicini."
-            }
-        },
-        {
-            "icon": "✨",
-            "title": {
-                "de": "Audio-Panel Animation",
-                "en": "Audio Panel Animation",
-                "tr": "Ses Paneli Animasyonu",
-                "es": "Animación del Panel de Audio",
-                "fr": "Animation du Panneau Audio",
-                "it": "Animazione del Pannello Audio"
-            },
-            "desc": {
-                "de": "Das Audio-Features-Panel (Bass, Crystalizer, Reverb, EQ) blendet jetzt mit einer sanften Slide+Fade-Animation ein und aus. Die Bewegung ist GPU-beschleunigt via `transform` und `opacity` – je nach Playlist-Seite gleitet es von links oder rechts herein.",
-                "en": "The audio features panel (Bass, Crystalizer, Reverb, EQ) now shows and hides with a smooth slide and fade animation. The motion is GPU-accelerated via `transform` and `opacity` – sliding in from the left or right depending on the playlist side.",
-                "tr": "Ses özellikleri paneli (Bass, Crystalizer, Reverb, EQ) artık yumuşak bir kayma ve solma animasyonuyla gösterilip gizleniyor. Hareket, `transform` ve `opacity` ile GPU hızlandırmalı olup çalma listesi tarafına göre soldan veya sağdan kayıyor.",
-                "es": "El panel de características de audio (Bass, Crystalizer, Reverb, EQ) ahora se muestra y oculta con una suave animación de deslizamiento y fundido. El movimiento está acelerado por GPU mediante `transform` y `opacity`, deslizándose desde la izquierda o la derecha según el lado de la lista de reproducción.",
-                "fr": "Le panneau des fonctionnalités audio (Bass, Crystalizer, Reverb, EQ) s'affiche et se masque maintenant avec une douce animation de glissement et de fondu. Le mouvement est accéléré par GPU via `transform` et `opacity`, glissant depuis la gauche ou la droite selon le côté de la liste de lecture.",
-                "it": "Il pannello delle funzionalità audio (Bass, Crystalizer, Reverb, EQ) ora appare e scompare con una fluida animazione di scorrimento e dissolvenza. Il movimento è accelerato dalla GPU tramite `transform` e `opacity`, scivolando da sinistra o destra in base al lato della playlist."
-            }
-        },
-        {
-            "icon": "🌍",
-            "title": {
-                "de": "Sprachvervollständigung (ES / FR / IT / TR)",
-                "en": "Language Completion (ES / FR / IT / TR)",
-                "tr": "Dil Tamamlama (ES / FR / IT / TR)",
-                "es": "Completado de Idiomas (ES / FR / IT / TR)",
-                "fr": "Complétion des Langues (ES / FR / IT / TR)",
-                "it": "Completamento Lingue (ES / FR / IT / TR)"
-            },
-            "desc": {
-                "de": "Fehlende Übersetzungsschlüssel in Spanisch, Französisch, Italienisch und Türkisch wurden nachgepflegt. Betroffen waren die Wiedergabemodi (Alle/Eine wiederholen) sowie die vollständige FNF-Sektion mit allen Spieleinstellungen.",
-                "en": "Missing translation keys in Spanish, French, Italian and Turkish have been added. Affected were the playback modes (loop all / loop one) and the complete FNF section with all game settings.",
-                "tr": "İspanyolca, Fransızca, İtalyanca ve Türkçe'deki eksik çeviri anahtarları eklendi. Etkilenen alanlar oynatma modları (tümünü/birini tekrarla) ve tüm oyun ayarlarıyla birlikte tam FNF bölümüydü.",
-                "es": "Se han añadido las claves de traducción faltantes en español, francés, italiano y turco. Afectados estaban los modos de reproducción (repetir todo / repetir uno) y la sección FNF completa con todos los ajustes del juego.",
-                "fr": "Les clés de traduction manquantes en espagnol, français, italien et turc ont été ajoutées. Les modes de lecture (répéter tout / répéter un) et la section FNF complète avec tous les paramètres du jeu étaient concernés.",
-                "it": "Le chiavi di traduzione mancanti in spagnolo, francese, italiano e turco sono state aggiunte. Interessati erano le modalità di riproduzione (ripeti tutto / ripeti uno) e la sezione FNF completa con tutte le impostazioni di gioco."
+                "de": "Im Audio-Features-Panel gibt es jetzt einen neuen Speed-Button. Ein Klick öffnet ein kompaktes Sub-Panel mit fünf Schnellwahl-Presets (Ultra Langsam 0.5×, Langsam 0.75×, Normal 1×, Schnell 1.5×, Ultra Schnell 2×) sowie einem freien Slider von 0.25× bis 3.0×. Der aktuelle Wert wird live angezeigt, die Einstellung wird gespeichert und beim nächsten Start wiederhergestellt. Die Tonhöhe bleibt dabei konstant – nur das Tempo ändert sich.",
+                "en": "The audio features panel now has a new Speed button. Clicking it opens a compact sub-panel with five quick-select presets (Ultra Slow 0.5×, Slow 0.75×, Normal 1×, Fast 1.5×, Ultra Fast 2×) and a free slider from 0.25× to 3.0×. The current value is displayed live, the setting is saved and restored on next launch. Pitch remains constant – only the tempo changes.",
+                "tr": "Ses özellikleri panelinde artık yeni bir Hız düğmesi var. Tıklandığında, beş hızlı seçim ön ayarı (Çok Yavaş 0.5×, Yavaş 0.75×, Normal 1×, Hızlı 1.5×, Çok Hızlı 2×) ve 0.25× ile 3.0× arasında serbest bir kaydırıcı içeren kompakt bir alt panel açılıyor. Mevcut değer canlı olarak gösteriliyor, ayar kaydediliyor ve bir sonraki başlatmada geri yükleniyor. Ses perdesi sabit kalıyor – yalnızca tempo değişiyor.",
+                "es": "El panel de características de audio ahora tiene un nuevo botón de Velocidad. Al hacer clic se abre un subpanel compacto con cinco presets de selección rápida (Muy Lento 0.5×, Lento 0.75×, Normal 1×, Rápido 1.5×, Muy Rápido 2×) y un slider libre de 0.25× a 3.0×. El valor actual se muestra en tiempo real, la configuración se guarda y se restaura al siguiente inicio. El tono permanece constante, solo cambia el tempo.",
+                "fr": "Le panneau des fonctionnalités audio dispose maintenant d'un nouveau bouton Vitesse. Un clic ouvre un sous-panneau compact avec cinq préréglages de sélection rapide (Très Lent 0.5×, Lent 0.75×, Normal 1×, Rapide 1.5×, Très Rapide 2×) et un curseur libre de 0.25× à 3.0×. La valeur actuelle est affichée en direct, le réglage est sauvegardé et restauré au prochain lancement. La hauteur tonale reste constante, seul le tempo change.",
+                "it": "Il pannello delle funzionalità audio ora ha un nuovo pulsante Velocità. Cliccandolo si apre un sotto-pannello compatto con cinque preset di selezione rapida (Molto Lento 0.5×, Lento 0.75×, Normale 1×, Veloce 1.5×, Molto Veloce 2×) e uno slider libero da 0.25× a 3.0×. Il valore attuale viene mostrato in tempo reale, l'impostazione viene salvata e ripristinata al prossimo avvio. L'altezza tonale rimane costante, cambia solo il tempo."
             }
         }
     ]
