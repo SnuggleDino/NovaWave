@@ -3,12 +3,12 @@
     "date": "14. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Library Modal, Fixes & Aufräumen",
-        "en": "Library Modal, Fixes & Cleanup",
-        "tr": "Kütüphane Paneli, Düzeltmeler & Temizlik",
-        "es": "Panel de biblioteca, correcciones y limpieza",
-        "fr": "Panneau bibliothèque, corrections et nettoyage",
-        "it": "Pannello libreria, correzioni e pulizia"
+        "de": "Library Modal, Downloader Log, Fixes & Aufräumen",
+        "en": "Library Modal, Downloader Log, Fixes & Cleanup",
+        "tr": "Kütüphane Paneli, İndirici Günlüğü, Düzeltmeler & Temizlik",
+        "es": "Panel de biblioteca, log del descargador, correcciones y limpieza",
+        "fr": "Panneau bibliothèque, journal téléchargeur, corrections et nettoyage",
+        "it": "Pannello libreria, log downloader, correzioni e pulizia"
     },
     "changes": [
         {
@@ -28,6 +28,25 @@
                 "es": "El panel de carga de carpetas ha sido completamente rediseñado al estilo de ajustes. Ahora muestra la carpeta principal (F0) y todas las carpetas adicionales (F1, F2 ...) con insignias numeradas. El botón Agregar carpeta tiene un nuevo diseño con borde punteado.",
                 "fr": "Le panneau de chargement de dossier a été entièrement repensé dans le style des paramètres. Il affiche désormais le dossier principal (F0) et tous les dossiers supplémentaires (F1, F2 ...) avec des badges numérotés. Le bouton Ajouter un dossier a un nouveau design en pointillés.",
                 "it": "Il pannello di caricamento cartelle è stato completamente ridisegnato nello stile delle impostazioni. Ora mostra la cartella principale (F0) e tutte le cartelle aggiuntive (F1, F2 ...) con badge numerati. Il pulsante Aggiungi cartella ha un nuovo design tratteggiato."
+            }
+        },
+        {
+            "icon": "💻",
+            "title": {
+                "de": "Downloader Log integriert",
+                "en": "Integrated Downloader Log",
+                "tr": "Entegre İndirici Günlüğü",
+                "es": "Log del descargador integrado",
+                "fr": "Journal téléchargeur intégré",
+                "it": "Log downloader integrato"
+            },
+            "desc": {
+                "de": "Das separate Terminal-Seitenpanel und der Toggle-Log-Button wurden entfernt. Der Download-Log erscheint jetzt direkt unterhalb des Downloader-Panels — er öffnet sich automatisch beim Download-Start oder bei einem Fehler und kann mit dem Papierkorb-Icon geleert und ausgeblendet werden.",
+                "en": "The separate terminal side panel and the Toggle Log button have been removed. The download log now appears directly below the downloader panel — it opens automatically when a download starts or an error occurs, and can be cleared and hidden with the trash icon.",
+                "tr": "Ayrı terminal yan paneli ve Günlüğü Değiştir düğmesi kaldırıldı. İndirme günlüğü artık doğrudan indirici panelinin altında görünüyor — bir indirme başladığında veya hata oluştuğunda otomatik olarak açılıyor ve çöp kutusu simgesiyle temizlenip gizlenebiliyor.",
+                "es": "El panel lateral de terminal separado y el botón Alternar log han sido eliminados. El log de descarga ahora aparece directamente debajo del panel del descargador — se abre automáticamente cuando comienza una descarga o se produce un error, y se puede limpiar y ocultar con el icono de papelera.",
+                "fr": "Le panneau latéral terminal séparé et le bouton Basculer le journal ont été supprimés. Le journal de téléchargement apparaît désormais directement sous le panneau du téléchargeur — il s'ouvre automatiquement au démarrage d'un téléchargement ou en cas d'erreur, et peut être effacé et masqué avec l'icône corbeille.",
+                "it": "Il pannello laterale terminal separato e il pulsante Attiva/disattiva log sono stati rimossi. Il log di download ora appare direttamente sotto il pannello del downloader — si apre automaticamente quando inizia un download o si verifica un errore, e può essere cancellato e nascosto con l'icona cestino."
             }
         },
         {

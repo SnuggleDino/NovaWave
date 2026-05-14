@@ -917,14 +917,12 @@ function setDownloaderState(state, message) {
     const statusText = document.getElementById('info-status-text');
     const terminal = document.getElementById('terminal-view');
     const btn = document.getElementById('download-btn');
-    const toggleTerminal = document.getElementById('toggle-terminal-btn');
+    const logSection = document.getElementById('dl-log-section');
 
     if (!statusDot || !statusText || !terminal || !btn) return;
 
     statusDot.className = 'status-dot';
     btn.classList.remove('loading');
-
-    if (toggleTerminal) toggleTerminal.style.display = 'flex';
 
     if (state === 'idle') {
         statusDot.classList.add('idle');
@@ -935,6 +933,7 @@ function setDownloaderState(state, message) {
         statusText.textContent = message || tr('statusStarting');
         btn.classList.add('loading');
         btn.disabled = false;
+        if (logSection) logSection.style.display = 'flex';
     } else if (state === 'success') {
         statusDot.classList.add('success');
         statusText.textContent = message || tr('statusSuccess');
@@ -943,10 +942,7 @@ function setDownloaderState(state, message) {
         statusDot.classList.add('error');
         statusText.textContent = message || tr('statusError');
         btn.disabled = false;
-        const terminalPanel = document.getElementById('terminal-panel');
-        if (terminalPanel && terminalPanel.style.display === 'none') {
-            toggleTerminalPanel();
-        }
+        if (logSection) logSection.style.display = 'flex';
     } else if (state === 'info') {
         statusDot.classList.add('info');
         statusText.textContent = message;
@@ -960,16 +956,16 @@ function setupQueueUI() {
     const openBtn = document.getElementById('open-queue-btn');
     const clearBtn = document.getElementById('clear-history-btn');
 
-    const terminalBtn = document.getElementById('toggle-terminal-btn');
     const clearTerminalBtn = document.getElementById('clear-terminal-btn');
 
     if (openBtn) openBtn.onclick = toggleQueuePanel;
 
-    if (terminalBtn) terminalBtn.onclick = toggleTerminalPanel;
     if (clearTerminalBtn) {
         clearTerminalBtn.onclick = () => {
             const term = document.getElementById('terminal-view');
+            const logSection = document.getElementById('dl-log-section');
             if (term) term.innerHTML = '';
+            if (logSection) logSection.style.display = 'none';
         };
     }
 
@@ -1007,36 +1003,10 @@ function closeQueuePanel() {
     if (queuePanel) {
         queuePanel.style.display = 'none';
         isQueueModalOpen = false;
-        if (downOverlay && document.getElementById('terminal-panel')?.style.display !== 'flex') {
-            downOverlay.classList.remove('with-queue');
-        }
+        if (downOverlay) downOverlay.classList.remove('with-queue');
     }
 }
 
-function toggleTerminalPanel() {
-    const terminalPanel = document.getElementById('terminal-panel');
-    const downOverlay = document.getElementById('downloader-overlay');
-
-    if (terminalPanel) {
-        if (terminalPanel.style.display === 'none') {
-            terminalPanel.style.display = 'flex';
-            if (downOverlay) downOverlay.classList.add('with-queue');
-        } else {
-            closeTerminalPanel();
-        }
-    }
-}
-
-function closeTerminalPanel() {
-    const terminalPanel = document.getElementById('terminal-panel');
-    const downOverlay = document.getElementById('downloader-overlay');
-    if (terminalPanel) {
-        terminalPanel.style.display = 'none';
-        if (downOverlay && (!document.getElementById('queue-panel') || document.getElementById('queue-panel').style.display === 'none')) {
-            downOverlay.classList.remove('with-queue');
-        }
-    }
-}
 
 function showErrorModal(errorText) {
     const overlay = document.getElementById('error-modal-overlay');
@@ -1880,12 +1850,6 @@ function setupEventListeners() {
     bind(toggleLegendBtn, 'click', () => {
         const legend = document.getElementById('clean-legend');
         if (legend) legend.classList.toggle('collapsed');
-    });
-
-    const toggleTerminalBtn = document.getElementById('toggle-terminal-btn');
-    bind(toggleTerminalBtn, 'click', () => {
-        const term = document.getElementById('terminal-view');
-        if (term) term.classList.toggle('visible');
     });
 
     const infoBtn = document.getElementById('project-info-btn');
