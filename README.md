@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v2.9.6` 
+# 🎵 NovaWave `v2.9.8` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > — Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source —
 
-![Version](https://img.shields.io/badge/Version-2.9.6-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.9.8-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -18,14 +18,17 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v2.9.6
+## ✨ What's New in v2.9.8
 
-- **NovaWave Guide** - The old help modal and NW DEV button are merged into a unified side drawer (Ctrl+1). Three tabs: Quickstart, Controls, and Hotkeys.
-- **EQ Presets** - 6 one-click presets above the equalizer sliders: Flat, Pop, Rock, Classical, Jazz, Bass Boost. Auto-enables the EQ.
-- **Sound Profiles** - 4 combined audio profiles (Warm, Bright, Studio, Hall) configure Bass, Crystalizer, Reverb and EQ together with a single click.
-- **Theme Pack Preview** - Theme cards now show accent color swatches before you activate a theme.
-- **Settings Search Improvements** - ESC clears the search field, match count badge, and tab breadcrumbs on results.
-- **Miniplayer Polish** - Language selector and Audio Extras panel are now hidden in miniplayer mode.
+- **GitHub Update Checker** - NovaWave checks for new releases automatically on startup. A modal shows the current vs. latest version with a direct download link to GitHub. Manual check available in Settings → System.
+- **Footer CHECK Button** - One-click update check right from the footer. The icon spins during the request and pulses green when an update is found.
+
+## ✨ What's New in v2.9.7
+
+- **Library Modal Redesign** - The folder loader is now a clean glassmorphism panel showing the primary folder and all additional folders with numbered badges.
+- **Integrated Downloader Log** - The separate terminal panel is gone. The download log appears inline below the downloader, opening automatically on activity.
+- **Sound Profiles: Default & Profile 1** - Default resets all audio effects to OFF. Profile 1 is a user-defined slot — save your current audio setup and restore it with one click.
+- **Bug Fixes** - Pick Color undefined value fixed, CTRL+1 shortcut conflict resolved, playlist toggle button removed, settings drawer widened to 520px.
 
 ---
 
@@ -197,7 +200,6 @@ wails build
 | `← / →` | Previous / Next track |
 | `Shift + ← / →` | Seek ±5 seconds |
 | `L` | Open Lyrics |
-| `CTRL + 1` | Open NovaWave Guide (Legacy UI) · Toggle PRO Console (V2 UI) |
 | `CTRL + U + 1` | Switch to Legacy UI |
 | `CTRL + U + 2` | Switch to V2 PRO UI |
 | `CTRL + U + 3` | Switch to Lite UI |
