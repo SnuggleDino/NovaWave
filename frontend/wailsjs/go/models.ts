@@ -218,6 +218,25 @@ export namespace main {
 	        this.newPath = source["newPath"];
 	    }
 	}
+	
+	export class UpdateResult {
+	    available: boolean;
+	    latestVersion: string;
+	    releaseUrl: string;
+	    error: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UpdateResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.available = source["available"];
+	        this.latestVersion = source["latestVersion"];
+	        this.releaseUrl = source["releaseUrl"];
+	        this.error = source["error"];
+	    }
+	}
 
 }
 

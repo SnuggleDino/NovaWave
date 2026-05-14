@@ -284,6 +284,17 @@ export const it_IT = {
     updateLatestVersion: 'Ultima versione',
     updateReleaseDate: 'Data di rilascio',
     updateChangesTitle: 'Cosa c\'è di nuovo?',
+    sectionUpdates: 'Aggiornamenti',
+    checkUpdateLabel: 'Verifica aggiornamenti',
+    checkUpdateDesc: 'Controlla se è disponibile una nuova versione.',
+    checkUpdateBtn: 'Controlla ora',
+    updateChecking: 'Ricerca aggiornamenti…',
+    updateAvailable: 'Aggiornamento disponibile!',
+    updateUpToDate: "Hai l'ultima versione.",
+    updateError: 'Verifica fallita.',
+    updateDownloadBtn: 'Scarica su GitHub',
+    updateCurrentVer: 'Versione attuale',
+    updateLatestVer: 'Ultima versione',
 
     // --- App Loader ---
     loaderBooting: 'Avvio di NovaWave...',

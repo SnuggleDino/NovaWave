@@ -375,6 +375,13 @@
         </main>
 
         <footer class="app-footer">
+            <button id="footer-check-update-btn" class="footer-check-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+                <span data-lang-key="checkUpdateBtn">CHECK</span>
+            </button>
             <button id="footer-update-btn" class="footer-update-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -414,6 +421,53 @@
                 <button id="update-info-ok-btn" class="settings-button primary-btn" style="width: 100%; padding: 12px;"
                     data-lang-key="updateOkBtn">
                     Kuschelig!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= UPDATE CHECK MODAL ================= -->
+    <div id="update-check-overlay">
+        <div class="update-check-panel">
+            <div class="update-check-header">
+                <h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+                        <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+                    </svg>
+                    <span data-lang-key="checkUpdateLabel">Updates</span>
+                </h3>
+                <button class="update-check-close" id="update-check-close-btn">&times;</button>
+            </div>
+            <div class="update-check-body">
+                <div class="uc-status" id="uc-status-box">
+                    <div class="uc-status-icon idle" id="uc-status-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <div class="uc-status-text">
+                        <strong id="uc-status-title" data-lang-key="checkUpdateLabel">Auf Updates prüfen</strong>
+                        <span id="uc-status-desc" data-lang-key="checkUpdateDesc">Prüfe ob eine neue Version verfügbar ist.</span>
+                    </div>
+                </div>
+
+                <div class="uc-versions">
+                    <div class="uc-ver-box current">
+                        <span class="uc-ver-label" data-lang-key="updateCurrentVer">Aktuelle Version</span>
+                        <span class="uc-ver-value" id="uc-current-ver">—</span>
+                    </div>
+                    <div class="uc-ver-box latest">
+                        <span class="uc-ver-label" data-lang-key="updateLatestVer">Neueste Version</span>
+                        <span class="uc-ver-value" id="uc-latest-ver">—</span>
+                    </div>
+                </div>
+
+                <button class="uc-download-btn" id="uc-download-btn" style="display:none;" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span data-lang-key="updateDownloadBtn">Auf GitHub herunterladen</span>
                 </button>
             </div>
         </div>
@@ -1598,6 +1652,17 @@
                                 </div>
                                 <div class="setting-control">
                                     <button id="btn-clear-cache" class="settings-button">Clear</button>
+                                </div>
+                            </div>
+
+                        <div class="settings-section-divider"><span data-lang-key="sectionUpdates">Updates</span></div>
+                            <div class="setting-item">
+                                <div class="setting-label">
+                                    <strong data-lang-key="checkUpdateLabel">Auf Updates prüfen</strong>
+                                    <p data-lang-key="checkUpdateDesc">Prüfe ob eine neue Version verfügbar ist.</p>
+                                </div>
+                                <div class="setting-control">
+                                    <button id="btn-check-update" class="settings-button" data-lang-key="checkUpdateBtn">Prüfen</button>
                                 </div>
                             </div>
 

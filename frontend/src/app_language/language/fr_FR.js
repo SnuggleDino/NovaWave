@@ -284,6 +284,17 @@ export const fr_FR = {
     updateLatestVersion: 'Derni\u00E8re version',
     updateReleaseDate: 'Date de sortie',
     updateChangesTitle: 'Quoi de neuf ?',
+    sectionUpdates: 'Mises \u00E0 jour',
+    checkUpdateLabel: 'Rechercher des mises \u00E0 jour',
+    checkUpdateDesc: 'V\u00E9rifier si une nouvelle version est disponible.',
+    checkUpdateBtn: 'V\u00E9rifier maintenant',
+    updateChecking: 'Recherche de mises \u00E0 jour\u2026',
+    updateAvailable: 'Mise \u00E0 jour disponible !',
+    updateUpToDate: 'Vous avez la derni\u00E8re version.',
+    updateError: 'V\u00E9rification \u00E9chou\u00E9e.',
+    updateDownloadBtn: 'T\u00E9l\u00E9charger sur GitHub',
+    updateCurrentVer: 'Version actuelle',
+    updateLatestVer: 'Derni\u00E8re version',
 
     // --- App Loader ---
     loaderBooting: 'D\u00E9marrage de NovaWave...',

@@ -284,6 +284,17 @@ export const en_EN = {
     updateLatestVersion: 'Latest Version',
     updateReleaseDate: 'Release Date',
     updateChangesTitle: "What's New?",
+    sectionUpdates: 'Updates',
+    checkUpdateLabel: 'Check for Updates',
+    checkUpdateDesc: 'Check if a new version is available.',
+    checkUpdateBtn: 'Check now',
+    updateChecking: 'Checking for updates…',
+    updateAvailable: 'Update available!',
+    updateUpToDate: "You're up to date.",
+    updateError: 'Check failed.',
+    updateDownloadBtn: 'Download on GitHub',
+    updateCurrentVer: 'Current version',
+    updateLatestVer: 'Latest version',
 
     // --- App Loader ---
     loaderBooting: 'Starting NovaWave...',

@@ -57,6 +57,8 @@ const windowApi = {
     setWindowSize: App.SetWindowSize,
     resetConfig: App.ResetConfig,
     restartApp: App.RestartApp,
+    checkForUpdate: App.CheckForUpdate,
+    openURL: App.OpenURL,
 };
 
 window.api = windowApi;
@@ -2611,6 +2613,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             UpdateManager.init(windowApi);
+            setTimeout(() => UpdateManager.silentCheck(), 5000);
 
             if (settings.theme) {
                 document.documentElement.setAttribute('data-theme', settings.theme);

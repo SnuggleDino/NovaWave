@@ -305,6 +305,10 @@ func (a *App) GetAppMeta() AppMeta {
 	return CurrentMeta
 }
 
+func (a *App) OpenURL(url string) {
+	wailsRuntime.BrowserOpenURL(a.ctx, url)
+}
+
 func defaultDownloadFolder() string {
 	if home, err := os.UserHomeDir(); err == nil {
 		dl := filepath.Join(home, "Downloads")

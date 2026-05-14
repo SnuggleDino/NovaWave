@@ -284,6 +284,17 @@ export const tr_TR = {
     updateLatestVersion: 'Son Versiyon',
     updateReleaseDate: 'Yay\u0131nlanma Tarihi',
     updateChangesTitle: 'Yenilikler Neler?',
+    sectionUpdates: 'G\u00fcncellemeler',
+    checkUpdateLabel: 'G\u00fcncellemeleri Kontrol Et',
+    checkUpdateDesc: 'Yeni bir s\u00fcr\u00fcm olup olmad\u0131\u011f\u0131n\u0131 kontrol et.',
+    checkUpdateBtn: '\u015eimdi kontrol et',
+    updateChecking: 'G\u00fcncellemeler aran\u0131yor\u2026',
+    updateAvailable: 'G\u00fcncelleme mevcut!',
+    updateUpToDate: 'En g\u00fcncel s\u00fcr\u00fcm\u00fc kullan\u0131yorsunuz.',
+    updateError: 'Kontrol ba\u015far\u0131s\u0131z.',
+    updateDownloadBtn: "GitHub'dan indir",
+    updateCurrentVer: 'Mevcut s\u00fcr\u00fcm',
+    updateLatestVer: 'Son s\u00fcr\u00fcm',
 
     // --- App Loader ---
     loaderBooting: 'NovaWave Ba\u015Flat\u0131l\u0131yor...',
