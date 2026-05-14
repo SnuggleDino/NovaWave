@@ -77,9 +77,6 @@ body.playlist-left.playlist-hidden .extras-column {
     transform: translateX(-50px);
 }
 
-body.is-mini #toggle-playlist-btn {
-    display: none !important;
-}
 
 body.is-mini .header-item:has(#lang-select) {
     display: none !important;
@@ -2745,7 +2742,7 @@ input[type=range].volume-slider::-moz-range-thumb {
     position: fixed;
     top: 0;
     right: 0;
-    width: 460px;
+    width: 520px;
     height: 100vh;
     background: var(--bg-card);
     backdrop-filter: blur(25px);
@@ -3663,7 +3660,6 @@ body.is-mini .header-right {
 body.is-mini .app-title-block,
 body.is-mini .lang-switch,
 body.is-mini #user-help-btn,
-body.is-mini #toggle-playlist-btn,
 body.is-mini #toggle-downloader-btn,
 body.is-mini #settings-btn,
 body.is-mini .mini-mode-label {

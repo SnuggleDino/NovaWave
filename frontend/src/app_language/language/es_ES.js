@@ -267,7 +267,7 @@ export const es_ES = {
     devDebugHotkeys: 'Atajos del sistema',
     devMenuTitle: 'Legacy UI',
     devPerfTitle: 'V2 UI',
-    devWinTitle: 'Pantalla completa',
+    devWinTitle: 'Panel de estadísticas',
 
     // --- Updates ---
     updateTitle: 'Noticias',

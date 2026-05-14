@@ -235,24 +235,23 @@ export const AppSettings = {
                 if (checked) {
                     const color = this.settings.customAccentColor || '#38bdf8';
                     document.documentElement.style.setProperty('--accent', color);
+                    if (this.callbacks.onAccentColorChange) this.callbacks.onAccentColorChange(color);
                 } else {
                     document.documentElement.style.removeProperty('--accent');
+                    if (this.callbacks.onAccentColorChange) this.callbacks.onAccentColorChange(null);
                 }
-
-                if (this.callbacks.onAccentColorChange) this.callbacks.onAccentColorChange();
             });
         }
 
         const accentColorPicker = $('accent-color-picker');
         if (accentColorPicker) {
             accentColorPicker.addEventListener('input', (e) => {
-                const color = e.target.value;
-                document.documentElement.style.setProperty('--accent', color);
-                if (this.callbacks.onAccentColorChange) this.callbacks.onAccentColorChange();
-                this.saveSetting('customAccentColor', color);
+                document.documentElement.style.setProperty('--accent', e.target.value);
             });
             accentColorPicker.addEventListener('change', (e) => {
-                this.saveSetting('customAccentColor', e.target.value);
+                const color = e.target.value;
+                this.saveSetting('customAccentColor', color);
+                if (this.callbacks.onAccentColorChange) this.callbacks.onAccentColorChange(color);
             });
         }
 

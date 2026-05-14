@@ -267,7 +267,7 @@ export const fr_FR = {
     devDebugHotkeys: 'Raccourcis syst\u00E8me',
     devMenuTitle: 'Legacy UI',
     devPerfTitle: 'V2 UI',
-    devWinTitle: 'Plein \u00E9cran',
+    devWinTitle: 'Affichage des stats',
 
     // --- Updates ---
     updateTitle: 'Nouvelles',

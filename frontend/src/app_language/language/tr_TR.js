@@ -267,7 +267,7 @@ export const tr_TR = {
     devDebugHotkeys: 'Sistem K\u0131sayollar\u0131',
     devMenuTitle: 'Legacy UI',
     devPerfTitle: 'V2 UI',
-    devWinTitle: 'Tam Ekran',
+    devWinTitle: 'İstatistik Paneli',
 
     // --- Updates ---
     updateTitle: 'Haberler',

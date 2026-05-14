@@ -1638,16 +1638,6 @@ function setupEventListeners() {
             }
             return;
         }
-        if (isCtrl && isOne && pressedKeys.size === 2) {
-            const guideDrawer = document.getElementById('guide-drawer');
-            const guideBd = document.getElementById('guide-drawer-backdrop');
-            if (guideDrawer && !guideDrawer.classList.contains('open')) {
-                guideDrawer.classList.add('open');
-                if (guideBd) guideBd.classList.add('open');
-            }
-            return;
-        }
-
         if (e.target.closest('input, textarea')) return;
         switch (e.code) {
             case 'Space': e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break;
@@ -2091,7 +2081,7 @@ function initSettingsLogic() {
         },
         onAccentColorChange: (val) => {
             updateCachedColor();
-            showNotification(tr('customColor') + ': ' + val, 'info', 1500);
+            if (val) showNotification(tr('customColor') + ': ' + val, 'info', 1500);
         },
         onVisualizerToggle: (enabled) => {
             visualizerEnabled = enabled;
@@ -2421,25 +2411,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* --- Playlist Toggle Logic --- */
-    const togglePlaylistBtn = $('#toggle-playlist-btn');
-    if (togglePlaylistBtn) {
-        togglePlaylistBtn.addEventListener('click', () => {
-            const isHidden = document.body.classList.toggle('playlist-hidden');
-            saveSetting('playlistHidden', isHidden);
-
-            togglePlaylistBtn.style.color = isHidden ? 'var(--text-muted)' : 'var(--accent)';
-            togglePlaylistBtn.style.borderColor = isHidden ? 'var(--border-soft)' : 'var(--accent)';
-
-            setTimeout(() => {
-                if (visualizerCanvas && visualizerContainer) {
-                    visualizerCanvas.width = visualizerContainer.clientWidth;
-                    visualizerCanvas.height = visualizerContainer.clientHeight;
-                }
-                if (typeof updateTrackTitleScroll === 'function') updateTrackTitleScroll();
-            }, 550);
-        });
-    }
 
     accentColorPicker = $('#accent-color-picker');
     dropZone = $('#drop-zone'); toggleEnableDrag = $('#toggle-enable-drag'); toggleUseCustomColor = $('#toggle-use-custom-color');

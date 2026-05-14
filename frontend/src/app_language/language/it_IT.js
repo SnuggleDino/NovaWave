@@ -267,7 +267,7 @@ export const it_IT = {
     devDebugHotkeys: 'Scorciatoie di sistema',
     devMenuTitle: 'Legacy UI',
     devPerfTitle: 'V2 UI',
-    devWinTitle: 'Schermo intero',
+    devWinTitle: 'Overlay statistiche',
 
     // --- Updates ---
     updateTitle: 'Novità',

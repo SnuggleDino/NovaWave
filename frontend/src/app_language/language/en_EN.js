@@ -267,7 +267,7 @@ export const en_EN = {
     devDebugHotkeys: 'System Hotkeys',
     devMenuTitle: 'Legacy UI',
     devPerfTitle: 'V2 UI',
-    devWinTitle: 'Fullscreen',
+    devWinTitle: 'Stats Overlay',
 
     // --- Updates ---
     updateTitle: 'Update News',

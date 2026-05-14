@@ -267,7 +267,7 @@ export const de_DE = {
     devDebugHotkeys: 'System Hotkeys',
     devMenuTitle: 'Legacy UI',
     devPerfTitle: 'V2 UI',
-    devWinTitle: 'Vollbild',
+    devWinTitle: 'Leistungsanzeige',
 
     // --- Updates ---
     updateTitle: 'Neuigkeiten',
