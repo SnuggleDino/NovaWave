@@ -167,6 +167,7 @@ export const fr_FR = {
     statFrame: 'Cadre',
     statStatus: 'Statut',
     statStable: 'Stable',
+    statLow: 'Faible',
     statLag: 'LAG',
     statPowerSave: '\u00C9conomie d\'\u00E9nergie',
     perfLagMsg: 'Ralentissement syst\u00E8me d\u00E9tect\u00E9. Activer le mode Performance ?',

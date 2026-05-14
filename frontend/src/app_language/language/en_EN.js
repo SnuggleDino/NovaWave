@@ -167,6 +167,7 @@ export const en_EN = {
     statFrame: 'Frame',
     statStatus: 'Status',
     statStable: 'Stable',
+    statLow: 'Low',
     statLag: 'LAG',
     statPowerSave: 'Power Save',
     perfLagMsg: 'System lag detected. Enable Performance Mode?',

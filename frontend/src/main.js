@@ -166,20 +166,9 @@ let reverbToggle, reverbSlider, reverbValueEl, reverbContainer;
 let toggleCinemaMode, btnExportPlaylist, playlistPositionSelect, toggleGradientTitle;
 let renderPlaylistRequestId = null;
 
-let lastFrameTime = performance.now();
 let downloadManager;
-let frameCount = 0;
-let appFrameCount = 0;
-let fps = 0;
-let avgFps = 60;
-let perfHintShown = false;
 let showStatsOverlay = false;
-let targetFps = 60;
-let lastRenderTime = 0;
-let lastStatsTime = performance.now();
 let cachedAccentColor = '#38bdf8';
-let isStatsLoopRunning = false;
-let warmupFrames = 0;
 
 //--- Helper Functions ---------------
 
@@ -1312,8 +1301,6 @@ async function loadSettings() {
     const statsOverlay = document.getElementById('stats-overlay');
     if (statsOverlay) statsOverlay.classList.toggle('hidden', !showStatsOverlay);
 
-    if (settings.targetFps) targetFps = settings.targetFps;
-
     if (settings.legacyFolders) {
         try {
             legacyFolders = Array.isArray(settings.legacyFolders)
@@ -1617,7 +1604,7 @@ function setupEventListeners() {
             return;
         }
 
-        if (isCtrl && isOne && pressedKeys.has('x')) { triggerPerformanceHint(true); return; }
+        if (isCtrl && isOne && pressedKeys.has('x')) { AppPerformance.triggerPerformanceHint(true); return; }
         if (isCtrl && isOne && pressedKeys.has('h')) {
             const debugEl = document.getElementById('debug-size-item');
             const statsOverlay = document.getElementById('stats-overlay');

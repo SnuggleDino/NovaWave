@@ -167,6 +167,7 @@ export const tr_TR = {
     statFrame: 'Kare',
     statStatus: 'Durum',
     statStable: 'Stabil',
+    statLow: 'Düşük',
     statLag: 'LAG',
     statPowerSave: 'G\u00FC\u00E7 Tasarrufu',
     perfLagMsg: 'Sistem gecikmesi alg\u0131land\u0131. Performans Modu etkinle\u015Ftirilsin mi?',

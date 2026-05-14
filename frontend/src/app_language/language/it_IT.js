@@ -167,6 +167,7 @@ export const it_IT = {
     statFrame: 'Frame',
     statStatus: 'Stato',
     statStable: 'Stabile',
+    statLow: 'Basso',
     statLag: 'LAG',
     statPowerSave: 'Risparmio energetico',
     perfLagMsg: 'Rilevato lag di sistema. Attivare la modalit\u00E0 prestazioni?',

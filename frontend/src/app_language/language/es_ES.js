@@ -167,6 +167,7 @@ export const es_ES = {
     statFrame: 'Cuadro',
     statStatus: 'Estado',
     statStable: 'Estable',
+    statLow: 'Bajo',
     statLag: 'LAG',
     statPowerSave: 'Ahorro de energ\u00EDa',
     perfLagMsg: 'Retraso del sistema detectado. \u00BFActivar modo de rendimiento?',

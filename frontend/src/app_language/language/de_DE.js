@@ -167,6 +167,7 @@ export const de_DE = {
     statFrame: 'Frame',
     statStatus: 'Status',
     statStable: 'Stabil',
+    statLow: 'Niedrig',
     statLag: 'LAG',
     statPowerSave: 'Stromsparen',
     perfLagMsg: 'System-Lag erkannt. Performance-Mode aktivieren?',

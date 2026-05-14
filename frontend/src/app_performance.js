@@ -1,8 +1,7 @@
 export const AppPerformance = {
     lastFrameTime: performance.now(),
-    frameCount: 0,
     appFrameCount: 0,
-    fps: 0,
+    visFps: 0,
     avgFps: 60,
     perfHintShown: false,
     performanceMode: false,
@@ -10,9 +9,11 @@ export const AppPerformance = {
     targetFps: 60,
     lastStatsTime: performance.now(),
     warmupFrames: 0,
+    statsInterval: 1000,
 
     //--- DOM Refs ---------------
     _fpsEl: null,
+    _visFpsEl: null,
     _timeEl: null,
     _lagEl: null,
     _perfInfoEl: null,
@@ -38,6 +39,7 @@ export const AppPerformance = {
 
         // Cache DOM elements once instead of querying on every frame
         this._fpsEl = document.getElementById('stat-fps');
+        this._visFpsEl = document.getElementById('stat-vis-fps');
         this._timeEl = document.getElementById('stat-time');
         this._lagEl = document.getElementById('stat-lag');
         this._perfInfoEl = document.getElementById('stat-perf-info');
@@ -86,7 +88,6 @@ export const AppPerformance = {
 
         const now = performance.now();
         const interval = 1000 / this.targetFps;
-        const statsInterval = 1000;
 
         const delta = now - this.lastStatsTime;
         if (delta < interval) {
@@ -98,14 +99,14 @@ export const AppPerformance = {
         this.warmupFrames++;
 
         const timeSinceLastLog = now - this.lastFrameTime;
-        if (timeSinceLastLog >= statsInterval) {
+        if (timeSinceLastLog >= this.statsInterval) {
             const appFps = Math.round((this.appFrameCount * 1000) / timeSinceLastLog);
 
-            let visFps = 0;
             if (this.visualizer) {
-                visFps = Math.round((this.visualizer.getAndResetFrameCount() * 1000) / timeSinceLastLog);
+                this.visFps = Math.round((this.visualizer.getAndResetFrameCount() * 1000) / timeSinceLastLog);
+            } else {
+                this.visFps = 0;
             }
-            this.fps = visFps;
             this.avgFps = appFps;
 
             const currentFrameTime = appFps > 0 ? Math.round(1000 / appFps) : 0;
@@ -122,27 +123,36 @@ export const AppPerformance = {
 
     updateUI(appFps, frameTime) {
         const fpsEl = this._fpsEl;
+        const visFpsEl = this._visFpsEl;
         const timeEl = this._timeEl;
         const lagEl = this._lagEl;
         const perfInfoEl = this._perfInfoEl;
 
         if (fpsEl) {
-            fpsEl.textContent = `${appFps} (${this.fps || '-'})`;
+            fpsEl.textContent = appFps;
             if (appFps >= this.targetFps * 0.9) fpsEl.style.color = '#4ade80';
             else if (appFps >= this.targetFps * 0.6) fpsEl.style.color = '#fbbf24';
             else fpsEl.style.color = '#ef4444';
         }
 
-        if (timeEl) timeEl.textContent = frameTime + 'ms';
+        if (visFpsEl) {
+            visFpsEl.textContent = this.visFps > 0 ? this.visFps : '--';
+            visFpsEl.style.color = this.visFps > 0 ? '#94a3b8' : '#475569';
+        }
+
+        if (timeEl) timeEl.textContent = frameTime > 0 ? frameTime + 'ms' : '--';
 
         if (lagEl) {
             if (this.performanceMode) {
                 lagEl.textContent = this.tr('statPowerSave');
                 lagEl.style.color = '#38bdf8';
-            } else if (this.avgFps < this.targetFps * 0.5) {
-                lagEl.textContent = 'LAG';
+            } else if (this.avgFps < this.targetFps * 0.6) {
+                lagEl.textContent = this.tr('statLag');
                 lagEl.style.color = '#ef4444';
                 this.triggerPerformanceHint();
+            } else if (this.avgFps < this.targetFps * 0.85) {
+                lagEl.textContent = this.tr('statLow');
+                lagEl.style.color = '#fbbf24';
             } else {
                 lagEl.textContent = this.tr('statStable');
                 lagEl.style.color = '#4ade80';
