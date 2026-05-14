@@ -99,6 +99,12 @@ export const tr_TR = {
 
     // --- Audio Extras Tab ---
     audioPresetsLabel: 'Ses Profilleri',
+    profileDefault: 'Varsayılan',
+    profileOne: 'Profil 1',
+    profileSaved: 'Profil 1 kaydedildi',
+    profileNone: 'Kaydedilmiş profil yok',
+    profileSaveBtn: 'Profil 1 olarak kaydet',
+    profileResave: 'Profil 1\'i güncelle',
     audioPresetsDesc: 'Yaygın ses profilleri için hızlı seçim.',
     bassBoost: 'Bas G\u00FC\u00E7lendirme',
     bassBoostDesc: 'D\u00FC\u015F\u00FCk frekanslar\u0131 art\u0131r\u0131n.',

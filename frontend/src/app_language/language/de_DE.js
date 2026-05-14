@@ -100,6 +100,12 @@ export const de_DE = {
     // --- Audio Extras Tab ---
     audioPresetsLabel: 'Klangprofile',
     audioPresetsDesc: 'Schnellauswahl für gängige Klangprofile.',
+    profileDefault: 'Standard',
+    profileOne: 'Profil 1',
+    profileSaved: 'Profil 1 gespeichert',
+    profileNone: 'Kein Profil gespeichert',
+    profileSaveBtn: 'Als Profil 1 speichern',
+    profileResave: 'Profil 1 aktualisieren',
     bassBoost: 'Bass Boost',
     bassBoostDesc: 'Verstärke die tiefen Frequenzen.',
     bassBoostLevel: 'Bass Level',

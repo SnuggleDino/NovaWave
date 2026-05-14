@@ -99,6 +99,12 @@ export const fr_FR = {
 
     // --- Audio Extras Tab ---
     audioPresetsLabel: 'Profils Sonores',
+    profileDefault: 'Défaut',
+    profileOne: 'Profil 1',
+    profileSaved: 'Profil 1 enregistré',
+    profileNone: 'Aucun profil enregistré',
+    profileSaveBtn: 'Enregistrer comme Profil 1',
+    profileResave: 'Mettre à jour le Profil 1',
     audioPresetsDesc: 'S\u00E9lection rapide de profils sonores courants.',
     bassBoost: 'Bass Boost',
     bassBoostDesc: 'Renforce les basses fr\u00E9quences.',

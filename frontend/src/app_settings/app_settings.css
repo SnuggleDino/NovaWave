@@ -651,3 +651,38 @@
     border-color: var(--accent);
     color: var(--accent);
 }
+
+.audio-profile1-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.audio-preset-chip.has-profile::after {
+    content: '●';
+    font-size: 0.45rem;
+    margin-left: 5px;
+    color: var(--accent);
+    vertical-align: middle;
+}
+
+.audio-preset-save-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    color: var(--text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.audio-preset-save-btn:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+}

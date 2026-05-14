@@ -99,6 +99,12 @@ export const es_ES = {
 
     // --- Audio Extras Tab ---
     audioPresetsLabel: 'Perfiles de Sonido',
+    profileDefault: 'Predeterminado',
+    profileOne: 'Perfil 1',
+    profileSaved: 'Perfil 1 guardado',
+    profileNone: 'Sin perfil guardado',
+    profileSaveBtn: 'Guardar como Perfil 1',
+    profileResave: 'Actualizar Perfil 1',
     audioPresetsDesc: 'Selección rápida de perfiles de sonido comunes.',
     bassBoost: 'Refuerzo de graves',
     bassBoostDesc: 'Mejora las frecuencias bajas.',

@@ -3,12 +3,12 @@
     "date": "14. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Library Modal, Downloader Log, Fixes & Aufräumen",
-        "en": "Library Modal, Downloader Log, Fixes & Cleanup",
-        "tr": "Kütüphane Paneli, İndirici Günlüğü, Düzeltmeler & Temizlik",
-        "es": "Panel de biblioteca, log del descargador, correcciones y limpieza",
-        "fr": "Panneau bibliothèque, journal téléchargeur, corrections et nettoyage",
-        "it": "Pannello libreria, log downloader, correzioni e pulizia"
+        "de": "Library Modal, Downloader Log, Klangprofile & Fixes",
+        "en": "Library Modal, Downloader Log, Sound Profiles & Fixes",
+        "tr": "Kütüphane Paneli, İndirici Günlüğü, Ses Profilleri & Düzeltmeler",
+        "es": "Panel de biblioteca, log del descargador, perfiles de sonido y correcciones",
+        "fr": "Panneau bibliothèque, journal téléchargeur, profils sonores et corrections",
+        "it": "Pannello libreria, log downloader, profili sonori e correzioni"
     },
     "changes": [
         {
@@ -47,6 +47,25 @@
                 "es": "El panel lateral de terminal separado y el botón Alternar log han sido eliminados. El log de descarga ahora aparece directamente debajo del panel del descargador — se abre automáticamente cuando comienza una descarga o se produce un error, y se puede limpiar y ocultar con el icono de papelera.",
                 "fr": "Le panneau latéral terminal séparé et le bouton Basculer le journal ont été supprimés. Le journal de téléchargement apparaît désormais directement sous le panneau du téléchargeur — il s'ouvre automatiquement au démarrage d'un téléchargement ou en cas d'erreur, et peut être effacé et masqué avec l'icône corbeille.",
                 "it": "Il pannello laterale terminal separato e il pulsante Attiva/disattiva log sono stati rimossi. Il log di download ora appare direttamente sotto il pannello del downloader — si apre automaticamente quando inizia un download o si verifica un errore, e può essere cancellato e nascosto con l'icona cestino."
+            }
+        },
+        {
+            "icon": "🎚️",
+            "title": {
+                "de": "Klangprofile: Standard & Profil 1",
+                "en": "Sound Profiles: Default & Profile 1",
+                "tr": "Ses Profilleri: Varsayılan & Profil 1",
+                "es": "Perfiles de sonido: Predeterminado y Perfil 1",
+                "fr": "Profils sonores : Défaut & Profil 1",
+                "it": "Profili sonori: Predefinito & Profilo 1"
+            },
+            "desc": {
+                "de": "Zwei neue Klangprofile ergänzen die Reihe: Standard setzt alle vier Audioeffekte (Bass, Crystalizer, Reverb, EQ) mit einem Klick zurück. Profil 1 ist ein frei belegbarer Slot — der Speichern-Button neben dem Chip sichert die aktuellen Einstellungen, ein weiterer Klick auf den Chip stellt sie wieder her. Ein kleiner Punkt am Chip zeigt an, ob ein Profil gespeichert ist.",
+                "en": "Two new sound profiles join the row: Default resets all four audio effects (Bass, Crystalizer, Reverb, EQ) with a single click. Profile 1 is a user-defined slot — the save button next to the chip stores your current settings, and clicking the chip again restores them. A small dot on the chip indicates whether a profile has been saved.",
+                "tr": "Satıra iki yeni ses profili eklendi: Varsayılan, dört ses efektini (Bass, Crystalizer, Reverb, EQ) tek tıklamayla sıfırlar. Profil 1 kullanıcı tanımlı bir yuvadır — çipin yanındaki kaydet düğmesi mevcut ayarları saklar ve çipe tekrar tıklamak bunları geri yükler. Çipteki küçük nokta profilin kaydedilip kaydedilmediğini gösterir.",
+                "es": "Dos nuevos perfiles de sonido se añaden a la fila: Predeterminado restablece los cuatro efectos de audio (Bass, Crystalizer, Reverb, EQ) con un solo clic. Perfil 1 es un espacio definido por el usuario — el botón de guardar junto al chip almacena la configuración actual y volver a hacer clic en el chip la restaura. Un pequeño punto en el chip indica si hay un perfil guardado.",
+                "fr": "Deux nouveaux profils sonores rejoignent la rangée : Défaut réinitialise les quatre effets audio (Bass, Crystalizer, Reverb, EQ) en un seul clic. Profil 1 est un emplacement défini par l'utilisateur — le bouton de sauvegarde à côté du chip enregistre vos réglages actuels et cliquer à nouveau sur le chip les restaure. Un petit point sur le chip indique si un profil a été sauvegardé.",
+                "it": "Due nuovi profili sonori si aggiungono alla riga: Predefinito azzera tutti e quattro gli effetti audio (Bass, Crystalizer, Reverb, EQ) con un solo clic. Profilo 1 è uno slot definito dall'utente — il pulsante salva accanto al chip memorizza le impostazioni attuali e facendo nuovamente clic sul chip le ripristina. Un piccolo punto sul chip indica se un profilo è stato salvato."
             }
         },
         {

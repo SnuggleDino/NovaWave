@@ -2113,6 +2113,7 @@ function initSettingsLogic() {
             showNotification(tr('enableDeleteSongs') + ': ' + (enabled ? 'ON' : 'OFF'), enabled ? 'success' : 'info', 2000);
         },
         onRefreshFolder: () => performFolderRefresh(),
+        onNotification: (msg, type) => showNotification(msg, type || 'info', 2000),
         onAudioEffectChange: (type, enabled, val) => {
             updateAudioEffects();
             if (type) {

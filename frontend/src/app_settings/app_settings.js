@@ -11,10 +11,11 @@ const EQ_PRESETS = {
 };
 
 const AUDIO_PRESETS = {
-    warm:   { bassBoostEnabled: true,  bassBoostValue: 7, trebleBoostEnabled: false,               reverbEnabled: false,              eqEnabled: true, eqValues: [3,  2,  0, -1, -2] },
-    bright: { bassBoostEnabled: false,                    trebleBoostEnabled: true, trebleBoostValue: 8, reverbEnabled: false,         eqEnabled: true, eqValues: [-2, -1,  0,  3,  5] },
-    studio: { bassBoostEnabled: true,  bassBoostValue: 5, trebleBoostEnabled: true, trebleBoostValue: 6, reverbEnabled: true, reverbValue: 20, eqEnabled: true, eqValues: [2,  1, -1,  2,  3] },
-    hall:   { bassBoostEnabled: false,                    trebleBoostEnabled: true, trebleBoostValue: 4, reverbEnabled: true, reverbValue: 65, eqEnabled: true, eqValues: [1,  0,  0,  1,  3] },
+    default: { bassBoostEnabled: false, trebleBoostEnabled: false, reverbEnabled: false, eqEnabled: false, eqValues: [0, 0, 0, 0, 0] },
+    warm:    { bassBoostEnabled: true,  bassBoostValue: 7, trebleBoostEnabled: false,               reverbEnabled: false,              eqEnabled: true, eqValues: [3,  2,  0, -1, -2] },
+    bright:  { bassBoostEnabled: false,                    trebleBoostEnabled: true, trebleBoostValue: 8, reverbEnabled: false,         eqEnabled: true, eqValues: [-2, -1,  0,  3,  5] },
+    studio:  { bassBoostEnabled: true,  bassBoostValue: 5, trebleBoostEnabled: true, trebleBoostValue: 6, reverbEnabled: true, reverbValue: 20, eqEnabled: true, eqValues: [2,  1, -1,  2,  3] },
+    hall:    { bassBoostEnabled: false,                    trebleBoostEnabled: true, trebleBoostValue: 4, reverbEnabled: true, reverbValue: 65, eqEnabled: true, eqValues: [1,  0,  0,  1,  3] },
 };
 
 // --- Icons for Design Cards ---
@@ -552,10 +553,18 @@ export const AppSettings = {
         document.querySelectorAll('.audio-preset-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 const key = chip.dataset.preset;
+                if (key === 'profile1') { this._applyProfile1(); return; }
                 if (!AUDIO_PRESETS[key]) return;
                 this._applyAudioPreset(key);
             });
         });
+
+        const saveProfile1Btn = document.getElementById('save-profile1-btn');
+        if (saveProfile1Btn) {
+            saveProfile1Btn.addEventListener('click', () => this._saveProfile1());
+        }
+
+        this._updateProfile1Chip();
 
         // --- INTROS TAB ---
         const introCards = document.querySelectorAll('.intro-card');
@@ -851,8 +860,8 @@ export const AppSettings = {
         window._isRestoring = false;
     },
 
-    _applyAudioPreset: function (presetKey) {
-        const p = AUDIO_PRESETS[presetKey];
+    _applyAudioPreset: function (presetKey, presetOverride) {
+        const p = presetOverride || AUDIO_PRESETS[presetKey];
         if (!p) return;
         const $ = (id) => document.getElementById(id);
 
@@ -934,6 +943,41 @@ export const AppSettings = {
         document.querySelectorAll('.audio-preset-chip').forEach(chip => {
             chip.classList.toggle('active', chip.dataset.preset === activeKey);
         });
+    },
+
+    _saveProfile1: function () {
+        const s = this.settings;
+        const profile = {
+            bassBoostEnabled: !!s.bassBoostEnabled,
+            bassBoostValue: s.bassBoostValue ?? 6,
+            trebleBoostEnabled: !!s.trebleBoostEnabled,
+            trebleBoostValue: s.trebleBoostValue ?? 6,
+            reverbEnabled: !!s.reverbEnabled,
+            reverbValue: s.reverbValue ?? 30,
+            eqEnabled: !!s.eqEnabled,
+            eqValues: [...(s.eqValues || [0, 0, 0, 0, 0])],
+        };
+        this.settings.savedProfile1 = profile;
+        this.saveSetting('savedProfile1', profile);
+        this._updateProfile1Chip();
+        if (this.callbacks.onNotification) this.callbacks.onNotification(window.tr ? window.tr('profileSaved') : 'Profile 1 saved', 'success');
+    },
+
+    _applyProfile1: function () {
+        const profile = this.settings.savedProfile1;
+        if (!profile) {
+            if (this.callbacks.onNotification) this.callbacks.onNotification(window.tr ? window.tr('profileNone') : 'No profile saved', 'info');
+            return;
+        }
+        this._applyAudioPreset('profile1', profile);
+    },
+
+    _updateProfile1Chip: function () {
+        const chip = document.querySelector('.audio-preset-chip[data-preset="profile1"]');
+        const saveBtn = document.getElementById('save-profile1-btn');
+        const hasSaved = !!this.settings.savedProfile1;
+        if (chip) chip.classList.toggle('has-profile', hasSaved);
+        if (saveBtn) saveBtn.title = hasSaved ? (window.tr ? window.tr('profileResave') : 'Update Profile 1') : (window.tr ? window.tr('profileSaveBtn') : 'Save as Profile 1');
     },
 
     _applyEqPreset: function (values) {
