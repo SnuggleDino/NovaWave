@@ -83,9 +83,21 @@ export const ThemePackListener = {
             previewContent = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${bg};font-size:1.5rem;">${config.preview_emoji}</div>`;
         }
 
+        const accentColor = config.accent || '#38bdf8';
+        const bgColor = config.preview_bg || '#111';
+        const accentHex = accentColor.toUpperCase();
+
         card.innerHTML = `
             <div class="theme-preview-box" style="background:#000;overflow:hidden;position:relative;">${previewContent}</div>
-            <div class="theme-info-box"><strong>${config.name}</strong><p>${config.description}</p></div>
+            <div class="theme-info-box">
+                <strong>${config.name}</strong>
+                <p>${config.description}</p>
+                <div class="theme-color-swatches">
+                    <span class="theme-color-swatch" style="background:${bgColor}" title="Background"></span>
+                    <span class="theme-color-swatch" style="background:${accentColor}" title="Accent"></span>
+                    <span class="theme-accent-chip" style="color:${accentColor};border-color:${accentColor}20">${accentHex}</span>
+                </div>
+            </div>
             <div class="theme-action-box"><label class="toggle-switch"><input type="checkbox" id="toggle-${config.id}"><span class="slider"></span></label></div>
         `;
 

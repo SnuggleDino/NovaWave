@@ -98,6 +98,8 @@ export const tr_TR = {
     enableFavoritesOptionDesc: 'Favoriler i\u00E7in bir filtreleme butonu g\u00F6sterir.',
 
     // --- Audio Extras Tab ---
+    audioPresetsLabel: 'Ses Profilleri',
+    audioPresetsDesc: 'Yaygın ses profilleri için hızlı seçim.',
     bassBoost: 'Bas G\u00FC\u00E7lendirme',
     bassBoostDesc: 'D\u00FC\u015F\u00FCk frekanslar\u0131 art\u0131r\u0131n.',
     bassBoostLevel: 'Bas Seviyesi',
@@ -109,6 +111,7 @@ export const tr_TR = {
     reverbLevel: 'Kar\u0131\u015F\u0131m',
     equalizer: 'Ekolayz\u0131r',
     equalizerDesc: 'Sesi detayl\u0131 bir \u015Fekilde ayarlay\u0131n.',
+    eqPresetsLabel: 'Önayarlar',
     bass: 'Bas',
     treble: 'Tiz',
 
@@ -320,6 +323,25 @@ export const tr_TR = {
     lyricsError: 'Sözler yüklenirken hata oluştu.',
     noTrackSelected: 'Hiçbir parça seçilmedi.',
 
+
+
+
+    // --- Guide Drawer ---
+    guideTitle: 'NovaWave Rehberi',
+    guideTabGuide: 'Hızlı Başlangıç',
+    guideTabControls: 'Kontroller',
+    guideTabHotkeys: 'Kısayollar',
+    guideHeroTitle: 'NovaWave\'e Hoş Geldiniz',
+    guideHeroDesc: '4 basit adımda başlayın.',
+    guideStep1Title: 'Müziğinizi Yükleyin',
+    guideStep1Desc: 'Müzik kitaplığınızı içe aktarmak için \"Klasör Yükle\" düğmesine tıklayın.',
+    guideStep2Title: 'Parça Seçin',
+    guideStep2Desc: 'Çalmak için çalma listesindeki herhangi bir şarkıya tıklayın.',
+    guideStep3Title: 'Kişiselleştirin',
+    guideStep3Desc: 'Ayarlar\'da temalar, ses efektleri ve daha fazlasını keşfedin.',
+    guideStep4Title: 'Müzik İndirin',
+    guideStep4Desc: 'YouTube ve Spotify\'dan müzik indirmek için İndirici\'yi kullanın.',
+
     // --- Download Log ---
     logStartingDownload: 'İndirme başlıyor...',
     logDownloadComplete: 'İndirme tamamlandı.',
@@ -332,31 +354,4 @@ export const tr_TR = {
     designLiteBadge: 'LITE',
     designBtnActive: 'Aktif',
     designBtnSwitch: 'Geçiş',
-
-    // --- Friday Night Funkin' Theme ---
-    fnfTitle: "Friday Night Funkin'",
-    fnfModeBtn: 'FNF MODU',
-    fnfStartGame: 'Oyunu Başlat',
-    fnfSettings: 'Oyun Ayarları',
-    fnfExit: 'Çıkış',
-    fnfScore: 'Skor',
-    fnfCombo: 'Kombo',
-    fnfMisses: 'Kaçırmalar',
-    fnfSick: 'SICK!',
-    fnfGood: 'GOOD',
-    fnfBad: 'BAD',
-    fnfShit: 'SHiT',
-    fnfLaneOpacity: 'Şerit Opaklığı',
-    fnfScrollSpeed: 'Kaydırma Hızı',
-    fnfDownscroll: 'Aşağı Kaydır',
-    fnfUpscroll: 'Yukarı Kaydır',
-    fnfOffset: 'Nota Gecikmesi',
-    fnfKeybinds: 'Tuş Ataması',
-    fnfSaveSettings: 'Oyun Ayarlarını Kaydet',
-    fnfReset: 'Varsayılan',
-    fnfPressKey: 'Bir tuşa bas...',
-    fnfLeft: 'Sol',
-    fnfDown: 'Aşağı',
-    fnfUp: 'Yukarı',
-    fnfRight: 'Sağ',
 };

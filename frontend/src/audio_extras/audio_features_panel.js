@@ -176,6 +176,22 @@ export class AudioFeaturesPanel {
         const speedIcon = document.getElementById('side-feat-speed');
         if (speedIcon) speedIcon.classList.toggle('active', Math.abs(r - 1.0) > 0.01);
     }
+
+    refreshLabels() {
+        const speedBtn = document.getElementById('side-feat-speed');
+        if (speedBtn) speedBtn.title = _tr('playbackSpeed');
+
+        if (this.speedPanel) {
+            const aspTitle = this.speedPanel.querySelector('.asp-title');
+            if (aspTitle) aspTitle.textContent = _tr('speedPanelLabel');
+
+            const labelMap = { '0.5': 'speedUltraSlow', '0.75': 'speedSlow', '1': 'speedNormal', '1.5': 'speedFast', '2': 'speedUltraFast' };
+            this.speedPanel.querySelectorAll('.asp-preset').forEach(btn => {
+                const key = labelMap[btn.dataset.rate];
+                if (key) btn.textContent = _tr(key);
+            });
+        }
+    }
 }
 
 function _fmtRate(r) {

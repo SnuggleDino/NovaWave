@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v2.9.5` 
+# 🎵 NovaWave `v2.9.6` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > — Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source —
 
-![Version](https://img.shields.io/badge/Version-2.9.5-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.9.6-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -18,12 +18,14 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v2.9.5
+## ✨ What's New in v2.9.6
 
-- **Settings Side Drawer** - Settings now open as a sleek slide-in panel from the right, with icon tabs, integrated search, and smooth animation. Sub-navigation replaced with clean section dividers.
-- **NovaWave 95 Intro** - Fully implemented Windows 95-style startup animation with app icon, blue block progress bar, and CRT scanline overlay.
-- **Danger Zone Redesign** - Each destructive action (Restart, Reset, Quit) now has its own row with an icon, description, and a ghost button - blue for Restart, red for Reset/Quit.
-- **Design & UI Tab** - Redesigned as single-column horizontal cards for a cleaner, more spacious layout.
+- **NovaWave Guide** - The old help modal and NW DEV button are merged into a unified side drawer (Ctrl+1). Three tabs: Quickstart, Controls, and Hotkeys.
+- **EQ Presets** - 6 one-click presets above the equalizer sliders: Flat, Pop, Rock, Classical, Jazz, Bass Boost. Auto-enables the EQ.
+- **Sound Profiles** - 4 combined audio profiles (Warm, Bright, Studio, Hall) configure Bass, Crystalizer, Reverb and EQ together with a single click.
+- **Theme Pack Preview** - Theme cards now show accent color swatches before you activate a theme.
+- **Settings Search Improvements** - ESC clears the search field, match count badge, and tab breadcrumbs on results.
+- **Miniplayer Polish** - Language selector and Audio Extras panel are now hidden in miniplayer mode.
 
 ---
 
@@ -121,7 +123,8 @@ Set the mood with **9 animated backgrounds** (Legacy UI):
 - 🔊 **Bass Boost** - Configurable low-frequency gain
 - ✨ **Crystalizer** - Treble enhancement for sharper highs
 - 🌊 **Reverb** - Add depth and space to your music
-- 🎛️ **5-Band Equalizer** - Fine-tune 60Hz · 230Hz · 910Hz · 4kHz · 14kHz
+- 🎛️ **5-Band Equalizer** - Fine-tune 60Hz · 230Hz · 910Hz · 4kHz · 14kHz — with 6 quick presets (Flat / Pop / Rock / Classical / Jazz / Bass Boost)
+- 🎚️ **Sound Profiles** - One-click audio profiles: Warm · Bright · Studio · Hall
 - ⏩ **Playback Speed** - 0.25× to 3.0× with pitch preservation
 
 **Visualizer** (Legacy UI)
@@ -194,7 +197,7 @@ wails build
 | `← / →` | Previous / Next track |
 | `Shift + ← / →` | Seek ±5 seconds |
 | `L` | Open Lyrics |
-| `CTRL + 1` | Toggle PRO Console (V2 UI) |
+| `CTRL + 1` | Open NovaWave Guide (Legacy UI) · Toggle PRO Console (V2 UI) |
 | `CTRL + U + 1` | Switch to Legacy UI |
 | `CTRL + U + 2` | Switch to V2 PRO UI |
 | `CTRL + U + 3` | Switch to Lite UI |

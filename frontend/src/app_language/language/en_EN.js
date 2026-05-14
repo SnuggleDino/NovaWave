@@ -98,6 +98,8 @@ export const en_EN = {
     enableFavoritesOptionDesc: 'Show a button to filter for favorites.',
 
     // --- Audio Extras Tab ---
+    audioPresetsLabel: 'Sound Profiles',
+    audioPresetsDesc: 'Quick selection for common sound profiles.',
     bassBoost: 'Bass Boost',
     bassBoostDesc: 'Enhance low frequencies.',
     bassBoostLevel: 'Bass Level',
@@ -109,6 +111,7 @@ export const en_EN = {
     reverbLevel: 'Mix',
     equalizer: 'Equalizer',
     equalizerDesc: 'Adjust the sound in detail.',
+    eqPresetsLabel: 'Presets',
     bass: 'Bass',
     treble: 'Treble',
 
@@ -320,6 +323,22 @@ export const en_EN = {
     lyricsError: 'Error loading lyrics.',
     noTrackSelected: 'No track selected.',
 
+    // --- Guide Drawer ---
+    guideTitle: 'NovaWave Guide',
+    guideTabGuide: 'Quickstart',
+    guideTabControls: 'Controls',
+    guideTabHotkeys: 'Hotkeys',
+    guideHeroTitle: 'Welcome to NovaWave',
+    guideHeroDesc: 'Get started in 4 simple steps.',
+    guideStep1Title: 'Load Your Music',
+    guideStep1Desc: 'Click "Load Folder" to import your music library.',
+    guideStep2Title: 'Pick a Track',
+    guideStep2Desc: 'Click any song in the playlist to start playing.',
+    guideStep3Title: 'Make It Yours',
+    guideStep3Desc: 'Explore themes, audio effects & more in Settings.',
+    guideStep4Title: 'Download Music',
+    guideStep4Desc: 'Use the Downloader to get music from YouTube & Spotify.',
+
     // --- Download Log ---
     logStartingDownload: 'Starting download...',
     logDownloadComplete: 'Download complete.',
@@ -332,31 +351,4 @@ export const en_EN = {
     designLiteBadge: 'LITE',
     designBtnActive: 'Active',
     designBtnSwitch: 'Switch',
-
-    // --- Friday Night Funkin' Theme ---
-    fnfTitle: "Friday Night Funkin'",
-    fnfModeBtn: 'FNF MODE',
-    fnfStartGame: 'Start Game',
-    fnfSettings: 'Game Settings',
-    fnfExit: 'Exit',
-    fnfScore: 'Score',
-    fnfCombo: 'Combo',
-    fnfMisses: 'Misses',
-    fnfSick: 'SICK!',
-    fnfGood: 'GOOD',
-    fnfBad: 'BAD',
-    fnfShit: 'SHiT',
-    fnfLaneOpacity: 'Lane Opacity',
-    fnfScrollSpeed: 'Scroll Speed',
-    fnfDownscroll: 'Downscroll',
-    fnfUpscroll: 'Upscroll',
-    fnfOffset: 'Note Offset',
-    fnfKeybinds: 'Keybinds',
-    fnfSaveSettings: 'Save Game Settings',
-    fnfReset: 'Reset',
-    fnfPressKey: 'Press a key...',
-    fnfLeft: 'Left',
-    fnfDown: 'Down',
-    fnfUp: 'Up',
-    fnfRight: 'Right'
-    };
+};

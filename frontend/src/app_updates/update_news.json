@@ -1,71 +1,71 @@
 {
-    "version": "2.9.5",
-    "date": "13. Mai 2026",
+    "version": "2.9.6",
+    "date": "14. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Einstellungen neu gestaltet & NW95 Intro",
-        "en": "Settings Overhaul & NW95 Intro",
-        "tr": "Ayarlar Yenilendi & NW95 Intro",
-        "es": "Rediseño de Ajustes & Intro NW95",
-        "fr": "Refonte des Paramètres & Intro NW95",
-        "it": "Redesign Impostazioni & Intro NW95"
+        "de": "Guide Drawer, EQ-Presets & Klangprofile",
+        "en": "Guide Drawer, EQ Presets & Sound Profiles",
+        "tr": "Rehber Paneli, EQ Önayarları & Ses Profilleri",
+        "es": "Panel Guía, Presets de EQ y Perfiles de Sonido",
+        "fr": "Tiroir Guide, Préréglages EQ & Profils Sonores",
+        "it": "Guide Drawer, Preset EQ & Profili Sonori"
     },
     "changes": [
         {
+            "icon": "📖",
+            "title": {
+                "de": "NovaWave Guide",
+                "en": "NovaWave Guide",
+                "tr": "NovaWave Rehberi",
+                "es": "Guía NovaWave",
+                "fr": "Guide NovaWave",
+                "it": "Guida NovaWave"
+            },
+            "desc": {
+                "de": "Das alte Hilfe-Modal und der NW DEV-Button wurden zu einem einzigen Guide Drawer zusammengeführt. Er öffnet sich mit Ctrl+1 oder dem Fragezeichen-Button und bietet drei Tabs: Quickstart führt neue Nutzer in 4 Schritten durch den Player, Controls erklärt die Bedienung und Hotkeys listet alle Tastenkürzel auf.",
+                "en": "The old help modal and NW DEV button have been merged into a single Guide Drawer. Open it with Ctrl+1 or the question mark button. Three tabs cover everything: Quickstart walks new users through the player in 4 steps, Controls explains how to operate it, and Hotkeys lists all keyboard shortcuts.",
+                "tr": "Eski yardım modalı ve NW DEV düğmesi tek bir Rehber Paneli'nde birleştirildi. Ctrl+1 veya soru işareti düğmesiyle açılıyor. Üç sekme her şeyi kapsıyor: Hızlı Başlangıç yeni kullanıcılara 4 adımda rehberlik ediyor, Kontroller nasıl kullanılacağını açıklıyor ve Kısayollar tüm klavye kısayollarını listeliyor.",
+                "es": "El antiguo modal de ayuda y el botón NW DEV se han fusionado en un único Panel Guía. Ábrelo con Ctrl+1 o el botón de interrogación. Tres pestañas cubren todo: Inicio rápido guía a los nuevos usuarios en 4 pasos, Controles explica el funcionamiento y Atajos lista todos los atajos de teclado.",
+                "fr": "L'ancien modal d'aide et le bouton NW DEV ont été fusionnés en un seul Tiroir Guide. Ouvrez-le avec Ctrl+1 ou le bouton point d'interrogation. Trois onglets couvrent tout : Démarrage rapide guide les nouveaux utilisateurs en 4 étapes, Commandes explique le fonctionnement et Raccourcis liste tous les raccourcis clavier.",
+                "it": "Il vecchio modal di aiuto e il pulsante NW DEV sono stati uniti in un unico Guide Drawer. Aprilo con Ctrl+1 o il pulsante con il punto interrogativo. Tre schede coprono tutto: Avvio rapido guida i nuovi utenti in 4 passi, Controlli spiega il funzionamento e Scorciatoie elenca tutte le scorciatoie da tastiera."
+            }
+        },
+        {
             "icon": "🎛️",
             "title": {
-                "de": "Neues Einstellungs-Drawer",
-                "en": "New Settings Drawer",
-                "tr": "Yeni Ayarlar Paneli",
-                "es": "Nuevo Panel de Ajustes",
-                "fr": "Nouveau Tiroir de Paramètres",
-                "it": "Nuovo Pannello Impostazioni"
+                "de": "EQ-Presets & Klangprofile",
+                "en": "EQ Presets & Sound Profiles",
+                "tr": "EQ Önayarları & Ses Profilleri",
+                "es": "Presets de EQ y Perfiles de Sonido",
+                "fr": "Préréglages EQ & Profils Sonores",
+                "it": "Preset EQ & Profili Sonori"
             },
             "desc": {
-                "de": "Die Einstellungen öffnen sich jetzt als schlanker Seitenbereich von rechts – mit Icon-Tabs oben, integrierter Suche und sanfter Slide-Animation. Die alten Unter-Navigations-Buttons wurden durch dezente Abschnitts-Trennlinien ersetzt, und redundante Tab-Titel wurden entfernt.",
-                "en": "Settings now open as a sleek side drawer from the right – with icon tabs at the top, integrated search, and a smooth slide animation. Old sub-navigation buttons were replaced with subtle section dividers, and redundant tab titles were removed.",
-                "tr": "Ayarlar artık sağdan kayan şık bir yan panel olarak açılıyor – üstte ikon sekmeleri, entegre arama ve yumuşak bir kayma animasyonu ile. Eski alt navigasyon düğmeleri bölüm ayırıcılarla değiştirildi ve gereksiz sekme başlıkları kaldırıldı.",
-                "es": "Los ajustes ahora se abren como un panel lateral desde la derecha, con pestañas de íconos en la parte superior, búsqueda integrada y una animación suave. Los antiguos botones de sub-navegación fueron reemplazados por separadores de sección y se eliminaron los títulos redundantes.",
-                "fr": "Les paramètres s'ouvrent désormais comme un tiroir latéral depuis la droite, avec des onglets à icônes en haut, une recherche intégrée et une animation fluide. Les anciens boutons de sous-navigation ont été remplacés par des séparateurs de section discrets.",
-                "it": "Le impostazioni si aprono ora come un pannello laterale dalla destra, con schede icona in alto, ricerca integrata e un'animazione fluida. I vecchi pulsanti di sotto-navigazione sono stati sostituiti con separatori di sezione e i titoli ridondanti sono stati rimossi."
+                "de": "Der Equalizer hat jetzt 6 Schnellpresets direkt über den Schiebereglern: Flat, Pop, Rock, Classical, Jazz und Bass Boost – ein Klick aktiviert den EQ automatisch und setzt alle 5 Bänder. Dazu gibt es 4 neue Klangprofile (Warm, Bright, Studio, Hall) im Audio-Tab, die alle vier Effekte – Bass, Crystalizer, Reverb und EQ – mit einem Klick kombiniert einstellen.",
+                "en": "The equalizer now has 6 quick presets directly above the sliders: Flat, Pop, Rock, Classical, Jazz, and Bass Boost – one click automatically enables the EQ and sets all 5 bands. Also new: 4 Sound Profiles (Warm, Bright, Studio, Hall) in the Audio tab that configure all four effects – Bass, Crystalizer, Reverb, and EQ – with a single click.",
+                "tr": "Ekolayzer artık kaydırıcıların hemen üzerinde 6 hızlı önayara sahip: Flat, Pop, Rock, Classical, Jazz ve Bass Boost – tek bir tıklama EQ'yu otomatik olarak etkinleştirir ve tüm 5 bandı ayarlar. Ayrıca Ses sekmesinde 4 yeni Ses Profili (Warm, Bright, Studio, Hall) var; tek tıklamayla tüm dört efekti – Bass, Crystalizer, Reverb ve EQ – birlikte yapılandırıyor.",
+                "es": "El ecualizador ahora tiene 6 presets rápidos directamente sobre los controles: Flat, Pop, Rock, Classical, Jazz y Bass Boost – un clic activa el EQ automáticamente y ajusta las 5 bandas. Además, 4 nuevos Perfiles de Sonido (Warm, Bright, Studio, Hall) en la pestaña de Audio configuran los cuatro efectos – Bass, Crystalizer, Reverb y EQ – con un solo clic.",
+                "fr": "L'égaliseur dispose maintenant de 6 préréglages rapides directement au-dessus des curseurs : Flat, Pop, Rock, Classical, Jazz et Bass Boost – un clic active automatiquement l'EQ et règle les 5 bandes. Nouveauté : 4 Profils Sonores (Warm, Bright, Studio, Hall) dans l'onglet Audio configurent les quatre effets – Bass, Crystalizer, Reverb et EQ – en un seul clic.",
+                "it": "L'equalizzatore ora ha 6 preset rapidi direttamente sopra i cursori: Flat, Pop, Rock, Classical, Jazz e Bass Boost – un clic attiva automaticamente l'EQ e imposta tutte le 5 bande. Novità: 4 Profili Sonori (Warm, Bright, Studio, Hall) nella scheda Audio configurano tutti e quattro gli effetti – Bass, Crystalizer, Reverb e EQ – con un solo clic."
             }
         },
         {
-            "icon": "🪟",
+            "icon": "🎨",
             "title": {
-                "de": "NovaWave 95 Intro",
-                "en": "NovaWave 95 Intro",
-                "tr": "NovaWave 95 Giriş Animasyonu",
-                "es": "Intro NovaWave 95",
-                "fr": "Intro NovaWave 95",
-                "it": "Intro NovaWave 95"
+                "de": "Theme-Vorschau & Suche verbessert",
+                "en": "Theme Preview & Improved Search",
+                "tr": "Tema Önizleme & Geliştirilmiş Arama",
+                "es": "Vista previa de temas y búsqueda mejorada",
+                "fr": "Aperçu des thèmes & Recherche améliorée",
+                "it": "Anteprima tema & Ricerca migliorata"
             },
             "desc": {
-                "de": "Das NovaWave 95 Startup-Intro ist jetzt vollständig implementiert. Im Windows 95-Stil erscheint das App-Icon neben dem NovaWave-Schriftzug, während sich ein klassischer Fortschrittsbalken mit blauen Blöcken langsam füllt – komplett mit CRT-Scanlines-Overlay.",
-                "en": "The NovaWave 95 startup intro is now fully implemented. In Windows 95 style, the app icon appears next to the NovaWave wordmark while a classic progress bar fills with blue blocks – complete with a CRT scanlines overlay.",
-                "tr": "NovaWave 95 başlangıç animasyonu artık tam olarak uygulandı. Windows 95 tarzında, uygulama ikonu NovaWave yazısının yanında görünürken klasik bir ilerleme çubuğu mavi bloklarla dolup taşıyor – CRT tarama çizgisi efektiyle birlikte.",
-                "es": "La intro de inicio de NovaWave 95 ahora está completamente implementada. Al estilo Windows 95, el ícono de la app aparece junto al logotipo de NovaWave mientras una barra de progreso clásica se llena con bloques azules, con un efecto de líneas de escaneo CRT.",
-                "fr": "L'intro de démarrage NovaWave 95 est maintenant entièrement implémentée. Dans le style Windows 95, l'icône de l'application apparaît à côté du logo NovaWave pendant qu'une barre de progression classique se remplit de blocs bleus, avec un effet de lignes de balayage CRT.",
-                "it": "L'intro di avvio NovaWave 95 è ora completamente implementata. In stile Windows 95, l'icona dell'app appare accanto al logo NovaWave mentre una barra di avanzamento classica si riempie di blocchi blu, con un overlay di scanline CRT."
-            }
-        },
-        {
-            "icon": "⚠️",
-            "title": {
-                "de": "Danger Zone neu gestaltet",
-                "en": "Danger Zone Redesign",
-                "tr": "Tehlike Bölgesi Yeniden Tasarlandı",
-                "es": "Rediseño de la Zona de Peligro",
-                "fr": "Refonte de la Zone Dangereuse",
-                "it": "Redesign della Zona Pericolo"
-            },
-            "desc": {
-                "de": "Der Danger-Zone-Bereich in den System-Einstellungen wurde vollständig überarbeitet. Jede Aktion (Neustart, Reset, Beenden) hat jetzt eine eigene Zeile mit Icon, Titel und Beschreibungstext. Restart ist blau hervorgehoben, Reset und Quit rot – alle als Ghost-Buttons mit Hover-Effekt.",
-                "en": "The Danger Zone section in System settings was completely redesigned. Each action (Restart, Reset, Quit) now has its own row with icon, title, and description. Restart is highlighted in blue, Reset and Quit in red – all as ghost buttons with hover effect.",
-                "tr": "Sistem ayarlarındaki Tehlike Bölgesi tamamen yeniden tasarlandı. Her eylem (Yeniden Başlat, Sıfırla, Kapat) artık kendi satırında ikon, başlık ve açıklama ile gösteriliyor. Yeniden Başlat mavi, Sıfırla ve Kapat kırmızı renkte – hepsi hover efektli ghost düğmeler.",
-                "es": "La sección Zona de Peligro en los ajustes del sistema fue completamente rediseñada. Cada acción (Reiniciar, Restablecer, Salir) ahora tiene su propia fila con ícono, título y descripción. Reiniciar está resaltado en azul, Restablecer y Salir en rojo, todos como botones fantasma con efecto hover.",
-                "fr": "La section Zone Dangereuse dans les paramètres système a été entièrement repensée. Chaque action (Redémarrer, Réinitialiser, Quitter) a maintenant sa propre ligne avec icône, titre et description. Redémarrer est mis en évidence en bleu, Réinitialiser et Quitter en rouge – tous en boutons fantômes avec effet de survol.",
-                "it": "La sezione Zona Pericolo nelle impostazioni di sistema è stata completamente ridisegnata. Ogni azione (Riavvia, Ripristina, Esci) ha ora la propria riga con icona, titolo e descrizione. Riavvia è evidenziato in blu, Ripristina ed Esci in rosso – tutti come ghost button con effetto hover."
+                "de": "Die Theme-Pack-Karten zeigen jetzt direkt die Akzentfarbe des Themes – als farbiger Chip und zwei Mini-Swatches für Hintergrund und Akzent. So sieht man auf einen Blick, was ein Theme mitbringt, bevor man es aktiviert. Die Einstellungssuche wurde außerdem verbessert: ESC leert das Suchfeld, ein Badge zeigt die Trefferzahl an, und ein Breadcrumb zeigt zu welchem Tab ein Ergebnis gehört.",
+                "en": "Theme Pack cards now display the theme's accent color directly – as a colored chip and two mini swatches for background and accent. See at a glance what a theme looks like before activating it. Settings search was also improved: ESC clears the input, a badge shows the match count, and a breadcrumb indicates which tab each result belongs to.",
+                "tr": "Tema Paketi kartları artık temanın vurgu rengini doğrudan gösteriyor – renkli bir chip ve arka plan ile vurgu için iki mini örnek olarak. Etkinleştirmeden önce bir temanın nasıl göründüğünü bir bakışta görün. Ayarlar araması da geliştirildi: ESC girişi temizler, bir rozet eşleşme sayısını gösterir ve bir ekmek kırıntısı her sonucun hangi sekmeye ait olduğunu gösterir.",
+                "es": "Las tarjetas de Theme Pack ahora muestran directamente el color de acento del tema – como un chip de color y dos mini muestras para fondo y acento. Ve de un vistazo cómo es un tema antes de activarlo. La búsqueda de ajustes también mejoró: ESC limpia el campo, un indicador muestra el número de coincidencias y un breadcrumb indica a qué pestaña pertenece cada resultado.",
+                "fr": "Les cartes Theme Pack affichent maintenant directement la couleur d'accentuation du thème – sous forme de chip coloré et deux mini-échantillons pour l'arrière-plan et l'accent. Voyez d'un coup d'œil à quoi ressemble un thème avant de l'activer. La recherche dans les paramètres a également été améliorée : ESC vide le champ, un badge affiche le nombre de correspondances et un fil d'Ariane indique à quel onglet appartient chaque résultat.",
+                "it": "Le schede Theme Pack ora mostrano direttamente il colore di accento del tema – come un chip colorato e due mini campioni per sfondo e accento. Vedi a colpo d'occhio com'è un tema prima di attivarlo. La ricerca nelle impostazioni è stata migliorata: ESC svuota il campo, un badge mostra il numero di corrispondenze e un breadcrumb indica a quale scheda appartiene ogni risultato."
             }
         }
     ]

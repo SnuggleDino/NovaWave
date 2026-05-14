@@ -452,6 +452,7 @@ function updateCachedColor() {
 function tr(key, ...args) {
     return LangHandler.tr(key, ...args);
 }
+window.tr = tr;
 
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
@@ -503,8 +504,7 @@ function deactivateAllThemePacks(excludeKey) {
         { key: 'cyberpunkEnabled', toggleId: 'toggle-cyberpunk' },
         { key: 'sunsetEnabled', toggleId: 'toggle-sunset' },
         { key: 'sakuraEnabled', toggleId: 'toggle-sakura' },
-        { key: 'eightBitEnabled', toggleId: 'toggle-8-bit' },
-        { key: 'fridayNightFunkinEnabled', toggleId: 'toggle-friday-night-funkin' }
+        { key: 'eightBitEnabled', toggleId: 'toggle-8-bit' }
     ];
 
     packs.forEach(pack => {
@@ -519,7 +519,7 @@ function deactivateAllThemePacks(excludeKey) {
 function resetToDefaultTheme() {
     document.body.classList.remove(
         'snuggle-time-active', 'sleeptime-active', 'cyberpunk-active',
-        'sunset-active', 'sakura-active', 'friday-night-funkin-active'
+        'sunset-active', 'sakura-active'
     );
 
     document.documentElement.style.removeProperty('--accent');
@@ -1639,8 +1639,12 @@ function setupEventListeners() {
             return;
         }
         if (isCtrl && isOne && pressedKeys.size === 2) {
-            const devModal = document.getElementById('dev-modal-overlay');
-            if (devModal && !devModal.classList.contains('visible')) devModal.classList.add('visible');
+            const guideDrawer = document.getElementById('guide-drawer');
+            const guideBd = document.getElementById('guide-drawer-backdrop');
+            if (guideDrawer && !guideDrawer.classList.contains('open')) {
+                guideDrawer.classList.add('open');
+                if (guideBd) guideBd.classList.add('open');
+            }
             return;
         }
 
@@ -2341,7 +2345,6 @@ document.addEventListener('DOMContentLoaded', () => {
         AppSettings.saveSetting('playbackSpeed', rate);
         showNotification(tr('playbackSpeed') + ': ' + rate + 'x', 'info', 1500);
     };
-    audioFeaturesPanel.syncSpeed(settings.playbackSpeed || 1.0);
 
     if (audioExtrasToggleBtn) {
         audioExtrasToggleBtn.addEventListener('click', () => {
@@ -2349,57 +2352,73 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const userHelpOverlay = document.getElementById('user-help-overlay');
+    /* --- Guide Drawer Logic --- */
+    const guideDrawer = document.getElementById('guide-drawer');
+    const guideDrawerBackdrop = document.getElementById('guide-drawer-backdrop');
     const userHelpBtn = document.getElementById('user-help-btn');
-    const userHelpCloseBtn = document.getElementById('user-help-close-btn');
+    const guideDrawerClose = document.getElementById('guide-drawer-close');
 
-    if (userHelpBtn && userHelpOverlay) {
-        userHelpBtn.onclick = (e) => {
-            e.preventDefault();
-            userHelpOverlay.classList.add('visible');
-        };
+    const openGuideDrawer = () => {
+        if (guideDrawer) guideDrawer.classList.add('open');
+        if (guideDrawerBackdrop) guideDrawerBackdrop.classList.add('open');
+    };
+    const closeGuideDrawer = () => {
+        if (guideDrawer) guideDrawer.classList.remove('open');
+        if (guideDrawerBackdrop) guideDrawerBackdrop.classList.remove('open');
+    };
+
+    if (userHelpBtn) userHelpBtn.onclick = (e) => { e.preventDefault(); openGuideDrawer(); };
+    if (guideDrawerClose) guideDrawerClose.onclick = closeGuideDrawer;
+    if (guideDrawerBackdrop) guideDrawerBackdrop.addEventListener('click', closeGuideDrawer);
+
+    /* Guide drawer tab switching */
+    if (guideDrawer) {
+        guideDrawer.querySelectorAll('.guide-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                guideDrawer.querySelectorAll('.guide-tab-btn').forEach(b => b.classList.remove('active'));
+                guideDrawer.querySelectorAll('.guide-tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                const content = guideDrawer.querySelector(`.guide-tab-content[data-tab="${tab}"]`);
+                if (content) content.classList.add('active');
+            });
+        });
     }
-    if (userHelpCloseBtn && userHelpOverlay) {
-        userHelpCloseBtn.onclick = (e) => {
-            e.preventDefault();
-            userHelpOverlay.classList.remove('visible');
-        };
+
+    /* Guide drawer action buttons */
+    const guideLoadFolderBtn = document.getElementById('guide-load-folder-btn');
+    if (guideLoadFolderBtn) {
+        guideLoadFolderBtn.addEventListener('click', () => {
+            closeGuideDrawer();
+            setTimeout(() => { const lb = document.getElementById('load-folder-btn'); if (lb) lb.click(); }, 350);
+        });
+    }
+
+    const guideOpenSettingsBtn = document.getElementById('guide-open-settings-btn');
+    const guideToSettingsBtn = document.getElementById('guide-to-settings-btn');
+    const _openSettingsFromGuide = () => {
+        closeGuideDrawer();
+        setTimeout(() => {
+            if (settingsOverlay) settingsOverlay.classList.add('open');
+            const backdrop = $('#settings-drawer-backdrop');
+            if (backdrop) backdrop.classList.add('open');
+        }, 350);
+    };
+    if (guideOpenSettingsBtn) guideOpenSettingsBtn.addEventListener('click', _openSettingsFromGuide);
+    if (guideToSettingsBtn) guideToSettingsBtn.addEventListener('click', _openSettingsFromGuide);
+
+    const guideOpenDownloaderBtn = document.getElementById('guide-open-downloader-btn');
+    if (guideOpenDownloaderBtn) {
+        guideOpenDownloaderBtn.addEventListener('click', () => {
+            closeGuideDrawer();
+            setTimeout(() => { const db = document.getElementById('toggle-downloader-btn'); if (db) db.click(); }, 350);
+        });
     }
 
     if (settingsBtn && settingsOverlay) {
         settingsBtn.addEventListener('click', () => {
             settingsOverlay.classList.add('open');
         });
-    }
-
-    const helpToSettingsBtn = $('#help-to-settings-btn');
-    if (helpToSettingsBtn) {
-        helpToSettingsBtn.addEventListener('click', () => {
-            if (userHelpOverlay) userHelpOverlay.classList.remove('visible');
-            setTimeout(() => {
-                if (settingsOverlay) settingsOverlay.classList.add('open');
-                const backdrop = $('#settings-drawer-backdrop');
-                if (backdrop) backdrop.classList.add('open');
-            }, 300);
-        });
-    }
-
-    /* --- Dev Modal Logic --- */
-    const devModalOverlay = document.getElementById('dev-modal-overlay');
-    const openDevBtn = document.getElementById('open-dev-btn');
-    const devModalCloseBtn = document.getElementById('dev-modal-close-btn');
-
-    if (openDevBtn && devModalOverlay) {
-        openDevBtn.onclick = (e) => {
-            e.preventDefault();
-            devModalOverlay.classList.add('visible');
-        };
-    }
-    if (devModalCloseBtn && devModalOverlay) {
-        devModalCloseBtn.onclick = (e) => {
-            e.preventDefault();
-            devModalOverlay.classList.remove('visible');
-        };
     }
 
     /* --- Playlist Toggle Logic --- */
@@ -2492,7 +2511,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const overlays = [libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('dev-modal-overlay'), document.getElementById('user-help-overlay'), document.getElementById('error-modal-overlay')];
+    const overlays = [libraryOverlay, downloaderOverlay, editTitleOverlay, confirmDeleteOverlay, document.getElementById('error-modal-overlay')];
     overlays.forEach(ov => {
         if (ov) {
             let modal = ov.querySelector('.settings-modal');
@@ -2568,6 +2587,7 @@ document.addEventListener('DOMContentLoaded', () => {
             LangHandler.init(savedLang);
             currentLanguage = savedLang;
             document.documentElement.lang = currentLanguage;
+            if (audioFeaturesPanel) audioFeaturesPanel.refreshLabels();
 
             AppLoader.init();
             AppLoader.update(5, tr('loaderBooting'));
@@ -2601,6 +2621,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setupQueueUI();
 
             await loadSettings();
+            if (audioFeaturesPanel) audioFeaturesPanel.syncSpeed(settings.playbackSpeed || 1.0);
 
             initSettingsLogic();
 

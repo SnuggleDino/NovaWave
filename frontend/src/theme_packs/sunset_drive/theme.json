@@ -7,5 +7,6 @@
   "css": "theme.css",
   "js": "theme.js",
   "preview_emoji": "🏎️",
-  "preview_bg": "#b30062"
+  "preview_bg": "#b30062",
+  "accent": "#f97316"
 }

@@ -98,6 +98,8 @@ export const de_DE = {
     enableFavoritesOptionDesc: 'Zeigt einen Button für Favoriten an.',
 
     // --- Audio Extras Tab ---
+    audioPresetsLabel: 'Klangprofile',
+    audioPresetsDesc: 'Schnellauswahl für gängige Klangprofile.',
     bassBoost: 'Bass Boost',
     bassBoostDesc: 'Verstärke die tiefen Frequenzen.',
     bassBoostLevel: 'Bass Level',
@@ -109,6 +111,7 @@ export const de_DE = {
     reverbLevel: 'Mix',
     equalizer: 'Equalizer',
     equalizerDesc: 'Passe den Klang detailliert an.',
+    eqPresetsLabel: 'Presets',
     bass: 'Bass',
     treble: 'Treble',
 
@@ -320,6 +323,22 @@ export const de_DE = {
     lyricsError: 'Fehler beim Laden der Songtexte.',
     noTrackSelected: 'Kein Song ausgewählt.',
 
+    // --- Guide Drawer ---
+    guideTitle: 'NovaWave Guide',
+    guideTabGuide: 'Quickstart',
+    guideTabControls: 'Bedienung',
+    guideTabHotkeys: 'Tastaturbefehle',
+    guideHeroTitle: 'Willkommen bei NovaWave',
+    guideHeroDesc: 'In 4 einfachen Schritten loslegen.',
+    guideStep1Title: 'Musik laden',
+    guideStep1Desc: 'Klicke auf "Ordner laden", um deine Musikbibliothek zu importieren.',
+    guideStep2Title: 'Titel auswählen',
+    guideStep2Desc: 'Klicke auf einen Song in der Playlist, um die Wiedergabe zu starten.',
+    guideStep3Title: 'Personalisieren',
+    guideStep3Desc: 'Entdecke Themes, Audioeffekte & mehr in den Einstellungen.',
+    guideStep4Title: 'Musik herunterladen',
+    guideStep4Desc: 'Nutze den Downloader, um Musik von YouTube & Spotify zu laden.',
+
     // --- Download Log ---
     logStartingDownload: 'Download wird gestartet...',
     logDownloadComplete: 'Download abgeschlossen.',
@@ -332,31 +351,4 @@ export const de_DE = {
     designLiteBadge: 'LITE',
     designBtnActive: 'Aktiv',
     designBtnSwitch: 'Wechseln',
-
-    // --- Friday Night Funkin' Theme ---
-    fnfTitle: "Friday Night Funkin'",
-    fnfModeBtn: 'FNF MODUS',
-    fnfStartGame: 'Spiel Starten',
-    fnfSettings: 'Game Einstellungen',
-    fnfExit: 'Beenden',
-    fnfScore: 'Score',
-    fnfCombo: 'Combo',
-    fnfMisses: 'Misses',
-    fnfSick: 'SICK!',
-    fnfGood: 'GOOD',
-    fnfBad: 'BAD',
-    fnfShit: 'SHiT',
-    fnfLaneOpacity: 'Lane Deckkraft',
-    fnfScrollSpeed: 'Scroll-Geschwindigkeit',
-    fnfDownscroll: 'Downscroll',
-    fnfUpscroll: 'Upscroll',
-    fnfOffset: 'Note Offset',
-    fnfKeybinds: 'Tastenbelegung',
-    fnfSaveSettings: 'Spiel-Einstellungen speichern',
-    fnfReset: 'Standard',
-    fnfPressKey: 'Taste drücken...',
-    fnfLeft: 'Links',
-    fnfDown: 'Unten',
-    fnfUp: 'Oben',
-    fnfRight: 'Rechts'
 };

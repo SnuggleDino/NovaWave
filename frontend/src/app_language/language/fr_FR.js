@@ -98,6 +98,8 @@ export const fr_FR = {
     enableFavoritesOptionDesc: 'Affiche un bouton pour filtrer par favoris.',
 
     // --- Audio Extras Tab ---
+    audioPresetsLabel: 'Profils Sonores',
+    audioPresetsDesc: 'S\u00E9lection rapide de profils sonores courants.',
     bassBoost: 'Bass Boost',
     bassBoostDesc: 'Renforce les basses fr\u00E9quences.',
     bassBoostLevel: 'Niveau des basses',
@@ -109,6 +111,7 @@ export const fr_FR = {
     reverbLevel: 'Mixage',
     equalizer: '\u00C9galiseur',
     equalizerDesc: 'Ajustez le son en d\u00E9tail.',
+    eqPresetsLabel: 'Pr\u00E9r\u00E9glages',
     bass: 'Basses',
     treble: 'Aigus',
 
@@ -320,6 +323,22 @@ export const fr_FR = {
     lyricsError: 'Erreur lors du chargement des paroles.',
     noTrackSelected: 'Aucune piste sélectionnée.',
 
+    // --- Guide Drawer ---
+    guideTitle: 'Guide NovaWave',
+    guideTabGuide: 'Démarrage',
+    guideTabControls: 'Commandes',
+    guideTabHotkeys: 'Raccourcis',
+    guideHeroTitle: 'Bienvenue sur NovaWave',
+    guideHeroDesc: 'Commencez en 4 étapes simples.',
+    guideStep1Title: 'Charger votre musique',
+    guideStep1Desc: 'Cliquez sur "Charger un dossier" pour importer votre bibliothèque.',
+    guideStep2Title: 'Choisir une piste',
+    guideStep2Desc: 'Cliquez sur une chanson dans la liste pour lancer la lecture.',
+    guideStep3Title: 'Personnalisez',
+    guideStep3Desc: 'Explorez les thèmes, effets audio et plus dans les Paramètres.',
+    guideStep4Title: 'Télécharger de la musique',
+    guideStep4Desc: 'Utilisez le Téléchargeur pour obtenir de la musique depuis YouTube et Spotify.',
+
     // --- Download Log ---
     logStartingDownload: 'Démarrage du téléchargement...',
     logDownloadComplete: 'Téléchargement terminé.',
@@ -332,31 +351,4 @@ export const fr_FR = {
     designLiteBadge: 'LITE',
     designBtnActive: 'Actif',
     designBtnSwitch: 'Changer',
-
-    // --- Friday Night Funkin' Theme ---
-    fnfTitle: "Friday Night Funkin'",
-    fnfModeBtn: 'MODE FNF',
-    fnfStartGame: 'Lancer le Jeu',
-    fnfSettings: 'Paramètres du Jeu',
-    fnfExit: 'Quitter',
-    fnfScore: 'Score',
-    fnfCombo: 'Combo',
-    fnfMisses: 'Ratés',
-    fnfSick: 'SICK!',
-    fnfGood: 'GOOD',
-    fnfBad: 'BAD',
-    fnfShit: 'SHiT',
-    fnfLaneOpacity: 'Opacité des Couloirs',
-    fnfScrollSpeed: 'Vitesse de Défilement',
-    fnfDownscroll: 'Défilement Bas',
-    fnfUpscroll: 'Défilement Haut',
-    fnfOffset: 'Décalage de Note',
-    fnfKeybinds: 'Touches',
-    fnfSaveSettings: 'Sauvegarder les Paramètres',
-    fnfReset: 'Par Défaut',
-    fnfPressKey: 'Appuyer sur une touche...',
-    fnfLeft: 'Gauche',
-    fnfDown: 'Bas',
-    fnfUp: 'Haut',
-    fnfRight: 'Droite',
 };

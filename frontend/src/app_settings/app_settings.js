@@ -1,6 +1,22 @@
 import './app_settings.css';
 import { LangHandler } from '../app_language/lang_handler.js';
 
+const EQ_PRESETS = {
+    flat:      [0,  0,  0,  0,  0],
+    pop:       [-1, 2,  4,  3, -1],
+    rock:      [4,  2, -1,  2,  4],
+    classical: [5,  3, -2,  2,  5],
+    jazz:      [3,  0,  1,  2,  1],
+    bass:      [6,  5,  0,  0,  0],
+};
+
+const AUDIO_PRESETS = {
+    warm:   { bassBoostEnabled: true,  bassBoostValue: 7, trebleBoostEnabled: false,               reverbEnabled: false,              eqEnabled: true, eqValues: [3,  2,  0, -1, -2] },
+    bright: { bassBoostEnabled: false,                    trebleBoostEnabled: true, trebleBoostValue: 8, reverbEnabled: false,         eqEnabled: true, eqValues: [-2, -1,  0,  3,  5] },
+    studio: { bassBoostEnabled: true,  bassBoostValue: 5, trebleBoostEnabled: true, trebleBoostValue: 6, reverbEnabled: true, reverbValue: 20, eqEnabled: true, eqValues: [2,  1, -1,  2,  3] },
+    hall:   { bassBoostEnabled: false,                    trebleBoostEnabled: true, trebleBoostValue: 4, reverbEnabled: true, reverbValue: 65, eqEnabled: true, eqValues: [1,  0,  0,  1,  3] },
+};
+
 // --- Icons for Design Cards ---
 const LEGACY_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="3" width="18" height="18" rx="2"/>
@@ -43,6 +59,25 @@ export const AppSettings = {
             const query = e.target.value.toLowerCase().trim();
             this.performSearch(query);
         });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                this.performSearch('');
+                searchInput.blur();
+            }
+        });
+
+        // Inject breadcrumb labels into each tab content
+        document.querySelectorAll('.settings-tab-content').forEach(tab => {
+            if (tab.querySelector('.search-breadcrumb')) return;
+            const crumb = document.createElement('div');
+            crumb.className = 'search-breadcrumb';
+            const btn = document.querySelector(`.drawer-tab-btn[data-target="${tab.id}"]`);
+            const label = btn?.querySelector('.drawer-tab-label')?.textContent?.trim() || '';
+            crumb.textContent = label;
+            tab.insertBefore(crumb, tab.firstChild);
+        });
     },
 
     performSearch: function (query) {
@@ -50,6 +85,7 @@ export const AppSettings = {
         const sections = document.querySelectorAll('.settings-tab-content');
         const navBtns = document.querySelectorAll('.drawer-tab-btn');
         const titles = document.querySelectorAll('.settings-section-title');
+        const countEl = document.getElementById('search-count');
 
         items.forEach(item => {
             item.classList.remove('search-match', 'search-hidden');
@@ -68,6 +104,7 @@ export const AppSettings = {
         });
 
         if (!query) {
+            if (countEl) countEl.style.display = 'none';
             const activeBtn = document.querySelector('.drawer-tab-btn.active');
             if (activeBtn) {
                 const target = activeBtn.dataset.target;
@@ -116,6 +153,12 @@ export const AppSettings = {
                 t.classList.add('search-hidden');
             }
         });
+
+        if (countEl) {
+            const matchCount = document.querySelectorAll('.setting-item.search-match').length;
+            countEl.textContent = matchCount;
+            countEl.style.display = matchCount > 0 ? 'inline-flex' : 'none';
+        }
     },
 
     saveSetting: function (key, value) {
@@ -394,7 +437,7 @@ export const AppSettings = {
 
         // --- AUDIO EXTRAS TAB ---
 
-        const setupAudioToggle = (toggleId, containerId, settingKey, callbackKey) => {
+        const setupAudioToggle = (toggleId, containerId, settingKey) => {
             const toggle = $(toggleId);
             const container = $(containerId);
             if (toggle) {
@@ -403,6 +446,7 @@ export const AppSettings = {
                     this.saveSetting(settingKey, enabled);
                     if (container) container.style.display = enabled ? 'flex' : 'none';
                     if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+                    this._updateAudioPresetChips(this._findActiveAudioPreset());
                 });
             }
         };
@@ -417,6 +461,7 @@ export const AppSettings = {
                     const suffix = settingKey.includes('Value') && settingKey.includes('reverb') ? '%' : 'dB';
                     if (display) display.textContent = val + suffix;
                     if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+                    this._updateAudioPresetChips(this._findActiveAudioPreset());
                 });
             }
         };
@@ -441,6 +486,7 @@ export const AppSettings = {
                     if (display) display.textContent = defVal + suffix;
                     this.saveSetting(settingKey, defVal);
                     if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+                    this._updateAudioPresetChips(this._findActiveAudioPreset());
                 });
             }
         };
@@ -458,6 +504,7 @@ export const AppSettings = {
                 this.saveSetting('eqEnabled', enabled);
                 if (eqContainer) eqContainer.style.display = enabled ? 'flex' : 'none';
                 if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+                this._updateAudioPresetChips(this._findActiveAudioPreset());
             });
         }
 
@@ -474,6 +521,8 @@ export const AppSettings = {
 
                 this.saveSetting('eqValues', this.settings.eqValues);
                 if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+                this._updateEqPresetChips(this.settings.eqValues);
+                this._updateAudioPresetChips(this._findActiveAudioPreset());
             });
         });
 
@@ -488,8 +537,26 @@ export const AppSettings = {
                     if (valDisp) valDisp.textContent = '0dB';
                 });
                 if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+                this._updateEqPresetChips([0, 0, 0, 0, 0]);
+                this._updateAudioPresetChips(this._findActiveAudioPreset());
             });
         }
+
+        document.querySelectorAll('.eq-preset-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const values = EQ_PRESETS[chip.dataset.preset];
+                if (!values) return;
+                this._applyEqPreset(values);
+            });
+        });
+
+        document.querySelectorAll('.audio-preset-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const key = chip.dataset.preset;
+                if (!AUDIO_PRESETS[key]) return;
+                this._applyAudioPreset(key);
+            });
+        });
 
         // --- INTROS TAB ---
         const introCards = document.querySelectorAll('.intro-card');
@@ -748,7 +815,10 @@ export const AppSettings = {
                 const valDisp = slider.parentElement.querySelector('.eq-value');
                 if (valDisp) valDisp.textContent = val + 'dB';
             });
+            this._updateEqPresetChips(s.eqValues);
         }
+
+        this._updateAudioPresetChips(this._findActiveAudioPreset());
 
         if (s.activeIntro) {
             const introCards = document.querySelectorAll('.intro-card');
@@ -780,6 +850,123 @@ export const AppSettings = {
         if (playlistPositionSelect && s.playlistPosition) playlistPositionSelect.value = s.playlistPosition;
 
         window._isRestoring = false;
+    },
+
+    _applyAudioPreset: function (presetKey) {
+        const p = AUDIO_PRESETS[presetKey];
+        if (!p) return;
+        const $ = (id) => document.getElementById(id);
+
+        const applyToggle = (toggleId, containerId, enabled) => {
+            const toggle = $(toggleId);
+            const container = $(containerId);
+            if (toggle) toggle.checked = enabled;
+            if (container) container.style.display = enabled ? 'flex' : 'none';
+        };
+
+        const applySlider = (sliderId, displayId, val, suffix) => {
+            const slider = $(sliderId);
+            const display = $(displayId);
+            if (slider) slider.value = val;
+            if (display) display.textContent = val + suffix;
+        };
+
+        applyToggle('toggle-bass-boost', 'bass-boost-slider-container', p.bassBoostEnabled);
+        if (p.bassBoostValue !== undefined) {
+            applySlider('bass-boost-slider', 'bass-boost-value', p.bassBoostValue, 'dB');
+            this.saveSetting('bassBoostValue', p.bassBoostValue);
+        }
+        this.saveSetting('bassBoostEnabled', p.bassBoostEnabled);
+
+        applyToggle('toggle-treble-boost', 'treble-boost-slider-container', p.trebleBoostEnabled);
+        if (p.trebleBoostValue !== undefined) {
+            applySlider('treble-boost-slider', 'treble-boost-value', p.trebleBoostValue, 'dB');
+            this.saveSetting('trebleBoostValue', p.trebleBoostValue);
+        }
+        this.saveSetting('trebleBoostEnabled', p.trebleBoostEnabled);
+
+        applyToggle('toggle-reverb', 'reverb-slider-container', p.reverbEnabled);
+        if (p.reverbValue !== undefined) {
+            applySlider('reverb-slider', 'reverb-value', p.reverbValue, '%');
+            this.saveSetting('reverbValue', p.reverbValue);
+        }
+        this.saveSetting('reverbEnabled', p.reverbEnabled);
+
+        const toggleEq = $('toggle-equalizer');
+        const eqContainer = $('eq-sliders-container');
+        if (toggleEq) toggleEq.checked = p.eqEnabled;
+        if (eqContainer) eqContainer.style.display = p.eqEnabled ? 'flex' : 'none';
+        this.saveSetting('eqEnabled', p.eqEnabled);
+
+        if (p.eqValues) {
+            if (!this.settings.eqValues) this.settings.eqValues = [0, 0, 0, 0, 0];
+            document.querySelectorAll('.eq-slider').forEach((slider, i) => {
+                const val = p.eqValues[i] ?? 0;
+                slider.value = val;
+                this.settings.eqValues[i] = val;
+                const valDisp = slider.parentElement.querySelector('.eq-value');
+                if (valDisp) valDisp.textContent = val + 'dB';
+            });
+            this.saveSetting('eqValues', [...p.eqValues]);
+            this._updateEqPresetChips(p.eqValues);
+        }
+
+        if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+        this._updateAudioPresetChips(presetKey);
+    },
+
+    _findActiveAudioPreset: function () {
+        const s = this.settings;
+        for (const [key, p] of Object.entries(AUDIO_PRESETS)) {
+            if (!!s.bassBoostEnabled !== p.bassBoostEnabled) continue;
+            if (p.bassBoostEnabled && s.bassBoostValue !== p.bassBoostValue) continue;
+            if (!!s.trebleBoostEnabled !== p.trebleBoostEnabled) continue;
+            if (p.trebleBoostEnabled && s.trebleBoostValue !== p.trebleBoostValue) continue;
+            if (!!s.reverbEnabled !== p.reverbEnabled) continue;
+            if (p.reverbEnabled && s.reverbValue !== p.reverbValue) continue;
+            if (!!s.eqEnabled !== p.eqEnabled) continue;
+            if (p.eqEnabled && s.eqValues && !p.eqValues.every((v, i) => v === s.eqValues[i])) continue;
+            return key;
+        }
+        return null;
+    },
+
+    _updateAudioPresetChips: function (activeKey) {
+        document.querySelectorAll('.audio-preset-chip').forEach(chip => {
+            chip.classList.toggle('active', chip.dataset.preset === activeKey);
+        });
+    },
+
+    _applyEqPreset: function (values) {
+        const toggleEq = document.getElementById('toggle-equalizer');
+        const eqContainer = document.getElementById('eq-sliders-container');
+        if (toggleEq && !toggleEq.checked) {
+            toggleEq.checked = true;
+            this.saveSetting('eqEnabled', true);
+            if (eqContainer) eqContainer.style.display = 'flex';
+        }
+
+        if (!this.settings.eqValues) this.settings.eqValues = [0, 0, 0, 0, 0];
+        document.querySelectorAll('.eq-slider').forEach((slider, i) => {
+            const val = values[i] ?? 0;
+            slider.value = val;
+            this.settings.eqValues[i] = val;
+            const valDisp = slider.parentElement.querySelector('.eq-value');
+            if (valDisp) valDisp.textContent = val + 'dB';
+        });
+
+        this.saveSetting('eqValues', [...this.settings.eqValues]);
+        if (this.callbacks.onAudioEffectChange) this.callbacks.onAudioEffectChange();
+        this._updateEqPresetChips(values);
+    },
+
+    _updateEqPresetChips: function (currentValues) {
+        document.querySelectorAll('.eq-preset-chip').forEach(chip => {
+            const preset = EQ_PRESETS[chip.dataset.preset];
+            const isMatch = preset && currentValues.length === preset.length &&
+                currentValues.every((v, i) => v === preset[i]);
+            chip.classList.toggle('active', isMatch);
+        });
     },
 
     renderDesignCards: function () {

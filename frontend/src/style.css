@@ -81,6 +81,16 @@ body.is-mini #toggle-playlist-btn {
     display: none !important;
 }
 
+body.is-mini .header-item:has(#lang-select) {
+    display: none !important;
+}
+
+body.is-mini #audio-extras-toggle-btn,
+body.is-mini #audio-features-panel,
+body.is-mini #audio-speed-panel {
+    display: none !important;
+}
+
 :root[data-theme="dinolove"] {
     --bg-main: #0d1a0f;
     --bg-card: rgba(30, 46, 34, 0.8);
@@ -3417,6 +3427,32 @@ body.focus-active .focus-mode-btn {
     margin: 0;
 }
 
+.theme-color-swatches {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+}
+
+.theme-color-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+}
+
+.theme-accent-chip {
+    font-size: 0.65rem;
+    font-weight: 700;
+    font-family: monospace;
+    letter-spacing: 0.04em;
+    padding: 1px 7px;
+    border-radius: 20px;
+    border: 1px solid;
+    opacity: 0.85;
+}
+
 .theme-action-box {
     z-index: 1;
     display: flex;
@@ -5367,4 +5403,331 @@ kbd {
     margin: 0;
     width: 100%;
     word-break: break-word;
+}
+
+/* ===== GUIDE DRAWER ===== */
+
+.guide-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 249;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.guide-drawer-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.guide-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 420px;
+    height: 100vh;
+    background: var(--bg-card);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-left: 1px solid var(--border-soft);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+    z-index: 250;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    overflow: hidden;
+}
+
+.guide-drawer.open {
+    transform: translateX(0);
+}
+
+.guide-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    background: rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+}
+
+.guide-drawer-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--accent);
+}
+
+.guide-drawer-title-group h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.guide-drawer-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.guide-drawer-close-btn:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Tab Bar */
+.guide-tab-bar {
+    display: flex;
+    gap: 4px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    background: rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.guide-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.guide-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+}
+
+.guide-tab-btn.active {
+    background: rgba(var(--accent-rgb, 56, 189, 248), 0.12);
+    border-color: rgba(var(--accent-rgb, 56, 189, 248), 0.35);
+    color: var(--accent);
+}
+
+/* Tab Content */
+.guide-tab-content {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 18px;
+    gap: 14px;
+    scrollbar-width: thin;
+}
+
+.guide-tab-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.guide-tab-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+}
+
+.guide-tab-content.active {
+    display: flex;
+}
+
+/* ── Quickstart Hero ── */
+.guide-hero {
+    text-align: center;
+    padding: 10px 0 16px;
+    border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 4px;
+}
+
+.guide-hero-icon {
+    font-size: 2.4rem;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.guide-hero-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0 0 6px;
+}
+
+.guide-hero-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* ── Guide Steps ── */
+.guide-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.guide-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 14px 16px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.guide-step:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(var(--accent-rgb, 56, 189, 248), 0.3);
+}
+
+.guide-step-num {
+    width: 28px;
+    height: 28px;
+    background: rgba(var(--accent-rgb, 56, 189, 248), 0.15);
+    border: 1px solid rgba(var(--accent-rgb, 56, 189, 248), 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.guide-step-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.guide-step-body h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 4px;
+}
+
+.guide-step-body p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+    line-height: 1.4;
+}
+
+.guide-step-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* ── Action Buttons ── */
+.guide-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: rgba(var(--accent-rgb, 56, 189, 248), 0.12);
+    border: 1px solid rgba(var(--accent-rgb, 56, 189, 248), 0.35);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.guide-action-btn:hover {
+    background: rgba(var(--accent-rgb, 56, 189, 248), 0.22);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.guide-action-full {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 14px;
+}
+
+/* ── Controls Tab ── */
+.guide-controls-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.guide-controls-action {
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-soft);
+}
+
+/* ── Hotkeys Tab ── */
+.guide-hotkeys-section {
+    margin-bottom: 6px;
+}
+
+.guide-hotkeys-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+    padding: 0 2px;
+}
+
+.guide-hotkeys-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.guide-hotkey-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.guide-hotkey-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(var(--accent-rgb, 56, 189, 248), 0.25);
+}
+
+.guide-hotkey-row > span {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.guide-hotkeys-footer {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: center;
+    opacity: 0.5;
+    margin: 14px 0 0;
 }
