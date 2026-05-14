@@ -1392,22 +1392,40 @@ function renderLegacyFolderList() {
     const container = document.getElementById('legacy-folder-list');
     if (!container) return;
     container.innerHTML = '';
-    if (legacyFolders.length === 0) return;
-    legacyFolders.forEach(fp => {
+    legacyFolders.forEach((fp, i) => {
         const row = document.createElement('div');
-        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;background:rgba(255,255,255,0.05);border-radius:8px;font-size:13px;';
+        row.className = 'lib-folder-row';
+        const info = document.createElement('div');
+        info.className = 'lib-folder-row-info';
+        const badge = document.createElement('span');
+        badge.className = 'lib-folder-badge';
+        badge.textContent = 'F' + (i + 1);
         const label = document.createElement('span');
+        label.className = 'lib-folder-path';
         label.textContent = fp;
-        label.style.cssText = 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-secondary,#aaa);';
         label.title = fp;
         const btn = document.createElement('button');
+        btn.className = 'lib-folder-remove';
         btn.textContent = '✕';
-        btn.style.cssText = 'background:none;border:none;color:#f87171;cursor:pointer;font-size:14px;flex-shrink:0;';
         btn.addEventListener('click', () => removeLegacyFolder(fp));
-        row.appendChild(label);
+        info.appendChild(badge);
+        info.appendChild(label);
+        row.appendChild(info);
         row.appendChild(btn);
         container.appendChild(row);
     });
+}
+
+function updateLibraryModal() {
+    const el = document.getElementById('lib-primary-path');
+    if (!el) return;
+    if (currentFolderPath) {
+        el.textContent = currentFolderPath;
+        el.classList.remove('muted');
+    } else {
+        el.textContent = tr('libNoFolder');
+        el.classList.add('muted');
+    }
 }
 
 async function removeLegacyFolder(fp) {
@@ -1566,7 +1584,7 @@ function setupEventListeners() {
     });
     bind(progressBar, 'click', (e) => { if (!isNaN(audio.duration)) { const r = progressBar.getBoundingClientRect(); audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; } });
     bind(volumeSlider, 'input', (e) => { audio.volume = parseFloat(e.target.value); });
-    bind(openLibraryBtn, 'click', () => { libraryOverlay.classList.add('visible'); });
+    bind(openLibraryBtn, 'click', () => { libraryOverlay.classList.add('visible'); updateLibraryModal(); });
     bind(libraryCloseBtn, 'click', () => { libraryOverlay.classList.remove('visible'); });
     bind(loadFolderBtn, 'click', async () => {
         const r = await windowApi.selectMusicFolder();
@@ -1576,6 +1594,7 @@ function setupEventListeners() {
             legacyFolders = [];
             saveSetting('legacyFolders', legacyFolders);
             renderLegacyFolderList();
+            updateLibraryModal();
 
             basePlaylist = r.tracks || [];
             PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);

@@ -1,71 +1,52 @@
 {
-    "version": "2.9.6",
+    "version": "2.9.7",
     "date": "14. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Guide Drawer, EQ-Presets & Klangprofile",
-        "en": "Guide Drawer, EQ Presets & Sound Profiles",
-        "tr": "Rehber Paneli, EQ Önayarları & Ses Profilleri",
-        "es": "Panel Guía, Presets de EQ y Perfiles de Sonido",
-        "fr": "Tiroir Guide, Préréglages EQ & Profils Sonores",
-        "it": "Guide Drawer, Preset EQ & Profili Sonori"
+        "de": "Library Modal, Fixes & Aufräumen",
+        "en": "Library Modal, Fixes & Cleanup",
+        "tr": "Kütüphane Paneli, Düzeltmeler & Temizlik",
+        "es": "Panel de biblioteca, correcciones y limpieza",
+        "fr": "Panneau bibliothèque, corrections et nettoyage",
+        "it": "Pannello libreria, correzioni e pulizia"
     },
     "changes": [
         {
-            "icon": "📖",
+            "icon": "📂",
             "title": {
-                "de": "NovaWave Guide",
-                "en": "NovaWave Guide",
-                "tr": "NovaWave Rehberi",
-                "es": "Guía NovaWave",
-                "fr": "Guide NovaWave",
-                "it": "Guida NovaWave"
+                "de": "Library Modal Redesign",
+                "en": "Library Modal Redesign",
+                "tr": "Kütüphane Paneli Yeniden Tasarımı",
+                "es": "Rediseño del panel de biblioteca",
+                "fr": "Refonte du panneau bibliothèque",
+                "it": "Redesign del pannello libreria"
             },
             "desc": {
-                "de": "Das alte Hilfe-Modal und der NW DEV-Button wurden zu einem einzigen Guide Drawer zusammengeführt. Er öffnet sich mit Ctrl+1 oder dem Fragezeichen-Button und bietet drei Tabs: Quickstart führt neue Nutzer in 4 Schritten durch den Player, Controls erklärt die Bedienung und Hotkeys listet alle Tastenkürzel auf.",
-                "en": "The old help modal and NW DEV button have been merged into a single Guide Drawer. Open it with Ctrl+1 or the question mark button. Three tabs cover everything: Quickstart walks new users through the player in 4 steps, Controls explains how to operate it, and Hotkeys lists all keyboard shortcuts.",
-                "tr": "Eski yardım modalı ve NW DEV düğmesi tek bir Rehber Paneli'nde birleştirildi. Ctrl+1 veya soru işareti düğmesiyle açılıyor. Üç sekme her şeyi kapsıyor: Hızlı Başlangıç yeni kullanıcılara 4 adımda rehberlik ediyor, Kontroller nasıl kullanılacağını açıklıyor ve Kısayollar tüm klavye kısayollarını listeliyor.",
-                "es": "El antiguo modal de ayuda y el botón NW DEV se han fusionado en un único Panel Guía. Ábrelo con Ctrl+1 o el botón de interrogación. Tres pestañas cubren todo: Inicio rápido guía a los nuevos usuarios en 4 pasos, Controles explica el funcionamiento y Atajos lista todos los atajos de teclado.",
-                "fr": "L'ancien modal d'aide et le bouton NW DEV ont été fusionnés en un seul Tiroir Guide. Ouvrez-le avec Ctrl+1 ou le bouton point d'interrogation. Trois onglets couvrent tout : Démarrage rapide guide les nouveaux utilisateurs en 4 étapes, Commandes explique le fonctionnement et Raccourcis liste tous les raccourcis clavier.",
-                "it": "Il vecchio modal di aiuto e il pulsante NW DEV sono stati uniti in un unico Guide Drawer. Aprilo con Ctrl+1 o il pulsante con il punto interrogativo. Tre schede coprono tutto: Avvio rapido guida i nuovi utenti in 4 passi, Controlli spiega il funzionamento e Scorciatoie elenca tutte le scorciatoie da tastiera."
+                "de": "Das Ordner-Laden-Modal wurde komplett im Settings-Stil neu gestaltet. Es zeigt jetzt den primären Ordner (F0) sowie alle weiteren Ordner (F1, F2 ...) übersichtlich mit nummerierten Badges. Der \"Ordner hinzufügen\"-Button hat ein neues, gestricheltes Design.",
+                "en": "The load folder modal has been completely redesigned in the settings style. It now shows the primary folder (F0) and all additional folders (F1, F2 ...) clearly with numbered badges. The Add Folder button has a new dashed design.",
+                "tr": "Klasör yükleme paneli tamamen ayarlar stilinde yeniden tasarlandı. Artık birincil klasörü (F0) ve tüm ek klasörleri (F1, F2 ...) numaralı rozetlerle düzenli biçimde gösteriyor. Klasör ekle düğmesi yeni kesik çizgili bir tasarıma sahip.",
+                "es": "El panel de carga de carpetas ha sido completamente rediseñado al estilo de ajustes. Ahora muestra la carpeta principal (F0) y todas las carpetas adicionales (F1, F2 ...) con insignias numeradas. El botón Agregar carpeta tiene un nuevo diseño con borde punteado.",
+                "fr": "Le panneau de chargement de dossier a été entièrement repensé dans le style des paramètres. Il affiche désormais le dossier principal (F0) et tous les dossiers supplémentaires (F1, F2 ...) avec des badges numérotés. Le bouton Ajouter un dossier a un nouveau design en pointillés.",
+                "it": "Il pannello di caricamento cartelle è stato completamente ridisegnato nello stile delle impostazioni. Ora mostra la cartella principale (F0) e tutte le cartelle aggiuntive (F1, F2 ...) con badge numerati. Il pulsante Aggiungi cartella ha un nuovo design tratteggiato."
             }
         },
         {
-            "icon": "🎛️",
+            "icon": "🐛",
             "title": {
-                "de": "EQ-Presets & Klangprofile",
-                "en": "EQ Presets & Sound Profiles",
-                "tr": "EQ Önayarları & Ses Profilleri",
-                "es": "Presets de EQ y Perfiles de Sonido",
-                "fr": "Préréglages EQ & Profils Sonores",
-                "it": "Preset EQ & Profili Sonori"
+                "de": "Bug Fixes & Cleanup",
+                "en": "Bug Fixes & Cleanup",
+                "tr": "Hata Düzeltmeleri & Temizlik",
+                "es": "Correcciones de errores y limpieza",
+                "fr": "Corrections de bugs et nettoyage",
+                "it": "Correzioni bug e pulizia"
             },
             "desc": {
-                "de": "Der Equalizer hat jetzt 6 Schnellpresets direkt über den Schiebereglern: Flat, Pop, Rock, Classical, Jazz und Bass Boost – ein Klick aktiviert den EQ automatisch und setzt alle 5 Bänder. Dazu gibt es 4 neue Klangprofile (Warm, Bright, Studio, Hall) im Audio-Tab, die alle vier Effekte – Bass, Crystalizer, Reverb und EQ – mit einem Klick kombiniert einstellen.",
-                "en": "The equalizer now has 6 quick presets directly above the sliders: Flat, Pop, Rock, Classical, Jazz, and Bass Boost – one click automatically enables the EQ and sets all 5 bands. Also new: 4 Sound Profiles (Warm, Bright, Studio, Hall) in the Audio tab that configure all four effects – Bass, Crystalizer, Reverb, and EQ – with a single click.",
-                "tr": "Ekolayzer artık kaydırıcıların hemen üzerinde 6 hızlı önayara sahip: Flat, Pop, Rock, Classical, Jazz ve Bass Boost – tek bir tıklama EQ'yu otomatik olarak etkinleştirir ve tüm 5 bandı ayarlar. Ayrıca Ses sekmesinde 4 yeni Ses Profili (Warm, Bright, Studio, Hall) var; tek tıklamayla tüm dört efekti – Bass, Crystalizer, Reverb ve EQ – birlikte yapılandırıyor.",
-                "es": "El ecualizador ahora tiene 6 presets rápidos directamente sobre los controles: Flat, Pop, Rock, Classical, Jazz y Bass Boost – un clic activa el EQ automáticamente y ajusta las 5 bandas. Además, 4 nuevos Perfiles de Sonido (Warm, Bright, Studio, Hall) en la pestaña de Audio configuran los cuatro efectos – Bass, Crystalizer, Reverb y EQ – con un solo clic.",
-                "fr": "L'égaliseur dispose maintenant de 6 préréglages rapides directement au-dessus des curseurs : Flat, Pop, Rock, Classical, Jazz et Bass Boost – un clic active automatiquement l'EQ et règle les 5 bandes. Nouveauté : 4 Profils Sonores (Warm, Bright, Studio, Hall) dans l'onglet Audio configurent les quatre effets – Bass, Crystalizer, Reverb et EQ – en un seul clic.",
-                "it": "L'equalizzatore ora ha 6 preset rapidi direttamente sopra i cursori: Flat, Pop, Rock, Classical, Jazz e Bass Boost – un clic attiva automaticamente l'EQ e imposta tutte le 5 bande. Novità: 4 Profili Sonori (Warm, Bright, Studio, Hall) nella scheda Audio configurano tutti e quattro gli effetti – Bass, Crystalizer, Reverb e EQ – con un solo clic."
-            }
-        },
-        {
-            "icon": "🎨",
-            "title": {
-                "de": "Theme-Vorschau & Suche verbessert",
-                "en": "Theme Preview & Improved Search",
-                "tr": "Tema Önizleme & Geliştirilmiş Arama",
-                "es": "Vista previa de temas y búsqueda mejorada",
-                "fr": "Aperçu des thèmes & Recherche améliorée",
-                "it": "Anteprima tema & Ricerca migliorata"
-            },
-            "desc": {
-                "de": "Die Theme-Pack-Karten zeigen jetzt direkt die Akzentfarbe des Themes – als farbiger Chip und zwei Mini-Swatches für Hintergrund und Akzent. So sieht man auf einen Blick, was ein Theme mitbringt, bevor man es aktiviert. Die Einstellungssuche wurde außerdem verbessert: ESC leert das Suchfeld, ein Badge zeigt die Trefferzahl an, und ein Breadcrumb zeigt zu welchem Tab ein Ergebnis gehört.",
-                "en": "Theme Pack cards now display the theme's accent color directly – as a colored chip and two mini swatches for background and accent. See at a glance what a theme looks like before activating it. Settings search was also improved: ESC clears the input, a badge shows the match count, and a breadcrumb indicates which tab each result belongs to.",
-                "tr": "Tema Paketi kartları artık temanın vurgu rengini doğrudan gösteriyor – renkli bir chip ve arka plan ile vurgu için iki mini örnek olarak. Etkinleştirmeden önce bir temanın nasıl göründüğünü bir bakışta görün. Ayarlar araması da geliştirildi: ESC girişi temizler, bir rozet eşleşme sayısını gösterir ve bir ekmek kırıntısı her sonucun hangi sekmeye ait olduğunu gösterir.",
-                "es": "Las tarjetas de Theme Pack ahora muestran directamente el color de acento del tema – como un chip de color y dos mini muestras para fondo y acento. Ve de un vistazo cómo es un tema antes de activarlo. La búsqueda de ajustes también mejoró: ESC limpia el campo, un indicador muestra el número de coincidencias y un breadcrumb indica a qué pestaña pertenece cada resultado.",
-                "fr": "Les cartes Theme Pack affichent maintenant directement la couleur d'accentuation du thème – sous forme de chip coloré et deux mini-échantillons pour l'arrière-plan et l'accent. Voyez d'un coup d'œil à quoi ressemble un thème avant de l'activer. La recherche dans les paramètres a également été améliorée : ESC vide le champ, un badge affiche le nombre de correspondances et un fil d'Ariane indique à quel onglet appartient chaque résultat.",
-                "it": "Le schede Theme Pack ora mostrano direttamente il colore di accento del tema – come un chip colorato e due mini campioni per sfondo e accento. Vedi a colpo d'occhio com'è un tema prima di attivarlo. La ricerca nelle impostazioni è stata migliorata: ESC svuota il campo, un badge mostra il numero di corrispondenze e un breadcrumb indica a quale scheda appartiene ogni risultato."
+                "de": "Pick Color zeigte \"undefined\" in der Dynamic Island und verursachte Lag beim Ziehen — beides behoben. Das Hotkey-Label für CTRL+1+H war fälschlicherweise als \"Fullscreen\" beschriftet, zeigt jetzt \"Leistungsanzeige\". Der CTRL+1-Shortcut für den Guide Drawer wurde entfernt. Der Playlist-Toggle-Button im Header wurde entfernt. Der Settings-Drawer ist jetzt 520px breit statt 460px.",
+                "en": "Pick Color showed \"undefined\" in the Dynamic Island and caused lag when dragging — both fixed. The hotkey label for CTRL+1+H was incorrectly labeled \"Fullscreen\", now shows \"Stats Overlay\". The CTRL+1 shortcut for the Guide Drawer was removed. The playlist toggle button in the header was removed. The settings drawer is now 520px wide instead of 460px.",
+                "tr": "Renk seçici Dinamik Ada'da \"undefined\" gösteriyordu ve sürüklerken takılma yaşanıyordu — her ikisi de düzeltildi. CTRL+1+H için kısayol etiketi yanlışlıkla \"Tam Ekran\" olarak etiketlenmişti, artık \"İstatistik Paneli\" gösteriyor. Guide Drawer için CTRL+1 kısayolu kaldırıldı. Başlıktaki oynatma listesi geçiş düğmesi kaldırıldı. Ayarlar paneli artık 460px yerine 520px genişliğinde.",
+                "es": "El selector de color mostraba \"undefined\" en la Dynamic Island y causaba retraso al arrastrar — ambos corregidos. La etiqueta del atajo CTRL+1+H estaba incorrectamente etiquetada como \"Pantalla completa\", ahora muestra \"Panel de estadísticas\". Se eliminó el atajo CTRL+1 para el panel de guía. Se eliminó el botón de alternancia de lista de reproducción del encabezado. El panel de ajustes ahora tiene 520px de ancho en lugar de 460px.",
+                "fr": "Le sélecteur de couleur affichait \"undefined\" dans le Dynamic Island et causait des ralentissements lors du glissement — les deux corrigés. L'étiquette du raccourci CTRL+1+H était incorrectement libellée \"Plein écran\", affiche maintenant \"Affichage des stats\". Le raccourci CTRL+1 pour le tiroir guide a été supprimé. Le bouton de basculement de liste de lecture dans l'en-tête a été supprimé. Le tiroir de paramètres fait maintenant 520px de large au lieu de 460px.",
+                "it": "Il selettore colore mostrava \"undefined\" nel Dynamic Island e causava lag durante il trascinamento — entrambi corretti. L'etichetta del tasto CTRL+1+H era erroneamente etichettata come \"Schermo intero\", ora mostra \"Overlay statistiche\". Il collegamento CTRL+1 per il Guide Drawer è stato rimosso. Il pulsante di alternanza playlist nell'intestazione è stato rimosso. Il pannello impostazioni è ora largo 520px invece di 460px."
             }
         }
     ]

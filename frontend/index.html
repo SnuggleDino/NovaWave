@@ -587,32 +587,34 @@
 
     <!-- ================= LIBRARY MODAL ================= -->
     <div id="library-overlay" class="overlay-container">
-        <div class="glass-panel settings-modal">
-            <div class="settings-header">
-                <h3><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        style="margin-right:10px;">
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                    </svg> <span data-lang-key="playlistTitle"></span></h3>
-                <button id="library-close-btn" class="close-modal-btn" data-lang-title="close">&times;</button>
-            </div>
-            <div class="settings-content">
-                <div class="settings-section">
-                    <h4 class="settings-section-title" data-lang-key="loadFolder"></h4>
-                    <div class="setting-item">
-                        <div class="setting-label">
-                            <strong data-lang-key="loadFolder"></strong>
-                            <p data-lang-key="loadFolderDesc"></p>
-                        </div>
-                        <div class="setting-control" style="display:flex; gap:8px; flex-wrap:wrap;">
-                            <button id="load-folder-btn" class="settings-button primary-btn"
-                                data-lang-key="loadFolder"></button>
-                            <button id="add-folder-lib-btn" class="settings-button"
-                                data-lang-key="addFolder">+ Add Folder</button>
-                        </div>
+        <div class="lib-modal">
+            <div class="lib-modal-header">
+                <div class="lib-modal-title-group">
+                    <div class="lib-modal-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
                     </div>
-                    <div id="legacy-folder-list" style="margin-top:12px; display:flex; flex-direction:column; gap:6px;"></div>
+                    <div>
+                        <h3 data-lang-key="playlistTitle">Music Library</h3>
+                        <p data-lang-key="loadFolderDesc"></p>
+                    </div>
                 </div>
+                <button id="library-close-btn" class="close-modal-btn lib-modal-close" data-lang-title="close">&times;</button>
+            </div>
+            <div class="lib-modal-content">
+                <div class="settings-section-divider" data-lang-key="loadFolder">Primary Folder</div>
+                <div class="lib-folder-primary">
+                    <div class="lib-folder-info">
+                        <span class="lib-folder-badge">F0</span>
+                        <span id="lib-primary-path" class="lib-folder-path muted" data-lang-key="libNoFolder">No folder loaded</span>
+                    </div>
+                    <button id="load-folder-btn" class="settings-button primary-btn" data-lang-key="loadFolder">Load Folder</button>
+                </div>
+                <div class="settings-section-divider" data-lang-key="libAdditional">Additional Folders</div>
+                <div id="legacy-folder-list" class="lib-folder-list"></div>
+                <button id="add-folder-lib-btn" class="lib-add-folder-btn" data-lang-key="addFolder">+ Add Folder</button>
             </div>
         </div>
     </div>

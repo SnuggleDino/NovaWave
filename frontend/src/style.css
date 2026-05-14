@@ -5727,3 +5727,206 @@ kbd {
     opacity: 0.5;
     margin: 14px 0 0;
 }
+
+
+/* ============================================================
+   LIBRARY MODAL (M1)
+   ============================================================ */
+.lib-modal {
+    background: var(--bg-card);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    width: 480px;
+    max-height: 75vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    animation: libModalIn 0.22s ease;
+}
+
+@keyframes libModalIn {
+    from { opacity: 0; transform: scale(0.97) translateY(8px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);   }
+}
+
+.lib-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-soft);
+    background: rgba(255,255,255,0.02);
+    flex-shrink: 0;
+}
+
+.lib-modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.lib-modal-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.lib-modal-title-group h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 2px;
+}
+
+.lib-modal-title-group p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.lib-modal-close {
+    background: none;
+    border: 1px solid var(--border-soft);
+    color: var(--text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.lib-modal-close:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.lib-modal-content {
+    padding: 8px 24px 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.lib-modal-content > .settings-section-divider:first-child {
+    margin-top: 12px;
+}
+
+.lib-folder-primary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+}
+
+.lib-folder-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.lib-folder-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(56,189,248,0.12);
+    padding: 3px 7px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.lib-folder-path {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lib-folder-path.muted {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.lib-folder-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.lib-folder-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+}
+
+.lib-folder-row-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.lib-folder-remove {
+    background: none;
+    border: 1px solid rgba(248,113,113,0.3);
+    color: #f87171;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+
+.lib-folder-remove:hover {
+    background: rgba(248,113,113,0.15);
+}
+
+.lib-add-folder-btn {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed var(--border-soft);
+    border-radius: 10px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.82rem;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.lib-add-folder-btn:hover {
+    background: rgba(255,255,255,0.07);
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
