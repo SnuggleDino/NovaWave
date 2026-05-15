@@ -1,0 +1,100 @@
+/* ================================================================
+   SAKURA SPIRIT THEME — Colors, Intro & Persistent Petals
+   ================================================================ */
+
+/* ---- Core Variables ---- */
+:root[data-theme="sakura"] {
+    --bg-main: #2a1b22;
+    --bg-card: rgba(50, 30, 40, 0.85);
+    --bg-card-light: rgba(80, 50, 60, 0.6);
+    --bg-card-hover: rgba(65, 40, 52, 0.9);
+    --accent: #fbcfe8;
+    --accent-soft: rgba(251, 207, 232, 0.15);
+    --text-main: #fff1f2;
+    --text-muted: #fda4af;
+    --border-soft: rgba(251, 207, 232, 0.2);
+    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="sakura"] body {
+    background: radial-gradient(circle at top, #4a2c36 0%, #2a1b22 100%);
+    background-attachment: fixed;
+}
+
+:root[data-theme="sakura"] .control-main {
+    background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+    color: #5c3a45;
+    box-shadow: 0 8px 25px rgba(251, 207, 232, 0.3);
+}
+
+:root[data-theme="sakura"] .progress-fill {
+    background: linear-gradient(to right, #fbcfe8, #f9a8d4);
+}
+
+:root[data-theme="sakura"] .active-features-container .features-badge-icon {
+    border-color: #fda4af;
+    color: #fda4af;
+}
+
+/* ---- Intro Overlay ---- */
+.sakura-intro-overlay {
+    background: linear-gradient(to bottom, #ffb7c5 0%, #ffd6e0 50%, #fff0f3 100%);
+    overflow: hidden;
+}
+
+.sakura-falling-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+}
+
+.sakura-title-box {
+    text-align: center;
+    z-index: 1;
+}
+
+.sakura-title {
+    font-size: 3rem;
+    font-weight: 300;
+    color: #5c3a45;
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.sakura-subtitle {
+    font-size: 1rem;
+    color: #fda4af;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+/* ---- Petal Styles (intro + persistent container) ---- */
+.falling-petal {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(ellipse at center, #fbcfe8 0%, #f9a8d4 100%);
+    border-radius: 50% 0 50% 50%;
+    opacity: 0.85;
+    will-change: transform;
+    animation: sakura-fall var(--petal-dur, 6s) linear infinite;
+}
+
+@keyframes sakura-fall {
+    0%   { transform: translateY(-20px) rotate(0deg);     opacity: 0; }
+    10%  { opacity: 0.85; }
+    90%  { opacity: 0.85; }
+    100% { transform: translateY(100vh) rotate(360deg);   opacity: 0; }
+}
+
+/* ---- Persistent Petal Container (while theme is active) ---- */
+#sakura-persistent-petals {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}

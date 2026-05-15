@@ -1,0 +1,146 @@
+/* ================================================================
+   CYBERPUNK THEME — Colors, Intro & Persistent Effects
+   ================================================================ */
+
+/* ---- Core Variables ---- */
+:root[data-theme="cyberpunk"] {
+    --bg-main: rgba(5, 5, 5, 0.85);
+    --bg-card: rgba(18, 18, 18, 0.95);
+    --bg-card-light: rgba(26, 26, 26, 0.9);
+    --bg-card-hover: rgba(30, 5, 30, 0.9);
+    --accent: #fcee0a;
+    --accent-soft: rgba(252, 238, 10, 0.15);
+    --text-main: #00f0ff;
+    --text-muted: #ff003c;
+    --border-soft: #ff003c;
+    --border-main: 1px solid #ff003c;
+    --border-thin: 1px solid rgba(252, 238, 10, 0.3);
+    --shadow-soft: 0 0 20px rgba(252, 238, 10, 0.2), 0 0 40px rgba(0, 240, 255, 0.1);
+}
+
+:root[data-theme="cyberpunk"] body {
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, #111 1px, #111 3px);
+    background-color: #000;
+}
+
+:root[data-theme="cyberpunk"] .control-main {
+    background: #fcee0a;
+    color: #000;
+    box-shadow: 0 0 20px rgba(252, 238, 10, 0.6), 0 0 40px rgba(252, 238, 10, 0.2);
+}
+
+:root[data-theme="cyberpunk"] .progress-fill {
+    background: linear-gradient(to right, #fcee0a, #00f0ff);
+}
+
+:root[data-theme="cyberpunk"] .active-features-container .features-badge-icon {
+    border-color: #00f0ff;
+    color: #00f0ff;
+}
+
+/* ---- Intro Overlay ---- */
+.cyber-intro-overlay {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0a1a2e 100%);
+}
+
+.cyber-intro-overlay::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px,
+        transparent 1px, transparent 2px
+    );
+    z-index: 10;
+    pointer-events: none;
+    background-size: 100% 2px;
+}
+
+.cyber-glitch-text {
+    font-size: 6rem;
+    font-weight: 900;
+    color: #fcee0a;
+    text-transform: uppercase;
+    position: relative;
+    letter-spacing: 10px;
+    text-shadow: 3px 3px 0px #00f0ff, -2px -2px 0px #ff003c;
+    animation: cyber-shake 0.4s infinite;
+    z-index: 5;
+}
+
+.cyber-glitch-text::before,
+.cyber-glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #050505;
+}
+
+.cyber-glitch-text::before {
+    left: 2px;
+    text-shadow: -1px 0 #ff003c;
+    clip: rect(24px, 550px, 90px, 0);
+    animation: cyber-glitch-anim-1 2.5s infinite linear alternate-reverse;
+}
+
+.cyber-glitch-text::after {
+    left: -2px;
+    text-shadow: -1px 0 #00f0ff;
+    clip: rect(85px, 550px, 140px, 0);
+    animation: cyber-glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+.cyber-sub-text {
+    font-size: 1.2rem;
+    color: #00f0ff;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 20px;
+    z-index: 5;
+    font-family: monospace;
+    opacity: 0.8;
+    animation: cyber-fade-in 1s ease-out 0.5s both;
+}
+
+@keyframes cyber-shake {
+    0%   { transform: translate(1px, 1px)  skewX(-1deg); }
+    20%  { transform: translate(-2px, -1px) skewX(2deg); }
+    40%  { transform: translate(-1px, 2px)  skewX(-1deg); }
+    60%  { transform: translate(2px, -1px)  skewX(1deg); }
+    80%  { transform: translate(-1px, -2px) skewX(-2deg); }
+    100% { transform: translate(1px, 1px)  skewX(0deg); }
+}
+
+@keyframes cyber-glitch-anim-1 {
+    0%   { clip: rect(20px, 9999px, 10px, 0); }
+    100% { clip: rect(80px, 9999px, 90px, 0); }
+}
+
+@keyframes cyber-glitch-anim-2 {
+    0%   { clip: rect(90px, 9999px, 100px, 0); }
+    100% { clip: rect(10px, 9999px, 30px, 0); }
+}
+
+@keyframes cyber-fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 0.8; transform: none; }
+}
+
+/* ---- CRT Scanline Overlay (persistent) ---- */
+#cyber-crt-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.10),
+        rgba(0, 0, 0, 0.10) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    mix-blend-mode: multiply;
+}

@@ -1,0 +1,88 @@
+:root[data-theme="aurora_borealis"] {
+    --bg-main: #030d1a;
+    --bg-secondary: #061528;
+    --bg-tertiary: #081d36;
+    --text-primary: #e0f2f1;
+    --text-secondary: #80cbc4;
+    --text-muted: #4db6ac;
+    --accent: #34d399;
+    --border-color: #0d3340;
+    --control-bg: #061528;
+    --scrollbar-thumb: #1a5c4a;
+}
+
+/* Intro */
+.aurora-intro-overlay {
+    background: #030d1a;
+    overflow: hidden;
+}
+
+.aurora-intro-band {
+    position: absolute;
+    left: -20%;
+    width: 140%;
+    height: 180px;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0;
+    animation: aurora-intro-shimmer var(--shift-dur, 6s) ease-in-out var(--shift-delay, 0s) infinite alternate;
+}
+
+.aurora-intro-band-1 {
+    top: 18%;
+    background: linear-gradient(90deg, transparent 0%, #34d399 30%, #06b6d4 70%, transparent 100%);
+    --shift-dur: 7s;
+    --shift-delay: 0s;
+}
+
+.aurora-intro-band-2 {
+    top: 35%;
+    background: linear-gradient(90deg, transparent 0%, #059669 25%, #7c3aed 60%, #34d399 85%, transparent 100%);
+    --shift-dur: 9s;
+    --shift-delay: 1.5s;
+}
+
+.aurora-intro-band-3 {
+    top: 52%;
+    background: linear-gradient(90deg, transparent 0%, #06b6d4 40%, #34d399 75%, transparent 100%);
+    --shift-dur: 11s;
+    --shift-delay: 0.8s;
+}
+
+@keyframes aurora-intro-shimmer {
+    0%   { opacity: 0; transform: translateX(-5%) scaleY(0.8); }
+    30%  { opacity: 0.55; }
+    70%  { opacity: 0.7; }
+    100% { opacity: 0.45; transform: translateX(5%) scaleY(1.2); }
+}
+
+.aurora-intro-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    animation: aurora-content-rise 1s ease-out 0.4s both;
+}
+
+@keyframes aurora-content-rise {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.aurora-intro-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #34d399;
+    text-shadow: 0 0 30px rgba(52, 211, 153, 0.7), 0 0 60px rgba(52, 211, 153, 0.3);
+    margin: 0 0 8px;
+    letter-spacing: 0.08em;
+}
+
+.aurora-intro-sub {
+    font-size: 1rem;
+    color: #80cbc4;
+    opacity: 0.8;
+    margin: 0;
+    font-style: italic;
+    letter-spacing: 0.05em;
+}
+

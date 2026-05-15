@@ -1,0 +1,92 @@
+/* ================================================================
+   SLEEP TIME THEME — Colors, Intro & Star Particles
+   ================================================================ */
+
+/* ---- Core Variables ---- */
+:root[data-theme="sleeptime"] {
+    --bg-main: #0a0a1f;
+    --bg-card: rgba(21, 21, 46, 0.8);
+    --bg-card-light: rgba(31, 31, 61, 0.6);
+    --bg-card-hover: rgba(35, 35, 65, 0.9);
+    --accent: #7b68ee;
+    --accent-soft: rgba(123, 104, 238, 0.2);
+    --text-main: #e0e0e0;
+    --text-muted: #6b6b8e;
+    --border-soft: rgba(123, 104, 238, 0.3);
+    --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="sleeptime"] body {
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    background-attachment: fixed;
+}
+
+:root[data-theme="sleeptime"] .control-main {
+    background: #7b68ee;
+    color: #fff;
+    box-shadow: 0 8px 25px rgba(123, 104, 238, 0.4);
+}
+
+:root[data-theme="sleeptime"] .progress-fill {
+    background: linear-gradient(to right, #7b68ee, #a78bfa);
+}
+
+:root[data-theme="sleeptime"] .active-features-container .features-badge-icon {
+    border-color: #a78bfa;
+    color: #a78bfa;
+}
+
+/* ---- Intro Overlay ---- */
+.sleep-intro-overlay {
+    background: radial-gradient(circle at center, #1a1a3e 0%, #0d0d1a 100%);
+    overflow: hidden;
+}
+
+.moon-glow {
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, #fef9c3 0%, #fde68a 60%, #fbbf24 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 60px 20px rgba(254, 249, 195, 0.35), 0 0 120px 40px rgba(251, 191, 36, 0.15);
+    animation: moon-rise 4s ease-out forwards;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes moon-rise {
+    0%   { transform: translateY(100px) scale(0.8); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.sleep-intro-text {
+    font-size: 3rem;
+    font-weight: 300;
+    color: #e2e8f0;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    z-index: 2;
+    animation: sleep-fade-text 2s ease-out 1s forwards;
+    opacity: 0;
+}
+
+@keyframes sleep-fade-text {
+    to { opacity: 1; }
+}
+
+/* ---- Twinkling Star Particles ---- */
+.sleep-star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: sleep-twinkle var(--dur, 2s) ease-in-out infinite var(--delay, 0s);
+    opacity: 0;
+}
+
+@keyframes sleep-twinkle {
+    0%, 100% { opacity: 0;   transform: scale(1); }
+    50%       { opacity: 0.9; transform: scale(1.8); }
+}

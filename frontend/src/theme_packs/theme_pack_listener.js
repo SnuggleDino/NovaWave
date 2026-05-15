@@ -32,7 +32,11 @@ export const ThemePackListener = {
             'sleep_time',
             'sakura_spirit',
             'sunset_drive',
-            '8_bit_theme'
+            '8_bit_theme',
+            'aqua_deep',
+            'jazz_bourbon',
+            'lofi_cafe',
+            'aurora_borealis'
         ];
 
         const themes = Object.keys(themeConfigs).map(key => {

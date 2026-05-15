@@ -1,0 +1,10 @@
+{
+  "id": "lofi_cafe",
+  "name": "Lo-Fi Cafe",
+  "description": "Warm sepia tones with gentle rain and cafe vibes",
+  "version": "1.0.0",
+  "author": "NovaWave",
+  "preview_emoji": "☕",
+  "preview_bg": "#1c1510",
+  "accent": "#c9a86c"
+}

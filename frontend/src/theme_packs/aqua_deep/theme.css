@@ -1,0 +1,90 @@
+:root[data-theme="aqua_deep"] {
+    --bg-main: #020d1a;
+    --bg-secondary: #041c33;
+    --bg-tertiary: #05243f;
+    --text-primary: #e0f7fa;
+    --text-secondary: #80deea;
+    --text-muted: #4dd0e1;
+    --accent: #00d4ff;
+    --border-color: #0d3d5c;
+    --control-bg: #041c33;
+    --scrollbar-thumb: #0d6e94;
+}
+
+/* Intro */
+.aqua-intro-overlay {
+    background: radial-gradient(ellipse at center, #041c33 0%, #020d1a 70%, #000d1a 100%);
+    overflow: hidden;
+}
+
+.aqua-rays {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(0, 212, 255, 0.15) 0%, transparent 60%);
+    animation: aqua-pulse 3s ease-in-out infinite;
+}
+
+@keyframes aqua-pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+.aqua-intro-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    animation: aqua-rise 0.8s ease-out both;
+}
+
+@keyframes aqua-rise {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.aqua-intro-icon {
+    font-size: 56px;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 20px #00d4ff);
+}
+
+.aqua-intro-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #00d4ff;
+    text-shadow: 0 0 20px #00d4ff, 0 0 40px rgba(0, 212, 255, 0.4);
+    margin: 0 0 8px;
+    letter-spacing: 0.1em;
+}
+
+.aqua-intro-sub {
+    font-size: 1rem;
+    color: #80deea;
+    opacity: 0.8;
+    margin: 0;
+    letter-spacing: 0.05em;
+}
+
+/* Persistent bubble overlay */
+#aqua-bubbles-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.aqua-bubble {
+    position: absolute;
+    bottom: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.5), rgba(0, 212, 255, 0.1));
+    border: 1px solid rgba(0, 212, 255, 0.35);
+    animation: aqua-bubble-rise var(--dur, 9s) linear forwards;
+}
+
+@keyframes aqua-bubble-rise {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    10%  { opacity: 0.9; }
+    90%  { opacity: 0.5; }
+    100% { transform: translateY(-110vh) translateX(var(--drift, 20px)); opacity: 0; }
+}

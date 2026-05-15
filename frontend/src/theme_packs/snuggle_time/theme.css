@@ -1,1 +1,92 @@
+/* ================================================================
+   SNUGGLE TIME THEME — Colors, Intro & Floating Hearts
+   ================================================================ */
 
+/* ---- Core Variables ---- */
+:root[data-theme="dinolove"] {
+    --bg-main: #0d1a0f;
+    --bg-card: rgba(30, 46, 34, 0.8);
+    --bg-card-light: rgba(50, 75, 55, 0.5);
+    --bg-card-hover: rgba(40, 60, 45, 0.9);
+    --accent: #c1d37f;
+    --accent-soft: rgba(193, 211, 127, 0.2);
+    --text-main: #fffcf2;
+    --text-muted: #d4e09b;
+    --border-soft: rgba(193, 211, 127, 0.3);
+    --shadow-soft: 0 20px 50px rgba(10, 30, 15, 0.5);
+}
+
+:root[data-theme="dinolove"] body {
+    background: radial-gradient(circle at top right, #1e3322 0%, #0d1a0f 100%);
+    background-attachment: fixed;
+}
+
+:root[data-theme="dinolove"] .control-main {
+    background: #c1d37f;
+    color: #1a2e1d;
+    box-shadow: 0 8px 25px rgba(193, 211, 127, 0.4);
+}
+
+:root[data-theme="dinolove"] .progress-fill {
+    background: linear-gradient(to right, #c1d37f, #f2cc8f);
+}
+
+:root[data-theme="dinolove"] .active-features-container .features-badge-icon {
+    border-color: #f2cc8f;
+    color: #f2cc8f;
+}
+
+:root[data-theme="dinolove"] .lang-btn.active {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px var(--accent);
+}
+
+:root[data-theme="dinolove"] .lang-btn:not(.active) {
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+/* ---- Intro Overlay ---- */
+.snuggle-intro-overlay {
+    background: radial-gradient(circle at center, #2d4a22 0%, #1a2e1d 100%);
+}
+
+.snuggle-intro-img {
+    width: 250px;
+    height: auto;
+    margin-bottom: 30px;
+    filter: drop-shadow(0 0 30px rgba(193, 211, 127, 0.4));
+    animation: snuggle-intro-float 3s ease-in-out infinite alternate;
+}
+
+@keyframes snuggle-intro-float {
+    from { transform: translateY(0) scale(1); }
+    to   { transform: translateY(-15px) scale(1.05); }
+}
+
+.snuggle-intro-text {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fffcf2;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(193, 211, 127, 0.5);
+}
+
+/* ---- Floating Hearts (persistent) ---- */
+.snuggle-heart {
+    position: absolute;
+    bottom: -24px;
+    opacity: 0;
+    animation: snuggle-heart-float var(--dur, 6s) linear forwards;
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 0 4px rgba(193, 211, 127, 0.5));
+}
+
+@keyframes snuggle-heart-float {
+    0%   { transform: translateY(0) rotate(-5deg);    opacity: 0; }
+    8%   { opacity: 0.85; }
+    50%  { transform: translateY(-55vh) rotate(5deg); opacity: 0.85; }
+    92%  { opacity: 0.4; }
+    100% { transform: translateY(-110vh) rotate(-5deg); opacity: 0; }
+}

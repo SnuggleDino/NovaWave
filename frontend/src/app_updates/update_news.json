@@ -1,52 +1,71 @@
 {
-    "version": "2.9.8",
-    "date": "14. Mai 2026",
+    "version": "2.9.9",
+    "date": "15. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "GitHub Update-Checker, Footer-Button & Fixes",
-        "en": "GitHub Update Checker, Footer Button & Fixes",
-        "tr": "GitHub Güncelleme Denetleyicisi, Footer Düğmesi & Düzeltmeler",
-        "es": "Verificador de actualizaciones GitHub, botón footer y correcciones",
-        "fr": "Vérificateur de mises à jour GitHub, bouton footer et corrections",
-        "it": "Controllo aggiornamenti GitHub, pulsante footer e correzioni"
+        "de": "4 neue Theme Packs, Überarbeitung & Fixes",
+        "en": "4 New Theme Packs, Overhaul & Fixes",
+        "tr": "4 Yeni Tema Paketi, Revizyon & Düzeltmeler",
+        "es": "4 nuevos paquetes de tema, revisión y correcciones",
+        "fr": "4 nouveaux packs de thème, refonte et corrections",
+        "it": "4 nuovi pacchetti tema, revisione e correzioni"
     },
     "changes": [
         {
-            "icon": "⬆️",
+            "icon": "🎨",
             "title": {
-                "de": "GitHub Update-Checker",
-                "en": "GitHub Update Checker",
-                "tr": "GitHub Güncelleme Denetleyicisi",
-                "es": "Verificador de actualizaciones GitHub",
-                "fr": "Vérificateur de mises à jour GitHub",
-                "it": "Controllo aggiornamenti GitHub"
+                "de": "4 neue Theme Packs",
+                "en": "4 New Theme Packs",
+                "tr": "4 Yeni Tema Paketi",
+                "es": "4 nuevos paquetes de tema",
+                "fr": "4 nouveaux packs de thème",
+                "it": "4 nuovi pacchetti tema"
             },
             "desc": {
-                "de": "NovaWave prüft beim Start automatisch ob eine neuere Version auf GitHub verfügbar ist. Im System-Tab der Einstellungen gibt es außerdem den Button \"Jetzt prüfen\" für einen manuellen Check. Bei einem verfügbaren Update öffnet ein Modal mit Versionsvergleich und direktem Download-Link zu GitHub.",
-                "en": "NovaWave automatically checks on startup whether a newer version is available on GitHub. The Settings System tab also has a 'Check now' button for a manual check. When an update is available, a modal opens showing the version comparison and a direct download link to GitHub.",
-                "tr": "NovaWave başlangıçta GitHub'da daha yeni bir sürümün mevcut olup olmadığını otomatik olarak kontrol eder. Ayarlar Sistem sekmesinde manuel kontrol için 'Şimdi kontrol et' düğmesi de bulunur. Bir güncelleme mevcut olduğunda sürüm karşılaştırması ve GitHub'a doğrudan indirme bağlantısı içeren bir panel açılır.",
-                "es": "NovaWave verifica automáticamente al inicio si hay una versión más nueva disponible en GitHub. La pestaña Sistema de Ajustes también tiene el botón 'Comprobar ahora' para una verificación manual. Cuando hay una actualización disponible, se abre un panel con la comparación de versiones y un enlace de descarga directo a GitHub.",
-                "fr": "NovaWave vérifie automatiquement au démarrage si une version plus récente est disponible sur GitHub. L'onglet Système des Paramètres dispose également du bouton 'Vérifier maintenant' pour une vérification manuelle. Quand une mise à jour est disponible, un panneau s'ouvre avec la comparaison des versions et un lien de téléchargement direct vers GitHub.",
-                "it": "NovaWave verifica automaticamente all'avvio se è disponibile una versione più recente su GitHub. La scheda Sistema delle Impostazioni dispone anche del pulsante 'Controlla ora' per una verifica manuale. Quando è disponibile un aggiornamento, si apre un pannello con il confronto delle versioni e un link di download diretto a GitHub."
+                "de": "Vier neue atmosphärische Theme Packs wurden hinzugefügt: Aqua Deep (Mitternachtsblau mit aufsteigenden Blasen), Jazz & Bourbon (warmes Amber, Rauch-Overlay, Art-Deco-Neon-Intro), Lo-Fi Café (Sepia mit sanftem Regen und Typewriter-Effekt) und Aurora Borealis (dunkles Navy mit der eingebauten Aurora-Animation).",
+                "en": "Four new atmospheric theme packs have been added: Aqua Deep (midnight blue with rising bubbles), Jazz & Bourbon (warm amber, smoke overlay, art deco neon intro), Lo-Fi Café (sepia with gentle rain and typewriter effect) and Aurora Borealis (deep navy with the built-in aurora animation).",
+                "tr": "Dört yeni atmosferik tema paketi eklendi: Aqua Deep (yükselen kabarcıklarla gece yarısı mavisi), Jazz & Bourbon (sıcak amber, duman kaplama, art deco neon intro), Lo-Fi Café (hafif yağmur ve daktilo efektiyle sepya) ve Aurora Borealis (yerleşik aurora animasyonuyla derin lacivert).",
+                "es": "Se han añadido cuatro nuevos paquetes de tema atmosféricos: Aqua Deep (azul medianoche con burbujas ascendentes), Jazz & Bourbon (ámbar cálido, superposición de humo, intro neón art déco), Lo-Fi Café (sepia con lluvia suave y efecto de máquina de escribir) y Aurora Borealis (azul marino oscuro con la animación de aurora incorporada).",
+                "fr": "Quatre nouveaux packs de thème atmosphériques ont été ajoutés : Aqua Deep (bleu nuit avec bulles montantes), Jazz & Bourbon (ambre chaud, superposition de fumée, intro néon art déco), Lo-Fi Café (sépia avec pluie douce et effet machine à écrire) et Aurora Borealis (bleu marine profond avec l'animation aurora intégrée).",
+                "it": "Sono stati aggiunti quattro nuovi pacchetti tema atmosferici: Aqua Deep (blu notte con bolle ascendenti), Jazz & Bourbon (ambra calda, overlay di fumo, intro neon art déco), Lo-Fi Café (seppia con pioggia gentile ed effetto macchina da scrivere) e Aurora Borealis (blu navy scuro con l'animazione aurora integrata)."
             }
         },
         {
-            "icon": "🔘",
+            "icon": "✨",
             "title": {
-                "de": "CHECK-Button im Footer",
-                "en": "CHECK Button in Footer",
-                "tr": "Footer'da CHECK Düğmesi",
-                "es": "Botón CHECK en el footer",
-                "fr": "Bouton CHECK dans le footer",
-                "it": "Pulsante CHECK nel footer"
+                "de": "Theme Packs Überarbeitung",
+                "en": "Theme Packs Overhaul",
+                "tr": "Tema Paketleri Revizyonu",
+                "es": "Revisión de paquetes de tema",
+                "fr": "Refonte des packs de thème",
+                "it": "Revisione dei pacchetti tema"
             },
             "desc": {
-                "de": "Ein neuer CHECK-Button im Footer ermöglicht einen schnellen Update-Check per Klick. Während der Prüfung dreht sich das Icon. Bei einem verfügbaren Update leuchtet der Button grün mit Puls-Animation — bis der Download bestätigt wird.",
-                "en": "A new CHECK button in the footer allows a quick update check with a single click. The icon spins during the check. When an update is available, the button glows green with a pulse animation — until the download is confirmed.",
-                "tr": "Footer'daki yeni CHECK düğmesi tek tıklamayla hızlı güncelleme kontrolü yapılmasını sağlar. Kontrol sırasında ikon döner. Bir güncelleme mevcut olduğunda düğme, indirme onaylanana kadar nabız animasyonuyla yeşil yanar.",
-                "es": "Un nuevo botón CHECK en el footer permite una verificación rápida de actualizaciones con un solo clic. El icono gira durante la verificación. Cuando hay una actualización disponible, el botón brilla en verde con animación de pulso — hasta que se confirma la descarga.",
-                "fr": "Un nouveau bouton CHECK dans le footer permet une vérification rapide des mises à jour en un clic. L'icône tourne pendant la vérification. Quand une mise à jour est disponible, le bouton brille en vert avec une animation pulsée — jusqu'à ce que le téléchargement soit confirmé.",
-                "it": "Un nuovo pulsante CHECK nel footer consente una rapida verifica degli aggiornamenti con un solo clic. L'icona ruota durante la verifica. Quando è disponibile un aggiornamento, il pulsante brilla di verde con animazione pulsante — fino alla conferma del download."
+                "de": "Alle bestehenden Theme Packs wurden vollständig überarbeitet. Jedes Pack erhält neue persistente Effekte: Cyberpunk bekommt ein CRT-Scanline-Overlay, Sleep Time twinkelende Sternpartikel, Snuggle Time schwebende Herzpartikel, Sunset Drive eine Neon-Horizont-Linie und Sakura Spirit einen persistenten Blütenblatt-Container. Das CSS wurde aus style.css in eigene theme.css-Dateien ausgelagert.",
+                "en": "All existing theme packs have been completely overhauled. Each pack receives new persistent visual effects: Cyberpunk gets a CRT scanline overlay, Sleep Time gains twinkling star particles, Snuggle Time gets floating heart particles, Sunset Drive a neon horizon line and Sakura Spirit a persistent petal container. CSS has been moved from style.css into individual theme.css files.",
+                "tr": "Mevcut tüm tema paketleri tamamen yenilendi. Her paket yeni kalıcı görsel efektler alıyor: Cyberpunk CRT tarama çizgisi katmanı, Sleep Time titreşen yıldız partikülleri, Snuggle Time yüzen kalp partikülleri, Sunset Drive neon ufuk çizgisi ve Sakura Spirit kalıcı yaprak kabı alıyor. CSS, style.css'ten ayrı theme.css dosyalarına taşındı.",
+                "es": "Todos los paquetes de tema existentes han sido completamente renovados. Cada paquete recibe nuevos efectos visuales persistentes: Cyberpunk obtiene una superposición de líneas de exploración CRT, Sleep Time gana partículas de estrellas parpadeantes, Snuggle Time obtiene partículas de corazones flotantes, Sunset Drive una línea de horizonte neón y Sakura Spirit un contenedor de pétalos persistente. El CSS se trasladó de style.css a archivos theme.css individuales.",
+                "fr": "Tous les packs de thème existants ont été entièrement remaniés. Chaque pack reçoit de nouveaux effets visuels persistants : Cyberpunk obtient une superposition de lignes de balayage CRT, Sleep Time gagne des particules d'étoiles scintillantes, Snuggle Time obtient des particules de cœurs flottants, Sunset Drive une ligne d'horizon néon et Sakura Spirit un conteneur de pétales persistant. Le CSS a été déplacé de style.css vers des fichiers theme.css individuels.",
+                "it": "Tutti i pacchetti tema esistenti sono stati completamente rinnovati. Ogni pacchetto riceve nuovi effetti visivi persistenti: Cyberpunk ottiene un overlay di linee di scansione CRT, Sleep Time guadagna particelle di stelle scintillanti, Snuggle Time ottiene particelle di cuori fluttuanti, Sunset Drive una linea dell'orizzonte al neon e Sakura Spirit un contenitore di petali persistente. Il CSS è stato spostato da style.css a file theme.css individuali."
+            }
+        },
+        {
+            "icon": "🔧",
+            "title": {
+                "de": "Stats-Overlay & Bug Fixes",
+                "en": "Stats Overlay & Bug Fixes",
+                "tr": "İstatistik Ekranı & Hata Düzeltmeleri",
+                "es": "Overlay de estadísticas y correcciones",
+                "fr": "Overlay des statistiques et corrections",
+                "it": "Overlay statistiche e correzioni"
+            },
+            "desc": {
+                "de": "Das Stats-Overlay zeigt die Visualizer-FPS nun als eigene Zeile mit 3-stufiger Statusanzeige. Außerdem wurden mehrere Theme-Pack-Bugs behoben: ein CSS-Kaskadierungsfehler, der die App unsichtbar machte, ein falsch dargestelltes Jazz-Intro sowie fehlende Farbwerte in den neuen Pack-Karten.",
+                "en": "The stats overlay now shows the visualizer FPS as its own dedicated row with a 3-level status indicator. Several theme pack bugs have also been fixed: a CSS cascade issue that made the app invisible, an incorrectly rendered Jazz intro, and missing color values in the new pack cards.",
+                "tr": "İstatistik ekranı artık görselleştirici FPS'yi 3 seviyeli durum göstergesiyle ayrı bir satırda gösteriyor. Birçok tema paketi hatası da düzeltildi: uygulamayı görünmez kılan bir CSS kaskad sorunu, hatalı şekilde işlenen bir Jazz introsu ve yeni paket kartlarındaki eksik renk değerleri.",
+                "es": "El overlay de estadísticas ahora muestra los FPS del visualizador en su propia fila dedicada con un indicador de estado de 3 niveles. También se han corregido varios errores de paquetes de tema: un problema de cascada CSS que hacía invisible la aplicación, un intro de Jazz mal renderizado y valores de color faltantes en las nuevas tarjetas de paquetes.",
+                "fr": "L'overlay des statistiques affiche maintenant les FPS du visualiseur dans sa propre ligne dédiée avec un indicateur d'état à 3 niveaux. Plusieurs bugs de packs de thème ont également été corrigés : un problème de cascade CSS qui rendait l'application invisible, un intro Jazz mal rendu et des valeurs de couleur manquantes dans les nouvelles cartes de packs.",
+                "it": "L'overlay delle statistiche ora mostra gli FPS del visualizzatore in una riga dedicata con un indicatore di stato a 3 livelli. Sono stati corretti anche diversi bug dei pacchetti tema: un problema di cascata CSS che rendeva l'app invisibile, un intro Jazz renderizzato in modo errato e valori di colore mancanti nelle nuove schede dei pacchetti."
             }
         }
     ]

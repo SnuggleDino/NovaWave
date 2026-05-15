@@ -1,0 +1,10 @@
+{
+  "id": "aurora_borealis",
+  "name": "Aurora Borealis",
+  "description": "Deep navy with shimmering aurora curtains of light",
+  "version": "1.0.0",
+  "author": "NovaWave",
+  "preview_emoji": "🌌",
+  "preview_bg": "#030d1a",
+  "accent": "#34d399"
+}
