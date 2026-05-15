@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v2.9.8` 
+# 🎵 NovaWave `v2.9.9` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > — Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source —
 
-![Version](https://img.shields.io/badge/Version-2.9.8-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.9.9-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -18,17 +18,12 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v2.9.8
+## ✨ What's New in v2.9.9
 
-- **GitHub Update Checker** - NovaWave checks for new releases automatically on startup. A modal shows the current vs. latest version with a direct download link to GitHub. Manual check available in Settings → System.
-- **Footer CHECK Button** - One-click update check right from the footer. The icon spins during the request and pulses green when an update is found.
-
-## ✨ What's New in v2.9.7
-
-- **Library Modal Redesign** - The folder loader is now a clean glassmorphism panel showing the primary folder and all additional folders with numbered badges.
-- **Integrated Downloader Log** - The separate terminal panel is gone. The download log appears inline below the downloader, opening automatically on activity.
-- **Sound Profiles: Default & Profile 1** - Default resets all audio effects to OFF. Profile 1 is a user-defined slot — save your current audio setup and restore it with one click.
-- **Bug Fixes** - Pick Color undefined value fixed, CTRL+1 shortcut conflict resolved, playlist toggle button removed, settings drawer widened to 520px.
+- **4 New Theme Packs** — Aqua Deep, Jazz & Bourbon, Lo-Fi Café, and Aurora Borealis. Each with a handcrafted intro animation and a persistent ambient effect.
+- **Theme Pack Overhaul** — All existing packs rebuilt from the ground up with new persistent visual effects: CRT scanlines (Cyberpunk), star particles (Sleep Time), floating hearts (Snuggle Time), neon horizon line (Sunset Drive), and a persistent petal container (Sakura Spirit).
+- **Stats Overlay** — Visualizer FPS now has its own dedicated row with a 3-level status indicator.
+- **Bug Fixes** — Several CSS cascade and rendering issues with the new theme packs resolved.
 
 ---
 
@@ -88,16 +83,20 @@ Every launch can feel different. Choose a startup animation in **Settings → In
 
 ## 🎨 Theme Packs (Legacy UI)
 
-Handcrafted **Theme Packs** transform the entire look and feel, each with a unique startup animation:
+Handcrafted **Theme Packs** transform the entire look and feel, each with a unique intro animation and persistent ambient effect:
 
 | Theme | Vibe |
 |---|---|
-| 🦖 **Snuggle Time** | Cozy dino energy - the original NovaWave experience |
-| 🌙 **Sleep Time** | Calm and dark, perfect for late-night listening |
-| ⚡ **Cyberpunk** | Neon lights, glitch effects, electric atmosphere |
-| 🏎️ **Sunset Drive** | Pure 80s Retrowave feeling |
-| 🌸 **Sakura Spirit** | Relaxed Japanese-inspired aesthetics |
+| 🦖 **Snuggle Time** | Cozy dino energy — floating hearts, the original NovaWave experience |
+| 🌙 **Sleep Time** | Calm and dark — twinkling star particles, perfect for late-night listening |
+| ⚡ **Cyberpunk** | Neon lights, glitch effects — persistent CRT scanline overlay |
+| 🏎️ **Sunset Drive** | Pure 80s Retrowave — neon horizon line at the bottom |
+| 🌸 **Sakura Spirit** | Relaxed Japanese aesthetics — persistent falling cherry blossom petals |
 | 🕹️ **8-Bit** | Retro game vibes all the way |
+| 🌊 **Aqua Deep** | Midnight blue deep sea — rising bubble overlay |
+| 🎷 **Jazz & Bourbon** | Warm amber, smooth and soulful — drifting smoke and an art deco neon intro |
+| ☕ **Lo-Fi Café** | Cozy sepia café — gentle rain overlay and a typewriter intro |
+| 🌌 **Aurora Borealis** | Deep navy night sky — shimmering aurora curtains of light |
 
 > Want to build your own? See [`frontend/src/theme_packs/theme_packs.md`](frontend/src/theme_packs/theme_packs.md) for the full creation guide.
 
