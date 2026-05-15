@@ -1141,6 +1141,10 @@ async function handleDownload() {
         setDownloaderState('pending', tr('statusFetchingPlaylist'));
         try {
             const trackUrls = await window.go.main.App.GetSpotifyPlaylistTracks(url);
+            if (!trackUrls || trackUrls.length === 0) {
+                setDownloaderState('error', tr('statusUrlInvalid'));
+                return;
+            }
             const quality = settings.audioQuality || 'best';
             for (const trackUrl of trackUrls) {
                 downloadManager.add(trackUrl, 'spotify', '', quality);
@@ -1398,12 +1402,12 @@ async function removeLegacyFolder(fp) {
             const r = await windowApi.refreshMusicFolder(currentFolderPath);
             if (r && r.tracks) allTracks.push(...r.tracks);
         }
-    } catch (e) { /* ignore */ }
+    } catch (e) { console.warn('[Library] Failed to reload primary folder:', e); }
     for (const f of legacyFolders) {
         try {
             const r2 = await windowApi.refreshMusicFolder(f);
             if (r2 && r2.tracks) allTracks.push(...r2.tracks);
-        } catch (e2) { /* ignore */ }
+        } catch (e2) { console.warn('[Library] Failed to reload folder:', f, e2); }
     }
     basePlaylist = allTracks;
     PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
@@ -2644,7 +2648,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    initializeApp();
+    initializeApp().catch((err) => {
+        const cover = document.getElementById('startup-cover');
+        if (cover) cover.remove();
+        document.body.classList.add('ready');
+        console.error('Fatal init error:', err);
+    });
 
     if (refreshFolderBtn) refreshFolderBtn.addEventListener('click', () => performFolderRefresh());
     if (playlistRefreshBtn) playlistRefreshBtn.addEventListener('click', () => performFolderRefresh());

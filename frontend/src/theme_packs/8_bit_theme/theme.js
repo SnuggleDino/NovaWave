@@ -63,29 +63,31 @@ export default {
             if (colorToggle) colorToggle.checked = false;
         }, 100);
 
-        const overlay = document.createElement('div');
-        overlay.id = 'retro-intro-layer';
-        overlay.className = 'retro-intro-overlay';
-        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center;';
+        if (document.body.classList.contains('ready')) {
+            const overlay = document.createElement('div');
+            overlay.id = 'retro-intro-layer';
+            overlay.className = 'retro-intro-overlay';
+            overlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:2147483647; display:flex; flex-direction:column; align-items:center; justify-content:center;';
 
-        overlay.innerHTML = `
-            <div class="retro-logo"></div>
-            <div class="retro-text">NOVAWAVE 8-BIT</div>
-            <button id="retro-start-btn" class="retro-btn">PRESS START</button>
-        `;
+            overlay.innerHTML = `
+                <div class="retro-logo"></div>
+                <div class="retro-text">NOVAWAVE 8-BIT</div>
+                <button id="retro-start-btn" class="retro-btn">PRESS START</button>
+            `;
 
-        document.body.appendChild(overlay);
+            document.body.appendChild(overlay);
 
-        const btn = overlay.querySelector('#retro-start-btn');
-        if (btn) {
-            btn.onclick = () => {
-                playStartSound();
-                overlay.style.transition = 'opacity 0.5s';
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.remove(), 500);
-            };
-        } else {
-            setTimeout(() => overlay.remove(), 3000);
+            const btn = overlay.querySelector('#retro-start-btn');
+            if (btn) {
+                btn.onclick = () => {
+                    playStartSound();
+                    overlay.style.transition = 'opacity 0.5s';
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.remove(), 500);
+                };
+            } else {
+                setTimeout(() => overlay.remove(), 3000);
+            }
         }
 
         const bgAnim = document.querySelector('.background-animation');

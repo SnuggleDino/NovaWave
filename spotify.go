@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"html"
 	"io"
@@ -30,9 +29,7 @@ type SpotifyTrack struct {
 	Artist string `json:"artist"`
 }
 
-type SpotifyService struct {
-	ctx context.Context
-}
+type SpotifyService struct{}
 
 func NewSpotifyService() *SpotifyService {
 	return &SpotifyService{}

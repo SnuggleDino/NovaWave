@@ -43,6 +43,7 @@ type App struct {
 	spotifyService *SpotifyService
 	trackCache     map[string]Track
 	cacheMu        sync.RWMutex
+	mediaKeyTID    uint32
 }
 
 type Config struct {
@@ -82,16 +83,9 @@ type Config struct {
 	DeleteSongsEnabled      bool          `json:"deleteSongsEnabled"`
 	Loop                    string        `json:"loop"`
 	Shuffle                 bool          `json:"shuffle"`
-	SnuggleTimeEnabled      bool          `json:"snuggleTimeEnabled"`
-	SleepTimeEnabled        bool          `json:"sleepTimeEnabled"`
-	CyberpunkEnabled        bool          `json:"cyberpunkEnabled"`
 	PlaylistPosition        string        `json:"playlistPosition"`
-	PlaylistHidden          bool          `json:"playlistHidden"`
 	GradientTitleEnabled    bool          `json:"gradientTitleEnabled"`
 	ActiveIntro             string        `json:"activeIntro"`
-	SunsetEnabled           bool          `json:"sunsetEnabled"`
-	SakuraEnabled           bool          `json:"sakuraEnabled"`
-	NovaWave95Enabled       bool          `json:"novaWave95Enabled"`
 	PlaylistStructure       []interface{} `json:"playlistStructure"`
 	// --- Equalizer ---
 	EqEnabled bool      `json:"eqEnabled"`
@@ -140,6 +134,11 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) shutdown(ctx context.Context) {
+	if a.mediaKeyTID != 0 {
+		user32 := syscall.NewLazyDLL("user32.dll")
+		procPostThreadMessage := user32.NewProc("PostThreadMessageW")
+		procPostThreadMessage.Call(uintptr(a.mediaKeyTID), 0x0012, 0, 0) // WM_QUIT
+	}
 	a.saveTrackCache()
 }
 
@@ -158,26 +157,33 @@ func (a *App) ensureBinaries() {
 			if err != nil {
 				continue
 			}
-			defer srcFile.Close()
 
 			dstFile, err := os.Create(destPath)
 			if err != nil {
+				srcFile.Close()
 				continue
 			}
-			defer dstFile.Close()
 
 			io.Copy(dstFile, srcFile)
+			dstFile.Close()
+			srcFile.Close()
 			os.Chmod(destPath, 0755)
 		}
 	}
 }
 
 func (a *App) setupMediaKeys() {
+	tidCh := make(chan uint32, 1)
 	go func() {
 		runtime.LockOSThread()
 		user32 := syscall.NewLazyDLL("user32.dll")
+		kernel32 := syscall.NewLazyDLL("kernel32.dll")
 		procRegisterHotKey := user32.NewProc("RegisterHotKey")
 		procGetMessage := user32.NewProc("GetMessageW")
+		procGetCurrentThreadId := kernel32.NewProc("GetCurrentThreadId")
+
+		tid, _, _ := procGetCurrentThreadId.Call()
+		tidCh <- uint32(tid)
 
 		procRegisterHotKey.Call(0, 1001, 0, 0xB3)
 		procRegisterHotKey.Call(0, 1002, 0, 0xB0)
@@ -200,7 +206,7 @@ func (a *App) setupMediaKeys() {
 				return
 			}
 
-			if msg.Message == 0x0312 { // WM_HOTKEY
+			if msg.Message == 0x0312 {
 				switch msg.WParam {
 				case 1001:
 					wailsRuntime.EventsEmit(a.ctx, "media-key", "playpause")
@@ -218,6 +224,7 @@ func (a *App) setupMediaKeys() {
 			}
 		}
 	}()
+	a.mediaKeyTID = <-tidCh
 }
 
 func (a *App) SetWindowSize(width int, height int) {
@@ -397,6 +404,9 @@ func (a *App) ResetConfig() SimpleResult {
 }
 
 func (a *App) SaveConfig(config Config) string {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	path := getConfigPath()
 	os.MkdirAll(filepath.Dir(path), 0755)
 
@@ -436,17 +446,15 @@ func (a *App) GetSettings() map[string]interface{} {
 	path := getConfigPath()
 	data, err := os.ReadFile(path)
 	if err != nil {
-		// Return default config as map
-		return map[string]interface{}{
-			"theme":                   "midnight",
-			"volume":                  0.2,
-			"language":                "de",
-			"coverMode":               "note",
-			"animationMode":           "flow",
-			"visualizerEnabled":       true,
-			"activeIntro":             "waterdrop",
-			"enableFavoritesPlaylist": true,
+		defaultConf := getDefaultConfig()
+		var fallback map[string]interface{}
+		if b, e := json.Marshal(defaultConf); e == nil {
+			json.Unmarshal(b, &fallback)
 		}
+		if fallback == nil {
+			fallback = make(map[string]interface{})
+		}
+		return fallback
 	}
 
 	var configMap map[string]interface{}

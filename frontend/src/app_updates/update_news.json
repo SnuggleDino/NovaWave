@@ -1,71 +1,52 @@
 {
-    "version": "2.9.9",
+    "version": "2.9.9-1",
     "date": "15. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "4 neue Theme Packs, Überarbeitung & Fixes",
-        "en": "4 New Theme Packs, Overhaul & Fixes",
-        "tr": "4 Yeni Tema Paketi, Revizyon & Düzeltmeler",
-        "es": "4 nuevos paquetes de tema, revisión y correcciones",
-        "fr": "4 nouveaux packs de thème, refonte et corrections",
-        "it": "4 nuovi pacchetti tema, revisione e correzioni"
+        "de": "Code-Qualität & Bug Fixes",
+        "en": "Code Quality & Bug Fixes",
+        "tr": "Kod Kalitesi & Hata Düzeltmeleri",
+        "es": "Calidad de código y correcciones",
+        "fr": "Qualité du code et corrections",
+        "it": "Qualità del codice e correzioni"
     },
     "changes": [
         {
-            "icon": "🎨",
-            "title": {
-                "de": "4 neue Theme Packs",
-                "en": "4 New Theme Packs",
-                "tr": "4 Yeni Tema Paketi",
-                "es": "4 nuevos paquetes de tema",
-                "fr": "4 nouveaux packs de thème",
-                "it": "4 nuovi pacchetti tema"
-            },
-            "desc": {
-                "de": "Vier neue atmosphärische Theme Packs wurden hinzugefügt: Aqua Deep (Mitternachtsblau mit aufsteigenden Blasen), Jazz & Bourbon (warmes Amber, Rauch-Overlay, Art-Deco-Neon-Intro), Lo-Fi Café (Sepia mit sanftem Regen und Typewriter-Effekt) und Aurora Borealis (dunkles Navy mit der eingebauten Aurora-Animation).",
-                "en": "Four new atmospheric theme packs have been added: Aqua Deep (midnight blue with rising bubbles), Jazz & Bourbon (warm amber, smoke overlay, art deco neon intro), Lo-Fi Café (sepia with gentle rain and typewriter effect) and Aurora Borealis (deep navy with the built-in aurora animation).",
-                "tr": "Dört yeni atmosferik tema paketi eklendi: Aqua Deep (yükselen kabarcıklarla gece yarısı mavisi), Jazz & Bourbon (sıcak amber, duman kaplama, art deco neon intro), Lo-Fi Café (hafif yağmur ve daktilo efektiyle sepya) ve Aurora Borealis (yerleşik aurora animasyonuyla derin lacivert).",
-                "es": "Se han añadido cuatro nuevos paquetes de tema atmosféricos: Aqua Deep (azul medianoche con burbujas ascendentes), Jazz & Bourbon (ámbar cálido, superposición de humo, intro neón art déco), Lo-Fi Café (sepia con lluvia suave y efecto de máquina de escribir) y Aurora Borealis (azul marino oscuro con la animación de aurora incorporada).",
-                "fr": "Quatre nouveaux packs de thème atmosphériques ont été ajoutés : Aqua Deep (bleu nuit avec bulles montantes), Jazz & Bourbon (ambre chaud, superposition de fumée, intro néon art déco), Lo-Fi Café (sépia avec pluie douce et effet machine à écrire) et Aurora Borealis (bleu marine profond avec l'animation aurora intégrée).",
-                "it": "Sono stati aggiunti quattro nuovi pacchetti tema atmosferici: Aqua Deep (blu notte con bolle ascendenti), Jazz & Bourbon (ambra calda, overlay di fumo, intro neon art déco), Lo-Fi Café (seppia con pioggia gentile ed effetto macchina da scrivere) e Aurora Borealis (blu navy scuro con l'animazione aurora integrata)."
-            }
-        },
-        {
-            "icon": "✨",
-            "title": {
-                "de": "Theme Packs Überarbeitung",
-                "en": "Theme Packs Overhaul",
-                "tr": "Tema Paketleri Revizyonu",
-                "es": "Revisión de paquetes de tema",
-                "fr": "Refonte des packs de thème",
-                "it": "Revisione dei pacchetti tema"
-            },
-            "desc": {
-                "de": "Alle bestehenden Theme Packs wurden vollständig überarbeitet. Jedes Pack erhält neue persistente Effekte: Cyberpunk bekommt ein CRT-Scanline-Overlay, Sleep Time twinkelende Sternpartikel, Snuggle Time schwebende Herzpartikel, Sunset Drive eine Neon-Horizont-Linie und Sakura Spirit einen persistenten Blütenblatt-Container. Das CSS wurde aus style.css in eigene theme.css-Dateien ausgelagert.",
-                "en": "All existing theme packs have been completely overhauled. Each pack receives new persistent visual effects: Cyberpunk gets a CRT scanline overlay, Sleep Time gains twinkling star particles, Snuggle Time gets floating heart particles, Sunset Drive a neon horizon line and Sakura Spirit a persistent petal container. CSS has been moved from style.css into individual theme.css files.",
-                "tr": "Mevcut tüm tema paketleri tamamen yenilendi. Her paket yeni kalıcı görsel efektler alıyor: Cyberpunk CRT tarama çizgisi katmanı, Sleep Time titreşen yıldız partikülleri, Snuggle Time yüzen kalp partikülleri, Sunset Drive neon ufuk çizgisi ve Sakura Spirit kalıcı yaprak kabı alıyor. CSS, style.css'ten ayrı theme.css dosyalarına taşındı.",
-                "es": "Todos los paquetes de tema existentes han sido completamente renovados. Cada paquete recibe nuevos efectos visuales persistentes: Cyberpunk obtiene una superposición de líneas de exploración CRT, Sleep Time gana partículas de estrellas parpadeantes, Snuggle Time obtiene partículas de corazones flotantes, Sunset Drive una línea de horizonte neón y Sakura Spirit un contenedor de pétalos persistente. El CSS se trasladó de style.css a archivos theme.css individuales.",
-                "fr": "Tous les packs de thème existants ont été entièrement remaniés. Chaque pack reçoit de nouveaux effets visuels persistants : Cyberpunk obtient une superposition de lignes de balayage CRT, Sleep Time gagne des particules d'étoiles scintillantes, Snuggle Time obtient des particules de cœurs flottants, Sunset Drive une ligne d'horizon néon et Sakura Spirit un conteneur de pétales persistant. Le CSS a été déplacé de style.css vers des fichiers theme.css individuels.",
-                "it": "Tutti i pacchetti tema esistenti sono stati completamente rinnovati. Ogni pacchetto riceve nuovi effetti visivi persistenti: Cyberpunk ottiene un overlay di linee di scansione CRT, Sleep Time guadagna particelle di stelle scintillanti, Snuggle Time ottiene particelle di cuori fluttuanti, Sunset Drive una linea dell'orizzonte al neon e Sakura Spirit un contenitore di petali persistente. Il CSS è stato spostato da style.css a file theme.css individuali."
-            }
-        },
-        {
             "icon": "🔧",
             "title": {
-                "de": "Stats-Overlay & Bug Fixes",
-                "en": "Stats Overlay & Bug Fixes",
-                "tr": "İstatistik Ekranı & Hata Düzeltmeleri",
-                "es": "Overlay de estadísticas y correcciones",
-                "fr": "Overlay des statistiques et corrections",
-                "it": "Overlay statistiche e correzioni"
+                "de": "Go Backend Fixes",
+                "en": "Go Backend Fixes",
+                "tr": "Go Backend Düzeltmeleri",
+                "es": "Correcciones del backend Go",
+                "fr": "Corrections du backend Go",
+                "it": "Correzioni del backend Go"
             },
             "desc": {
-                "de": "Das Stats-Overlay zeigt die Visualizer-FPS nun als eigene Zeile mit 3-stufiger Statusanzeige. Außerdem wurden mehrere Theme-Pack-Bugs behoben: ein CSS-Kaskadierungsfehler, der die App unsichtbar machte, ein falsch dargestelltes Jazz-Intro sowie fehlende Farbwerte in den neuen Pack-Karten.",
-                "en": "The stats overlay now shows the visualizer FPS as its own dedicated row with a 3-level status indicator. Several theme pack bugs have also been fixed: a CSS cascade issue that made the app invisible, an incorrectly rendered Jazz intro, and missing color values in the new pack cards.",
-                "tr": "İstatistik ekranı artık görselleştirici FPS'yi 3 seviyeli durum göstergesiyle ayrı bir satırda gösteriyor. Birçok tema paketi hatası da düzeltildi: uygulamayı görünmez kılan bir CSS kaskad sorunu, hatalı şekilde işlenen bir Jazz introsu ve yeni paket kartlarındaki eksik renk değerleri.",
-                "es": "El overlay de estadísticas ahora muestra los FPS del visualizador en su propia fila dedicada con un indicador de estado de 3 niveles. También se han corregido varios errores de paquetes de tema: un problema de cascada CSS que hacía invisible la aplicación, un intro de Jazz mal renderizado y valores de color faltantes en las nuevas tarjetas de paquetes.",
-                "fr": "L'overlay des statistiques affiche maintenant les FPS du visualiseur dans sa propre ligne dédiée avec un indicateur d'état à 3 niveaux. Plusieurs bugs de packs de thème ont également été corrigés : un problème de cascade CSS qui rendait l'application invisible, un intro Jazz mal rendu et des valeurs de couleur manquantes dans les nouvelles cartes de packs.",
-                "it": "L'overlay delle statistiche ora mostra gli FPS del visualizzatore in una riga dedicata con un indicatore di stato a 3 livelli. Sono stati corretti anche diversi bug dei pacchetti tema: un problema di cascata CSS che rendeva l'app invisibile, un intro Jazz renderizzato in modo errato e valori di colore mancanti nelle nuove schede dei pacchetti."
+                "de": "Mehrere interne Stabilitätsprobleme wurden behoben: ein Defer-in-Loop-Fehler in ensureBinaries(), eine Race Condition in SaveConfig(), ein Goroutine-Leak in setupMediaKeys() (sauberes Herunterfahren via WM_QUIT), ein unvollständiger Fallback in GetSettings() sowie 7 veraltete Config-Felder und ein unbenutztes Feld in spotify.go wurden entfernt.",
+                "en": "Several internal stability issues have been resolved: a defer-in-loop bug in ensureBinaries(), a race condition in SaveConfig(), a goroutine leak in setupMediaKeys() (clean shutdown via WM_QUIT), an incomplete fallback in GetSettings(), and 7 dead Config fields plus an unused field in spotify.go have been removed.",
+                "tr": "Birkaç dahili kararlılık sorunu çözüldü: ensureBinaries() içinde defer-in-loop hatası, SaveConfig() içinde yarış koşulu, setupMediaKeys() içinde goroutine sızıntısı (WM_QUIT aracılığıyla temiz kapatma), GetSettings() içinde eksik geri dönüş ve 7 eski Config alanı ile spotify.go içindeki kullanılmayan bir alan kaldırıldı.",
+                "es": "Se han resuelto varios problemas de estabilidad interna: un error defer-in-loop en ensureBinaries(), una condición de carrera en SaveConfig(), una fuga de goroutine en setupMediaKeys() (apagado limpio via WM_QUIT), un fallback incompleto en GetSettings() y 7 campos Config obsoletos más un campo no utilizado en spotify.go han sido eliminados.",
+                "fr": "Plusieurs problèmes de stabilité interne ont été résolus : un bug defer-in-loop dans ensureBinaries(), une condition de course dans SaveConfig(), une fuite de goroutine dans setupMediaKeys() (arrêt propre via WM_QUIT), un fallback incomplet dans GetSettings() et 7 champs Config obsolètes ainsi qu'un champ inutilisé dans spotify.go ont été supprimés.",
+                "it": "Diversi problemi di stabilità interna sono stati risolti: un bug defer-in-loop in ensureBinaries(), una race condition in SaveConfig(), una goroutine leak in setupMediaKeys() (arresto pulito via WM_QUIT), un fallback incompleto in GetSettings() e 7 campi Config obsoleti più un campo inutilizzato in spotify.go sono stati rimossi."
+            }
+        },
+        {
+            "icon": "⚡",
+            "title": {
+                "de": "Frontend Fixes",
+                "en": "Frontend Fixes",
+                "tr": "Arayüz Düzeltmeleri",
+                "es": "Correcciones del frontend",
+                "fr": "Corrections du frontend",
+                "it": "Correzioni del frontend"
+            },
+            "desc": {
+                "de": "initializeApp() erhält jetzt einen .catch()-Handler, sodass fatale Fehler vor dem try-Block nicht mehr lautlos verschluckt werden. Ein fehlender Null-Check beim Spotify-Playlist-Abruf wurde ergänzt. Das 8-Bit Theme zeigt die Intro-Overlay jetzt nur noch, wenn die App bereits vollständig gestartet ist — kein doppeltes Intro mehr. Stille catch-Blöcke in removeLegacyFolder() wurden durch console.warn ersetzt, und das fehlerhafte text-transform:uppercase auf dem body-Element des 8-Bit Themes wurde entfernt.",
+                "en": "initializeApp() now has a .catch() handler so fatal errors before the try block are no longer silently swallowed. A missing null-check on the Spotify playlist fetch has been added. The 8-Bit theme now only shows its intro overlay after the app is fully ready — no more double intro. Silent catch blocks in removeLegacyFolder() have been replaced with console.warn, and the incorrect text-transform:uppercase on the 8-Bit theme's body selector has been removed.",
+                "tr": "initializeApp() artık bir .catch() işleyicisine sahip, bu sayede try bloğundan önceki ölümcül hatalar artık sessizce yutulmuyor. Spotify çalma listesi getirme işleminde eksik null kontrolü eklendi. 8-Bit teması artık intro katmanını yalnızca uygulama tamamen hazır olduğunda gösteriyor — artık çift intro yok. removeLegacyFolder() içindeki sessiz catch blokları console.warn ile değiştirildi ve 8-Bit temasının body seçicisindeki yanlış text-transform:uppercase kaldırıldı.",
+                "es": "initializeApp() ahora tiene un manejador .catch() para que los errores fatales antes del bloque try ya no sean silenciados. Se añadió una verificación null faltante en la obtención de listas de reproducción de Spotify. El tema 8-Bit ahora solo muestra su superposición de intro cuando la aplicación está completamente lista — ya no hay doble intro. Los bloques catch silenciosos en removeLegacyFolder() han sido reemplazados por console.warn, y el incorrecto text-transform:uppercase en el selector body del tema 8-Bit ha sido eliminado.",
+                "fr": "initializeApp() dispose maintenant d'un gestionnaire .catch() pour que les erreurs fatales avant le bloc try ne soient plus silencieusement ignorées. Une vérification null manquante lors de la récupération des playlists Spotify a été ajoutée. Le thème 8-Bit n'affiche plus son overlay d'intro qu'une fois l'application entièrement prête — plus de double intro. Les blocs catch silencieux dans removeLegacyFolder() ont été remplacés par console.warn, et le text-transform:uppercase incorrect sur le sélecteur body du thème 8-Bit a été supprimé.",
+                "it": "initializeApp() ora ha un gestore .catch() in modo che gli errori fatali prima del blocco try non vengano più inghiottiti silenziosamente. È stato aggiunto un controllo null mancante nel recupero delle playlist Spotify. Il tema 8-Bit ora mostra il suo overlay intro solo quando l'app è completamente pronta — niente più doppio intro. I blocchi catch silenziosi in removeLegacyFolder() sono stati sostituiti con console.warn, e il text-transform:uppercase errato sul selettore body del tema 8-Bit è stato rimosso."
             }
         }
     ]

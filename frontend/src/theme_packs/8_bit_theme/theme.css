@@ -30,7 +30,6 @@
     color: var(--text-main);
     font-family: var(--font-stack) !important;
     letter-spacing: -1px;
-    text-transform: uppercase;
 }
 
 
