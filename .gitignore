@@ -2,6 +2,10 @@ build/bin
 node_modules
 frontend/dist
 repo.xml
+
+### Text & Markdown File(s)
+*.md
 *.txt
+
+### Executable File(s)
 novawave.exe
-NOVAWAVE_ANALYSIS.md
