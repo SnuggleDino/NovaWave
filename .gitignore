@@ -4,8 +4,7 @@ frontend/dist
 repo.xml
 
 ### Text & Markdown File(s)
-*.md
-*.txt
+
 
 ### Executable File(s)
 novawave.exe
