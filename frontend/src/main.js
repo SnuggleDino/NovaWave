@@ -1952,6 +1952,7 @@ function setupEventListeners() {
                 currentIndex = playlist.findIndex(x => x.path === ctp);
             }
 
+            savePlaylistState();
             renderPlaylist();
             updateUIForCurrentTrack();
             confirmDeleteOverlay.classList.remove('visible');

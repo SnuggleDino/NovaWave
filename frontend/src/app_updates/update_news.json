@@ -1,52 +1,33 @@
 {
-    "version": "2.9.9-1",
+    "version": "2.9.9-2",
     "date": "15. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Code-Qualität & Bug Fixes",
-        "en": "Code Quality & Bug Fixes",
-        "tr": "Kod Kalitesi & Hata Düzeltmeleri",
-        "es": "Calidad de código y correcciones",
-        "fr": "Qualité du code et corrections",
-        "it": "Qualità del codice e correzioni"
+        "de": "Bug Fix: Virtual Folders",
+        "en": "Bug Fix: Virtual Folders",
+        "tr": "Hata Düzeltmesi: Sanal Klasörler",
+        "es": "Corrección: Carpetas Virtuales",
+        "fr": "Correction : Dossiers Virtuels",
+        "it": "Correzione: Cartelle Virtuali"
     },
     "changes": [
         {
-            "icon": "🔧",
+            "icon": "🗂️",
             "title": {
-                "de": "Go Backend Fixes",
-                "en": "Go Backend Fixes",
-                "tr": "Go Backend Düzeltmeleri",
-                "es": "Correcciones del backend Go",
-                "fr": "Corrections du backend Go",
-                "it": "Correzioni del backend Go"
+                "de": "Virtual Folders Cleanup beim Track-Löschen",
+                "en": "Virtual Folders Cleanup on Track Delete",
+                "tr": "Parça Silindiğinde Sanal Klasör Temizleme",
+                "es": "Limpieza de Carpetas Virtuales al Eliminar Pista",
+                "fr": "Nettoyage des Dossiers Virtuels lors de la Suppression",
+                "it": "Pulizia Cartelle Virtuali alla Cancellazione Traccia"
             },
             "desc": {
-                "de": "Mehrere interne Stabilitätsprobleme wurden behoben: ein Defer-in-Loop-Fehler in ensureBinaries(), eine Race Condition in SaveConfig(), ein Goroutine-Leak in setupMediaKeys() (sauberes Herunterfahren via WM_QUIT), ein unvollständiger Fallback in GetSettings() sowie 7 veraltete Config-Felder und ein unbenutztes Feld in spotify.go wurden entfernt.",
-                "en": "Several internal stability issues have been resolved: a defer-in-loop bug in ensureBinaries(), a race condition in SaveConfig(), a goroutine leak in setupMediaKeys() (clean shutdown via WM_QUIT), an incomplete fallback in GetSettings(), and 7 dead Config fields plus an unused field in spotify.go have been removed.",
-                "tr": "Birkaç dahili kararlılık sorunu çözüldü: ensureBinaries() içinde defer-in-loop hatası, SaveConfig() içinde yarış koşulu, setupMediaKeys() içinde goroutine sızıntısı (WM_QUIT aracılığıyla temiz kapatma), GetSettings() içinde eksik geri dönüş ve 7 eski Config alanı ile spotify.go içindeki kullanılmayan bir alan kaldırıldı.",
-                "es": "Se han resuelto varios problemas de estabilidad interna: un error defer-in-loop en ensureBinaries(), una condición de carrera en SaveConfig(), una fuga de goroutine en setupMediaKeys() (apagado limpio via WM_QUIT), un fallback incompleto en GetSettings() y 7 campos Config obsoletos más un campo no utilizado en spotify.go han sido eliminados.",
-                "fr": "Plusieurs problèmes de stabilité interne ont été résolus : un bug defer-in-loop dans ensureBinaries(), une condition de course dans SaveConfig(), une fuite de goroutine dans setupMediaKeys() (arrêt propre via WM_QUIT), un fallback incomplet dans GetSettings() et 7 champs Config obsolètes ainsi qu'un champ inutilisé dans spotify.go ont été supprimés.",
-                "it": "Diversi problemi di stabilità interna sono stati risolti: un bug defer-in-loop in ensureBinaries(), una race condition in SaveConfig(), una goroutine leak in setupMediaKeys() (arresto pulito via WM_QUIT), un fallback incompleto in GetSettings() e 7 campi Config obsoleti più un campo inutilizzato in spotify.go sono stati rimossi."
-            }
-        },
-        {
-            "icon": "⚡",
-            "title": {
-                "de": "Frontend Fixes",
-                "en": "Frontend Fixes",
-                "tr": "Arayüz Düzeltmeleri",
-                "es": "Correcciones del frontend",
-                "fr": "Corrections du frontend",
-                "it": "Correzioni del frontend"
-            },
-            "desc": {
-                "de": "initializeApp() erhält jetzt einen .catch()-Handler, sodass fatale Fehler vor dem try-Block nicht mehr lautlos verschluckt werden. Ein fehlender Null-Check beim Spotify-Playlist-Abruf wurde ergänzt. Das 8-Bit Theme zeigt die Intro-Overlay jetzt nur noch, wenn die App bereits vollständig gestartet ist — kein doppeltes Intro mehr. Stille catch-Blöcke in removeLegacyFolder() wurden durch console.warn ersetzt, und das fehlerhafte text-transform:uppercase auf dem body-Element des 8-Bit Themes wurde entfernt.",
-                "en": "initializeApp() now has a .catch() handler so fatal errors before the try block are no longer silently swallowed. A missing null-check on the Spotify playlist fetch has been added. The 8-Bit theme now only shows its intro overlay after the app is fully ready — no more double intro. Silent catch blocks in removeLegacyFolder() have been replaced with console.warn, and the incorrect text-transform:uppercase on the 8-Bit theme's body selector has been removed.",
-                "tr": "initializeApp() artık bir .catch() işleyicisine sahip, bu sayede try bloğundan önceki ölümcül hatalar artık sessizce yutulmuyor. Spotify çalma listesi getirme işleminde eksik null kontrolü eklendi. 8-Bit teması artık intro katmanını yalnızca uygulama tamamen hazır olduğunda gösteriyor — artık çift intro yok. removeLegacyFolder() içindeki sessiz catch blokları console.warn ile değiştirildi ve 8-Bit temasının body seçicisindeki yanlış text-transform:uppercase kaldırıldı.",
-                "es": "initializeApp() ahora tiene un manejador .catch() para que los errores fatales antes del bloque try ya no sean silenciados. Se añadió una verificación null faltante en la obtención de listas de reproducción de Spotify. El tema 8-Bit ahora solo muestra su superposición de intro cuando la aplicación está completamente lista — ya no hay doble intro. Los bloques catch silenciosos en removeLegacyFolder() han sido reemplazados por console.warn, y el incorrecto text-transform:uppercase en el selector body del tema 8-Bit ha sido eliminado.",
-                "fr": "initializeApp() dispose maintenant d'un gestionnaire .catch() pour que les erreurs fatales avant le bloc try ne soient plus silencieusement ignorées. Une vérification null manquante lors de la récupération des playlists Spotify a été ajoutée. Le thème 8-Bit n'affiche plus son overlay d'intro qu'une fois l'application entièrement prête — plus de double intro. Les blocs catch silencieux dans removeLegacyFolder() ont été remplacés par console.warn, et le text-transform:uppercase incorrect sur le sélecteur body du thème 8-Bit a été supprimé.",
-                "it": "initializeApp() ora ha un gestore .catch() in modo che gli errori fatali prima del blocco try non vengano più inghiottiti silenziosamente. È stato aggiunto un controllo null mancante nel recupero delle playlist Spotify. Il tema 8-Bit ora mostra il suo overlay intro solo quando l'app è completamente pronta — niente più doppio intro. I blocchi catch silenziosi in removeLegacyFolder() sono stati sostituiti con console.warn, e il text-transform:uppercase errato sul selettore body del tema 8-Bit è stato rimosso."
+                "de": "Beim Löschen eines Tracks wurde die Playlist-Struktur (Virtual Folders) bisher nicht sofort in den Einstellungen gespeichert. Der gelöschte Track blieb bis zum nächsten App-Start als veralteter Eintrag in der gespeicherten Struktur erhalten. Ab sofort wird `savePlaylistState()` direkt nach dem erfolgreichen Löschen aufgerufen — die gespeicherte Struktur ist sofort konsistent.",
+                "en": "When deleting a track, the playlist structure (Virtual Folders) was not immediately saved to settings. The deleted track remained as a stale entry in the persisted structure until the next app restart. From now on, `savePlaylistState()` is called directly after a successful deletion — the saved structure is immediately consistent.",
+                "tr": "Bir parça silindiğinde, çalma listesi yapısı (Sanal Klasörler) ayarlara hemen kaydedilmiyordu. Silinen parça, bir sonraki uygulama yeniden başlatılana kadar kaydedilen yapıda eski bir giriş olarak kalıyordu. Artık `savePlaylistState()`, başarılı bir silme işleminin hemen ardından çağrılıyor — kaydedilen yapı anında tutarlı hale geliyor.",
+                "es": "Al eliminar una pista, la estructura de la lista de reproducción (Carpetas Virtuales) no se guardaba inmediatamente en la configuración. La pista eliminada permanecía como una entrada obsoleta en la estructura guardada hasta el próximo reinicio de la app. A partir de ahora, `savePlaylistState()` se llama directamente tras una eliminación exitosa — la estructura guardada es inmediatamente consistente.",
+                "fr": "Lors de la suppression d'une piste, la structure de la liste de lecture (Dossiers Virtuels) n'était pas immédiatement sauvegardée dans les paramètres. La piste supprimée restait comme une entrée obsolète dans la structure enregistrée jusqu'au prochain redémarrage de l'app. Désormais, `savePlaylistState()` est appelé directement après une suppression réussie — la structure sauvegardée est immédiatement cohérente.",
+                "it": "Quando si eliminava una traccia, la struttura della playlist (Cartelle Virtuali) non veniva salvata immediatamente nelle impostazioni. La traccia eliminata rimaneva come voce obsoleta nella struttura salvata fino al successivo riavvio dell'app. D'ora in poi, `savePlaylistState()` viene chiamato direttamente dopo un'eliminazione riuscita — la struttura salvata è immediatamente consistente."
             }
         }
     ]
