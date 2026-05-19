@@ -1406,9 +1406,13 @@ function setupAudioEvents() {
     audio.addEventListener('volumechange', () => { if (isCrossfading) return; currentVolume = volumeLimit > 0 ? audio.volume / volumeLimit : 0; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
 }
 
+let isRefreshing = false;
+
 async function performFolderRefresh() {
+    if (isRefreshing) return;
     const path = currentFolderPath || settings.currentFolderPath;
     if (!path) return;
+    isRefreshing = true;
 
     showNotification(tr('refreshFolder'), 'loading', 0);
     const startTime = performance.now();
@@ -1444,6 +1448,7 @@ async function performFolderRefresh() {
 
         showNotification(`${tr('folderRefreshed')} (${duration}ms)`, 'success', 3000);
     }
+    isRefreshing = false;
 }
 
 async function loadSettings() {

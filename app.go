@@ -38,12 +38,14 @@ func isAllowedPath(path string, allowedBases []string) bool {
 var embeddedBinaries embed.FS
 
 type App struct {
-	ctx            context.Context
-	mu             sync.Mutex
-	spotifyService *SpotifyService
-	trackCache     map[string]Track
-	cacheMu        sync.RWMutex
-	mediaKeyTID    uint32
+	ctx             context.Context
+	mu              sync.Mutex
+	spotifyService  *SpotifyService
+	trackCache      map[string]Track
+	cacheMu         sync.RWMutex
+	mediaKeyTID     uint32
+	cacheWriteTimer *time.Timer
+	cacheTimerMu    sync.Mutex
 }
 
 type Config struct {
@@ -148,6 +150,11 @@ func (a *App) shutdown(ctx context.Context) {
 		procPostThreadMessage := user32.NewProc("PostThreadMessageW")
 		procPostThreadMessage.Call(uintptr(a.mediaKeyTID), 0x0012, 0, 0) // WM_QUIT
 	}
+	a.cacheTimerMu.Lock()
+	if a.cacheWriteTimer != nil {
+		a.cacheWriteTimer.Stop()
+	}
+	a.cacheTimerMu.Unlock()
 	a.saveTrackCache()
 }
 
@@ -264,6 +271,17 @@ func (a *App) loadTrackCache() {
 	a.cacheMu.Unlock()
 }
 
+func (a *App) scheduleCacheWrite() {
+	a.cacheTimerMu.Lock()
+	if a.cacheWriteTimer != nil {
+		a.cacheWriteTimer.Stop()
+	}
+	a.cacheWriteTimer = time.AfterFunc(5*time.Second, func() {
+		a.saveTrackCache()
+	})
+	a.cacheTimerMu.Unlock()
+}
+
 func (a *App) saveTrackCache() {
 	a.cacheMu.RLock()
 	data, err := json.Marshal(a.trackCache)
@@ -285,7 +303,7 @@ func (a *App) SaveLastPosition(path string, position float64) {
 	}
 	a.cacheMu.Unlock()
 	if exists {
-		go a.saveTrackCache()
+		a.scheduleCacheWrite()
 	}
 }
 
@@ -298,7 +316,7 @@ func (a *App) IncrementPlayCount(path string) {
 	}
 	a.cacheMu.Unlock()
 	if exists {
-		go a.saveTrackCache()
+		a.scheduleCacheWrite()
 	}
 }
 
