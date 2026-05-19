@@ -359,9 +359,6 @@ export const tr_TR = {
     lyricsError: 'Sözler yüklenirken hata oluştu.',
     noTrackSelected: 'Hiçbir parça seçilmedi.',
 
-
-
-
     // --- Guide Drawer ---
     guideTitle: 'NovaWave Rehberi',
     guideTabGuide: 'Hızlı Başlangıç',

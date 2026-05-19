@@ -1,111 +1,16 @@
 {
-    "version": "3.0.0",
-    "date": "19. Mai 2026",
+    "version": "3.0.1",
+    "date": "20. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Theme Packs, neue Intros & Player-Features",
-        "en": "Theme Packs, New Intros & Player Features",
-        "tr": "Tema Paketleri, Yeni Girişler & Oynatıcı Özellikleri",
-        "es": "Paquetes de Temas, Nuevas Intros y Funciones del Reproductor",
-        "fr": "Packs de Thèmes, Nouvelles Intros & Fonctionnalités Lecteur",
-        "it": "Pacchetti Tema, Nuove Intro e Funzioni Player"
+        "de": "Bug Fixes, Optimierungen & neue Features",
+        "en": "Bug Fixes, Optimizations & New Features",
+        "tr": "Hata Düzeltmeleri, Optimizasyonlar & Yeni Özellikler",
+        "es": "Correcciones de Errores, Optimizaciones y Nuevas Funciones",
+        "fr": "Corrections de Bugs, Optimisations & Nouvelles Fonctionnalités",
+        "it": "Correzioni Bug, Ottimizzazioni e Nuove Funzionalità"
     },
     "changes": [
-        {
-            "icon": "🏎️",
-            "title": {
-                "de": "2 neue Theme Packs: Racing Drive & Valley Days",
-                "en": "2 New Theme Packs: Racing Drive & Valley Days",
-                "tr": "2 Yeni Tema Paketi: Racing Drive & Valley Days",
-                "es": "2 Nuevos Paquetes de Temas: Racing Drive & Valley Days",
-                "fr": "2 Nouveaux Packs de Thèmes : Racing Drive & Valley Days",
-                "it": "2 Nuovi Pacchetti Tema: Racing Drive & Valley Days"
-            },
-            "desc": {
-                "de": "Racing Drive: Roter Rennwagen-Look mit Startampel-Intro (5 Lichter einzeln rot → alle grün → GO!), persistentem Speedlines-Overlay und roten Akzenten. Valley Days: Warmes Farm-Thema mit dunkelgrünem Hintergrund, Bernstein-Akzenten und einem atmosphärischen Sonnenaufgangs-Intro — Sternenhimmel, Sonne steigt hinter Hügelsilhouette auf, Horizont-Glühen.",
-                "en": "Racing Drive: Red racing car look with startlight intro (5 lights turn red one by one → all green → GO!), persistent speedlines overlay and red accents. Valley Days: Warm farm theme with dark forest green background, amber accents, and an atmospheric sunrise intro — starry sky, sun rises behind hill silhouette, horizon glow.",
-                "tr": "Racing Drive: Kırmızı yarış arabası görünümü, startışıkları introsuyla (5 ışık tek tek kırmızıya döner → hepsi yeşil → GİT!), kalıcı hız çizgileri kaplaması ve kırmızı vurgular. Valley Days: Koyu orman yeşili arka plan, kehribar vurgular ve atmosferik bir gün doğumu introsuyla sıcak çiftlik teması.",
-                "es": "Racing Drive: Look de coche de carreras rojo con intro de semáforo (5 luces se vuelven rojas una a una → todas verdes → ¡GO!), overlay de líneas de velocidad persistente y acentos rojos. Valley Days: Tema cálido de granja con fondo verde oscuro, acentos ámbar e intro de amanecer atmosférica.",
-                "fr": "Racing Drive : Look voiture de course rouge avec intro feux de départ (5 feux rouges un par un → tous verts → GO !), overlay de lignes de vitesse persistant et accents rouges. Valley Days : Thème ferme chaleureux avec fond vert forêt, accents ambrés et une intro lever de soleil atmosphérique.",
-                "it": "Racing Drive: Look auto da corsa rosso con intro semaforo (5 luci rosse una ad una → tutte verdi → VIA!), overlay speedlines persistente e accenti rossi. Valley Days: Tema fattoria caldo con sfondo verde foresta, accenti ambra e un'intro alba atmosferica."
-            }
-        },
-        {
-            "icon": "🎬",
-            "title": {
-                "de": "3 neue Startup Intros: Terminal Boot, Vinyl Drop, Neon Sign",
-                "en": "3 New Startup Intros: Terminal Boot, Vinyl Drop, Neon Sign",
-                "tr": "3 Yeni Başlangıç Giriş Ekranı: Terminal Boot, Vinyl Drop, Neon Sign",
-                "es": "3 Nuevas Intros de Inicio: Terminal Boot, Vinyl Drop, Neon Sign",
-                "fr": "3 Nouvelles Intros de Démarrage : Terminal Boot, Vinyl Drop, Neon Sign",
-                "it": "3 Nuove Intro di Avvio: Terminal Boot, Vinyl Drop, Neon Sign"
-            },
-            "desc": {
-                "de": "Terminal Boot: Retro-Hacker-Stil mit tippenden Systemnachrichten und Ladebalken. Vinyl Drop: Schallplatte fällt auf einen Plattenspieler — Platte dreht sich, Tonarm senkt sich mit App-Icon-Label. Neon Sign: Leuchtreklame-Effekt mit flackernden Neon-Buchstaben in der Akzentfarbe des aktiven Themes.",
-                "en": "Terminal Boot: Retro hacker style with typing system messages and a progress bar. Vinyl Drop: A vinyl record drops onto a turntable — record spins, tonearm lowers with app icon label. Neon Sign: Neon sign effect with flickering neon letters in the active theme's accent color.",
-                "tr": "Terminal Boot: Yazma sistem mesajları ve ilerleme çubuğuyla retro hacker stili. Vinyl Drop: Bir vinil plak pikaba düşer — plak döner, iğne ucu uygulama ikonuyla alçalır. Neon Sign: Aktif temanın vurgu renginde titreşen neon harflerle neon tabela efekti.",
-                "es": "Terminal Boot: Estilo hacker retro con mensajes de sistema y barra de progreso. Vinyl Drop: Un disco de vinilo cae sobre un tocadiscos — el disco gira, el brazo baja con el ícono de la app. Neon Sign: Efecto de letrero de neón con letras parpadeantes en el color de acento del tema activo.",
-                "fr": "Terminal Boot : Style hacker rétro avec messages système et barre de progression. Vinyl Drop : Un vinyle tombe sur une platine — le disque tourne, le bras descend avec l'icône de l'app. Neon Sign : Effet enseigne néon avec lettres clignotantes dans la couleur d'accent du thème actif.",
-                "it": "Terminal Boot: Stile hacker retrò con messaggi di sistema e barra di avanzamento. Vinyl Drop: Un vinile cade su un giradischi — il disco gira, il braccio scende con l'icona dell'app. Neon Sign: Effetto insegna al neon con lettere lampeggianti nel colore accento del tema attivo."
-            }
-        },
-        {
-            "icon": "🔊",
-            "title": {
-                "de": "Player-Features: Crossfade, Lautstärkenormalisierung & Max. Lautstärke",
-                "en": "Player Features: Crossfade, Volume Normalization & Max. Volume",
-                "tr": "Oynatıcı Özellikleri: Crossfade, Ses Normalizasyonu & Maks. Ses",
-                "es": "Funciones del Reproductor: Crossfade, Normalización de Volumen y Volumen Máximo",
-                "fr": "Fonctionnalités Lecteur : Fondu Enchaîné, Normalisation du Volume & Volume Maximum",
-                "it": "Funzioni Player: Crossfade, Normalizzazione Volume e Volume Massimo"
-            },
-            "desc": {
-                "de": "Crossfade: Sanfter Übergang zwischen Tracks (1–10s einstellbar). Lautstärkenormalisierung: Gleicht die Lautstärke zwischen Tracks automatisch über Web Audio API an. Max. Lautstärke: Neuer Slider im Player-Tab begrenzt die maximale Ausgabelautstärke (10–100%) — ideal für Headset-Nutzer. Keyboard-Schritt für Lautstärke von 5% auf 1% reduziert.",
-                "en": "Crossfade: Smooth transition between tracks (1–10s adjustable). Volume Normalization: Automatically balances loudness between tracks via Web Audio API. Max. Volume: New slider in the Player tab limits maximum output volume (10–100%) — ideal for headset users. Keyboard volume step reduced from 5% to 1%.",
-                "tr": "Crossfade: Parçalar arasında yumuşak geçiş (1–10s ayarlanabilir). Ses Normalizasyonu: Web Audio API aracılığıyla parçalar arasındaki ses seviyesini otomatik dengeler. Maks. Ses: Player sekmesindeki yeni sürgü maksimum çıkış ses seviyesini sınırlar (10–100%) — kulaklık kullanıcıları için ideal. Klavye ses adımı 5%'ten 1%'e düşürüldü.",
-                "es": "Crossfade: Transición suave entre pistas (ajustable 1–10s). Normalización de Volumen: Equilibra automáticamente el volumen entre pistas via Web Audio API. Volumen Máximo: Nuevo control deslizante en la pestaña Player limita el volumen máximo de salida (10–100%) — ideal para usuarios con auriculares. Paso de volumen por teclado reducido de 5% a 1%.",
-                "fr": "Fondu Enchaîné : Transition douce entre pistes (réglable 1–10s). Normalisation du Volume : Équilibre automatiquement le volume entre les pistes via Web Audio API. Volume Maximum : Nouveau curseur dans l'onglet Player limite le volume de sortie maximum (10–100%) — idéal pour les utilisateurs de casques. Pas de volume clavier réduit de 5% à 1%.",
-                "it": "Crossfade: Transizione morbida tra brani (regolabile 1–10s). Normalizzazione Volume: Bilancia automaticamente il volume tra i brani tramite Web Audio API. Volume Massimo: Nuovo cursore nella scheda Player limita il volume massimo di uscita (10–100%) — ideale per gli utenti con cuffie. Passo volume tastiera ridotto da 5% a 1%."
-            }
-        },
-        {
-            "icon": "📊",
-            "title": {
-                "de": "Play Count & Wiedergabe fortsetzen",
-                "en": "Play Count & Resume Playback",
-                "tr": "Oynatma Sayısı & Kaldığı Yerden Devam",
-                "es": "Contador de Reproducciones & Reanudar Reproducción",
-                "fr": "Compteur de Lectures & Reprendre la Lecture",
-                "it": "Contatore Riproduzioni & Riprendi Riproduzione"
-            },
-            "desc": {
-                "de": "Play Count: Jeder Track zählt seine Wiedergaben — die Zahl wird als Badge in der Playlist angezeigt. Wiedergabe fortsetzen: Die letzte Abspielposition jedes Tracks wird gespeichert. Beim erneuten Öffnen erscheint ein Toast mit der Option, an der letzten Stelle weiterzumachen.",
-                "en": "Play Count: Every track counts its plays — the number is shown as a badge in the playlist. Resume Playback: The last playback position of each track is saved. When reopened, a toast appears with the option to continue from where you left off.",
-                "tr": "Oynatma Sayısı: Her parça oynatma sayısını sayar — bu sayı çalma listesinde rozet olarak gösterilir. Kaldığı Yerden Devam: Her parçanın son oynatma konumu kaydedilir. Yeniden açıldığında, kaldığı yerden devam etme seçeneğiyle bir bildirim belirir.",
-                "es": "Contador de Reproducciones: Cada pista cuenta sus reproducciones — el número se muestra como insignia en la lista. Reanudar Reproducción: La última posición de reproducción de cada pista se guarda. Al reabrirla, aparece un toast con la opción de continuar desde donde lo dejaste.",
-                "fr": "Compteur de Lectures : Chaque piste compte ses lectures — le nombre s'affiche comme badge dans la liste. Reprendre la Lecture : La dernière position de lecture de chaque piste est sauvegardée. À la réouverture, un toast propose de reprendre là où vous vous êtes arrêté.",
-                "it": "Contatore Riproduzioni: Ogni brano conta le sue riproduzioni — il numero viene mostrato come badge nella playlist. Riprendi Riproduzione: L'ultima posizione di riproduzione di ogni brano viene salvata. Alla riapertura, appare un toast con l'opzione di continuare da dove si era rimasti."
-            }
-        },
-        {
-            "icon": "🎨",
-            "title": {
-                "de": "Theme Cards Grid & Liquid Blobs Animation",
-                "en": "Theme Cards Grid & Liquid Blobs Animation",
-                "tr": "Tema Kartları Izgarası & Sıvı Bloblar Animasyonu",
-                "es": "Cuadrícula de Tarjetas de Tema & Animación Liquid Blobs",
-                "fr": "Grille de Cartes de Thème & Animation Liquid Blobs",
-                "it": "Griglia Carte Tema & Animazione Liquid Blobs"
-            },
-            "desc": {
-                "de": "Theme Cards: Die Theme-Auswahl zeigt jetzt Karten mit Farbvorschau (Hintergrund + Akzent-Swatch) statt einer simplen Dropdown-Liste. Liquid Blobs: Neue Hintergrundanimation — 4 organische, morphende Blobs in der Akzentfarbe des aktiven Themes, weich und atmosphärisch.",
-                "en": "Theme Cards: The theme selector now shows cards with color preview (background + accent swatch) instead of a simple dropdown. Liquid Blobs: New background animation — 4 organic, morphing blobs in the active theme's accent color, soft and atmospheric.",
-                "tr": "Tema Kartları: Tema seçici artık basit bir açılır liste yerine renk önizlemeli kartlar gösteriyor (arka plan + vurgu rengi). Sıvı Bloblar: Yeni arka plan animasyonu — aktif temanın vurgu renginde 4 organik, morflayan blob, yumuşak ve atmosferik.",
-                "es": "Tarjetas de Tema: El selector de tema ahora muestra tarjetas con vista previa de colores (fondo + muestra de acento) en vez de un simple menú desplegable. Liquid Blobs: Nueva animación de fondo — 4 blobs orgánicos y morfantes en el color de acento del tema activo, suaves y atmosféricos.",
-                "fr": "Cartes de Thème : Le sélecteur de thème affiche désormais des cartes avec aperçu des couleurs (fond + échantillon d'accent) au lieu d'un simple menu déroulant. Liquid Blobs : Nouvelle animation de fond — 4 blobs organiques et morphants dans la couleur d'accent du thème actif, doux et atmosphériques.",
-                "it": "Carte Tema: Il selettore di tema ora mostra carte con anteprima colori (sfondo + campione accento) invece di un semplice menu a tendina. Liquid Blobs: Nuova animazione di sfondo — 4 blob organici e morfanti nel colore accento del tema attivo, morbidi e atmosferici."
-            }
-        },
         {
             "icon": "🐛",
             "title": {
@@ -117,12 +22,50 @@
                 "it": "Correzioni Bug"
             },
             "desc": {
-                "de": "Racing Drive Intro: Ampel-Lights waren sofort alle rot (CSS `both` fill-mode Bug) — Lichter zünden jetzt korrekt einzeln nacheinander. Vinyl Drop: Tonarm erschien hinter der Vinyl-Scheibe (z-index-Fix). Lo-Fi Café: Typewriter-Text verdoppelte sich bei erneutem Aktivieren des Theme Packs. Theme Pack Feature-Dimming: Gesperrte Einstellungen werden beim aktiven Theme Pack nun visuell ausgegraut (opacity 0.38).",
-                "en": "Racing Drive Intro: Startlights were all red immediately (CSS `both` fill-mode bug) — lights now correctly ignite one by one. Vinyl Drop: Tonearm appeared behind the vinyl disc (z-index fix). Lo-Fi Café: Typewriter text doubled when re-enabling the theme pack. Theme Pack Feature Dimming: Locked settings are now visually dimmed (opacity 0.38) when a theme pack is active.",
-                "tr": "Racing Drive Intro: Startışıkları anında hepsi kırmızıydı (CSS `both` fill-mode hatası) — ışıklar artık doğru sırayla tek tek yanıyor. Vinyl Drop: Pikap iğnesi vinil diskin arkasında görünüyordu (z-index düzeltmesi). Lo-Fi Café: Tema paketi yeniden etkinleştirildiğinde daktilo metni ikiye katlanıyordu. Tema Paketi Özellik Kısıtlama: Etkin tema paketi varken kilitli ayarlar artık görsel olarak soluklaştırılıyor (opacity 0.38).",
-                "es": "Intro de Racing Drive: Las luces de salida estaban todas en rojo inmediatamente (bug de fill-mode CSS `both`) — las luces ahora se encienden correctamente una a una. Vinyl Drop: El brazo del tocadiscos aparecía detrás del disco (corrección z-index). Lo-Fi Café: El texto del typewriter se duplicaba al reactivar el paquete de temas. Atenuación de Funciones: Los ajustes bloqueados ahora se atenúan visualmente (opacity 0.38) con un tema pack activo.",
-                "fr": "Intro Racing Drive : Les feux de départ étaient tous rouges immédiatement (bug fill-mode CSS `both`) — les feux s'allument maintenant correctement un par un. Vinyl Drop : Le bras de lecture apparaissait derrière le disque vinyle (correction z-index). Lo-Fi Café : Le texte du typewriter se doublait lors de la réactivation du pack. Atténuation des Fonctionnalités : Les paramètres verrouillés sont maintenant visuellement atténués (opacity 0.38) quand un pack est actif.",
-                "it": "Intro Racing Drive: Le luci di partenza erano tutte rosse immediatamente (bug fill-mode CSS `both`) — le luci ora si accendono correttamente una ad una. Vinyl Drop: Il braccio del giradischi appariva dietro il disco vinile (correzione z-index). Lo-Fi Café: Il testo del typewriter si raddoppiava alla riattivazione del pacchetto tema. Oscuramento Funzionalità: Le impostazioni bloccate vengono ora oscurate visivamente (opacity 0.38) con un pacchetto tema attivo."
+                "de": "Crossfade: Der GainNode-Pfad ignorierte den Max.-Lautstärke-Limiter — der eingeblendete Track spielt jetzt korrekt mit dem eingestellten Limit. Keyboard-Seek: Shift+Pfeiltaste konnte NaN auf die Abspielposition setzen, wenn kein Track geladen war (isNaN-Guard hinzugefügt). Spotify-Playlist: Einzelne Track-URLs wurden vor dem Download nicht validiert — ungültige Einträge konnten die Download-Queue korrumpieren.",
+                "en": "Crossfade: The GainNode path ignored the Max. Volume limiter — the fading-in track now correctly respects the set limit. Keyboard Seek: Shift+Arrow could set NaN on the playback position when no track was loaded (isNaN guard added). Spotify Playlist: Individual track URLs were not validated before download — invalid entries could corrupt the download queue.",
+                "tr": "Crossfade: GainNode yolu Maks. Ses sınırlayıcısını yok sayıyordu — geçiş yapılan parça artık belirlenen limiti doğru şekilde takip ediyor. Klavye Arama: Shift+Ok, yüklü parça yokken oynatma konumuna NaN ayarlayabiliyordu (isNaN koruması eklendi). Spotify Çalma Listesi: Tek tek parça URL'leri indirilmeden önce doğrulanmıyordu — geçersiz girişler indirme kuyruğunu bozabiliyordu.",
+                "es": "Crossfade: La ruta GainNode ignoraba el limitador de Volumen Máximo — la pista que se desvanece ahora respeta correctamente el límite establecido. Búsqueda por Teclado: Shift+Flecha podía asignar NaN a la posición de reproducción cuando no había pista cargada (se añadió guardia isNaN). Lista de Spotify: Las URLs de pistas individuales no se validaban antes de la descarga — entradas inválidas podían corromper la cola de descarga.",
+                "fr": "Fondu Enchaîné : La route GainNode ignorait le limiteur de Volume Maximum — la piste en fondu respecte maintenant correctement la limite définie. Recherche Clavier : Shift+Flèche pouvait assigner NaN à la position de lecture quand aucune piste n'était chargée (protection isNaN ajoutée). Playlist Spotify : Les URLs de pistes individuelles n'étaient pas validées avant le téléchargement — des entrées invalides pouvaient corrompre la file de téléchargement.",
+                "it": "Crossfade: Il percorso GainNode ignorava il limitatore Volume Massimo — il brano in dissolvenza ora rispetta correttamente il limite impostato. Ricerca Tastiera: Shift+Freccia poteva impostare NaN sulla posizione di riproduzione quando nessun brano era caricato (aggiunta protezione isNaN). Playlist Spotify: Gli URL dei singoli brani non venivano validati prima del download — voci non valide potevano corrompere la coda di download."
+            }
+        },
+        {
+            "icon": "⚡",
+            "title": {
+                "de": "Optimierungen",
+                "en": "Optimizations",
+                "tr": "Optimizasyonlar",
+                "es": "Optimizaciones",
+                "fr": "Optimisations",
+                "it": "Ottimizzazioni"
+            },
+            "desc": {
+                "de": "TrackCache: Der gesamte Cache wurde bei jedem Track-Wechsel auf die Disk geschrieben — jetzt wird ein 5-Sekunden-Debounce verwendet, mehrere Ereignisse führen zu einem einzigen Schreibvorgang. Beim App-Schließen wird der Cache synchron gespeichert, sodass keine Daten verloren gehen. Ordner-Aktualisierung: Schnelles Mehrfachklicken auf 'Aktualisieren' konnte parallele ffprobe-Prozesse starten — ein Guard verhindert jetzt parallele Aufrufe.",
+                "en": "TrackCache: The entire cache was written to disk on every track change — now a 5-second debounce is used, multiple events result in a single write. On app close, the cache is written synchronously so no data is lost. Folder Refresh: Rapid multiple clicks on 'Refresh' could start parallel ffprobe processes — a guard now prevents parallel calls.",
+                "tr": "TrackCache: Her parça değişikliğinde tüm önbellek diske yazılıyordu — artık 5 saniyelik bir debounce kullanılıyor, birden fazla olay tek bir yazma işlemine dönüşüyor. Uygulama kapatıldığında önbellek senkron olarak kaydedilir. Klasör Yenileme: 'Yenile' düğmesine hızlıca birden fazla tıklamak paralel ffprobe işlemleri başlatabiliyordu — artık bir koruma paralel çağrıları engelliyor.",
+                "es": "TrackCache: Todo el caché se escribía en disco en cada cambio de pista — ahora se usa un debounce de 5 segundos, múltiples eventos resultan en una sola escritura. Al cerrar la app, el caché se guarda sincrónicamente. Actualización de Carpeta: Hacer clic rápidamente varias veces en 'Actualizar' podía iniciar procesos ffprobe paralelos — ahora un guardia previene las llamadas paralelas.",
+                "fr": "TrackCache : Tout le cache était écrit sur le disque à chaque changement de piste — un debounce de 5 secondes est maintenant utilisé, plusieurs événements aboutissent à une seule écriture. À la fermeture de l'app, le cache est écrit de manière synchrone. Actualisation Dossier : Cliquer rapidement plusieurs fois sur 'Actualiser' pouvait lancer des processus ffprobe parallèles — un garde empêche maintenant les appels parallèles.",
+                "it": "TrackCache: L'intera cache veniva scritta su disco ad ogni cambio di brano — ora viene utilizzato un debounce di 5 secondi, più eventi risultano in una singola scrittura. Alla chiusura dell'app, la cache viene salvata in modo sincrono. Aggiornamento Cartella: Cliccare rapidamente più volte su 'Aggiorna' poteva avviare processi ffprobe paralleli — ora una protezione previene le chiamate parallele."
+            }
+        },
+        {
+            "icon": "✨",
+            "title": {
+                "de": "Neue Features",
+                "en": "New Features",
+                "tr": "Yeni Özellikler",
+                "es": "Nuevas Funciones",
+                "fr": "Nouvelles Fonctionnalités",
+                "it": "Nuove Funzionalità"
+            },
+            "desc": {
+                "de": "Suchergebnis-Zähler: Die Info-Leiste zeigt bei aktiver Suche oder Favoriten-Filter jetzt 'X / Y Tracks' an. Crossfade + Wiedergabe fortsetzen: Der eingeblendete Track startet jetzt ab der gespeicherten Abspielposition statt bei 0. Ordner-Löschung: Der Bestätigungsdialog zeigt jetzt die Anzahl der enthaltenen Tracks (z. B. 'Ordner löschen? — 12 Tracks').",
+                "en": "Search Result Counter: The info bar now shows 'X / Y Tracks' when search or favorites filter is active. Crossfade + Resume Position: The fading-in track now starts from the saved playback position instead of 0. Folder Deletion: The confirmation dialog now shows the number of contained tracks (e.g. 'Delete folder? — 12 Tracks').",
+                "tr": "Arama Sonuç Sayacı: Arama veya favoriler filtresi etkinken bilgi çubuğu artık 'X / Y Parça' gösteriyor. Crossfade + Kaldığı Yerden Devam: Geçiş yapılan parça artık 0 yerine kaydedilen oynatma konumundan başlıyor. Klasör Silme: Onay iletişim kutusu artık içerdiği parça sayısını gösteriyor (örn. 'Klasör silinsin mi? — 12 Parça').",
+                "es": "Contador de Resultados de Búsqueda: La barra de información ahora muestra 'X / Y Pistas' cuando la búsqueda o el filtro de favoritos está activo. Crossfade + Reanudar Posición: La pista que se desvanece ahora comienza desde la posición de reproducción guardada en vez de 0. Eliminación de Carpeta: El diálogo de confirmación ahora muestra el número de pistas contenidas (p. ej. '¿Eliminar carpeta? — 12 Pistas').",
+                "fr": "Compteur de Résultats de Recherche : La barre d'info affiche maintenant 'X / Y Pistes' quand la recherche ou le filtre favoris est actif. Fondu Enchaîné + Reprendre Position : La piste en fondu démarre maintenant à partir de la position de lecture sauvegardée au lieu de 0. Suppression de Dossier : La boîte de dialogue de confirmation affiche maintenant le nombre de pistes contenues (ex. 'Supprimer le dossier ? — 12 Pistes').",
+                "it": "Contatore Risultati Ricerca: La barra informazioni ora mostra 'X / Y Brani' quando la ricerca o il filtro preferiti è attivo. Crossfade + Riprendi Posizione: Il brano in dissolvenza ora parte dalla posizione di riproduzione salvata invece che da 0. Eliminazione Cartella: La finestra di conferma ora mostra il numero di brani contenuti (es. 'Eliminare la cartella? — 12 Brani')."
             }
         }
     ]

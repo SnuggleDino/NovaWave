@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v3.0.0` 
+# 🎵 NovaWave `v3.0.1` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > — Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source —
 
-![Version](https://img.shields.io/badge/Version-3.0.0-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.1-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -18,17 +18,13 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v3.0.0
+## ✨ What's New in v3.0.1
 
-- **2 New Theme Packs** — Racing Drive (startlight intro, speedlines overlay) and Valley Days (atmospheric sunrise intro, forest green + amber palette).
-- **3 New Startup Intros** — Terminal Boot (retro hacker boot sequence), Vinyl Drop (record drops onto a turntable), and Neon Sign (flickering neon letters in your theme's accent color).
-- **Crossfade** — Smooth 1–10s transitions between tracks powered by Web Audio API.
-- **Volume Normalization** — Auto-balance loudness across tracks.
-- **Max. Volume Limiter** — Cap peak output for headset users (10–100%), with keyboard volume steps reduced to 1%.
-- **Play Count & Resume Position** — See how often you've played each track and pick up right where you left off.
-- **Theme Cards Grid** — Theme selector now shows color preview cards (background + accent swatch) instead of a dropdown.
-- **Liquid Blobs** — New background animation: 4 organic morphing blobs in your accent color.
-- **Bug Fixes** — Racing Drive startlight sequence, Vinyl Drop needle z-index, Lo-Fi Café typewriter doubling on re-enable, theme pack feature dimming (locked controls grayed out at 0.38 opacity).
+- **Bug Fixes** — Crossfade volume limiter now applied on the GainNode path (incoming track was ignoring Max. Volume). Shift+Arrow keyboard seek no longer sets NaN on unloaded tracks. Spotify playlist download queue no longer accepts invalid track URLs.
+- **Optimizations** — TrackCache writes are now debounced (5s) instead of firing on every track event, reducing disk I/O significantly. Folder refresh is guarded against parallel calls from rapid clicking.
+- **Search Result Counter** — Playlist info bar now shows `X / Y Tracks` when search or favorites filter is active.
+- **Crossfade + Resume Position** — The incoming crossfade track now starts at its saved resume position instead of 0.
+- **Folder Delete Confirmation** — The delete dialog now shows how many tracks are inside the folder (e.g. `Delete folder? — 12 Tracks`).
 
 ---
 
