@@ -573,7 +573,7 @@ function _startCrossfade(nextIdx) {
         if (!isCrossfading) return;
         const progress = Math.min((performance.now() - startTime) / fadeDuration, 1);
         audio.volume = startVol * volumeLimit * (1 - progress);
-        if (audioNextGain) audioNextGain.gain.value = startVol * progress;
+        if (audioNextGain) audioNextGain.gain.value = startVol * volumeLimit * progress;
         else audioNext.volume = startVol * volumeLimit * progress;
         if (progress < 1) {
             crossfadeRaf = requestAnimationFrame(tick);
@@ -1324,10 +1324,11 @@ async function handleDownload() {
                 return;
             }
             const quality = settings.audioQuality || 'best';
-            for (const trackUrl of trackUrls) {
+            const validUrls = trackUrls.filter(u => typeof u === 'string' && u.startsWith('https://open.spotify.com/track/'));
+            for (const trackUrl of validUrls) {
                 downloadManager.add(trackUrl, 'spotify', '', quality);
             }
-            showNotification(`${trackUrls.length} ${tr('playlistTracksQueued')}`, 'success', 2500);
+            showNotification(`${validUrls.length} ${tr('playlistTracksQueued')}`, 'success', 2500);
         } catch (e) {
             setDownloaderState('error', e.message || tr('statusUrlInvalid'));
             return;
@@ -1846,8 +1847,8 @@ function setupEventListeners() {
         if (e.target.closest('input, textarea')) return;
         switch (e.code) {
             case 'Space': e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break;
-            case 'ArrowRight': if (e.shiftKey) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); else playNext(); break;
-            case 'ArrowLeft': if (e.shiftKey) audio.currentTime = Math.max(0, audio.currentTime - 5); else playPrev(); break;
+            case 'ArrowRight': if (e.shiftKey) { if (!isNaN(audio.duration)) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); } else playNext(); break;
+            case 'ArrowLeft': if (e.shiftKey) { if (!isNaN(audio.duration)) audio.currentTime = Math.max(0, audio.currentTime - 5); } else playPrev(); break;
             case 'ArrowUp': e.preventDefault(); setVolume(currentVolume + 0.01); break;
             case 'ArrowDown': e.preventDefault(); setVolume(currentVolume - 0.01); break;
             case 'MediaPlayPause':
