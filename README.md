@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v2.9.9` 
+# 🎵 NovaWave `v3.0.0` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > — Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source —
 
-![Version](https://img.shields.io/badge/Version-2.9.9-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.0-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -18,12 +18,17 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v2.9.9
+## ✨ What's New in v3.0.0
 
-- **4 New Theme Packs** — Aqua Deep, Jazz & Bourbon, Lo-Fi Café, and Aurora Borealis. Each with a handcrafted intro animation and a persistent ambient effect.
-- **Theme Pack Overhaul** — All existing packs rebuilt from the ground up with new persistent visual effects: CRT scanlines (Cyberpunk), star particles (Sleep Time), floating hearts (Snuggle Time), neon horizon line (Sunset Drive), and a persistent petal container (Sakura Spirit).
-- **Stats Overlay** — Visualizer FPS now has its own dedicated row with a 3-level status indicator.
-- **Bug Fixes** — Several CSS cascade and rendering issues with the new theme packs resolved.
+- **2 New Theme Packs** — Racing Drive (startlight intro, speedlines overlay) and Valley Days (atmospheric sunrise intro, forest green + amber palette).
+- **3 New Startup Intros** — Terminal Boot (retro hacker boot sequence), Vinyl Drop (record drops onto a turntable), and Neon Sign (flickering neon letters in your theme's accent color).
+- **Crossfade** — Smooth 1–10s transitions between tracks powered by Web Audio API.
+- **Volume Normalization** — Auto-balance loudness across tracks.
+- **Max. Volume Limiter** — Cap peak output for headset users (10–100%), with keyboard volume steps reduced to 1%.
+- **Play Count & Resume Position** — See how often you've played each track and pick up right where you left off.
+- **Theme Cards Grid** — Theme selector now shows color preview cards (background + accent swatch) instead of a dropdown.
+- **Liquid Blobs** — New background animation: 4 organic morphing blobs in your accent color.
+- **Bug Fixes** — Racing Drive startlight sequence, Vinyl Drop needle z-index, Lo-Fi Café typewriter doubling on re-enable, theme pack feature dimming (locked controls grayed out at 0.38 opacity).
 
 ---
 
@@ -77,6 +82,9 @@ Every launch can feel different. Choose a startup animation in **Settings → In
 | 🦖 **Dino Love** | Heartwarming dino animation with floating hearts |
 | 🚀 **Rocket** | Blast-off into space |
 | 🕹️ **8-Bit** | Interactive retro game screen - press start to continue |
+| 💻 **Terminal Boot** | Retro hacker-style boot sequence with typing system messages |
+| 🎵 **Vinyl Drop** | A vinyl record drops onto a turntable — tonearm lowers with app icon |
+| 🔴 **Neon Sign** | Flickering neon letters in your active theme's accent color |
 | 🌙 **Sleep Time** · ⭐ **Snuggle** · ⚡ **Cyberpunk** · 🏎️ **Sunset** · 🌸 **Sakura** | Theme Pack intros |
 
 ---
@@ -97,6 +105,8 @@ Handcrafted **Theme Packs** transform the entire look and feel, each with a uniq
 | 🎷 **Jazz & Bourbon** | Warm amber, smooth and soulful — drifting smoke and an art deco neon intro |
 | ☕ **Lo-Fi Café** | Cozy sepia café — gentle rain overlay and a typewriter intro |
 | 🌌 **Aurora Borealis** | Deep navy night sky — shimmering aurora curtains of light |
+| 🏁 **Racing Drive** | Full throttle red — startlight intro (5 lights → GO!), persistent speedlines overlay |
+| 🌾 **Valley Days** | Cozy farm sunrise — stars fade as the sun rises behind the hills |
 
 > Want to build your own? See [`frontend/src/theme_packs/theme_packs.md`](frontend/src/theme_packs/theme_packs.md) for the full creation guide.
 
@@ -113,9 +123,9 @@ The V2 PRO UI ships with **10 built-in color themes**:
 
 ## 🌌 Background Animations
 
-Set the mood with **9 animated backgrounds** (Legacy UI):
+Set the mood with **10 animated backgrounds** (Legacy UI):
 
-`Aurora` · `Fireflies` · `Flow` · `Matrix` · `Nebula` · `Plasma` · `Rain` · `Snowfall` · `Stellar`
+`Aurora` · `Fireflies` · `Flow` · `Liquid Blobs` · `Matrix` · `Nebula` · `Plasma` · `Rain` · `Snowfall` · `Stellar`
 
 ---
 
@@ -128,6 +138,13 @@ Set the mood with **9 animated backgrounds** (Legacy UI):
 - 🎛️ **5-Band Equalizer** - Fine-tune 60Hz · 230Hz · 910Hz · 4kHz · 14kHz — with 6 quick presets (Flat / Pop / Rock / Classical / Jazz / Bass Boost)
 - 🎚️ **Sound Profiles** - One-click audio profiles: Warm · Bright · Studio · Hall
 - ⏩ **Playback Speed** - 0.25× to 3.0× with pitch preservation
+- 🔀 **Crossfade** - Smooth 1–10s transitions between tracks
+- 📊 **Volume Normalization** - Auto-balance loudness across tracks via Web Audio API
+- 🔉 **Max. Volume** - Cap peak output for headset users (10–100%)
+
+**Player**
+- 📊 **Play Count** - See how often you've played each track (badge in playlist)
+- ▶️ **Resume Position** - Pick up right where you left off
 
 **Visualizer** (Legacy UI)
 - Modes: **Bars** · **Waveform** · **Orbit** · **Glitch** · **Zen** · **Retro** · **Sakura Bloom**
@@ -198,6 +215,7 @@ wails build
 | `Space` | Play / Pause |
 | `← / →` | Previous / Next track |
 | `Shift + ← / →` | Seek ±5 seconds |
+| `↑ / ↓` | Volume +1% / -1% |
 | `L` | Open Lyrics |
 | `CTRL + U + 1` | Switch to Legacy UI |
 | `CTRL + U + 2` | Switch to V2 PRO UI |
