@@ -8,6 +8,8 @@ export class AudioExtras {
         this.trebleFilter = null;
         this.reverbNode = null;
         this.reverbGain = null;
+        this.normGain = null;
+        this._normInterval = null;
         this.eqFilters = [];
         this.initialized = false;
     }
@@ -53,8 +55,11 @@ export class AudioExtras {
             this.reverbGain = this.audioContext.createGain();
             this.reverbGain.gain.value = 0;
 
+            this.normGain = this.audioContext.createGain();
+            this.normGain.gain.value = 1.0;
+
             // --- Audio Chain ---
-            // source → bass → treble → EQ[0..4] → analyser → destination
+            // source → bass → treble → EQ[0..4] → analyser → normGain → destination
             this.source.connect(this.bassFilter);
             this.bassFilter.connect(this.trebleFilter);
 
@@ -71,7 +76,8 @@ export class AudioExtras {
             this.reverbNode.connect(this.reverbGain);
             this.reverbGain.connect(this.analyser);
 
-            this.analyser.connect(this.audioContext.destination);
+            this.analyser.connect(this.normGain);
+            this.normGain.connect(this.audioContext.destination);
             this.initialized = true;
         } catch (e) {
             console.error("[AudioExtras] init error:", e);
@@ -124,6 +130,28 @@ export class AudioExtras {
         this.reverbGain.gain.setTargetAtTime(gain, now, 0.1);
     }
 
+    setNormalization(enabled) {
+        if (!this.audioContext || !this.analyser || !this.normGain) return;
+        if (this._normInterval) { clearInterval(this._normInterval); this._normInterval = null; }
+        if (!enabled) {
+            this.normGain.gain.setTargetAtTime(1.0, this.audioContext.currentTime, 0.3);
+            return;
+        }
+        const TARGET_RMS = 0.15;
+        const MAX_GAIN = 3.5;
+        const buf = new Float32Array(this.analyser.fftSize);
+        this._normInterval = setInterval(() => {
+            if (!this.audioContext || this.audio.paused) return;
+            this.analyser.getFloatTimeDomainData(buf);
+            let sum = 0;
+            for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+            const rms = Math.sqrt(sum / buf.length);
+            if (rms < 0.001) return;
+            const targetGain = Math.min(TARGET_RMS / rms, MAX_GAIN);
+            this.normGain.gain.setTargetAtTime(targetGain, this.audioContext.currentTime, 0.4);
+        }, 200);
+    }
+
     resume() {
         if (this.audioContext && this.audioContext.state === 'suspended') {
             this.audioContext.resume().catch(e =>
@@ -140,6 +168,7 @@ export class AudioExtras {
     }
 
     destroy() {
+        if (this._normInterval) { clearInterval(this._normInterval); this._normInterval = null; }
         if (this._visibilityHandler) {
             document.removeEventListener('visibilitychange', this._visibilityHandler);
             this._visibilityHandler = null;
@@ -152,5 +181,9 @@ export class AudioExtras {
 
     getAnalyser() {
         return this.analyser;
+    }
+
+    getContext() {
+        return this.audioContext;
     }
 }

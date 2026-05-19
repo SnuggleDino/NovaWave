@@ -2,6 +2,9 @@ import { WaterdropIntro } from './intro_waterdrop.js';
 import { CssBasedIntro, InteractiveIntro } from './intro_css_adapter.js';
 import { RocketIntro } from './intro_rocket.js';
 import { NovaWave95Intro } from './intro_novawave95.js';
+import { TerminalBootIntro } from './intro_terminal_boot.js';
+import { VinylDropIntro } from './intro_vinyl_drop.js';
+import { NeonSignIntro } from './intro_neon_sign.js';
 
 export class IntroManager {
     constructor(settings) {
@@ -23,7 +26,11 @@ export class IntroManager {
             'sunset': () => new CssBasedIntro('sunset-intro'),
             'sakura': () => new CssBasedIntro('sakura-intro'),
 
-            'novawave95': () => new NovaWave95Intro()
+            'novawave95': () => new NovaWave95Intro(),
+
+            'terminal_boot': () => new TerminalBootIntro(),
+            'vinyl_drop': () => new VinylDropIntro(),
+            'neon_sign': () => new NeonSignIntro()
         };
     }
 

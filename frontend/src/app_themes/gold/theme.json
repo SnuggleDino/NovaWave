@@ -1,4 +1,6 @@
 {
     "id": "gold",
-    "name": "Dark - Gold"
+    "name": "Dark - Gold",
+    "preview_bg": "#0f0f0f",
+    "preview_accent": "#fbbf24"
 }

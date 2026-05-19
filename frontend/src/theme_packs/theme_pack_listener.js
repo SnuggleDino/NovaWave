@@ -27,6 +27,8 @@ export const ThemePackListener = {
         container.innerHTML = '';
 
         const sortOrder = [
+            'racing_drive',
+            'stardew_valley',
             'snuggle_time',
             'cyberpunk',
             'sleep_time',

@@ -1,4 +1,6 @@
 {
     "id": "slate",
-    "name": "Dark - Slate"
+    "name": "Dark - Slate",
+    "preview_bg": "#0f172a",
+    "preview_accent": "#94a3b8"
 }

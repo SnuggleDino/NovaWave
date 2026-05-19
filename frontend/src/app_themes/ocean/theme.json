@@ -1,4 +1,6 @@
 {
     "id": "ocean",
-    "name": "Dark - Ocean"
+    "name": "Dark - Ocean",
+    "preview_bg": "#021019",
+    "preview_accent": "#06b6d4"
 }

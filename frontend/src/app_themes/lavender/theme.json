@@ -1,4 +1,6 @@
 {
     "id": "lavender",
-    "name": "Light - Lavender"
+    "name": "Light - Lavender",
+    "preview_bg": "#faf5ff",
+    "preview_accent": "#a855f7"
 }

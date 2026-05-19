@@ -90,14 +90,23 @@ type Config struct {
 	// --- Equalizer ---
 	EqEnabled bool      `json:"eqEnabled"`
 	EqValues  []float64 `json:"eqValues"`
+	// --- Crossfade ---
+	CrossfadeEnabled bool `json:"crossfadeEnabled"`
+	CrossfadeSeconds int  `json:"crossfadeSeconds"`
+	// --- Volume Normalization ---
+	VolNormEnabled bool `json:"volNormEnabled"`
+	// --- Volume Limiter ---
+	VolumeLimit float64 `json:"volumeLimit"`
 }
 
 type Track struct {
-	Path     string  `json:"path"`
-	Title    string  `json:"title"`
-	Artist   string  `json:"artist"`
-	Duration int     `json:"duration"`
-	Mtime    float64 `json:"mtime"`
+	Path         string  `json:"path"`
+	Title        string  `json:"title"`
+	Artist       string  `json:"artist"`
+	Duration     int     `json:"duration"`
+	Mtime        float64 `json:"mtime"`
+	PlayCount    int     `json:"playCount"`
+	LastPosition float64 `json:"lastPosition"`
 }
 
 type DownloadOptions struct {
@@ -267,6 +276,32 @@ func (a *App) saveTrackCache() {
 	os.WriteFile(path, data, 0644)
 }
 
+func (a *App) SaveLastPosition(path string, position float64) {
+	a.cacheMu.Lock()
+	track, exists := a.trackCache[path]
+	if exists {
+		track.LastPosition = position
+		a.trackCache[path] = track
+	}
+	a.cacheMu.Unlock()
+	if exists {
+		go a.saveTrackCache()
+	}
+}
+
+func (a *App) IncrementPlayCount(path string) {
+	a.cacheMu.Lock()
+	track, exists := a.trackCache[path]
+	if exists {
+		track.PlayCount++
+		a.trackCache[path] = track
+	}
+	a.cacheMu.Unlock()
+	if exists {
+		go a.saveTrackCache()
+	}
+}
+
 func (a *App) ClearTrackCache() {
 	a.cacheMu.Lock()
 	a.trackCache = make(map[string]Track)
@@ -351,6 +386,7 @@ func getDefaultConfig() Config {
 		AudioQuality:            "best",
 		ActiveIntro:             "waterdrop",
 		DownloadFolder:          defaultDownloadFolder(),
+		VolumeLimit:             1.0,
 	}
 }
 

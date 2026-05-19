@@ -47,7 +47,7 @@ export default {
         if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('snowfall');
 
         setTimeout(() => {
-            LOCK.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = true; });
+            LOCK.forEach(id => { const el = document.getElementById(id); if (el) { el.disabled = true; el.closest('.setting-item')?.classList.add('tp-locked'); } });
             const animSel = document.getElementById('animation-select');
             if (animSel) animSel.value = 'snowfall';
             const emojiSel = document.getElementById('emoji-select');
@@ -66,7 +66,7 @@ export default {
 
         if (app.visualizer) app.visualizer.updateSettings({ accentColor: '#38bdf8' });
 
-        LOCK.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = false; });
+        LOCK.forEach(id => { const el = document.getElementById(id); if (el) { el.disabled = false; el.closest('.setting-item')?.classList.remove('tp-locked'); } });
 
         stopHearts();
     }

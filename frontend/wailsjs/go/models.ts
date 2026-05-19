@@ -65,6 +65,10 @@ export namespace main {
 	    playlistStructure: any[];
 	    eqEnabled: boolean;
 	    eqValues: number[];
+	    crossfadeEnabled: boolean;
+	    crossfadeSeconds: number;
+	    volNormEnabled: boolean;
+	    volumeLimit: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -114,6 +118,10 @@ export namespace main {
 	        this.playlistStructure = source["playlistStructure"];
 	        this.eqEnabled = source["eqEnabled"];
 	        this.eqValues = source["eqValues"];
+	        this.crossfadeEnabled = source["crossfadeEnabled"];
+	        this.crossfadeSeconds = source["crossfadeSeconds"];
+	        this.volNormEnabled = source["volNormEnabled"];
+	        this.volumeLimit = source["volumeLimit"];
 	    }
 	}
 	export class DownloadOptions {
@@ -140,6 +148,8 @@ export namespace main {
 	    artist: string;
 	    duration: number;
 	    mtime: number;
+	    playCount: number;
+	    lastPosition: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new Track(source);
@@ -152,6 +162,8 @@ export namespace main {
 	        this.artist = source["artist"];
 	        this.duration = source["duration"];
 	        this.mtime = source["mtime"];
+	        this.playCount = source["playCount"];
+	        this.lastPosition = source["lastPosition"];
 	    }
 	}
 	export class FolderResult {

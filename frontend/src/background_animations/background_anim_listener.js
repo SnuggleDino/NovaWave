@@ -21,7 +21,7 @@ export const BackgroundAnimListener = {
             return animConfigs[key].default || animConfigs[key];
         });
 
-        const sortOrder = ['off', 'flow', 'nebula', 'aurora', 'plasma', 'snowfall', 'stellar', 'rain', 'fireflies', 'matrix'];
+        const sortOrder = ['off', 'flow', 'nebula', 'aurora', 'blobs', 'plasma', 'snowfall', 'stellar', 'rain', 'fireflies', 'matrix'];
 
         anims.sort((a, b) => {
             const indexA = sortOrder.indexOf(a.id);

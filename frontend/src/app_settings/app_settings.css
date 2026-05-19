@@ -686,3 +686,106 @@
     border-color: var(--accent);
     color: var(--accent);
 }
+
+/* --- THEME CARDS GRID --- */
+.setting-item--stacked {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+}
+
+.setting-item--stacked .setting-label {
+    margin-bottom: 10px;
+}
+
+.tc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.tc-card {
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--border-soft);
+    overflow: hidden;
+    background: var(--bg-card);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.tc-card:hover {
+    border-color: var(--accent);
+}
+
+.tc-card--active {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 14px var(--accent-soft);
+}
+
+.tc-preview {
+    height: 54px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 7px 8px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.12);
+}
+
+.tc-accent-dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.tc-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 10px;
+    gap: 6px;
+}
+
+.tc-name {
+    font-size: 0.7rem;
+    color: var(--text-main);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tc-btn {
+    font-size: 0.63rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    border: 1px solid var(--border-soft);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.tc-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.tc-btn--active {
+    background: var(--tc-accent, var(--accent)) !important;
+    border-color: var(--tc-accent, var(--accent)) !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+
+/* ---- Theme Pack: Locked Control Dimming ---- */
+.setting-item.tp-locked {
+    opacity: 0.38;
+    transition: opacity 0.25s ease;
+}
+.setting-item.tp-locked select,
+.setting-item.tp-locked input {
+    cursor: not-allowed;
+}

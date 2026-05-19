@@ -1,0 +1,209 @@
+/* ================================================================
+   RACING DRIVE THEME — Colors, Startlight Intro & Speedlines
+   ================================================================ */
+
+/* ---- Core Variables ---- */
+:root[data-theme="racing_drive"] {
+    --bg-main: #0f0f0f;
+    --bg-card: #1a1a1a;
+    --bg-card-light: #222;
+    --bg-card-hover: #1f0a0a;
+    --accent: #dc2626;
+    --accent-soft: rgba(220, 38, 38, 0.15);
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border-soft: rgba(220, 38, 38, 0.25);
+    --border-main: 1px solid rgba(220, 38, 38, 0.35);
+    --border-thin: 1px solid rgba(220, 38, 38, 0.15);
+    --shadow-soft: 0 4px 20px rgba(220, 38, 38, 0.15);
+}
+
+:root[data-theme="racing_drive"] body {
+    background: #0a0a0a;
+}
+
+:root[data-theme="racing_drive"] .control-main {
+    background: #dc2626;
+    color: #fff;
+    box-shadow: 0 4px 24px rgba(220, 38, 38, 0.55);
+}
+
+:root[data-theme="racing_drive"] .progress-fill {
+    background: linear-gradient(to right, #991b1b, #dc2626, #f97316);
+}
+
+:root[data-theme="racing_drive"] .active-features-container .features-badge-icon {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+/* ---- Startlight Intro Overlay ---- */
+.rd-intro-overlay {
+    background: #080808;
+    gap: 28px;
+    overflow: hidden;
+}
+
+/* Startlights bar */
+.rd-lights-bar {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.rd-light {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #1c1c1c;
+    border: 2px solid #2a2a2a;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.7);
+}
+
+.rd-intro-overlay.visible .rd-l1 { animation: rd-light-on 0.18s 400ms  forwards, rd-light-green 0.3s 2700ms forwards; }
+.rd-intro-overlay.visible .rd-l2 { animation: rd-light-on 0.18s 800ms  forwards, rd-light-green 0.3s 2700ms forwards; }
+.rd-intro-overlay.visible .rd-l3 { animation: rd-light-on 0.18s 1200ms forwards, rd-light-green 0.3s 2700ms forwards; }
+.rd-intro-overlay.visible .rd-l4 { animation: rd-light-on 0.18s 1600ms forwards, rd-light-green 0.3s 2700ms forwards; }
+.rd-intro-overlay.visible .rd-l5 { animation: rd-light-on 0.18s 1950ms forwards, rd-light-green 0.3s 2700ms forwards; }
+
+.rd-intro-overlay.visible .rd-lights-bar {
+    animation: rd-lights-out 0.35s 3300ms forwards;
+}
+
+@keyframes rd-light-on {
+    from {
+        background: #1c1c1c;
+        box-shadow: inset 0 2px 8px rgba(0,0,0,0.7);
+        border-color: #2a2a2a;
+    }
+    to {
+        background: #dc2626;
+        box-shadow: 0 0 16px rgba(220,38,38,0.9), 0 0 40px rgba(220,38,38,0.5), inset 0 1px 4px rgba(255,120,120,0.3);
+        border-color: #ef4444;
+    }
+}
+
+@keyframes rd-light-green {
+    from {
+        background: #dc2626;
+        box-shadow: 0 0 16px rgba(220,38,38,0.9), 0 0 40px rgba(220,38,38,0.5), inset 0 1px 4px rgba(255,120,120,0.3);
+        border-color: #ef4444;
+    }
+    to {
+        background: #16a34a;
+        box-shadow: 0 0 16px rgba(22,163,74,0.9), 0 0 40px rgba(22,163,74,0.5), inset 0 1px 4px rgba(100,255,100,0.3);
+        border-color: #22c55e;
+    }
+}
+
+@keyframes rd-lights-out {
+    0%   { opacity: 1; transform: scaleX(1) scaleY(1); }
+    100% { opacity: 0; transform: scaleX(0.7) scaleY(0.4); }
+}
+
+/* GO! text — absolutely centered */
+.rd-go-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    font-size: 6.5rem;
+    font-weight: 900;
+    color: #dc2626;
+    letter-spacing: 18px;
+    text-transform: uppercase;
+    text-shadow: 0 0 30px rgba(220,38,38,0.9), 0 0 60px rgba(220,38,38,0.5);
+    opacity: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.rd-intro-overlay.visible .rd-go-text {
+    animation: rd-go-flash 2.0s 3400ms forwards;
+}
+
+@keyframes rd-go-flash {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+    10%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+    65%  { opacity: 1; transform: translate(-50%, -50%) scale(1.0); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.0); }
+}
+
+/* Title & subtitle */
+.rd-title {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: #f1f5f9;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    text-shadow: 2px 0 0 rgba(220,38,38,0.6);
+    opacity: 0;
+    margin: 0;
+}
+
+.rd-subtitle {
+    font-size: 0.85rem;
+    color: #64748b;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    opacity: 0;
+    margin: 0;
+}
+
+.rd-intro-overlay.visible .rd-title    { animation: rd-slide-in 0.5s 5600ms both; }
+.rd-intro-overlay.visible .rd-subtitle { animation: rd-slide-in 0.5s 5800ms both; }
+
+@keyframes rd-slide-in {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* ---- Speedlines Overlay (persistent) ---- */
+#racing-speedlines-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    overflow: hidden;
+}
+
+#racing-speedlines-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 90px,
+        rgba(220, 38, 38, 0.022) 90px,
+        rgba(220, 38, 38, 0.022) 92px,
+        transparent 92px,
+        transparent 200px,
+        rgba(220, 38, 38, 0.012) 200px,
+        rgba(220, 38, 38, 0.012) 202px
+    );
+    animation: rd-lines-sweep 1.8s linear infinite;
+}
+
+#racing-speedlines-overlay::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 5%, #dc2626 35%, #f97316 50%, #dc2626 65%, transparent 95%);
+    box-shadow: 0 0 10px rgba(220,38,38,0.7), 0 0 24px rgba(220,38,38,0.3);
+    animation: rd-bottom-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes rd-lines-sweep {
+    from { transform: translateX(0); }
+    to   { transform: translateX(202px); }
+}
+
+@keyframes rd-bottom-pulse {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 1; }
+}

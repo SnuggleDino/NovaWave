@@ -61,6 +61,32 @@
         <h2 class="synth-title">SUNSET DRIVE</h2>
     </div>
 
+    <!-- Racing Drive Intro (Startlights) -->
+    <div id="racing-drive-intro" class="rd-intro-overlay">
+        <div class="rd-lights-bar">
+            <div class="rd-light rd-l1"></div>
+            <div class="rd-light rd-l2"></div>
+            <div class="rd-light rd-l3"></div>
+            <div class="rd-light rd-l4"></div>
+            <div class="rd-light rd-l5"></div>
+        </div>
+        <h2 class="rd-title">RACING DRIVE</h2>
+        <p class="rd-subtitle">Full Throttle</p>
+        <div class="rd-go-text">GO!</div>
+    </div>
+
+    <!-- Stardew Valley Intro (Sunrise on the Farm) -->
+    <div id="stardew-intro" class="sdv-intro-overlay">
+        <div class="sdv-sky"></div>
+        <div class="sdv-horizon-glow"></div>
+        <div class="sdv-sun"></div>
+        <div class="sdv-hillside"></div>
+        <div class="sdv-intro-content">
+            <h2 class="sdv-intro-title">Valley Days</h2>
+            <p class="sdv-intro-sub">&#9834; Farm life &amp; melodies &#9834;</p>
+        </div>
+    </div>
+
     <!-- Sakura Spirit Intro (Japan) -->
     <div id="sakura-intro" class="sakura-intro-overlay">
         <div class="sakura-falling-container" id="sakura-falling-container"></div>
@@ -1041,16 +1067,13 @@
                     <!-- TAB 1: APPEARANCE -->
                     <div id="tab-appearance" class="settings-tab-content active">
                         <div class="settings-section-divider"><span>Interface</span></div>
-                            <div class="setting-item">
+                            <div class="setting-item setting-item--stacked">
                                 <div class="setting-label">
                                     <strong data-lang-key="theme"></strong>
                                     <p data-lang-key="themeDescription"></p>
                                 </div>
-                                <div class="setting-control">
-                                    <select id="theme-select" class="settings-select">
-                                        <!-- Populated by ThemeListener -->
-                                    </select>
-                                </div>
+                                <select id="theme-select" style="display:none" aria-hidden="true"></select>
+                                <div id="theme-grid" class="tc-grid"></div>
                             </div>
 
                             <div class="setting-item">
@@ -1256,6 +1279,65 @@
                                         step="0.1" value="1.0">
                                     <button id="speed-reset-btn" class="settings-button"
                                         title="Reset Speed">&#8634;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="crossfadeLabel">Crossfade</strong>
+                                <p data-lang-key="crossfadeDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-crossfade">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item" id="crossfade-slider-container" style="display: none;">
+                            <div class="setting-label">
+                                <strong data-lang-key="crossfadeSecondsLabel">Duration</strong>
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <span id="crossfade-value"
+                                        style="font-size: 0.8rem; min-width: 35px; color: var(--accent);">3s</span>
+                                    <input type="range" id="crossfade-slider" class="settings-range" min="1" max="10"
+                                        step="1" value="3">
+                                    <button id="crossfade-reset-btn" class="settings-button"
+                                        title="Reset Crossfade">&#8634;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="volNormLabel">Volume Normalization</strong>
+                                <p data-lang-key="volNormDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-vol-norm">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <strong data-lang-key="volLimitLabel">Max. Volume</strong>
+                                <p data-lang-key="volLimitDesc"></p>
+                            </div>
+                            <div class="setting-control">
+                                <div class="action-group">
+                                    <span id="vol-limit-display"
+                                        style="font-size: 0.8rem; min-width: 40px; color: var(--accent);">100%</span>
+                                    <input type="range" id="vol-limit-slider" class="settings-range" min="10" max="100"
+                                        step="5" value="100">
+                                    <button id="vol-limit-reset-btn" class="settings-button"
+                                        title="Reset">&#8634;</button>
                                 </div>
                             </div>
                         </div>
@@ -1632,6 +1714,53 @@
                                 </div>
                                 <div class="intro-actions">
                                     <button class="settings-button primary-btn apply-intro-btn" data-intro="8bit"
+                                        data-lang-key="introApplyBtn">Apply</button>
+                                </div>
+                            </div>
+
+                            <!-- Terminal Boot Intro Card -->
+                            <div class="intro-card" data-intro="terminal_boot">
+                                <div class="intro-preview" style="background:#000;padding:6px;">
+                                    <div style="font-family:monospace;color:#39ff14;font-size:0.55rem;line-height:1.6;text-align:left;">
+                                        &gt; Init...<br>&gt; Loading...<br>&gt; Ready.
+                                    </div>
+                                </div>
+                                <div class="intro-info">
+                                    <strong class="intro-title">Terminal Boot</strong>
+                                    <p class="intro-desc" data-lang-key="introTerminalBootDesc"></p>
+                                </div>
+                                <div class="intro-actions">
+                                    <button class="settings-button primary-btn apply-intro-btn" data-intro="terminal_boot"
+                                        data-lang-key="introApplyBtn">Apply</button>
+                                </div>
+                            </div>
+
+                            <!-- Vinyl Drop Intro Card -->
+                            <div class="intro-card" data-intro="vinyl_drop">
+                                <div class="intro-preview">
+                                    <div style="font-size:2rem;display:flex;align-items:center;justify-content:center;height:100%;">💿</div>
+                                </div>
+                                <div class="intro-info">
+                                    <strong class="intro-title">Vinyl Drop</strong>
+                                    <p class="intro-desc" data-lang-key="introVinylDropDesc"></p>
+                                </div>
+                                <div class="intro-actions">
+                                    <button class="settings-button primary-btn apply-intro-btn" data-intro="vinyl_drop"
+                                        data-lang-key="introApplyBtn">Apply</button>
+                                </div>
+                            </div>
+
+                            <!-- Neon Sign Intro Card -->
+                            <div class="intro-card" data-intro="neon_sign">
+                                <div class="intro-preview" style="background:#050505;">
+                                    <div style="font-size:1rem;font-weight:900;color:#fff;text-shadow:0 0 8px var(--accent),0 0 18px var(--accent);letter-spacing:3px;display:flex;align-items:center;justify-content:center;height:100%;overflow:hidden;">NEON</div>
+                                </div>
+                                <div class="intro-info">
+                                    <strong class="intro-title">Neon Sign</strong>
+                                    <p class="intro-desc" data-lang-key="introNeonSignDesc"></p>
+                                </div>
+                                <div class="intro-actions">
+                                    <button class="settings-button primary-btn apply-intro-btn" data-intro="neon_sign"
                                         data-lang-key="introApplyBtn">Apply</button>
                                 </div>
                             </div>

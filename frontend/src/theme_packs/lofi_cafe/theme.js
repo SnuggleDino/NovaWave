@@ -6,6 +6,7 @@ const TYPEWRITER_TEXT = 'study. relax. repeat.';
 let typewriterTimeout = null;
 
 function runTypewriter(el) {
+    el.innerHTML = '';
     let i = 0;
     const cursor = document.createElement('span');
     cursor.className = 'lofi-cursor';
@@ -71,7 +72,7 @@ export default {
         if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('off');
 
         setTimeout(() => {
-            LOCK.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = true; });
+            LOCK.forEach(id => { const el = document.getElementById(id); if (el) { el.disabled = true; el.closest('.setting-item')?.classList.add('tp-locked'); } });
             const animSel = document.getElementById('animation-select');
             if (animSel) animSel.value = 'off';
         }, 80);
@@ -85,7 +86,7 @@ export default {
 
         if (app.visualizer) app.visualizer.updateSettings({ accentColor: '#38bdf8' });
 
-        LOCK.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = false; });
+        LOCK.forEach(id => { const el = document.getElementById(id); if (el) { el.disabled = false; el.closest('.setting-item')?.classList.remove('tp-locked'); } });
 
         stopTypewriter();
         stopRain();

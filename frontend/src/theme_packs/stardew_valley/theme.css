@@ -1,0 +1,324 @@
+/* ================================================================
+   VALLEY DAYS THEME — Colors, Sunrise Intro & Pixel Stars
+   ================================================================ */
+
+/* ---- Core Variables ---- */
+:root[data-theme="stardew_valley"] {
+    --bg-main: #0d1f0e;
+    --bg-card: #162b18;
+    --bg-card-light: #1e3620;
+    --bg-card-hover: #1a3019;
+    --accent: #f59e0b;
+    --accent-soft: rgba(245, 158, 11, 0.15);
+    --text-main: #fef9e7;
+    --text-muted: #8fb892;
+    --border-soft: rgba(245, 158, 11, 0.2);
+    --border-main: 1px solid rgba(245, 158, 11, 0.3);
+    --border-thin: 1px solid rgba(245, 158, 11, 0.12);
+    --shadow-soft: 0 4px 20px rgba(245, 158, 11, 0.1);
+}
+
+:root[data-theme="stardew_valley"] body {
+    background: #080f09;
+}
+
+:root[data-theme="stardew_valley"] .control-main {
+    background: #f59e0b;
+    color: #0d1f0e;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.45);
+}
+
+:root[data-theme="stardew_valley"] .progress-fill {
+    background: linear-gradient(to right, #22c55e, #4ade80, #f59e0b);
+}
+
+:root[data-theme="stardew_valley"] .active-features-container .features-badge-icon {
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+/* ---- Valley Days Sunrise Intro ---- */
+.sdv-intro-overlay {
+    background: #050512;
+    overflow: hidden;
+}
+
+/* Sky — sunrise gradient, revealed as the night overlay fades */
+.sdv-sky {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    background: linear-gradient(to bottom,
+        #0e1b4a 0%,
+        #1e4185 18%,
+        #c8623e 46%,
+        #e8843a 62%,
+        #f4a020 74%,
+        #c25010 87%,
+        #6e1e06 100%
+    );
+}
+
+/* Dark night overlay on top of sunrise sky — fades out to reveal it */
+.sdv-sky::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #050512;
+    opacity: 1;
+}
+
+.sdv-intro-overlay.visible .sdv-sky::before {
+    animation: sdv-night-out 3.5s ease-out 0.3s forwards;
+}
+
+@keyframes sdv-night-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Stars sit above the night overlay, fade as dawn arrives */
+.sdv-sky::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow:
+        55px  38px 0 rgba(254,243,199,0.9),
+        180px 22px 0 rgba(254,243,199,0.7),
+        310px 55px 0 rgba(254,243,199,0.85),
+        460px 18px 0 rgba(134,239,172,0.7),
+        580px 45px 0 rgba(254,243,199,0.9),
+        720px 28px 0 rgba(254,243,199,0.75),
+        850px 62px 0 rgba(134,239,172,0.6),
+        990px 15px 0 rgba(254,243,199,0.85),
+        1120px 48px 0 rgba(254,243,199,0.7),
+        1260px 32px 0 rgba(134,239,172,0.75),
+        1390px 58px 0 rgba(254,243,199,0.65),
+        1540px 24px 0 rgba(134,239,172,0.8),
+        1680px 42px 0 rgba(254,243,199,0.7),
+        240px 120px 0 rgba(254,243,199,0.5),
+        680px 95px 0 rgba(134,239,172,0.45),
+        1050px 115px 0 rgba(254,243,199,0.5),
+        1450px 108px 0 rgba(134,239,172,0.4);
+    opacity: 1;
+}
+
+.sdv-intro-overlay.visible .sdv-sky::after {
+    animation: sdv-stars-fade 2s ease-out 2.5s forwards;
+}
+
+@keyframes sdv-stars-fade {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Warm dawn glow rising from the horizon */
+.sdv-horizon-glow {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 65%;
+    z-index: 1;
+    background: linear-gradient(to top,
+        rgba(255, 110, 15, 0.85) 0%,
+        rgba(251, 160, 36, 0.50) 22%,
+        rgba(249, 115, 22, 0.20) 50%,
+        transparent 75%
+    );
+    opacity: 0;
+}
+
+.sdv-intro-overlay.visible .sdv-horizon-glow {
+    animation: sdv-dawn-glow 4s ease-out 0.8s forwards;
+}
+
+@keyframes sdv-dawn-glow {
+    0%   { opacity: 0; }
+    30%  { opacity: 0.65; }
+    100% { opacity: 1; }
+}
+
+/* Rising sun — starts hidden behind the hills, rises above them */
+.sdv-sun {
+    position: absolute;
+    left: 50%;
+    bottom: 36%;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%,
+        #fffde7 0%,
+        #fff176 35%,
+        #ffd54f 65%,
+        #ffb300 100%
+    );
+    box-shadow:
+        0 0 28px 10px rgba(255, 220, 60, 0.75),
+        0 0 70px 28px rgba(255, 150, 30, 0.45),
+        0 0 140px 55px rgba(255, 90, 15, 0.22);
+    transform: translateX(-50%) translateY(130px);
+    opacity: 0;
+    z-index: 2;
+}
+
+.sdv-intro-overlay.visible .sdv-sun {
+    animation: sdv-sun-rise 3.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.2s forwards;
+}
+
+@keyframes sdv-sun-rise {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(130px); }
+    12%  { opacity: 1; transform: translateX(-50%) translateY(110px); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Hill silhouette — dark green, rises from bottom */
+.sdv-hillside {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    z-index: 3;
+    background: linear-gradient(to top,
+        #030a02 0%,
+        #071204 45%,
+        #0b1d06 100%
+    );
+    clip-path: polygon(
+        0% 100%,
+        0% 62%,
+        6%  48%,
+        13% 58%,
+        22% 38%,
+        30% 50%,
+        39% 30%,
+        48% 44%,
+        57% 26%,
+        65% 40%,
+        73% 22%,
+        81% 36%,
+        89% 18%,
+        95% 30%,
+        100% 20%,
+        100% 100%
+    );
+    opacity: 0;
+}
+
+.sdv-intro-overlay.visible .sdv-hillside {
+    animation: sdv-hill-in 2.5s ease-out 1.0s forwards;
+}
+
+@keyframes sdv-hill-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* Title block */
+.sdv-intro-content {
+    position: relative;
+    z-index: 4;
+    text-align: center;
+    opacity: 0;
+}
+
+.sdv-intro-overlay.visible .sdv-intro-content {
+    animation: sdv-content-in 0.9s ease-out 5.2s forwards;
+}
+
+@keyframes sdv-content-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.sdv-intro-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #fef3c7;
+    text-shadow:
+        0 0 18px rgba(251,191,36,0.65),
+        0 0 40px rgba(251,191,36,0.25);
+    margin: 0 0 8px;
+    letter-spacing: 0.06em;
+}
+
+.sdv-intro-sub {
+    font-size: 0.95rem;
+    color: #fbbf24;
+    opacity: 0.85;
+    margin: 0;
+    letter-spacing: 0.04em;
+}
+
+/* ---- Pixel Stars Overlay (persistent) ---- */
+#stardew-stars-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    overflow: hidden;
+}
+
+/* Layer A — brighter stars, upper band */
+#stardew-stars-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow:
+        42px 85px 0 rgba(134,239,172,0.7),
+        180px 32px 0 rgba(251,191,36,0.65),
+        295px 140px 0 rgba(254,243,199,0.75),
+        430px 65px 0 rgba(134,239,172,0.55),
+        560px 20px 0 rgba(251,191,36,0.7),
+        680px 110px 0 rgba(254,243,199,0.6),
+        820px 48px 0 rgba(134,239,172,0.75),
+        950px 92px 0 rgba(251,191,36,0.55),
+        1080px 35px 0 rgba(254,243,199,0.7),
+        1200px 75px 0 rgba(134,239,172,0.6),
+        1340px 25px 0 rgba(251,191,36,0.75),
+        1480px 88px 0 rgba(254,243,199,0.55),
+        1620px 42px 0 rgba(134,239,172,0.7),
+        1750px 15px 0 rgba(251,191,36,0.6),
+        1880px 70px 0 rgba(254,243,199,0.65);
+    animation: sdv-twinkle-a 4s ease-in-out infinite alternate;
+}
+
+/* Layer B — softer stars, lower band */
+#stardew-stars-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px;
+    height: 2px;
+    background: transparent;
+    box-shadow:
+        120px 200px 0 rgba(134,239,172,0.4),
+        350px 240px 0 rgba(254,243,199,0.35),
+        620px 180px 0 rgba(251,191,36,0.3),
+        890px 215px 0 rgba(134,239,172,0.4),
+        1150px 190px 0 rgba(254,243,199,0.35),
+        1400px 225px 0 rgba(251,191,36,0.3),
+        1680px 195px 0 rgba(134,239,172,0.38),
+        250px 310px 0 rgba(254,243,199,0.25),
+        750px 290px 0 rgba(134,239,172,0.28),
+        1250px 320px 0 rgba(251,191,36,0.25),
+        1750px 305px 0 rgba(254,243,199,0.3);
+    animation: sdv-twinkle-b 5.5s ease-in-out 1.5s infinite alternate;
+}
+
+@keyframes sdv-twinkle-a {
+    0%   { opacity: 0.45; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+@keyframes sdv-twinkle-b {
+    0%   { opacity: 0.3; }
+    60%  { opacity: 0.85; }
+    100% { opacity: 0.45; }
+}

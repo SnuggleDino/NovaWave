@@ -50,6 +50,10 @@ export function HasLyrics(arg1) {
   return window['go']['main']['App']['HasLyrics'](arg1);
 }
 
+export function IncrementPlayCount(arg1) {
+  return window['go']['main']['App']['IncrementPlayCount'](arg1);
+}
+
 export function IsSpotifyUrl(arg1) {
   return window['go']['main']['App']['IsSpotifyUrl'](arg1);
 }
@@ -80,6 +84,10 @@ export function RestartApp() {
 
 export function SaveConfig(arg1) {
   return window['go']['main']['App']['SaveConfig'](arg1);
+}
+
+export function SaveLastPosition(arg1, arg2) {
+  return window['go']['main']['App']['SaveLastPosition'](arg1, arg2);
 }
 
 export function SelectFolder() {

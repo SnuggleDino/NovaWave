@@ -391,6 +391,68 @@ export const AppSettings = {
             });
         }
 
+        const crossfadeToggle = $('toggle-crossfade');
+        const crossfadeSlider = $('crossfade-slider');
+        const crossfadeValueEl = $('crossfade-value');
+        const crossfadeContainer = $('crossfade-slider-container');
+        const crossfadeResetBtn = $('crossfade-reset-btn');
+
+        if (crossfadeToggle) {
+            crossfadeToggle.addEventListener('change', (e) => {
+                const enabled = e.target.checked;
+                if (crossfadeContainer) crossfadeContainer.style.display = enabled ? 'flex' : 'none';
+                this.saveSetting('crossfadeEnabled', enabled);
+                const secs = parseInt(crossfadeSlider?.value || 3);
+                if (this.callbacks.onCrossfadeChange) this.callbacks.onCrossfadeChange(enabled, secs);
+            });
+        }
+        if (crossfadeSlider) {
+            crossfadeSlider.addEventListener('input', (e) => {
+                const v = parseInt(e.target.value);
+                if (crossfadeValueEl) crossfadeValueEl.textContent = v + 's';
+                this.saveSetting('crossfadeSeconds', v);
+                if (this.callbacks.onCrossfadeChange) this.callbacks.onCrossfadeChange(!!crossfadeToggle?.checked, v);
+            });
+        }
+        if (crossfadeResetBtn) {
+            crossfadeResetBtn.addEventListener('click', () => {
+                if (crossfadeSlider) crossfadeSlider.value = 3;
+                if (crossfadeValueEl) crossfadeValueEl.textContent = '3s';
+                this.saveSetting('crossfadeSeconds', 3);
+                if (this.callbacks.onCrossfadeChange) this.callbacks.onCrossfadeChange(!!crossfadeToggle?.checked, 3);
+            });
+        }
+
+        const toggleVolNorm = $('toggle-vol-norm');
+        if (toggleVolNorm) {
+            toggleVolNorm.addEventListener('change', (e) => {
+                this.saveSetting('volNormEnabled', e.target.checked);
+                if (this.callbacks.onVolNormChange) this.callbacks.onVolNormChange(e.target.checked);
+            });
+        }
+
+        const volLimitSlider = $('vol-limit-slider');
+        const volLimitDisplay = $('vol-limit-display');
+        const volLimitResetBtn = $('vol-limit-reset-btn');
+
+        if (volLimitSlider) {
+            volLimitSlider.addEventListener('input', (e) => {
+                const pct = parseInt(e.target.value);
+                if (volLimitDisplay) volLimitDisplay.textContent = pct + '%';
+                const limit = pct / 100;
+                this.saveSetting('volumeLimit', limit);
+                if (this.callbacks.onVolLimitChange) this.callbacks.onVolLimitChange(limit);
+            });
+        }
+        if (volLimitResetBtn) {
+            volLimitResetBtn.addEventListener('click', () => {
+                if (volLimitSlider) volLimitSlider.value = 100;
+                if (volLimitDisplay) volLimitDisplay.textContent = '100%';
+                this.saveSetting('volumeLimit', 1.0);
+                if (this.callbacks.onVolLimitChange) this.callbacks.onVolLimitChange(1.0);
+            });
+        }
+
         const toggleDeleteSongs = $('toggle-delete-songs');
         if (toggleDeleteSongs) {
             toggleDeleteSongs.addEventListener('change', (e) => {
@@ -807,6 +869,24 @@ export const AppSettings = {
         restoreAudio('toggle-bass-boost', 'bass-boost-slider-container', 'bass-boost-slider', 'bass-boost-value', 'bassBoostEnabled', 'bassBoostValue', 'dB');
         restoreAudio('toggle-treble-boost', 'treble-boost-slider-container', 'treble-boost-slider', 'treble-boost-value', 'trebleBoostEnabled', 'trebleBoostValue', 'dB');
         restoreAudio('toggle-reverb', 'reverb-slider-container', 'reverb-slider', 'reverb-value', 'reverbEnabled', 'reverbValue', '%');
+
+        const cfToggle = $('toggle-crossfade');
+        const cfContainer = $('crossfade-slider-container');
+        const cfSlider = $('crossfade-slider');
+        const cfValue = $('crossfade-value');
+        if (cfToggle) cfToggle.checked = !!s.crossfadeEnabled;
+        if (cfContainer) cfContainer.style.display = s.crossfadeEnabled ? 'flex' : 'none';
+        if (cfSlider && s.crossfadeSeconds) cfSlider.value = s.crossfadeSeconds;
+        if (cfValue && s.crossfadeSeconds) cfValue.textContent = s.crossfadeSeconds + 's';
+
+        const vnToggle = $('toggle-vol-norm');
+        if (vnToggle) vnToggle.checked = !!s.volNormEnabled;
+
+        const vlSlider = $('vol-limit-slider');
+        const vlDisplay = $('vol-limit-display');
+        const vlPct = Math.round((s.volumeLimit !== undefined ? s.volumeLimit : 1.0) * 100);
+        if (vlSlider) vlSlider.value = vlPct;
+        if (vlDisplay) vlDisplay.textContent = vlPct + '%';
 
         //--- Equalizer ---------------
         const toggleEq = $('toggle-equalizer');

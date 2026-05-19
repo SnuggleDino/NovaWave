@@ -1,0 +1,12 @@
+{
+  "name": "Valley Days",
+  "id": "stardew_valley",
+  "version": "1.0",
+  "author": "NovaWave",
+  "description": "Warm pixel farm life. Harvest good vibes.",
+  "css": "theme.css",
+  "js": "theme.js",
+  "preview_emoji": "🌾",
+  "preview_bg": "#0d1f0e",
+  "accent": "#f59e0b"
+}

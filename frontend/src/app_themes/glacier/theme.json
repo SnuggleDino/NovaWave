@@ -1,4 +1,6 @@
 {
     "id": "glacier",
-    "name": "Light - Glacier"
+    "name": "Light - Glacier",
+    "preview_bg": "#f8fafc",
+    "preview_accent": "#0ea5e9"
 }

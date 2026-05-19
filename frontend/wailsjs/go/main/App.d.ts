@@ -26,6 +26,8 @@ export function GetTracks(arg1:string):Promise<Array<main.Track>>;
 
 export function HasLyrics(arg1:string):Promise<boolean>;
 
+export function IncrementPlayCount(arg1:string):Promise<void>;
+
 export function IsSpotifyUrl(arg1:string):Promise<boolean>;
 
 export function LoadConfig():Promise<main.Config>;
@@ -41,6 +43,8 @@ export function ResetConfig():Promise<main.SimpleResult>;
 export function RestartApp():Promise<void>;
 
 export function SaveConfig(arg1:main.Config):Promise<string>;
+
+export function SaveLastPosition(arg1:string,arg2:number):Promise<void>;
 
 export function SelectFolder():Promise<string>;
 

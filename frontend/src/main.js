@@ -59,6 +59,8 @@ const windowApi = {
     restartApp: App.RestartApp,
     checkForUpdate: App.CheckForUpdate,
     openURL: App.OpenURL,
+    incrementPlayCount: App.IncrementPlayCount,
+    saveLastPosition: App.SaveLastPosition,
 };
 
 window.api = windowApi;
@@ -129,6 +131,7 @@ audio.crossOrigin = "anonymous";
 document.body.appendChild(audio);
 
 let currentVolume = 0.2;
+let volumeLimit = 1.0;
 let shuffleOn = false;
 let loopMode = 'off';
 let currentLanguage = 'de';
@@ -149,6 +152,16 @@ let audioExtras;
 let audioFeaturesPanel;
 let dynamicIsland;
 let miniPlayer;
+let resumeToastTimeout;
+let crossfadeEnabled = false;
+let crossfadeSeconds = 0;
+let crossfadeTriggered = false;
+let crossfadeNextIndex = -1;
+let crossfadeJustCompleted = false;
+let crossfadeRaf = null;
+let isCrossfading = false;
+let audioNext = null;
+let audioNextGain = null;
 
 let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, progressBar, progressFill, playBtn, playIcon, pauseIcon, prevBtn, nextBtn, loopBtn, shuffleBtn, volumeSlider, volumeIcon, playlistEl, playlistInfoBar, loadFolderBtn, openLibraryBtn, libraryOverlay, libraryCloseBtn, refreshFolderBtn, playlistRefreshBtn, searchInput, sortSelect, ytUrlInput, ytNameInput, downloadBtn, downloaderOverlay, downloaderCloseBtn, downloadStatusEl, downloadProgressFill, visualizerCanvas, visualizerContainer, langButtons, settingsBtn, settingsOverlay, settingsCloseBtn, downloadFolderInput, changeFolderBtn, qualitySelect, themeSelect, visualizerToggle, visualizerStyleSelect, visualizerSensitivity, sleepTimerSelect, animationSelect, backgroundAnimationEl, emojiSelect, customEmojiContainer, customEmojiInput, toggleDeleteSongs, toggleDownloaderBtn, contextMenu, contextMenuEditTitle, contextMenuFavorite, editTitleOverlay, editTitleInput, editArtistInput, originalTitlePreview, newTitlePreview, editTitleCancelBtn, editTitleSaveBtn, editTitleCloseBtn, confirmDeleteOverlay, confirmDeleteBtn, confirmDeleteCancelBtn, confirmDeleteCloseBtn, autoLoadLastFolderToggle, toggleMiniMode, notificationBar, notificationMessage, notificationTimeout, accentColorPicker, toggleFocusModeBtn, dropZone, toggleEnableFocus, toggleEnableDrag, toggleUseCustomColor, accentColorContainer, speedSlider, speedValue, snowInterval, toggleFavoritesBtn, toggleFavoritesOption, audioExtrasToggleBtn;
 
@@ -405,6 +418,7 @@ function updateAudioEffects() {
         if (settings.eqValues) {
             audioExtras.setEq(settings.eqValues, settings.eqEnabled);
         }
+        audioExtras.setNormalization(!!settings.volNormEnabled);
     }
     updateActiveFeaturesIndicator();
 }
@@ -445,8 +459,165 @@ function tr(key, ...args) {
 }
 window.tr = tr;
 
+function _getNextIndex() {
+    if (loopMode === 'one') return currentIndex;
+    if (shuffleOn) {
+        if (playlist.length <= 1) return 0;
+        let idx;
+        do { idx = Math.floor(Math.random() * playlist.length); } while (idx === currentIndex);
+        return idx;
+    }
+    const next = currentIndex + 1;
+    if (next >= playlist.length) return loopMode === 'all' ? 0 : -1;
+    return next;
+}
+
+function _cancelCrossfade() {
+    isCrossfading = false;
+    crossfadeTriggered = false;
+    crossfadeJustCompleted = false;
+    if (crossfadeRaf) { cancelAnimationFrame(crossfadeRaf); crossfadeRaf = null; }
+    if (audioNext) {
+        if (audioNextGain) audioNextGain.gain.value = 0;
+        else audioNext.volume = 0;
+        audioNext.pause();
+        audioNext.src = '';
+    }
+    audio.volume = currentVolume * volumeLimit;
+    crossfadeNextIndex = -1;
+}
+
+function _completeCrossfade() {
+    if (!isCrossfading && !crossfadeTriggered) return;
+    isCrossfading = false;
+    crossfadeTriggered = false;
+    if (crossfadeRaf) { cancelAnimationFrame(crossfadeRaf); crossfadeRaf = null; }
+
+    if (currentTrackPath) {
+        windowApi.incrementPlayCount(currentTrackPath).catch(() => {});
+        const track = playlist[currentIndex];
+        if (track) {
+            track.playCount = (track.playCount || 0) + 1;
+            const row = playlistEl?.querySelector(`.track-row[data-index="${currentIndex}"]`);
+            const badge = row?.querySelector('.track-play-count');
+            if (badge) badge.textContent = '▶ ' + track.playCount;
+            track.lastPosition = 0;
+        }
+        windowApi.saveLastPosition(currentTrackPath, 0).catch(() => {});
+    }
+
+    const resumePos = audioNext ? audioNext.currentTime : 0;
+    const capturedNext = audioNext;
+    const capturedGain = audioNextGain;
+    // Null out before playTrack so _cancelCrossfade inside it won't stop capturedNext early
+    audioNext = null;
+    audioNextGain = null;
+    audio.volume = currentVolume * volumeLimit;
+    const nextIdx = crossfadeNextIndex;
+    playTrack(nextIdx);
+    // Set AFTER playTrack: _cancelCrossfade (called inside playTrack) resets this flag,
+    // so we re-set it here to guard against a stale audio.ended from the old track
+    // that may still be queued in the event loop.
+    crossfadeJustCompleted = true;
+    if (capturedNext) {
+        // Both audioNext and audio share the same Web Audio context — stop capturedNext
+        // exactly when audio starts outputting samples (no pipeline gap).
+        audio.addEventListener('playing', function stopPrev() {
+            if (capturedGain) capturedGain.gain.value = 0;
+            capturedNext.pause();
+            capturedNext.src = '';
+            // Restore for next crossfade (MediaElementSource binding is permanent)
+            audioNext = capturedNext;
+            audioNextGain = capturedGain;
+        }, { once: true });
+    }
+    if (resumePos > 0.5) {
+        audio.addEventListener('canplay', function seekOnce() {
+            audio.currentTime = resumePos;
+        }, { once: true });
+    }
+}
+
+function _startCrossfade(nextIdx) {
+    if (isCrossfading || nextIdx < 0 || nextIdx >= playlist.length) return;
+    isCrossfading = true;
+    crossfadeNextIndex = nextIdx;
+
+    if (!audioNext) {
+        audioNext = new Audio();
+        // Connect to the same Web Audio context as the main audio element so both
+        // share the same output pipeline — this eliminates the gap caused by switching
+        // between native browser audio (audioNext) and the Web Audio API (audio).
+        const ctx = audioExtras && audioExtras.getContext();
+        if (ctx) {
+            const nextSrc = ctx.createMediaElementSource(audioNext);
+            audioNextGain = ctx.createGain();
+            audioNextGain.gain.value = 0;
+            nextSrc.connect(audioNextGain);
+            audioNextGain.connect(ctx.destination);
+        }
+    }
+    const nextTrack = playlist[nextIdx];
+    const safeUrl = encodeURI('/music/' + nextTrack.path.replace(/\\/g, '/')).replace(/#/g, '%23');
+    audioNext.src = safeUrl;
+    if (audioNextGain) audioNextGain.gain.value = 0;
+    else audioNext.volume = 0;
+    audioNext.playbackRate = settings.playbackSpeed || 1.0;
+    audioNext.play().catch(() => {});
+
+    const fadeDuration = crossfadeSeconds * 1000;
+    const startVol = currentVolume;
+    const startTime = performance.now();
+
+    function tick() {
+        if (!isCrossfading) return;
+        const progress = Math.min((performance.now() - startTime) / fadeDuration, 1);
+        audio.volume = startVol * volumeLimit * (1 - progress);
+        if (audioNextGain) audioNextGain.gain.value = startVol * progress;
+        else audioNext.volume = startVol * volumeLimit * progress;
+        if (progress < 1) {
+            crossfadeRaf = requestAnimationFrame(tick);
+        } else {
+            _completeCrossfade();
+        }
+    }
+    crossfadeRaf = requestAnimationFrame(tick);
+}
+
+function dismissResumeToast() {
+    clearTimeout(resumeToastTimeout);
+    const el = document.getElementById('resume-toast');
+    if (el) el.remove();
+}
+
+function showResumeToast(position) {
+    dismissResumeToast();
+    const toast = document.createElement('div');
+    toast.id = 'resume-toast';
+    toast.className = 'resume-toast';
+    const msg = (tr('continueAt') || 'Continue at {time}?').replace('{time}', formatTime(position));
+    toast.innerHTML = `<span class="resume-toast__msg">${msg}</span><div class="resume-toast__actions"><button class="resume-toast__btn resume-toast__yes">${tr('continueYes') || 'Yes'}</button><button class="resume-toast__btn resume-toast__no">${tr('continueNo') || 'No'}</button></div>`;
+    document.body.appendChild(toast);
+    toast.querySelector('.resume-toast__yes').addEventListener('click', () => {
+        audio.currentTime = position;
+        dismissResumeToast();
+        const track = playlist[currentIndex];
+        if (track) track.lastPosition = 0;
+        windowApi.saveLastPosition(currentTrackPath, 0).catch(() => {});
+    });
+    toast.querySelector('.resume-toast__no').addEventListener('click', () => {
+        dismissResumeToast();
+        const track = playlist[currentIndex];
+        if (track) track.lastPosition = 0;
+        windowApi.saveLastPosition(currentTrackPath, 0).catch(() => {});
+    });
+    resumeToastTimeout = setTimeout(dismissResumeToast, 8000);
+}
+
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
+    _cancelCrossfade();
+    dismissResumeToast();
     currentIndex = index;
     const track = playlist[index];
     currentTrackPath = track.path;
@@ -465,6 +636,11 @@ function playTrack(index) {
     audio.play().catch(e => console.error("Error playing audio:", e));
     isPlaying = true;
     updateUIForCurrentTrack();
+
+    const savedPos = track.lastPosition || 0;
+    if (track.duration > 600 && savedPos > 30) {
+        showResumeToast(savedPos);
+    }
 }
 
 function playNext() {
@@ -704,7 +880,9 @@ function renderPlaylist() {
                 const displayIdx = (isPlaying && globalIndex === currentIndex) ? `<div class="playing-bars"><span></span><span></span><span></span></div>` : (globalIndex + 1);
                 const titlePrefix = (!searchInput.value && item.groupId) ? '<span style="opacity:0.6; margin-right:5px;">↳</span> ' : '';
 
-                row.innerHTML = `<div class="track-index">${displayIdx}</div><div class="track-info-block"><div class="track-title-small">${titlePrefix}${escapeHtml(displayTitle)}</div><div class="track-artist-small">${escapeHtml(track.artist || tr('unknownArtist'))}</div></div>${favBtn}<div class="track-duration">${formatTime(track.duration)}</div>`;
+                const pcCount = track.playCount || 0;
+                const pcBadge = `<span class="track-play-count"${pcCount > 0 ? '' : ' style="visibility:hidden"'}>▶ ${pcCount || ''}</span>`;
+                row.innerHTML = `<div class="track-index">${displayIdx}</div><div class="track-info-block"><div class="track-title-small">${titlePrefix}${escapeHtml(displayTitle)}</div><div class="track-artist-small">${escapeHtml(track.artist || tr('unknownArtist'))}</div></div>${favBtn}${pcBadge}<div class="track-duration">${formatTime(track.duration)}</div>`;
                 fragment.appendChild(row);
             }
         }
@@ -1170,7 +1348,20 @@ async function handleDownload() {
 }
 
 function setupAudioEvents() {
-    audio.addEventListener('timeupdate', () => { if (!isNaN(audio.duration)) { const p = (audio.currentTime / audio.duration) * 100; if (progressFill) progressFill.style.width = `${p}%`; if (currentTimeEl) currentTimeEl.textContent = formatTime(audio.currentTime); } });
+    audio.addEventListener('timeupdate', () => {
+        if (!isNaN(audio.duration)) {
+            const p = (audio.currentTime / audio.duration) * 100;
+            if (progressFill) progressFill.style.width = `${p}%`;
+            if (currentTimeEl) currentTimeEl.textContent = formatTime(audio.currentTime);
+            if (crossfadeEnabled && crossfadeSeconds > 0 && !crossfadeTriggered && !isCrossfading && loopMode !== 'one' && audio.duration > crossfadeSeconds * 2) {
+                const remaining = audio.duration - audio.currentTime;
+                if (remaining > 0 && remaining <= crossfadeSeconds) {
+                    const nextIdx = _getNextIndex();
+                    if (nextIdx >= 0) { crossfadeTriggered = true; _startCrossfade(nextIdx); }
+                }
+            }
+        }
+    });
     audio.addEventListener('durationchange', () => { if (durationEl) durationEl.textContent = isNaN(audio.duration) ? '0:00' : formatTime(audio.duration); });
     audio.addEventListener('play', () => {
         isPlaying = true;
@@ -1184,13 +1375,34 @@ function setupAudioEvents() {
         document.body.classList.remove('is-playing');
         updatePlayPauseUI();
         if (visualizer) visualizer.stop();
+        if (currentTrackPath && !isNaN(audio.duration) && audio.duration > 600 && audio.currentTime > 30) {
+            const pos = audio.currentTime;
+            const track = playlist[currentIndex];
+            if (track) track.lastPosition = pos;
+            windowApi.saveLastPosition(currentTrackPath, pos).catch(() => {});
+        }
     });
     audio.addEventListener('ended', () => {
+        if (crossfadeJustCompleted) { crossfadeJustCompleted = false; return; }
+        if (isCrossfading || crossfadeTriggered) { _completeCrossfade(); return; }
         if (visualizer) visualizer.stop();
-        if (loopMode === 'one') { audio.currentTime = 0; audio.play(); } else playNext();
+        if (loopMode === 'one') { audio.currentTime = 0; audio.play(); return; }
+        if (currentTrackPath) {
+            windowApi.incrementPlayCount(currentTrackPath).catch(() => {});
+            const track = playlist[currentIndex];
+            if (track) {
+                track.playCount = (track.playCount || 0) + 1;
+                const row = playlistEl?.querySelector(`.track-row[data-index="${currentIndex}"]`);
+                const badge = row?.querySelector('.track-play-count');
+                if (badge) badge.textContent = '▶ ' + track.playCount;
+                track.lastPosition = 0;
+            }
+            windowApi.saveLastPosition(currentTrackPath, 0).catch(() => {});
+        }
+        playNext();
     });
     audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); });
-    audio.addEventListener('volumechange', () => { currentVolume = audio.volume; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
+    audio.addEventListener('volumechange', () => { if (isCrossfading) return; currentVolume = volumeLimit > 0 ? audio.volume / volumeLimit : 0; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
 }
 
 async function performFolderRefresh() {
@@ -1254,7 +1466,8 @@ async function loadSettings() {
     }
 
     currentVolume = settings.volume !== undefined ? settings.volume : 0.2;
-    audio.volume = currentVolume;
+    volumeLimit = settings.volumeLimit !== undefined ? settings.volumeLimit : 1.0;
+    audio.volume = currentVolume * volumeLimit;
     if (volumeSlider) volumeSlider.value = currentVolume;
     if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
 
@@ -1312,6 +1525,9 @@ async function loadSettings() {
                 : JSON.parse(settings.legacyFolders);
         } catch (e) { legacyFolders = []; }
     }
+
+    crossfadeEnabled = !!settings.crossfadeEnabled;
+    crossfadeSeconds = settings.crossfadeSeconds || 3;
 
     updateAudioEffects();
     updateActiveFeaturesIndicator();
@@ -1445,6 +1661,13 @@ function getVolumeIcon(v) {
     return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
 }
 
+function setVolume(logicalVol) {
+    currentVolume = Math.max(0, Math.min(1, logicalVol));
+    audio.volume = currentVolume * volumeLimit;
+    if (volumeSlider) volumeSlider.value = currentVolume;
+    if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
+}
+
 function cleanTitleDisplay(title) {
     if (!title) return "";
 
@@ -1546,7 +1769,7 @@ function setupEventListeners() {
         }
     });
     bind(progressBar, 'click', (e) => { if (!isNaN(audio.duration)) { const r = progressBar.getBoundingClientRect(); audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; } });
-    bind(volumeSlider, 'input', (e) => { audio.volume = parseFloat(e.target.value); });
+    bind(volumeSlider, 'input', (e) => { setVolume(parseFloat(e.target.value)); });
     bind(openLibraryBtn, 'click', () => { libraryOverlay.classList.add('visible'); updateLibraryModal(); });
     bind(libraryCloseBtn, 'click', () => { libraryOverlay.classList.remove('visible'); });
     bind(loadFolderBtn, 'click', async () => {
@@ -1625,8 +1848,8 @@ function setupEventListeners() {
             case 'Space': e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break;
             case 'ArrowRight': if (e.shiftKey) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); else playNext(); break;
             case 'ArrowLeft': if (e.shiftKey) audio.currentTime = Math.max(0, audio.currentTime - 5); else playPrev(); break;
-            case 'ArrowUp': e.preventDefault(); audio.volume = Math.min(1, audio.volume + 0.05); break;
-            case 'ArrowDown': e.preventDefault(); audio.volume = Math.max(0, audio.volume - 0.05); break;
+            case 'ArrowUp': e.preventDefault(); setVolume(currentVolume + 0.01); break;
+            case 'ArrowDown': e.preventDefault(); setVolume(currentVolume - 0.01); break;
             case 'MediaPlayPause':
             case 'MediaPlay':
             case 'MediaPause':
@@ -2101,6 +2324,19 @@ function initSettingsLogic() {
             if (audioFeaturesPanel) audioFeaturesPanel.syncSpeed(val);
             showNotification(tr('playbackSpeed') + ': ' + val + 'x', 'info', 1500);
         },
+        onCrossfadeChange: (enabled, secs) => {
+            crossfadeEnabled = !!enabled;
+            crossfadeSeconds = secs || 3;
+            if (!enabled) _cancelCrossfade();
+        },
+        onVolNormChange: (enabled) => {
+            if (audioExtras) audioExtras.setNormalization(!!enabled);
+        },
+        onVolLimitChange: (limit) => {
+            volumeLimit = limit;
+            audio.volume = currentVolume * volumeLimit;
+            showNotification(tr('volLimitLabel') + ': ' + Math.round(limit * 100) + '%', 'info', 1500);
+        },
         onDeleteSongsToggle: (enabled) => {
             deleteSongsEnabled = enabled;
             renderPlaylist();
@@ -2545,7 +2781,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.setAttribute('data-theme', cachedTheme);
 
             AppLoader.update(20, tr('loaderModules'));
-            ThemeListener.init();
+            ThemeListener.init(cachedTheme);
             BackgroundAnimListener.init();
 
             AppLoader.update(30, tr('loaderLoadingSettings'));
@@ -2570,6 +2806,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setupQueueUI();
 
             await loadSettings();
+            ThemeListener.setActiveCard(settings.theme || 'midnight');
             if (audioFeaturesPanel) audioFeaturesPanel.syncSpeed(settings.playbackSpeed || 1.0);
 
             initSettingsLogic();
@@ -2617,7 +2854,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             updateCachedColor();
 
-            audio.volume = currentVolume;
+            audio.volume = currentVolume * volumeLimit;
             if (volumeSlider) volumeSlider.value = currentVolume;
             if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume);
 

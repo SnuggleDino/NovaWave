@@ -10,10 +10,10 @@ type AppMeta struct {
 }
 
 var CurrentMeta = AppMeta{
-	Version:    "2.9.9-2",
-	BuildDate:  "15.05.2026",
+	Version:    "3.0.0",
+	BuildDate:  "19.05.2026",
 	Author:     "SnuggleDino",
-	GoVersion:  "v2.9.9-2 (Go 1.23)",
+	GoVersion:  "v3.0.0 (Go 1.23)",
 	GithubUser: "SnuggleDino",
 	RepoLink:   "https://github.com/SnuggleDino/NovaWave",
 }

@@ -1,4 +1,6 @@
 {
     "id": "midnight",
-    "name": "Dark - Midnight"
+    "name": "Dark - Midnight",
+    "preview_bg": "#000000",
+    "preview_accent": "#8b5cf6"
 }

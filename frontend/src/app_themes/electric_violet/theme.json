@@ -1,4 +1,6 @@
 {
     "id": "electric_violet",
-    "name": "Dark - Violet"
+    "name": "Dark - Violet",
+    "preview_bg": "#1e1b4b",
+    "preview_accent": "#d8b4fe"
 }

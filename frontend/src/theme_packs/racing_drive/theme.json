@@ -1,0 +1,12 @@
+{
+  "name": "Racing Drive",
+  "id": "racing_drive",
+  "version": "1.0",
+  "author": "NovaWave",
+  "description": "Dark red racing aesthetics. Full throttle.",
+  "css": "theme.css",
+  "js": "theme.js",
+  "preview_emoji": "🏁",
+  "preview_bg": "#0f0f0f",
+  "accent": "#dc2626"
+}

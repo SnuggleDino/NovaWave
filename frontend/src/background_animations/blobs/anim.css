@@ -1,0 +1,70 @@
+.background-animation.type-blobs {
+    overflow: hidden;
+    background: var(--bg-main, #000);
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.13;
+    filter: blur(70px);
+    background: var(--accent, #38bdf8);
+    will-change: transform, border-radius;
+}
+
+.blob-1 {
+    width: 520px;
+    height: 520px;
+    top: -120px;
+    left: -120px;
+    animation: blob-move-1 18s ease-in-out infinite alternate;
+}
+
+.blob-2 {
+    width: 420px;
+    height: 420px;
+    top: 35%;
+    right: -100px;
+    animation: blob-move-2 24s ease-in-out infinite alternate;
+}
+
+.blob-3 {
+    width: 360px;
+    height: 360px;
+    bottom: -80px;
+    left: 25%;
+    animation: blob-move-3 16s ease-in-out infinite alternate;
+}
+
+.blob-4 {
+    width: 300px;
+    height: 300px;
+    top: 15%;
+    left: 45%;
+    animation: blob-move-4 21s ease-in-out infinite alternate;
+}
+
+@keyframes blob-move-1 {
+    0%   { transform: translate(0, 0) scale(1);    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+    33%  { transform: translate(80px, 60px) scale(1.1);  border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%; }
+    66%  { transform: translate(30px, 130px) scale(0.95); border-radius: 50% 50% 30% 70% / 60% 40% 70% 30%; }
+    100% { transform: translate(-40px, 80px) scale(1.05); border-radius: 30% 70% 50% 50% / 50% 30% 70% 40%; }
+}
+
+@keyframes blob-move-2 {
+    0%   { transform: translate(0, 0) scale(1);    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    50%  { transform: translate(-70px, 90px) scale(1.15); border-radius: 30% 70% 70% 30% / 50% 40% 60% 50%; }
+    100% { transform: translate(-130px, -40px) scale(0.9); border-radius: 50% 50% 40% 60% / 40% 60% 30% 70%; }
+}
+
+@keyframes blob-move-3 {
+    0%   { transform: translate(0, 0) scale(1);   border-radius: 50% 50% 60% 40% / 40% 70% 30% 60%; }
+    50%  { transform: translate(90px, -55px) scale(1.1); border-radius: 70% 30% 40% 60% / 60% 40% 50% 50%; }
+    100% { transform: translate(40px, -110px) scale(0.95); border-radius: 40% 60% 50% 50% / 30% 50% 70% 40%; }
+}
+
+@keyframes blob-move-4 {
+    0%   { transform: translate(0, 0) scale(1);   border-radius: 40% 60% 50% 50% / 60% 40% 60% 40%; }
+    40%  { transform: translate(-55px, -65px) scale(1.2); border-radius: 50% 50% 30% 70% / 40% 70% 30% 60%; }
+    100% { transform: translate(65px, -35px) scale(0.85); border-radius: 70% 30% 60% 40% / 50% 60% 40% 50%; }
+}

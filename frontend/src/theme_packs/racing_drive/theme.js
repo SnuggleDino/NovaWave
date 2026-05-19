@@ -4,33 +4,39 @@ const LOCK = ['visualizer-style-select', 'theme-select', 'animation-select', 'to
 
 export default {
     onEnable: (app) => {
-        document.body.classList.add('aurora-borealis-active');
-        document.documentElement.setAttribute('data-theme', 'aurora_borealis');
-        document.documentElement.style.setProperty('--accent', '#34d399');
+        document.body.classList.add('racing-drive-active');
+        document.documentElement.setAttribute('data-theme', 'racing_drive');
+        document.documentElement.style.setProperty('--accent', '#dc2626');
         if (app.ui && app.ui.updateCachedColor) app.ui.updateCachedColor();
 
-        const intro = document.getElementById('aurora-intro');
+        const intro = document.getElementById('racing-drive-intro');
         if (intro) {
             intro.classList.add('visible');
-            setTimeout(() => intro.classList.remove('visible'), 3500);
+            setTimeout(() => intro.classList.remove('visible'), 7200);
         }
 
-        if (app.visualizer) app.visualizer.updateSettings({ style: 'waveform', accentColor: '#34d399' });
-        if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('aurora');
+        if (app.visualizer) app.visualizer.updateSettings({ style: 'bars', accentColor: '#dc2626' });
+        if (app.ui && app.ui.applyAnimationSetting) app.ui.applyAnimationSetting('off');
 
         setTimeout(() => {
             LOCK.forEach(id => { const el = document.getElementById(id); if (el) { el.disabled = true; el.closest('.setting-item')?.classList.add('tp-locked'); } });
             const animSel = document.getElementById('animation-select');
-            if (animSel) animSel.value = 'aurora';
+            if (animSel) animSel.value = 'off';
         }, 80);
+
+        const speedlines = document.createElement('div');
+        speedlines.id = 'racing-speedlines-overlay';
+        document.body.appendChild(speedlines);
     },
 
     onDisable: (app) => {
-        document.body.classList.remove('aurora-borealis-active');
+        document.body.classList.remove('racing-drive-active');
         document.documentElement.removeAttribute('data-theme');
 
         if (app.visualizer) app.visualizer.updateSettings({ accentColor: '#38bdf8' });
-
         LOCK.forEach(id => { const el = document.getElementById(id); if (el) { el.disabled = false; el.closest('.setting-item')?.classList.remove('tp-locked'); } });
+
+        const speedlines = document.getElementById('racing-speedlines-overlay');
+        if (speedlines) speedlines.remove();
     }
 };
