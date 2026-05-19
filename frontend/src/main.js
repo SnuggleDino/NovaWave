@@ -340,7 +340,9 @@ function showDeleteConfirmation(mode, id) {
         } else {
             contextFolderId = id;
             if (titleEl) titleEl.textContent = tr('cmFolderDelete');
-            if (msgEl) msgEl.textContent = tr('cmFolderDeleteConfirm');
+            const folderTrackCount = PlaylistManager.items.filter(i => i.type === 'track' && i.groupId === id).length;
+            const countSuffix = folderTrackCount > 0 ? ` — ${folderTrackCount} ${folderTrackCount === 1 ? tr('track') : tr('tracks')}` : '';
+            if (msgEl) msgEl.textContent = tr('cmFolderDeleteConfirm') + countSuffix;
         }
         confirmDeleteOverlay.classList.add('visible');
     }
@@ -514,6 +516,11 @@ function _completeCrossfade() {
     audioNextGain = null;
     audio.volume = currentVolume * volumeLimit;
     const nextIdx = crossfadeNextIndex;
+    const cfNextTrack = playlist[nextIdx];
+    if (cfNextTrack && (cfNextTrack.lastPosition || 0) > 0.5) {
+        cfNextTrack.lastPosition = 0;
+        windowApi.saveLastPosition(cfNextTrack.path, 0).catch(() => {});
+    }
     playTrack(nextIdx);
     // Set AFTER playTrack: _cancelCrossfade (called inside playTrack) resets this flag,
     // so we re-set it here to guard against a stale audio.ended from the old track
@@ -564,6 +571,13 @@ function _startCrossfade(nextIdx) {
     else audioNext.volume = 0;
     audioNext.playbackRate = settings.playbackSpeed || 1.0;
     audioNext.play().catch(() => {});
+
+    const seekPos = (nextTrack.lastPosition || 0);
+    if (seekPos > 0.5) {
+        audioNext.addEventListener('loadedmetadata', function onNextMeta() {
+            if (audioNext && seekPos < audioNext.duration) audioNext.currentTime = seekPos;
+        }, { once: true });
+    }
 
     const fadeDuration = crossfadeSeconds * 1000;
     const startVol = currentVolume;
@@ -822,7 +836,15 @@ function renderPlaylist() {
         currentIndex = playlist.findIndex(t => t.path === currentTrackPath);
     }
 
-    if (playlistInfoBar) playlistInfoBar.textContent = `${playlist.length} ${playlist.length === 1 ? tr('track') : tr('tracks')}`;
+    if (playlistInfoBar) {
+        const total = PlaylistManager.getAllTracks().length;
+        const isFiltered = (searchInput && searchInput.value) || isFavoritesFilterActive;
+        if (isFiltered && playlist.length < total) {
+            playlistInfoBar.textContent = `${playlist.length} / ${total} ${tr('tracks')}`;
+        } else {
+            playlistInfoBar.textContent = `${playlist.length} ${playlist.length === 1 ? tr('track') : tr('tracks')}`;
+        }
+    }
 
     let renderIndex = 0; const CHUNK_SIZE = 50;
 
