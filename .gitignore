@@ -2,10 +2,5 @@ build/bin
 node_modules
 frontend/dist
 repo.xml
-
-### Text & Markdown File(s)
-
-
-### Executable File(s)
 novawave.exe
 NW_STATUS.md

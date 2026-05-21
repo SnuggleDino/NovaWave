@@ -3287,10 +3287,7 @@ body.is-mini .track-title-large {
     margin-bottom: 1px !important;
     padding: 0 !important;
     text-align: left !important;
-    width: 100% !important;
     white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
 }
 
 body.is-mini .track-artist-large {
