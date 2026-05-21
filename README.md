@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v3.0.1` 
+# 🎵 NovaWave `v3.0.2` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
-> — Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source —
+> - Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source -
 
-![Version](https://img.shields.io/badge/Version-3.0.1-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.2-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -18,13 +18,12 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v3.0.1
+## ✨ What's New in v3.0.2
 
-- **Bug Fixes** — Crossfade volume limiter now applied on the GainNode path (incoming track was ignoring Max. Volume). Shift+Arrow keyboard seek no longer sets NaN on unloaded tracks. Spotify playlist download queue no longer accepts invalid track URLs.
-- **Optimizations** — TrackCache writes are now debounced (5s) instead of firing on every track event, reducing disk I/O significantly. Folder refresh is guarded against parallel calls from rapid clicking.
-- **Search Result Counter** — Playlist info bar now shows `X / Y Tracks` when search or favorites filter is active.
-- **Crossfade + Resume Position** — The incoming crossfade track now starts at its saved resume position instead of 0.
-- **Folder Delete Confirmation** — The delete dialog now shows how many tracks are inside the folder (e.g. `Delete folder? — 12 Tracks`).
+- **Bug Fixes** - Crossfade no longer stops music after a track ends without crossfade. A separate issue also blocked playback after a load error. Volume Normalization no longer overrides the user's volume setting and no longer spikes on track change due to carried-over gain.
+- **Sleep Timer Fade-Out** - The sleep timer now smoothly fades audio over 3 seconds before pausing, instead of cutting off abruptly.
+- **Restore Last Track on Startup** - NovaWave remembers the last played track and automatically selects it in the playlist on the next launch.
+- **Crossfade in Pro UI** - The V2 Pro UI now supports crossfade with a configurable duration, matching the Legacy UI feature set.
 
 ---
 
@@ -79,7 +78,7 @@ Every launch can feel different. Choose a startup animation in **Settings → In
 | 🚀 **Rocket** | Blast-off into space |
 | 🕹️ **8-Bit** | Interactive retro game screen - press start to continue |
 | 💻 **Terminal Boot** | Retro hacker-style boot sequence with typing system messages |
-| 🎵 **Vinyl Drop** | A vinyl record drops onto a turntable — tonearm lowers with app icon |
+| 🎵 **Vinyl Drop** | A vinyl record drops onto a turntable - tonearm lowers with app icon |
 | 🔴 **Neon Sign** | Flickering neon letters in your active theme's accent color |
 | 🌙 **Sleep Time** · ⭐ **Snuggle** · ⚡ **Cyberpunk** · 🏎️ **Sunset** · 🌸 **Sakura** | Theme Pack intros |
 
@@ -91,18 +90,18 @@ Handcrafted **Theme Packs** transform the entire look and feel, each with a uniq
 
 | Theme | Vibe |
 |---|---|
-| 🦖 **Snuggle Time** | Cozy dino energy — floating hearts, the original NovaWave experience |
-| 🌙 **Sleep Time** | Calm and dark — twinkling star particles, perfect for late-night listening |
-| ⚡ **Cyberpunk** | Neon lights, glitch effects — persistent CRT scanline overlay |
-| 🏎️ **Sunset Drive** | Pure 80s Retrowave — neon horizon line at the bottom |
-| 🌸 **Sakura Spirit** | Relaxed Japanese aesthetics — persistent falling cherry blossom petals |
+| 🦖 **Snuggle Time** | Cozy dino energy - floating hearts, the original NovaWave experience |
+| 🌙 **Sleep Time** | Calm and dark - twinkling star particles, perfect for late-night listening |
+| ⚡ **Cyberpunk** | Neon lights, glitch effects - persistent CRT scanline overlay |
+| 🏎️ **Sunset Drive** | Pure 80s Retrowave - neon horizon line at the bottom |
+| 🌸 **Sakura Spirit** | Relaxed Japanese aesthetics - persistent falling cherry blossom petals |
 | 🕹️ **8-Bit** | Retro game vibes all the way |
-| 🌊 **Aqua Deep** | Midnight blue deep sea — rising bubble overlay |
-| 🎷 **Jazz & Bourbon** | Warm amber, smooth and soulful — drifting smoke and an art deco neon intro |
-| ☕ **Lo-Fi Café** | Cozy sepia café — gentle rain overlay and a typewriter intro |
-| 🌌 **Aurora Borealis** | Deep navy night sky — shimmering aurora curtains of light |
-| 🏁 **Racing Drive** | Full throttle red — startlight intro (5 lights → GO!), persistent speedlines overlay |
-| 🌾 **Valley Days** | Cozy farm sunrise — stars fade as the sun rises behind the hills |
+| 🌊 **Aqua Deep** | Midnight blue deep sea - rising bubble overlay |
+| 🎷 **Jazz & Bourbon** | Warm amber, smooth and soulful - drifting smoke and an art deco neon intro |
+| ☕ **Lo-Fi Café** | Cozy sepia café - gentle rain overlay and a typewriter intro |
+| 🌌 **Aurora Borealis** | Deep navy night sky - shimmering aurora curtains of light |
+| 🏁 **Racing Drive** | Full throttle red - startlight intro (5 lights → GO!), persistent speedlines overlay |
+| 🌾 **Valley Days** | Cozy farm sunrise - stars fade as the sun rises behind the hills |
 
 > Want to build your own? See [`frontend/src/theme_packs/theme_packs.md`](frontend/src/theme_packs/theme_packs.md) for the full creation guide.
 
@@ -131,7 +130,7 @@ Set the mood with **10 animated backgrounds** (Legacy UI):
 - 🔊 **Bass Boost** - Configurable low-frequency gain
 - ✨ **Crystalizer** - Treble enhancement for sharper highs
 - 🌊 **Reverb** - Add depth and space to your music
-- 🎛️ **5-Band Equalizer** - Fine-tune 60Hz · 230Hz · 910Hz · 4kHz · 14kHz — with 6 quick presets (Flat / Pop / Rock / Classical / Jazz / Bass Boost)
+- 🎛️ **5-Band Equalizer** - Fine-tune 60Hz · 230Hz · 910Hz · 4kHz · 14kHz - with 6 quick presets (Flat / Pop / Rock / Classical / Jazz / Bass Boost)
 - 🎚️ **Sound Profiles** - One-click audio profiles: Warm · Bright · Studio · Hall
 - ⏩ **Playback Speed** - 0.25× to 3.0× with pitch preservation
 - 🔀 **Crossfade** - Smooth 1–10s transitions between tracks

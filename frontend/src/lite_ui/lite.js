@@ -1,5 +1,5 @@
 /**
- * LITE UI — lite.js
+ * LITE UI - lite.js
  * Optimized folder loader, 3-state loop, and Refresh functionality.
  */
 
@@ -145,7 +145,7 @@ function loadTrack(index) {
     const track = playlist[index];
 
     elTitle.textContent = track.title || track.name || 'Unknown';
-    elArtist.textContent = track.artist || '—';
+    elArtist.textContent = track.artist || '-';
 
     const rawPath = track.path.replace(/\\/g, '/');
     const safeUrl = '/music/' + encodeURI(rawPath).replace(/#/g, '%23');
@@ -240,7 +240,7 @@ function renderTrackList(isReshuffle = false) {
             <span class="lite-track-num">${originalIndex + 1}</span>
             <div class="lite-track-info">
                 <div class="lite-track-name">${escHtml(track.title || track.name)}</div>
-                <div class="lite-track-meta">${escHtml(track.artist || '—')}</div>
+                <div class="lite-track-meta">${escHtml(track.artist || '-')}</div>
             </div>
         `;
         div.addEventListener('click', () => {

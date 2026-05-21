@@ -205,11 +205,11 @@ export const UpdateManager = {
 
         if (result.error) {
             this._setStatus('error');
-            if (latestEl) latestEl.textContent = '—';
+            if (latestEl) latestEl.textContent = '-';
             return;
         }
 
-        if (latestEl) latestEl.textContent = result.latestVersion ? `v${result.latestVersion}` : '—';
+        if (latestEl) latestEl.textContent = result.latestVersion ? `v${result.latestVersion}` : '-';
         this._releaseUrl = result.releaseUrl || null;
 
         const isNewer = result.available ||

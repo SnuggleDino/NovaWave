@@ -29,7 +29,7 @@ export const en_pro = {
     "pro_th_title": "Title",
     "pro_th_artist": "Artist",
     "pro_th_length": "Length",
-    "pro_library_empty": "No tracks loaded — use MOUNT PATH to open a folder.",
+    "pro_library_empty": "No tracks loaded - use MOUNT PATH to open a folder.",
     "pro_no_results": "No results found.",
     "pro_request_folder": "SYSTEM: FOLDER_PICKER_REQUESTED",
     "pro_tracks_loaded": "tracks loaded",

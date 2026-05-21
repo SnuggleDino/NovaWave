@@ -134,11 +134,13 @@ export class AudioExtras {
         if (!this.audioContext || !this.analyser || !this.normGain) return;
         if (this._normInterval) { clearInterval(this._normInterval); this._normInterval = null; }
         if (!enabled) {
-            this.normGain.gain.setTargetAtTime(1.0, this.audioContext.currentTime, 0.3);
+            const now = this.audioContext.currentTime;
+            this.normGain.gain.cancelAndHoldAtTime(now);
+            this.normGain.gain.setTargetAtTime(1.0, now, 0.3);
             return;
         }
         const TARGET_RMS = 0.15;
-        const MAX_GAIN = 3.5;
+        const MAX_GAIN = 2.5;
         const buf = new Float32Array(this.analyser.fftSize);
         this._normInterval = setInterval(() => {
             if (!this.audioContext || this.audio.paused) return;
@@ -147,9 +149,26 @@ export class AudioExtras {
             for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
             const rms = Math.sqrt(sum / buf.length);
             if (rms < 0.001) return;
-            const targetGain = Math.min(TARGET_RMS / rms, MAX_GAIN);
-            this.normGain.gain.setTargetAtTime(targetGain, this.audioContext.currentTime, 0.4);
+            // Chromium scales audio.volume into the MediaElementSource signal - multiply
+            // TARGET_RMS by the current volume so normalization doesn't override the
+            // user's volume setting.
+            const vol = this.audio.volume;
+            const adjustedTarget = vol > 0 ? TARGET_RMS * vol : TARGET_RMS;
+            const targetGain = Math.min(adjustedTarget / rms, MAX_GAIN);
+            const now = this.audioContext.currentTime;
+            this.normGain.gain.cancelAndHoldAtTime(now);
+            // Faster decay (0.15s) when gain must drop to prevent audible spikes when
+            // loud content follows a quiet section with an accumulated high normGain.
+            const tc = targetGain < this.normGain.gain.value ? 0.15 : 0.8;
+            this.normGain.gain.setTargetAtTime(targetGain, now, tc);
         }, 200);
+    }
+
+    resetNormGain() {
+        if (!this.audioContext || !this.normGain) return;
+        const now = this.audioContext.currentTime;
+        this.normGain.gain.cancelAndHoldAtTime(now);
+        this.normGain.gain.setTargetAtTime(1.0, now, 0.05);
     }
 
     resume() {

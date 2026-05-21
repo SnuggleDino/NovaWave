@@ -29,7 +29,7 @@ export const de_pro = {
     "pro_th_title": "Titel",
     "pro_th_artist": "Künstler",
     "pro_th_length": "Länge",
-    "pro_library_empty": "Keine Tracks geladen — verwende PFAD EINBINDEN, um einen Ordner zu öffnen.",
+    "pro_library_empty": "Keine Tracks geladen - verwende PFAD EINBINDEN, um einen Ordner zu öffnen.",
     "pro_no_results": "Keine Ergebnisse gefunden.",
     "pro_request_folder": "SYSTEM: ORDNER-PICKER ANGEFORDERT",
     "pro_tracks_loaded": "Tracks geladen",

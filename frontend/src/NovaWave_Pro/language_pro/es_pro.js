@@ -22,7 +22,7 @@ export const es_pro = {
     "pro_th_title": "Título",
     "pro_th_artist": "Artista",
     "pro_th_length": "Duración",
-    "pro_library_empty": "Sin pistas — usa MONTAR RUTA para abrir una carpeta.",
+    "pro_library_empty": "Sin pistas - usa MONTAR RUTA para abrir una carpeta.",
     "pro_no_results": "No se encontraron resultados.",
     "pro_request_folder": "SISTEMA: SELECTOR_CARPETA",
     "pro_tracks_loaded": "pistas cargadas",

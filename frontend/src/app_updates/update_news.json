@@ -1,14 +1,14 @@
 {
-    "version": "3.0.1",
-    "date": "20. Mai 2026",
+    "version": "3.0.2",
+    "date": "21. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Bug Fixes, Optimierungen & neue Features",
-        "en": "Bug Fixes, Optimizations & New Features",
-        "tr": "Hata Düzeltmeleri, Optimizasyonlar & Yeni Özellikler",
-        "es": "Correcciones de Errores, Optimizaciones y Nuevas Funciones",
-        "fr": "Corrections de Bugs, Optimisations & Nouvelles Fonctionnalités",
-        "it": "Correzioni Bug, Ottimizzazioni e Nuove Funzionalità"
+        "de": "Bug Fixes & neue Features",
+        "en": "Bug Fixes & New Features",
+        "tr": "Hata Düzeltmeleri & Yeni Özellikler",
+        "es": "Correcciones de Errores y Nuevas Funciones",
+        "fr": "Corrections de Bugs & Nouvelles Fonctionnalités",
+        "it": "Correzioni Bug & Nuove Funzionalità"
     },
     "changes": [
         {
@@ -22,50 +22,69 @@
                 "it": "Correzioni Bug"
             },
             "desc": {
-                "de": "Crossfade: Der GainNode-Pfad ignorierte den Max.-Lautstärke-Limiter — der eingeblendete Track spielt jetzt korrekt mit dem eingestellten Limit. Keyboard-Seek: Shift+Pfeiltaste konnte NaN auf die Abspielposition setzen, wenn kein Track geladen war (isNaN-Guard hinzugefügt). Spotify-Playlist: Einzelne Track-URLs wurden vor dem Download nicht validiert — ungültige Einträge konnten die Download-Queue korrumpieren.",
-                "en": "Crossfade: The GainNode path ignored the Max. Volume limiter — the fading-in track now correctly respects the set limit. Keyboard Seek: Shift+Arrow could set NaN on the playback position when no track was loaded (isNaN guard added). Spotify Playlist: Individual track URLs were not validated before download — invalid entries could corrupt the download queue.",
-                "tr": "Crossfade: GainNode yolu Maks. Ses sınırlayıcısını yok sayıyordu — geçiş yapılan parça artık belirlenen limiti doğru şekilde takip ediyor. Klavye Arama: Shift+Ok, yüklü parça yokken oynatma konumuna NaN ayarlayabiliyordu (isNaN koruması eklendi). Spotify Çalma Listesi: Tek tek parça URL'leri indirilmeden önce doğrulanmıyordu — geçersiz girişler indirme kuyruğunu bozabiliyordu.",
-                "es": "Crossfade: La ruta GainNode ignoraba el limitador de Volumen Máximo — la pista que se desvanece ahora respeta correctamente el límite establecido. Búsqueda por Teclado: Shift+Flecha podía asignar NaN a la posición de reproducción cuando no había pista cargada (se añadió guardia isNaN). Lista de Spotify: Las URLs de pistas individuales no se validaban antes de la descarga — entradas inválidas podían corromper la cola de descarga.",
-                "fr": "Fondu Enchaîné : La route GainNode ignorait le limiteur de Volume Maximum — la piste en fondu respecte maintenant correctement la limite définie. Recherche Clavier : Shift+Flèche pouvait assigner NaN à la position de lecture quand aucune piste n'était chargée (protection isNaN ajoutée). Playlist Spotify : Les URLs de pistes individuelles n'étaient pas validées avant le téléchargement — des entrées invalides pouvaient corrompre la file de téléchargement.",
-                "it": "Crossfade: Il percorso GainNode ignorava il limitatore Volume Massimo — il brano in dissolvenza ora rispetta correttamente il limite impostato. Ricerca Tastiera: Shift+Freccia poteva impostare NaN sulla posizione di riproduzione quando nessun brano era caricato (aggiunta protezione isNaN). Playlist Spotify: Gli URL dei singoli brani non venivano validati prima del download — voci non valide potevano corrompere la coda di download."
-            }
-        },
-        {
-            "icon": "⚡",
-            "title": {
-                "de": "Optimierungen",
-                "en": "Optimizations",
-                "tr": "Optimizasyonlar",
-                "es": "Optimizaciones",
-                "fr": "Optimisations",
-                "it": "Ottimizzazioni"
-            },
-            "desc": {
-                "de": "TrackCache: Der gesamte Cache wurde bei jedem Track-Wechsel auf die Disk geschrieben — jetzt wird ein 5-Sekunden-Debounce verwendet, mehrere Ereignisse führen zu einem einzigen Schreibvorgang. Beim App-Schließen wird der Cache synchron gespeichert, sodass keine Daten verloren gehen. Ordner-Aktualisierung: Schnelles Mehrfachklicken auf 'Aktualisieren' konnte parallele ffprobe-Prozesse starten — ein Guard verhindert jetzt parallele Aufrufe.",
-                "en": "TrackCache: The entire cache was written to disk on every track change — now a 5-second debounce is used, multiple events result in a single write. On app close, the cache is written synchronously so no data is lost. Folder Refresh: Rapid multiple clicks on 'Refresh' could start parallel ffprobe processes — a guard now prevents parallel calls.",
-                "tr": "TrackCache: Her parça değişikliğinde tüm önbellek diske yazılıyordu — artık 5 saniyelik bir debounce kullanılıyor, birden fazla olay tek bir yazma işlemine dönüşüyor. Uygulama kapatıldığında önbellek senkron olarak kaydedilir. Klasör Yenileme: 'Yenile' düğmesine hızlıca birden fazla tıklamak paralel ffprobe işlemleri başlatabiliyordu — artık bir koruma paralel çağrıları engelliyor.",
-                "es": "TrackCache: Todo el caché se escribía en disco en cada cambio de pista — ahora se usa un debounce de 5 segundos, múltiples eventos resultan en una sola escritura. Al cerrar la app, el caché se guarda sincrónicamente. Actualización de Carpeta: Hacer clic rápidamente varias veces en 'Actualizar' podía iniciar procesos ffprobe paralelos — ahora un guardia previene las llamadas paralelas.",
-                "fr": "TrackCache : Tout le cache était écrit sur le disque à chaque changement de piste — un debounce de 5 secondes est maintenant utilisé, plusieurs événements aboutissent à une seule écriture. À la fermeture de l'app, le cache est écrit de manière synchrone. Actualisation Dossier : Cliquer rapidement plusieurs fois sur 'Actualiser' pouvait lancer des processus ffprobe parallèles — un garde empêche maintenant les appels parallèles.",
-                "it": "TrackCache: L'intera cache veniva scritta su disco ad ogni cambio di brano — ora viene utilizzato un debounce di 5 secondi, più eventi risultano in una singola scrittura. Alla chiusura dell'app, la cache viene salvata in modo sincrono. Aggiornamento Cartella: Cliccare rapidamente più volte su 'Aggiorna' poteva avviare processi ffprobe paralleli — ora una protezione previene le chiamate parallele."
+                "de": "Crossfade: Nach einem Crossfade konnte die Musik beim nächsten Song ohne Crossfade komplett stoppen. Ein weiteres Problem verhinderte die Wiedergabe nach einem Ladefehler. Lautstärken-Normalisierung: Die Normalisierung ignorierte die eingestellte Player-Lautstärke und spielte immer auf einem festen Pegel ab. Zusätzlich konnte beim Wechsel zwischen Tracks ein kurzer Lautstärke-Spike auftreten, da der Gain des vorherigen Tracks übernommen wurde.",
+                "en": "Crossfade: After a crossfade, music could stop completely on the next song without a crossfade. A separate issue also prevented playback after a load error. Volume Normalization: Normalization was ignoring the player's volume setting and always outputting at a fixed level. Additionally, a brief audio spike could occur on track change because the gain from the previous track was carried over.",
+                "tr": "Crossfade: Bir crossfade'in ardından müzik durabiliyordu. Ayrıca yükleme hatasından sonra oynatma engelleniyordu. Ses Normalizasyonu: Normalizasyon, player'ın ses ayarını yok sayıyordu. Parça değişiminde önceki track'tan kalan gain nedeniyle kısa bir ses spike'ı oluşabiliyordu.",
+                "es": "Crossfade: Después de un crossfade, la música podía detenerse en la siguiente pista. Un problema adicional impedía la reproducción tras un error de carga. Normalización de Volumen: La normalización ignoraba el ajuste de volumen del reproductor. Además, al cambiar de pista podía ocurrir un breve pico de audio debido a que se heredaba la ganancia de la pista anterior.",
+                "fr": "Fondu Enchaîné : Après un fondu, la musique pouvait s'arrêter sur la piste suivante. Un autre problème bloquait la lecture après une erreur de chargement. Normalisation du Volume : La normalisation ignorait le réglage de volume du lecteur. De plus, un bref pic audio pouvait survenir lors du changement de piste à cause d'un gain hérité de la piste précédente.",
+                "it": "Crossfade: Dopo un crossfade, la musica poteva fermarsi sul brano successivo. Un altro problema impediva la riproduzione dopo un errore di caricamento. Normalizzazione Volume: La normalizzazione ignorava l'impostazione del volume del player. Inoltre, al cambio di brano poteva verificarsi un breve picco audio a causa del gain ereditato dal brano precedente."
             }
         },
         {
             "icon": "✨",
             "title": {
-                "de": "Neue Features",
-                "en": "New Features",
-                "tr": "Yeni Özellikler",
-                "es": "Nuevas Funciones",
-                "fr": "Nouvelles Fonctionnalités",
-                "it": "Nuove Funzionalità"
+                "de": "Sleep Timer: Sanftes Ausblenden",
+                "en": "Sleep Timer: Smooth Fade-Out",
+                "tr": "Uyku Zamanlayıcısı: Yumusak Geçiş",
+                "es": "Temporizador: Fundido Suave",
+                "fr": "Minuterie : Fondu de Sortie",
+                "it": "Timer Sonno: Dissolvenza"
             },
             "desc": {
-                "de": "Suchergebnis-Zähler: Die Info-Leiste zeigt bei aktiver Suche oder Favoriten-Filter jetzt 'X / Y Tracks' an. Crossfade + Wiedergabe fortsetzen: Der eingeblendete Track startet jetzt ab der gespeicherten Abspielposition statt bei 0. Ordner-Löschung: Der Bestätigungsdialog zeigt jetzt die Anzahl der enthaltenen Tracks (z. B. 'Ordner löschen? — 12 Tracks').",
-                "en": "Search Result Counter: The info bar now shows 'X / Y Tracks' when search or favorites filter is active. Crossfade + Resume Position: The fading-in track now starts from the saved playback position instead of 0. Folder Deletion: The confirmation dialog now shows the number of contained tracks (e.g. 'Delete folder? — 12 Tracks').",
-                "tr": "Arama Sonuç Sayacı: Arama veya favoriler filtresi etkinken bilgi çubuğu artık 'X / Y Parça' gösteriyor. Crossfade + Kaldığı Yerden Devam: Geçiş yapılan parça artık 0 yerine kaydedilen oynatma konumundan başlıyor. Klasör Silme: Onay iletişim kutusu artık içerdiği parça sayısını gösteriyor (örn. 'Klasör silinsin mi? — 12 Parça').",
-                "es": "Contador de Resultados de Búsqueda: La barra de información ahora muestra 'X / Y Pistas' cuando la búsqueda o el filtro de favoritos está activo. Crossfade + Reanudar Posición: La pista que se desvanece ahora comienza desde la posición de reproducción guardada en vez de 0. Eliminación de Carpeta: El diálogo de confirmación ahora muestra el número de pistas contenidas (p. ej. '¿Eliminar carpeta? — 12 Pistas').",
-                "fr": "Compteur de Résultats de Recherche : La barre d'info affiche maintenant 'X / Y Pistes' quand la recherche ou le filtre favoris est actif. Fondu Enchaîné + Reprendre Position : La piste en fondu démarre maintenant à partir de la position de lecture sauvegardée au lieu de 0. Suppression de Dossier : La boîte de dialogue de confirmation affiche maintenant le nombre de pistes contenues (ex. 'Supprimer le dossier ? — 12 Pistes').",
-                "it": "Contatore Risultati Ricerca: La barra informazioni ora mostra 'X / Y Brani' quando la ricerca o il filtro preferiti è attivo. Crossfade + Riprendi Posizione: Il brano in dissolvenza ora parte dalla posizione di riproduzione salvata invece che da 0. Eliminazione Cartella: La finestra di conferma ora mostra il numero di brani contenuti (es. 'Eliminare la cartella? — 12 Brani')."
+                "de": "Der Sleep Timer blendet die Musik jetzt sanft über 3 Sekunden aus, bevor er die Wiedergabe stoppt - statt wie bisher abrupt zu pausieren.",
+                "en": "The sleep timer now smoothly fades the audio out over 3 seconds before stopping playback, instead of pausing abruptly.",
+                "tr": "Uyku zamanlayıcısı artık oynatmayı durdurmadan önce sesi 3 saniye boyunca yumuşakça kısıyor.",
+                "es": "El temporizador de sueño ahora desvanece el audio suavemente durante 3 segundos antes de detener la reproducción, en lugar de pausar de forma abrupta.",
+                "fr": "La minuterie de sommeil fait maintenant un fondu progressif du son sur 3 secondes avant d'arrêter la lecture, au lieu de mettre en pause brusquement.",
+                "it": "Il timer sonno ora sfuma l'audio gradualmente in 3 secondi prima di interrompere la riproduzione, invece di mettere in pausa bruscamente."
+            }
+        },
+        {
+            "icon": "🎵",
+            "title": {
+                "de": "Letzter Track beim Start",
+                "en": "Restore Last Track on Startup",
+                "tr": "Baslangicta Son Parcayi Yukle",
+                "es": "Restaurar Última Pista al Inicio",
+                "fr": "Restaurer le Dernier Titre au Démarrage",
+                "it": "Ripristina Ultimo Brano all'Avvio"
+            },
+            "desc": {
+                "de": "NovaWave merkt sich jetzt den zuletzt gespielten Titel. Beim nächsten Start wird dieser automatisch in der Playlist ausgewählt und angezeigt.",
+                "en": "NovaWave now remembers the last played track. On the next launch, it is automatically selected and shown in the playlist.",
+                "tr": "NovaWave artık son çalınan parçayı hatırlıyor. Bir sonraki başlatmada otomatik olarak seçilip gösteriliyor.",
+                "es": "NovaWave ahora recuerda la última pista reproducida. En el próximo inicio, se selecciona y muestra automáticamente en la lista de reproducción.",
+                "fr": "NovaWave mémorise maintenant le dernier titre joué. Au prochain démarrage, il est automatiquement sélectionné et affiché dans la liste de lecture.",
+                "it": "NovaWave ora ricorda l'ultimo brano riprodotto. Al prossimo avvio, viene selezionato e mostrato automaticamente nella playlist."
+            }
+        },
+        {
+            "icon": "🎛️",
+            "title": {
+                "de": "Crossfade im Pro UI",
+                "en": "Crossfade in Pro UI",
+                "tr": "Pro Arayüzünde Crossfade",
+                "es": "Crossfade en la Interfaz Pro",
+                "fr": "Fondu Enchaîné dans l'Interface Pro",
+                "it": "Crossfade nell'Interfaccia Pro"
+            },
+            "desc": {
+                "de": "Das Pro UI unterstützt jetzt ebenfalls Crossfade. Die Überblendung kann in den System-Einstellungen aktiviert und die Dauer in Sekunden eingestellt werden.",
+                "en": "The Pro UI now supports crossfade as well. The transition can be enabled in the system settings and the duration can be configured in seconds.",
+                "tr": "Pro arayüzü artık crossfade destekliyor. Geçis sistem ayarlarından aktiflestirilip süre saniye olarak ayarlanabilir.",
+                "es": "La interfaz Pro ahora también admite crossfade. La transición se puede activar en la configuración del sistema y la duración se puede ajustar en segundos.",
+                "fr": "L'interface Pro prend désormais en charge le fondu enchaîné. La transition peut être activée dans les paramètres système et la durée configurée en secondes.",
+                "it": "L'interfaccia Pro ora supporta anche il crossfade. La transizione può essere attivata nelle impostazioni di sistema e la durata configurata in secondi."
             }
         }
     ]

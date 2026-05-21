@@ -265,7 +265,7 @@ export const OnBoarding = {
 
         const subEl = document.createElement('p');
         subEl.style.cssText = `color: rgba(255,255,255,0.4); font-size: 0.88rem; margin: 0 0 22px; line-height: 1.5;`;
-        subEl.innerHTML = `Pick a look that feels right &nbsp;<span style="color:rgba(255,255,255,0.22);font-size:0.78rem;">— more themes &amp; options in Settings anytime</span>`;
+        subEl.innerHTML = `Pick a look that feels right &nbsp;<span style="color:rgba(255,255,255,0.22);font-size:0.78rem;">- more themes &amp; options in Settings anytime</span>`;
 
         const grid = document.createElement('div');
         grid.style.cssText = `display: grid; grid-template-columns: 1fr 1fr; gap: 11px;`;

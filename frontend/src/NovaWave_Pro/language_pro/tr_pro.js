@@ -22,7 +22,7 @@ export const tr_pro = {
     "pro_th_title": "Başlık",
     "pro_th_artist": "Sanatçı",
     "pro_th_length": "Süre",
-    "pro_library_empty": "Parça yüklenmedi — bir klasör açmak için YOLU BAĞLA butonunu kullanın.",
+    "pro_library_empty": "Parça yüklenmedi - bir klasör açmak için YOLU BAĞLA butonunu kullanın.",
     "pro_no_results": "Sonuç bulunamadı.",
     "pro_request_folder": "SİSTEM: KLASÖR_SEÇİCİ_İSTENDİ",
     "pro_tracks_loaded": "parça yüklendi",

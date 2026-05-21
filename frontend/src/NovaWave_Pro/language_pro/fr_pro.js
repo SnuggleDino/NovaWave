@@ -22,7 +22,7 @@ export const fr_pro = {
     "pro_th_title": "Titre",
     "pro_th_artist": "Artiste",
     "pro_th_length": "Durée",
-    "pro_library_empty": "Aucune piste — utilisez MONTER CHEMIN pour ouvrir un dossier.",
+    "pro_library_empty": "Aucune piste - utilisez MONTER CHEMIN pour ouvrir un dossier.",
     "pro_no_results": "Aucun résultat trouvé.",
     "pro_request_folder": "SYSTÈME: SÉLECTION_DOSSIER",
     "pro_tracks_loaded": "pistes chargées",

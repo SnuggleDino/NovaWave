@@ -20,6 +20,7 @@ const LANG_LABELS = { de: 'Deutsch', en: 'English', tr: 'Türkçe', fr: 'França
 
 const state = {
     audio: new Audio(),
+    audioNext: null,
     tracks: [],
     idx: -1,
     folders: [],
@@ -30,7 +31,13 @@ const state = {
     coverFallback: 'dino',
     favorites: [],
     startTime: Date.now(),
-    playlistStructure: null
+    playlistStructure: null,
+    crossfadeEnabled: false,
+    crossfadeSeconds: 3,
+    cfActive: false,
+    cfRaf: null,
+    cfBaseVol: 1.0,
+    cfNextIdx: -1
 };
 
 let proDragId = null;
@@ -139,7 +146,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateModeIcons();
             
             if(s.v2_theme_color) applyTheme(s.v2_theme_color);
-            
+
+            state.crossfadeEnabled = !!s.v2_crossfade_enabled;
+            state.crossfadeSeconds = parseInt(s.v2_crossfade_seconds) || 3;
+            const cfToggle = $('cf-toggle-pro');
+            const cfSecs = $('cf-secs-pro');
+            if(cfToggle) cfToggle.checked = state.crossfadeEnabled;
+            if(cfSecs) cfSecs.value = state.crossfadeSeconds;
 
             let savedFolders = [];
             if(s.v2_folders) {
@@ -272,45 +285,155 @@ async function fetchGitHubCommits() {
 }
 
 //--- Audio ---------------
+function _onAudioTimeUpdate() {
+    const a = state.audio;
+    if(!a.duration) return;
+    $('m-fill').style.width = ((a.currentTime / a.duration) * 100) + "%";
+    $('m-cur').textContent = fmt(a.currentTime);
+    $('m-tot').textContent = fmt(a.duration);
+    if(state.crossfadeEnabled && !state.cfActive && a.duration > 0) {
+        const remaining = a.duration - a.currentTime;
+        if(remaining > 0 && remaining <= state.crossfadeSeconds) _startCrossfade();
+    }
+}
+function _onAudioEnded() {
+    if(state.cfActive) return;
+    if(state.loop === 'one') { state.audio.currentTime = 0; state.audio.play().catch(() => {}); }
+    else nextTrack();
+}
+function _onAudioPlay() {
+    const playImg = $('m-play-img');
+    if(playImg) playImg.src = pauseIcon;
+    $('dash-status-label').textContent = tr('pro_status_playing');
+    $('dash-status-label').style.opacity = '1';
+    $('dash-status-label').style.color = 'var(--accent)';
+}
+function _onAudioPause() {
+    if(state.cfActive) return;
+    const playImg = $('m-play-img');
+    if(playImg) playImg.src = playIcon;
+    $('dash-status-label').textContent = tr('pro_status_paused');
+    $('dash-status-label').style.opacity = '0.3';
+    $('dash-status-label').style.color = '';
+}
+function _onAudioError() { logPro(tr('pro_audio_load_fail'), 'err'); }
+
+function _bindAudio(el) {
+    el.addEventListener('timeupdate', _onAudioTimeUpdate);
+    el.addEventListener('ended', _onAudioEnded);
+    el.addEventListener('play', _onAudioPlay);
+    el.addEventListener('pause', _onAudioPause);
+    el.addEventListener('error', _onAudioError);
+}
+function _unbindAudio(el) {
+    el.removeEventListener('timeupdate', _onAudioTimeUpdate);
+    el.removeEventListener('ended', _onAudioEnded);
+    el.removeEventListener('play', _onAudioPlay);
+    el.removeEventListener('pause', _onAudioPause);
+    el.removeEventListener('error', _onAudioError);
+}
+
+function _computeNextCfIdx() {
+    if(state.tracks.length === 0) return -1;
+    if(state.shuffle) return Math.floor(Math.random() * state.tracks.length);
+    const next = (state.idx + 1) % state.tracks.length;
+    if(next === 0 && state.loop === 'none') return -1;
+    return next;
+}
+
+function _startCrossfade() {
+    const nextIdx = _computeNextCfIdx();
+    if(nextIdx === -1) return;
+    state.cfActive = true;
+    state.cfNextIdx = nextIdx;
+    state.cfBaseVol = state.audio.volume;
+
+    const t = state.tracks[nextIdx];
+    state.audioNext = new Audio();
+    state.audioNext.volume = 0;
+    state.audioNext.src = "/music/" + encodeURIComponent(t.path.replace(/\\/g, '/'));
+    state.audioNext.play().catch(() => {});
+
+    const duration = state.crossfadeSeconds * 1000;
+    const startTime = performance.now();
+
+    function tick() {
+        const elapsed = performance.now() - startTime;
+        const ratio = Math.min(elapsed / duration, 1);
+        state.audio.volume = state.cfBaseVol * (1 - ratio);
+        state.audioNext.volume = state.cfBaseVol * ratio;
+        if(ratio >= 1) {
+            _completeCrossfade();
+        } else {
+            state.cfRaf = requestAnimationFrame(tick);
+        }
+    }
+    state.cfRaf = requestAnimationFrame(tick);
+}
+
+function _completeCrossfade() {
+    state.cfRaf = null;
+    const nextIdx = state.cfNextIdx;
+    const nextEl = state.audioNext;
+    const baseVol = state.cfBaseVol;
+
+    state.audio.pause();
+    _unbindAudio(state.audio);
+    state.audio = nextEl;
+    state.audioNext = null;
+    state.audio.volume = baseVol;
+    state.cfActive = false;
+    state.cfNextIdx = -1;
+    _bindAudio(state.audio);
+
+    state.idx = nextIdx;
+    _updatePlayUI(state.tracks[nextIdx]);
+    logPro("CROSSFADE: " + (state.tracks[nextIdx].title || state.tracks[nextIdx].path.split(/[\\/]/).pop()));
+}
+
+function _cancelCrossfade() {
+    if(state.cfRaf) { cancelAnimationFrame(state.cfRaf); state.cfRaf = null; }
+    if(state.audioNext) { state.audioNext.pause(); state.audioNext.src = ''; state.audioNext = null; }
+    if(state.cfActive) {
+        state.audio.volume = state.cfBaseVol;
+        state.cfActive = false;
+        state.cfNextIdx = -1;
+    }
+}
+
+function _updatePlayUI(t) {
+    const title = t.title || t.path.split(/[\\/]/).pop();
+    const artist = t.artist || tr('pro_unknown_artist');
+    $('m-title').textContent = title;
+    $('dash-title').textContent = title;
+    $('m-artist').textContent = artist;
+    $('dash-artist').textContent = artist;
+    requestAnimationFrame(() => { applyMarquee($('m-title')); applyMarquee($('dash-title')); });
+
+    const rawPath = t.path.replace(/\\/g, '/');
+    const safeUrlPath = encodeURI(rawPath).replace(/#/g, '%23').replace(/\?/g, '%3F');
+    const cover = `/cover/${safeUrlPath}?t=${Date.now()}`;
+    const mArt = $('m-art'); const dArt = $('dash-art');
+    mArt.src = cover; dArt.src = cover;
+    mArt.classList.remove('hidden'); dArt.classList.remove('hidden');
+    $('m-dino').classList.add('hidden'); $('dash-dino').classList.add('hidden');
+
+    const isFav = state.favorites.includes(t.path);
+    $('m-fav').classList.toggle('active', isFav);
+    LyricsManager.checkAvailability(t.path);
+    LyricsManager.hideLyrics();
+    render();
+}
+
 function initAudio() {
-    const audio = state.audio;
-
-    audio.addEventListener('timeupdate', () => {
-        if(!audio.duration) return;
-        $('m-fill').style.width = ((audio.currentTime / audio.duration) * 100) + "%";
-        $('m-cur').textContent = fmt(audio.currentTime);
-        $('m-tot').textContent = fmt(audio.duration);
-    });
-
-    audio.addEventListener('ended', () => {
-        if(state.loop === 'one') { audio.currentTime = 0; audio.play().catch(() => {}); }
-        else nextTrack();
-    });
-
-    audio.addEventListener('play', () => {
-        const playImg = $('m-play-img');
-        if(playImg) playImg.src = pauseIcon;
-        $('dash-status-label').textContent = tr('pro_status_playing');
-        $('dash-status-label').style.opacity = '1';
-        $('dash-status-label').style.color = 'var(--accent)';
-    });
-
-    audio.addEventListener('pause', () => {
-        const playImg = $('m-play-img');
-        if(playImg) playImg.src = playIcon;
-        $('dash-status-label').textContent = tr('pro_status_paused');
-        $('dash-status-label').style.opacity = '0.3';
-        $('dash-status-label').style.color = '';
-    });
-
-    audio.addEventListener('error', () => logPro(tr('pro_audio_load_fail'), 'err'));
+    _bindAudio(state.audio);
 
     $('m-play').onclick = () => {
         if(state.idx === -1 && state.tracks.length > 0) play(0);
-        else if(audio.paused) audio.play().catch(err => logPro(`PLAY_ERROR: ${err.message}`, 'err'));
-        else audio.pause();
+        else if(state.audio.paused) state.audio.play().catch(err => logPro(`PLAY_ERROR: ${err.message}`, 'err'));
+        else state.audio.pause();
     };
-    
+
     $('m-next').onclick = () => nextTrack();
     $('m-prev').onclick = () => prevTrack();
 
@@ -328,12 +451,12 @@ function initAudio() {
         updateModeIcons();
         logPro(`PLAYER: LOOP -> ${state.loop.toUpperCase()}`);
     };
-    
+
     $('m-fav').onclick = () => {
         if(state.idx < 0 || state.idx >= state.tracks.length) return;
         const currentPath = state.tracks[state.idx].path;
         const favIdx = state.favorites.indexOf(currentPath);
-        
+
         if (favIdx > -1) {
             state.favorites.splice(favIdx, 1);
             $('m-fav').classList.remove('active');
@@ -343,21 +466,21 @@ function initAudio() {
             $('m-fav').classList.add('active');
             logPro("FAV: ADDED");
         }
-        
+
         App.SetSetting('favorites', state.favorites).catch(()=>{});
         render();
     };
 
-    $('m-vol').oninput = e => { 
+    $('m-vol').oninput = e => {
         const v = parseFloat(e.target.value);
-        audio.volume = v; 
+        state.audio.volume = v;
         App.SetSetting('v2_volume', v.toString()).catch(() => {});
     };
 
     $('m-rail').onclick = e => {
-        if(!audio.duration) return;
+        if(!state.audio.duration) return;
         const rect = $('m-rail').getBoundingClientRect();
-        audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+        state.audio.currentTime = ((e.clientX - rect.left) / rect.width) * state.audio.duration;
     };
 
     //--- Cover Art Selection ---------------
@@ -520,33 +643,15 @@ function handleTracksRefresh() {
 
 function play(i) {
     if(i < 0 || i >= state.tracks.length) return;
+    _cancelCrossfade();
     state.idx = i;
     const t = state.tracks[i];
     logPro("LOAD: " + (t.title || t.path.split(/[\\/]/).pop()));
     state.audio.src = "/music/" + encodeURIComponent(t.path.replace(/\\/g, '/'));
     state.audio.play().catch(err => logPro(`PLAY_ERROR: ${err.message}`, 'err'));
-    
-    const title = t.title || t.path.split(/[\\/]/).pop();
-    const artist = t.artist || tr('pro_unknown_artist');
-    $('m-title').textContent = title;
-    $('dash-title').textContent = title;
-    $('m-artist').textContent = artist;
-    $('dash-artist').textContent = artist;
-    
 
-    requestAnimationFrame(() => {
-        applyMarquee($('m-title'));
-        applyMarquee($('dash-title'));
-    });
-    
-    const rawPath = t.path.replace(/\\/g, '/');
-    const safeUrlPath = encodeURI(rawPath).replace(/#/g, '%23').replace(/\?/g, '%3F');
-    const cover = `/cover/${safeUrlPath}?t=${Date.now()}`;
-    const mArt = $('m-art'); const dArt = $('dash-art');
-    mArt.src = cover; dArt.src = cover;
-    mArt.classList.remove('hidden'); dArt.classList.remove('hidden');
-    $('m-dino').classList.add('hidden'); $('dash-dino').classList.add('hidden');
-    
+    _updatePlayUI(t);
+
     const applyFallback = (imgEl, dinoElId) => {
         imgEl.classList.add('hidden');
         const dinoEl = $(dinoElId);
@@ -566,17 +671,8 @@ function play(i) {
             if(emojiSpan) emojiSpan.style.display = 'none';
         }
     };
-    
-    mArt.onerror = () => applyFallback(mArt, 'm-dino');
-    dArt.onerror = () => applyFallback(dArt, 'dash-dino');
-    
-    const isFav = state.favorites.includes(t.path);
-    $('m-fav').classList.toggle('active', isFav);
-
-    LyricsManager.checkAvailability(t.path);
-    LyricsManager.hideLyrics();
-
-    render();
+    $('m-art').onerror = () => applyFallback($('m-art'), 'm-dino');
+    $('dash-art').onerror = () => applyFallback($('dash-art'), 'dash-dino');
 }
 
 function render(q = '') {
@@ -867,6 +963,21 @@ function initSettingsUI() {
         }
     };
     
+    const cfToggle = $('cf-toggle-pro');
+    const cfSecs = $('cf-secs-pro');
+    if(cfToggle) cfToggle.onchange = () => {
+        state.crossfadeEnabled = cfToggle.checked;
+        App.SetSetting('v2_crossfade_enabled', state.crossfadeEnabled).catch(() => {});
+        logPro(`CROSSFADE: ${state.crossfadeEnabled ? 'ON' : 'OFF'}`);
+    };
+    if(cfSecs) cfSecs.onchange = () => {
+        const v = Math.max(1, Math.min(15, parseInt(cfSecs.value) || 3));
+        cfSecs.value = v;
+        state.crossfadeSeconds = v;
+        App.SetSetting('v2_crossfade_seconds', v).catch(() => {});
+        logPro(`CROSSFADE_SECS: ${v}`);
+    };
+
     $('btn-add-folder').onclick = () => addFolder();
 
     $('btn-reset-fx-pro').onclick = async () => {

@@ -144,6 +144,8 @@ let contextTrackIndex = null;
 let currentVisualizerStyle = 'bars';
 let visSensitivity = 1.5;
 let sleepTimerId = null;
+let sleepFadeId = null;
+let sleepFadeVolume = null;
 let lastNotifiedPath = null;
 let activeDownloaderMode = 'youtube';
 
@@ -341,7 +343,7 @@ function showDeleteConfirmation(mode, id) {
             contextFolderId = id;
             if (titleEl) titleEl.textContent = tr('cmFolderDelete');
             const folderTrackCount = PlaylistManager.items.filter(i => i.type === 'track' && i.groupId === id).length;
-            const countSuffix = folderTrackCount > 0 ? ` — ${folderTrackCount} ${folderTrackCount === 1 ? tr('track') : tr('tracks')}` : '';
+            const countSuffix = folderTrackCount > 0 ? ` - ${folderTrackCount} ${folderTrackCount === 1 ? tr('track') : tr('tracks')}` : '';
             if (msgEl) msgEl.textContent = tr('cmFolderDeleteConfirm') + countSuffix;
         }
         confirmDeleteOverlay.classList.add('visible');
@@ -527,7 +529,7 @@ function _completeCrossfade() {
     // that may still be queued in the event loop.
     crossfadeJustCompleted = true;
     if (capturedNext) {
-        // Both audioNext and audio share the same Web Audio context — stop capturedNext
+        // Both audioNext and audio share the same Web Audio context - stop capturedNext
         // exactly when audio starts outputting samples (no pipeline gap).
         audio.addEventListener('playing', function stopPrev() {
             if (capturedGain) capturedGain.gain.value = 0;
@@ -536,6 +538,7 @@ function _completeCrossfade() {
             // Restore for next crossfade (MediaElementSource binding is permanent)
             audioNext = capturedNext;
             audioNextGain = capturedGain;
+            crossfadeJustCompleted = false;
         }, { once: true });
     }
     if (resumePos > 0.5) {
@@ -553,7 +556,7 @@ function _startCrossfade(nextIdx) {
     if (!audioNext) {
         audioNext = new Audio();
         // Connect to the same Web Audio context as the main audio element so both
-        // share the same output pipeline — this eliminates the gap caused by switching
+        // share the same output pipeline - this eliminates the gap caused by switching
         // between native browser audio (audioNext) and the Web Audio API (audio).
         const ctx = audioExtras && audioExtras.getContext();
         if (ctx) {
@@ -635,6 +638,7 @@ function playTrack(index) {
     currentIndex = index;
     const track = playlist[index];
     currentTrackPath = track.path;
+    localStorage.setItem('lastPlayedPath', track.path);
     let rawPath = track.path.replace(/\\/g, '/');
     let serverPath = '/music/' + rawPath;
     let safeUrl = encodeURI(serverPath).replace(/#/g, '%23');
@@ -645,7 +649,7 @@ function playTrack(index) {
     audio.defaultPlaybackRate = speed;
     audio.playbackRate = speed;
 
-    if (audioExtras) audioExtras.resume();
+    if (audioExtras) { audioExtras.resume(); audioExtras.resetNormGain(); }
 
     audio.play().catch(e => console.error("Error playing audio:", e));
     isPlaying = true;
@@ -1424,7 +1428,7 @@ function setupAudioEvents() {
         }
         playNext();
     });
-    audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); });
+    audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); crossfadeJustCompleted = false; });
     audio.addEventListener('volumechange', () => { if (isCrossfading) return; currentVolume = volumeLimit > 0 ? audio.volume / volumeLimit : 0; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
 }
 
@@ -1585,6 +1589,11 @@ async function loadLibrary() {
             PlaylistManager.importStructure(settings.playlistStructure, basePlaylist);
             playlist = PlaylistManager.getAllTracks();
             sortPlaylist(sortMode);
+            const lastPath = localStorage.getItem('lastPlayedPath');
+            if (lastPath) {
+                const idx = playlist.findIndex(t => t.path === lastPath);
+                if (idx !== -1) { currentIndex = idx; currentTrackPath = playlist[idx].path; }
+            }
             updateUIForCurrentTrack();
         }
     } catch (e) {
@@ -2335,11 +2344,35 @@ function initSettingsLogic() {
         },
         onSleepTimerChange: (mins) => {
             if (sleepTimerId) { clearTimeout(sleepTimerId); sleepTimerId = null; }
+            if (sleepFadeId) {
+                clearInterval(sleepFadeId);
+                sleepFadeId = null;
+                if (typeof sleepFadeVolume === 'number') { audio.volume = sleepFadeVolume; sleepFadeVolume = null; }
+            }
             if (mins > 0) {
                 sleepTimerId = setTimeout(() => {
-                    audio.pause(); isPlaying = false; updatePlayPauseUI();
-                    showNotification(tr('sleepTimerStopped'));
                     sleepTimerId = null;
+                    const FADE_MS = 3000;
+                    const STEPS = 30;
+                    const interval = FADE_MS / STEPS;
+                    sleepFadeVolume = audio.volume;
+                    const startVol = sleepFadeVolume;
+                    const step = startVol / STEPS;
+                    let remaining = STEPS;
+                    sleepFadeId = setInterval(() => {
+                        remaining--;
+                        audio.volume = Math.max(0, startVol - step * (STEPS - remaining));
+                        if (remaining <= 0) {
+                            clearInterval(sleepFadeId);
+                            sleepFadeId = null;
+                            audio.pause();
+                            audio.volume = startVol;
+                            sleepFadeVolume = null;
+                            isPlaying = false;
+                            updatePlayPauseUI();
+                            showNotification(tr('sleepTimerStopped'));
+                        }
+                    }, interval);
                 }, mins * 60000);
                 showNotification(tr('sleepTimerNotify', mins), 'info', 4000);
             } else {

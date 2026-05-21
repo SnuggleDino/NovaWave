@@ -1,5 +1,5 @@
 /* ================================================================
-   VALLEY DAYS THEME — Colors, Sunrise Intro & Pixel Stars
+   VALLEY DAYS THEME - Colors, Sunrise Intro & Pixel Stars
    ================================================================ */
 
 /* ---- Core Variables ---- */
@@ -43,7 +43,7 @@
     overflow: hidden;
 }
 
-/* Sky — sunrise gradient, revealed as the night overlay fades */
+/* Sky - sunrise gradient, revealed as the night overlay fades */
 .sdv-sky {
     position: absolute;
     top: 0; left: 0;
@@ -60,7 +60,7 @@
     );
 }
 
-/* Dark night overlay on top of sunrise sky — fades out to reveal it */
+/* Dark night overlay on top of sunrise sky - fades out to reveal it */
 .sdv-sky::before {
     content: '';
     position: absolute;
@@ -142,7 +142,7 @@
     100% { opacity: 1; }
 }
 
-/* Rising sun — starts hidden behind the hills, rises above them */
+/* Rising sun - starts hidden behind the hills, rises above them */
 .sdv-sun {
     position: absolute;
     left: 50%;
@@ -175,7 +175,7 @@
     100% { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* Hill silhouette — dark green, rises from bottom */
+/* Hill silhouette - dark green, rises from bottom */
 .sdv-hillside {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -261,7 +261,7 @@
     overflow: hidden;
 }
 
-/* Layer A — brighter stars, upper band */
+/* Layer A - brighter stars, upper band */
 #stardew-stars-overlay::before {
     content: '';
     position: absolute;
@@ -288,7 +288,7 @@
     animation: sdv-twinkle-a 4s ease-in-out infinite alternate;
 }
 
-/* Layer B — softer stars, lower band */
+/* Layer B - softer stars, lower band */
 #stardew-stars-overlay::after {
     content: '';
     position: absolute;

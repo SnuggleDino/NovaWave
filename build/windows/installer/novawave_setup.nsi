@@ -1,14 +1,14 @@
 Unicode true
 
 ; ================================================================
-;  NovaWave — Windows Installer
+;  NovaWave - Windows Installer
 ;  Compile:  makensis novawave_setup.nsi
 ;  Requires: NSIS 3.x  https://nsis.sourceforge.io
 ; ================================================================
 
 ; ---- App Info ----
 !define APP_NAME        "NovaWave"
-!define APP_VERSION     "3.0.1"
+!define APP_VERSION     "3.0.2"
 !define APP_PUBLISHER   "SnuggleDino"
 !define APP_EXE         "novawave.exe"
 !define UNINST_KEY      "Software\Microsoft\Windows\CurrentVersion\Uninstall\SnuggleDinoNovaWave"
@@ -34,9 +34,9 @@ Unicode true
 
 ; Welcome page
 !define MUI_WELCOMEPAGE_TITLE           "Welcome to NovaWave ${APP_VERSION}"
-!define MUI_WELCOMEPAGE_TEXT            "This wizard will install NovaWave ${APP_VERSION} on your computer.$\r$\n$\r$\nNovaWave is a desktop music player — no ads, no clutter.$\r$\n$\r$\nClick Next to continue."
+!define MUI_WELCOMEPAGE_TEXT            "This wizard will install NovaWave ${APP_VERSION} on your computer.$\r$\n$\r$\nNovaWave is a desktop music player - no ads, no clutter.$\r$\n$\r$\nClick Next to continue."
 
-; Finish page — Launch + README checkboxes
+; Finish page - Launch + README checkboxes
 !define MUI_FINISHPAGE_RUN              "$INSTDIR\${APP_EXE}"
 !define MUI_FINISHPAGE_RUN_TEXT         "Launch NovaWave"
 !define MUI_FINISHPAGE_SHOWREADME       "$INSTDIR\README.md"

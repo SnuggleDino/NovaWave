@@ -241,6 +241,23 @@
                     </div>
                 </div>
 
+                <!-- Row 1b: Crossfade -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px; margin-top: 25px;">
+                    <div class="pro-card">
+                        <span class="card-label">CROSSFADE</span>
+                        <label style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                            <input type="checkbox" id="cf-toggle-pro">
+                            <span>Enable Crossfade</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:10px;">
+                            <span>Duration (s):</span>
+                            <input type="number" id="cf-secs-pro" min="1" max="15" value="3" class="select-pro" style="max-width:80px;">
+                        </label>
+                        <span class="btn-desc" style="margin-top:12px; display:block;">Smoothly blend between tracks. Duration sets the overlap length in seconds.</span>
+                    </div>
+                    <div></div>
+                </div>
+
                 <!-- Row 2: Cover Art + Folder Setup -->
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px; margin-top: 25px;">
                     <div class="pro-card">

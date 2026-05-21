@@ -22,7 +22,7 @@ export const it_pro = {
     "pro_th_title": "Titolo",
     "pro_th_artist": "Artista",
     "pro_th_length": "Durata",
-    "pro_library_empty": "Nessun brano — usa MONTA PERCORSO per aprire una cartella.",
+    "pro_library_empty": "Nessun brano - usa MONTA PERCORSO per aprire una cartella.",
     "pro_no_results": "Nessun risultato trovato.",
     "pro_request_folder": "SISTEMA: SELEZIONE_CARTELLA",
     "pro_tracks_loaded": "brani caricati",

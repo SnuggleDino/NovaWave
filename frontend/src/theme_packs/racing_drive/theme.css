@@ -1,5 +1,5 @@
 /* ================================================================
-   RACING DRIVE THEME — Colors, Startlight Intro & Speedlines
+   RACING DRIVE THEME - Colors, Startlight Intro & Speedlines
    ================================================================ */
 
 /* ---- Core Variables ---- */
@@ -101,7 +101,7 @@
     100% { opacity: 0; transform: scaleX(0.7) scaleY(0.4); }
 }
 
-/* GO! text — absolutely centered */
+/* GO! text - absolutely centered */
 .rd-go-text {
     position: absolute;
     top: 50%;

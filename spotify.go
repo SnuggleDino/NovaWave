@@ -141,7 +141,7 @@ func (s *SpotifyService) GetPlaylistTracks(playlistUrl string) ([]string, error)
 	}
 
 	if len(tracks) == 0 {
-		return nil, fmt.Errorf("no tracks found — spotify may require a login for this playlist")
+		return nil, fmt.Errorf("no tracks found - spotify may require a login for this playlist")
 	}
 
 	return tracks, nil
