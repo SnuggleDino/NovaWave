@@ -24,6 +24,7 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 - **Sleep Timer Fade-Out** - The sleep timer now smoothly fades audio over 3 seconds before pausing, instead of cutting off abruptly.
 - **Restore Last Track on Startup** - NovaWave remembers the last played track and automatically selects it in the playlist on the next launch.
 - **Crossfade in Pro UI** - The V2 Pro UI now supports crossfade with a configurable duration, matching the Legacy UI feature set.
+- **Mini Player Title Fix** - Long track titles in the mini player now scroll correctly instead of showing a moving ellipsis ("...").
 
 ---
 
