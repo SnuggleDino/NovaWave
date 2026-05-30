@@ -156,7 +156,7 @@ Set the mood with **10 animated backgrounds** (Legacy UI):
 Download music directly from your favorite platforms:
 
 - **YouTube** · **YouTube Music** · **Spotify**
-- Powered by `yt-dlp` + `ffmpeg` - embedded directly in the app binary
+- Powered by `yt-dlp` + `ffmpeg` - on **Windows** these are embedded directly in the app binary; on **Linux** they are used from your system installation (PATH)
 - Real-time extraction logs, configurable quality and download folder
 
 ---
@@ -171,36 +171,65 @@ Fully localized in **6 languages** across all UIs:
 
 ## 🛠️ Building from Source
 
-### Prerequisites
+NovaWave runs on **Windows** and **Linux**. The platform-specific backend code
+(media-key handling, helper binaries, "show in folder") is split into
+`platform_windows.go` and `platform_linux.go` via Go build tags, so the same
+codebase builds natively on both.
+
+### Prerequisites (all platforms)
 
 - [Go](https://go.dev/) `1.23+`
 - [Node.js](https://nodejs.org/) (LTS)
-- [Wails CLI](https://wails.io/) `v2.11.0+`
+- [Wails CLI](https://wails.io/) `v2.11.0+` — `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
 
-### Setup
+### Common setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/SnuggleDino/NovaWave-WAILS.git
-cd NovaWave-WAILS
+git clone https://github.com/SnuggleDino/NovaWave.git
+cd NovaWave
 
 # Install frontend dependencies
-1. cd frontend 
-2. npm install 
-3. cd ..
+cd frontend && npm install && cd ..
+```
 
-# Place required binaries into bin/
-# yt-dlp.exe · ffmpeg.exe · ffprobe.exe
-# (embedded into the final build via Go's embed.FS)
+### 🪟 Windows
 
-# Start development mode
-wails dev
+The helper tools are bundled and embedded into the executable:
 
-# Build a production binary
+```bash
+# Place the Windows helper binaries into bin/ before building:
+#   bin/yt-dlp.exe · bin/ffmpeg.exe · bin/ffprobe.exe
+# They are embedded at compile time via //go:embed bin/*.exe
+# (see platform_windows.go) and extracted to the user's config dir at runtime.
+
+wails dev      # development
+wails build    # production binary -> build/bin/novawave.exe
+```
+
+### 🐧 Linux
+
+Linux uses the system-installed helper tools instead of embedding them, and
+multimedia keys are handled through an **MPRIS** D-Bus service (works with
+GNOME, KDE, Hyprland/`playerctl`, etc.).
+
+```bash
+# 1. Install the runtime/build dependencies (examples):
+#    Arch / Omarchy:  sudo pacman -S webkit2gtk-4.1 gtk3 ffmpeg yt-dlp
+#    Debian/Ubuntu :  sudo apt install libgtk-3-dev libwebkit2gtk-4.1-dev ffmpeg yt-dlp
+#    Fedora        :  sudo dnf install gtk3-devel webkit2gtk4.1-devel ffmpeg yt-dlp
+
+# 2. Build. On modern distros that ship webkit2gtk-4.1 (Arch, Fedora,
+#    recent Ubuntu) pass the webkit2_41 tag:
+wails dev   -tags webkit2_41
+wails build -tags webkit2_41   # -> build/bin/novawave
+
+# On older distros that still provide webkit2gtk-4.0, drop the tag:
 wails build
 ```
 
-> The binaries (`yt-dlp`, `ffmpeg`, `ffprobe`) are embedded at compile time via `//go:embed bin/*.exe` and extracted to a temp directory at runtime - no external dependencies for end users.
+> `ffmpeg`, `ffprobe` and `yt-dlp` are resolved from `PATH` on Linux. If one is
+> missing, the related feature (downloads / duration probing / metadata edits)
+> is disabled and a hint is printed — the player itself still works.
 
 ---
 

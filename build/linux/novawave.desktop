@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=NovaWave
+GenericName=Music Player
+Comment=NovaWave desktop music player
+Exec=novawave
+Icon=novawave
+Categories=Audio;Music;Player;AudioVideo;
+Keywords=music;player;audio;
+StartupNotify=true
+Terminal=false

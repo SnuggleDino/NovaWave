@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"context"
-	"embed"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -11,12 +10,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
-	"unsafe"
 
 	"github.com/dhowden/tag"
 	"github.com/tcolgate/mp3"
@@ -33,9 +29,6 @@ func isAllowedPath(path string, allowedBases []string) bool {
 	}
 	return false
 }
-
-//go:embed bin/*.exe
-var embeddedBinaries embed.FS
 
 type App struct {
 	ctx             context.Context
@@ -145,102 +138,13 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) shutdown(ctx context.Context) {
-	if a.mediaKeyTID != 0 {
-		user32 := syscall.NewLazyDLL("user32.dll")
-		procPostThreadMessage := user32.NewProc("PostThreadMessageW")
-		procPostThreadMessage.Call(uintptr(a.mediaKeyTID), 0x0012, 0, 0) // WM_QUIT
-	}
+	a.teardownMediaKeys()
 	a.cacheTimerMu.Lock()
 	if a.cacheWriteTimer != nil {
 		a.cacheWriteTimer.Stop()
 	}
 	a.cacheTimerMu.Unlock()
 	a.saveTrackCache()
-}
-
-func (a *App) ensureBinaries() {
-	configDir, _ := os.UserConfigDir()
-	destDir := filepath.Join(configDir, "NovaWave", "bin")
-	os.MkdirAll(destDir, 0755)
-
-	files := []string{"ffmpeg.exe", "ffprobe.exe", "yt-dlp.exe"}
-
-	for _, name := range files {
-		destPath := filepath.Join(destDir, name)
-
-		if _, err := os.Stat(destPath); err != nil {
-			srcFile, err := embeddedBinaries.Open("bin/" + name)
-			if err != nil {
-				continue
-			}
-
-			dstFile, err := os.Create(destPath)
-			if err != nil {
-				srcFile.Close()
-				continue
-			}
-
-			io.Copy(dstFile, srcFile)
-			dstFile.Close()
-			srcFile.Close()
-			os.Chmod(destPath, 0755)
-		}
-	}
-}
-
-func (a *App) setupMediaKeys() {
-	tidCh := make(chan uint32, 1)
-	go func() {
-		runtime.LockOSThread()
-		user32 := syscall.NewLazyDLL("user32.dll")
-		kernel32 := syscall.NewLazyDLL("kernel32.dll")
-		procRegisterHotKey := user32.NewProc("RegisterHotKey")
-		procGetMessage := user32.NewProc("GetMessageW")
-		procGetCurrentThreadId := kernel32.NewProc("GetCurrentThreadId")
-
-		tid, _, _ := procGetCurrentThreadId.Call()
-		tidCh <- uint32(tid)
-
-		procRegisterHotKey.Call(0, 1001, 0, 0xB3)
-		procRegisterHotKey.Call(0, 1002, 0, 0xB0)
-		procRegisterHotKey.Call(0, 1003, 0, 0xB1)
-		procRegisterHotKey.Call(0, 1004, 0, 0xB2)
-		procRegisterHotKey.Call(0, 1005, 0, 0xFA)
-		procRegisterHotKey.Call(0, 1006, 0, 0xFB)
-
-		for {
-			var msg struct {
-				Hwnd    uintptr
-				Message uint32
-				WParam  uintptr
-				LParam  uintptr
-				Time    uint32
-				Pt      struct{ X, Y int32 }
-			}
-			ret, _, _ := procGetMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0)
-			if ret == 0 {
-				return
-			}
-
-			if msg.Message == 0x0312 {
-				switch msg.WParam {
-				case 1001:
-					wailsRuntime.EventsEmit(a.ctx, "media-key", "playpause")
-				case 1002:
-					wailsRuntime.EventsEmit(a.ctx, "media-key", "next")
-				case 1003:
-					wailsRuntime.EventsEmit(a.ctx, "media-key", "prev")
-				case 1004:
-					wailsRuntime.EventsEmit(a.ctx, "media-key", "stop")
-				case 1005:
-					wailsRuntime.EventsEmit(a.ctx, "media-key", "play")
-				case 1006:
-					wailsRuntime.EventsEmit(a.ctx, "media-key", "pause")
-				}
-			}
-		}
-	}()
-	a.mediaKeyTID = <-tidCh
 }
 
 func (a *App) SetWindowSize(width int, height int) {
@@ -569,6 +473,12 @@ func (a *App) getBinaryPath(name string) string {
 		return appDataPath
 	}
 
+	// Fall back to a binary available on the system PATH (typical on Linux,
+	// where ffmpeg/ffprobe/yt-dlp are provided by the distro's packages).
+	if resolved, err := exec.LookPath(name); err == nil {
+		return resolved
+	}
+
 	return name
 }
 
@@ -627,10 +537,10 @@ func (a *App) RefreshMusicFolder(path string) FolderResult {
 		}
 
 		if currentTrack.Duration == 0 {
-			ffprobePath := a.getBinaryPath("ffprobe.exe")
+			ffprobePath := a.getBinaryPath(binaryName("ffprobe"))
 			if info, err := os.Stat(ffprobePath); err == nil && !info.IsDir() {
 				cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", path)
-				cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+				configureCmd(cmd)
 				out, err := cmd.Output()
 				if err == nil {
 					var dur float64
@@ -656,7 +566,7 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 		return nil, err
 	}
 
-	ffprobePath := a.getBinaryPath("ffprobe.exe")
+	ffprobePath := a.getBinaryPath(binaryName("ffprobe"))
 	tracks := make([]Track, 0)
 	var mutex sync.Mutex
 	sem := make(chan struct{}, 10)
@@ -716,7 +626,7 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 
 			if currentTrack.Duration == 0 {
 				cmd := exec.Command(ffprobePath, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPath)
-				cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+				configureCmd(cmd)
 				out, _ := cmd.Output()
 				var dur float64
 				fmt.Sscanf(strings.TrimSpace(string(out)), "%f", &dur)
@@ -736,10 +646,6 @@ func (a *App) GetTracks(folderPath string) ([]Track, error) {
 	wg.Wait()
 	go a.saveTrackCache()
 	return tracks, nil
-}
-
-func (a *App) ShowInFolder(path string) {
-	exec.Command("explorer", "/select,", strings.ReplaceAll(path, "/", "\\")).Start()
 }
 
 func (a *App) DeleteTrack(path string) SimpleResult {
@@ -809,13 +715,13 @@ func (a *App) UpdateMetadata(pathStr string, newTitle string, newArtist string) 
 	newTitle = sanitizeTag(newTitle)
 	newArtist = sanitizeTag(newArtist)
 
-	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
+	ffmpegPath := a.getBinaryPath(binaryName("ffmpeg"))
 	ext := filepath.Ext(pathStr)
 	tempPath := strings.TrimSuffix(pathStr, ext) + "_temp" + ext
 
 	args := []string{"-i", pathStr, "-metadata", "title=" + newTitle, "-metadata", "artist=" + newArtist, "-c", "copy", "-y", tempPath}
 	cmd := exec.Command(ffmpegPath, args...)
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	configureCmd(cmd)
 	err := cmd.Run()
 	if err != nil {
 		return SimpleResult{Success: false, Error: err.Error()}
@@ -846,7 +752,7 @@ func (a *App) UpdateTitle(pathStr string, newTitle string) SimpleResult {
 }
 
 func (a *App) SetCoverArt(audioPath string, imagePath string) SimpleResult {
-	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
+	ffmpegPath := a.getBinaryPath(binaryName("ffmpeg"))
 	ext := filepath.Ext(audioPath)
 	tempPath := strings.TrimSuffix(audioPath, ext) + "_cover_temp" + ext
 
@@ -864,7 +770,7 @@ func (a *App) SetCoverArt(audioPath string, imagePath string) SimpleResult {
 	}
 
 	cmd := exec.Command(ffmpegPath, args...)
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	configureCmd(cmd)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -910,11 +816,13 @@ func (a *App) HasLyrics(pathStr string) bool {
 func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	cfg := a.LoadConfig()
 	folderPath := cfg.DownloadFolder
-	ytPath := a.getBinaryPath("yt-dlp.exe")
-	ffmpegPath := a.getBinaryPath("ffmpeg.exe")
+	ytPath := a.getBinaryPath(binaryName("yt-dlp"))
+	ffmpegPath := a.getBinaryPath(binaryName("ffmpeg"))
 
-	if _, err := os.Stat(ytPath); err != nil {
-		return SimpleResult{Success: false, Error: "yt-dlp.exe not found in bin folder"}, nil
+	if _, err := exec.LookPath(ytPath); err != nil {
+		if _, statErr := os.Stat(ytPath); statErr != nil {
+			return SimpleResult{Success: false, Error: "yt-dlp not found. Install it via your package manager (e.g. 'pacman -S yt-dlp', 'apt install yt-dlp') or place the binary in NovaWave's bin folder."}, nil
+		}
 	}
 
 	qualityMap := map[string]string{"best": "0", "high": "5", "standard": "9"}
@@ -940,7 +848,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	}
 
 	cmd := exec.Command(ytPath, args...)
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	configureCmd(cmd)
 
 	stdout, _ := cmd.StdoutPipe()
 	stderr, _ := cmd.StderrPipe()
@@ -953,7 +861,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 		ctx, cancel := context.WithTimeout(a.ctx, 15*time.Second)
 		defer cancel()
 		tCmd := exec.CommandContext(ctx, ytPath, "--get-title", "--no-warnings", opts.Url)
-		tCmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+		configureCmd(tCmd)
 		if out, err := tCmd.Output(); err == nil {
 			title := strings.TrimSpace(string(out))
 			if title != "" {
@@ -1018,7 +926,6 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 
 	return SimpleResult{Success: true}, nil
 }
-
 
 func (a *App) IsSpotifyUrl(url string) bool {
 	return a.spotifyService.IsSpotifyUrl(url)
