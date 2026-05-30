@@ -1,90 +1,52 @@
 {
-    "version": "3.0.2",
-    "date": "21. Mai 2026",
+    "version": "3.0.3",
+    "date": "30. Mai 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Bug Fixes & neue Features",
-        "en": "Bug Fixes & New Features",
-        "tr": "Hata Düzeltmeleri & Yeni Özellikler",
-        "es": "Correcciones de Errores y Nuevas Funciones",
-        "fr": "Corrections de Bugs & Nouvelles Fonctionnalités",
-        "it": "Correzioni Bug & Nuove Funzionalità"
+        "de": "Linux-Unterstützung & Fixes",
+        "en": "Linux Support & Fixes",
+        "tr": "Linux Desteği & Düzeltmeler",
+        "es": "Soporte para Linux y Correcciones",
+        "fr": "Support Linux & Corrections",
+        "it": "Supporto Linux & Correzioni"
     },
     "changes": [
         {
-            "icon": "🐛",
+            "icon": "🐧",
             "title": {
-                "de": "Bug Fixes",
-                "en": "Bug Fixes",
-                "tr": "Hata Düzeltmeleri",
-                "es": "Correcciones de Errores",
-                "fr": "Corrections de Bugs",
-                "it": "Correzioni Bug"
+                "de": "Linux-Unterstützung",
+                "en": "Linux Support",
+                "tr": "Linux Desteği",
+                "es": "Soporte para Linux",
+                "fr": "Support Linux",
+                "it": "Supporto Linux"
             },
             "desc": {
-                "de": "Crossfade: Nach einem Crossfade konnte die Musik beim nächsten Song ohne Crossfade komplett stoppen. Ein weiteres Problem verhinderte die Wiedergabe nach einem Ladefehler. Lautstärken-Normalisierung: Die Normalisierung ignorierte die eingestellte Player-Lautstärke und spielte immer auf einem festen Pegel ab. Zusätzlich konnte beim Wechsel zwischen Tracks ein kurzer Lautstärke-Spike auftreten, da der Gain des vorherigen Tracks übernommen wurde.",
-                "en": "Crossfade: After a crossfade, music could stop completely on the next song without a crossfade. A separate issue also prevented playback after a load error. Volume Normalization: Normalization was ignoring the player's volume setting and always outputting at a fixed level. Additionally, a brief audio spike could occur on track change because the gain from the previous track was carried over.",
-                "tr": "Crossfade: Bir crossfade'in ardından müzik durabiliyordu. Ayrıca yükleme hatasından sonra oynatma engelleniyordu. Ses Normalizasyonu: Normalizasyon, player'ın ses ayarını yok sayıyordu. Parça değişiminde önceki track'tan kalan gain nedeniyle kısa bir ses spike'ı oluşabiliyordu.",
-                "es": "Crossfade: Después de un crossfade, la música podía detenerse en la siguiente pista. Un problema adicional impedía la reproducción tras un error de carga. Normalización de Volumen: La normalización ignoraba el ajuste de volumen del reproductor. Además, al cambiar de pista podía ocurrir un breve pico de audio debido a que se heredaba la ganancia de la pista anterior.",
-                "fr": "Fondu Enchaîné : Après un fondu, la musique pouvait s'arrêter sur la piste suivante. Un autre problème bloquait la lecture après une erreur de chargement. Normalisation du Volume : La normalisation ignorait le réglage de volume du lecteur. De plus, un bref pic audio pouvait survenir lors du changement de piste à cause d'un gain hérité de la piste précédente.",
-                "it": "Crossfade: Dopo un crossfade, la musica poteva fermarsi sul brano successivo. Un altro problema impediva la riproduzione dopo un errore di caricamento. Normalizzazione Volume: La normalizzazione ignorava l'impostazione del volume del player. Inoltre, al cambio di brano poteva verificarsi un breve picco audio a causa del gain ereditato dal brano precedente."
+                "de": "NovaWave läuft jetzt nativ unter Linux – zusätzlich zu Windows. Unter Linux werden ffmpeg, ffprobe und yt-dlp aus dem System genutzt, und die Multimedia-Tasten (Play/Pause, Vor/Zurück) funktionieren über MPRIS – kompatibel mit GNOME, KDE und Hyprland.",
+                "en": "NovaWave now runs natively on Linux, in addition to Windows. On Linux, ffmpeg, ffprobe and yt-dlp are used from the system, and the multimedia keys (play/pause, next/previous) work via MPRIS – compatible with GNOME, KDE and Hyprland.",
+                "tr": "NovaWave artık Windows'a ek olarak Linux'ta da yerel olarak çalışıyor. Linux'ta ffmpeg, ffprobe ve yt-dlp sistemden kullanılır ve multimedya tuşları (oynat/duraklat, ileri/geri) GNOME, KDE ve Hyprland ile uyumlu şekilde MPRIS üzerinden çalışır.",
+                "es": "NovaWave ahora se ejecuta de forma nativa en Linux, además de Windows. En Linux, ffmpeg, ffprobe y yt-dlp se usan desde el sistema, y las teclas multimedia (reproducir/pausar, siguiente/anterior) funcionan mediante MPRIS, compatible con GNOME, KDE y Hyprland.",
+                "fr": "NovaWave fonctionne désormais nativement sous Linux, en plus de Windows. Sous Linux, ffmpeg, ffprobe et yt-dlp sont utilisés depuis le système, et les touches multimédia (lecture/pause, suivant/précédent) fonctionnent via MPRIS, compatible avec GNOME, KDE et Hyprland.",
+                "it": "NovaWave ora funziona in modo nativo su Linux, oltre che su Windows. Su Linux, ffmpeg, ffprobe e yt-dlp vengono usati dal sistema e i tasti multimediali (riproduci/pausa, avanti/indietro) funzionano tramite MPRIS, compatibile con GNOME, KDE e Hyprland."
             }
         },
         {
-            "icon": "✨",
+            "icon": "🎨",
             "title": {
-                "de": "Sleep Timer: Sanftes Ausblenden",
-                "en": "Sleep Timer: Smooth Fade-Out",
-                "tr": "Uyku Zamanlayıcısı: Yumusak Geçiş",
-                "es": "Temporizador: Fundido Suave",
-                "fr": "Minuterie : Fondu de Sortie",
-                "it": "Timer Sonno: Dissolvenza"
+                "de": "Dropdown-Darstellung unter Linux",
+                "en": "Dropdown Rendering on Linux",
+                "tr": "Linux'ta Açılır Menü Görünümü",
+                "es": "Visualización de Menús en Linux",
+                "fr": "Affichage des Menus sous Linux",
+                "it": "Visualizzazione dei Menu su Linux"
             },
             "desc": {
-                "de": "Der Sleep Timer blendet die Musik jetzt sanft über 3 Sekunden aus, bevor er die Wiedergabe stoppt - statt wie bisher abrupt zu pausieren.",
-                "en": "The sleep timer now smoothly fades the audio out over 3 seconds before stopping playback, instead of pausing abruptly.",
-                "tr": "Uyku zamanlayıcısı artık oynatmayı durdurmadan önce sesi 3 saniye boyunca yumuşakça kısıyor.",
-                "es": "El temporizador de sueño ahora desvanece el audio suavemente durante 3 segundos antes de detener la reproducción, en lugar de pausar de forma abrupta.",
-                "fr": "La minuterie de sommeil fait maintenant un fondu progressif du son sur 3 secondes avant d'arrêter la lecture, au lieu de mettre en pause brusquement.",
-                "it": "Il timer sonno ora sfuma l'audio gradualmente in 3 secondi prima di interrompere la riproduzione, invece di mettere in pausa bruscamente."
-            }
-        },
-        {
-            "icon": "🎵",
-            "title": {
-                "de": "Letzter Track beim Start",
-                "en": "Restore Last Track on Startup",
-                "tr": "Baslangicta Son Parcayi Yukle",
-                "es": "Restaurar Última Pista al Inicio",
-                "fr": "Restaurer le Dernier Titre au Démarrage",
-                "it": "Ripristina Ultimo Brano all'Avvio"
-            },
-            "desc": {
-                "de": "NovaWave merkt sich jetzt den zuletzt gespielten Titel. Beim nächsten Start wird dieser automatisch in der Playlist ausgewählt und angezeigt.",
-                "en": "NovaWave now remembers the last played track. On the next launch, it is automatically selected and shown in the playlist.",
-                "tr": "NovaWave artık son çalınan parçayı hatırlıyor. Bir sonraki başlatmada otomatik olarak seçilip gösteriliyor.",
-                "es": "NovaWave ahora recuerda la última pista reproducida. En el próximo inicio, se selecciona y muestra automáticamente en la lista de reproducción.",
-                "fr": "NovaWave mémorise maintenant le dernier titre joué. Au prochain démarrage, il est automatiquement sélectionné et affiché dans la liste de lecture.",
-                "it": "NovaWave ora ricorda l'ultimo brano riprodotto. Al prossimo avvio, viene selezionato e mostrato automaticamente nella playlist."
-            }
-        },
-        {
-            "icon": "🎛️",
-            "title": {
-                "de": "Crossfade im Pro UI",
-                "en": "Crossfade in Pro UI",
-                "tr": "Pro Arayüzünde Crossfade",
-                "es": "Crossfade en la Interfaz Pro",
-                "fr": "Fondu Enchaîné dans l'Interface Pro",
-                "it": "Crossfade nell'Interfaccia Pro"
-            },
-            "desc": {
-                "de": "Das Pro UI unterstützt jetzt ebenfalls Crossfade. Die Überblendung kann in den System-Einstellungen aktiviert und die Dauer in Sekunden eingestellt werden.",
-                "en": "The Pro UI now supports crossfade as well. The transition can be enabled in the system settings and the duration can be configured in seconds.",
-                "tr": "Pro arayüzü artık crossfade destekliyor. Geçis sistem ayarlarından aktiflestirilip süre saniye olarak ayarlanabilir.",
-                "es": "La interfaz Pro ahora también admite crossfade. La transición se puede activar en la configuración del sistema y la duración se puede ajustar en segundos.",
-                "fr": "L'interface Pro prend désormais en charge le fondu enchaîné. La transition peut être activée dans les paramètres système et la durée configurée en secondes.",
-                "it": "L'interfaccia Pro ora supporta anche il crossfade. La transizione può essere attivata nelle impostazioni di sistema e la durata configurata in secondi."
+                "de": "Auswahlmenüs (Sprache, Sortierung und alle Einstellungen) wurden unter Linux als weiße Felder angezeigt. Sie passen sich jetzt korrekt dem dunklen Theme an.",
+                "en": "Dropdown menus (language, sorting and all settings) appeared as blank white boxes on Linux. They now correctly match the dark theme.",
+                "tr": "Açılır menüler (dil, sıralama ve tüm ayarlar) Linux'ta beyaz kutular olarak görünüyordu. Artık koyu temayla doğru şekilde uyumlu görünüyor.",
+                "es": "Los menús desplegables (idioma, orden y todos los ajustes) aparecían como cuadros blancos en Linux. Ahora coinciden correctamente con el tema oscuro.",
+                "fr": "Les menus déroulants (langue, tri et tous les paramètres) apparaissaient comme des cases blanches sous Linux. Ils correspondent maintenant correctement au thème sombre.",
+                "it": "I menu a discesa (lingua, ordinamento e tutte le impostazioni) apparivano come riquadri bianchi su Linux. Ora corrispondono correttamente al tema scuro."
             }
         }
     ]

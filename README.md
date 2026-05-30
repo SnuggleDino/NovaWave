@@ -1,10 +1,11 @@
-# 🎵 NovaWave `v3.0.2` 
+# 🎵 NovaWave `v3.0.3` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > - Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source -
 
-![Version](https://img.shields.io/badge/Version-3.0.2-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.3-38bdf8?style=for-the-badge)
+![Platforms](https://img.shields.io/badge/Platforms-Windows_·_Linux-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
 
@@ -18,13 +19,21 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v3.0.2
+## ✨ What's New in v3.0.3
+
+- **Linux Support** - NovaWave now runs natively on Linux in addition to Windows. Platform-specific code is separated via Go build tags; on Linux, `ffmpeg`/`ffprobe`/`yt-dlp` are used from the system and the multimedia keys work through an MPRIS D-Bus service (GNOME, KDE, Hyprland/`playerctl`).
+- **Dropdown Rendering on Linux** - Legacy-UI dropdowns (language, sort, settings) no longer appear as blank white boxes under WebKitGTK; they now match the dark theme.
+
+<details>
+<summary>Previous release — v3.0.2</summary>
 
 - **Bug Fixes** - Crossfade no longer stops music after a track ends without crossfade. A separate issue also blocked playback after a load error. Volume Normalization no longer overrides the user's volume setting and no longer spikes on track change due to carried-over gain.
 - **Sleep Timer Fade-Out** - The sleep timer now smoothly fades audio over 3 seconds before pausing, instead of cutting off abruptly.
 - **Restore Last Track on Startup** - NovaWave remembers the last played track and automatically selects it in the playlist on the next launch.
 - **Crossfade in Pro UI** - The V2 Pro UI now supports crossfade with a configurable duration, matching the Legacy UI feature set.
 - **Mini Player Title Fix** - Long track titles in the mini player now scroll correctly instead of showing a moving ellipsis ("...").
+
+</details>
 
 ---
 
