@@ -101,6 +101,9 @@
     border: var(--border-thin) !important;
     color: var(--text-main) !important;
     font-family: var(--font-stack) !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
 }
 
 
