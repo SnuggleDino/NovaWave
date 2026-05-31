@@ -236,9 +236,26 @@ wails build -tags webkit2_41   # -> build/bin/novawave
 wails build
 ```
 
-> `ffmpeg`, `ffprobe` and `yt-dlp` are resolved from `PATH` on Linux. If one is
-> missing, the related feature (downloads / duration probing / metadata edits)
-> is disabled and a hint is printed — the player itself still works.
+> `ffmpeg`, `ffprobe` and `yt-dlp` are resolved from `PATH` (and from the
+> conventional `/usr/bin`, `/usr/local/bin`, `/bin` directories, so detection
+> still works when launched from a desktop entry with a minimal environment).
+> If one is missing, the related feature (downloads / duration probing /
+> metadata edits) is disabled and a hint is printed — the player itself still works.
+
+#### Troubleshooting
+
+- **`Error 71 (Protocol error) dispatching to Wayland display`** (crash on
+  start) — a WebKitGTK/Wayland issue, most common in VMs or software-rendering
+  setups. Run NovaWave through XWayland instead:
+  ```bash
+  GDK_BACKEND=x11 novawave
+  ```
+  To make it permanent, set `Exec=env GDK_BACKEND=x11 novawave` in the
+  `.desktop` entry, or add a shell alias.
+- **Choppy / low FPS in the performance overlay** — typical when there is no
+  GPU acceleration (e.g. a VM with a virtual display); WebKitGTK then renders
+  in software. Turn off the visualizer/background animations or use the Lite
+  UI (`CTRL + U + 3`). On real GPU hardware it runs at full frame rate.
 
 ---
 

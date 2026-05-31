@@ -24,6 +24,13 @@ func binaryName(base string) string {
 	return base
 }
 
+// systemBinaryDirs returns the conventional locations distro packages install
+// CLI tools to. These are probed when PATH is incomplete — e.g. when the app
+// is started from a desktop launcher with a minimal environment.
+func systemBinaryDirs() []string {
+	return []string{"/usr/local/bin", "/usr/bin", "/bin"}
+}
+
 // configureCmd is a no-op on Linux; there is no console window to hide.
 func configureCmd(cmd *exec.Cmd) {}
 
@@ -32,8 +39,11 @@ func configureCmd(cmd *exec.Cmd) {}
 // (ffmpeg, ffprobe, yt-dlp) and resolved through getBinaryPath / PATH.
 func (a *App) ensureBinaries() {
 	for _, name := range []string{"ffmpeg", "ffprobe", "yt-dlp"} {
-		if _, err := exec.LookPath(name); err != nil {
-			fmt.Fprintf(os.Stderr, "NovaWave: %q not found in PATH; install it via your package manager for full functionality\n", name)
+		// getBinaryPath checks PATH and the conventional install dirs; it
+		// returns an absolute path when the tool is found, or the bare name
+		// otherwise. Only warn in the latter case.
+		if resolved := a.getBinaryPath(name); !filepath.IsAbs(resolved) {
+			fmt.Fprintf(os.Stderr, "NovaWave: %q not found; install it via your package manager for full functionality\n", name)
 		}
 	}
 }

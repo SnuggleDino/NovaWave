@@ -479,6 +479,16 @@ func (a *App) getBinaryPath(name string) string {
 		return resolved
 	}
 
+	// PATH can be stripped down when the app is started from a graphical
+	// launcher (.desktop) rather than a shell, so also probe the platform's
+	// conventional install directories directly.
+	for _, dir := range systemBinaryDirs() {
+		candidate := filepath.Join(dir, name)
+		if info, err := os.Stat(candidate); err == nil && !info.IsDir() {
+			return candidate
+		}
+	}
+
 	return name
 }
 

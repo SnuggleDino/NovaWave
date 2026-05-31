@@ -27,6 +27,13 @@ func binaryName(base string) string {
 	return base + ".exe"
 }
 
+// systemBinaryDirs returns conventional install directories to probe when a
+// tool is not found via PATH. On Windows the helpers are bundled, so there
+// are none.
+func systemBinaryDirs() []string {
+	return nil
+}
+
 // configureCmd hides the console window that would otherwise flash up when a
 // child process is started.
 func configureCmd(cmd *exec.Cmd) {
