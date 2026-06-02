@@ -6,21 +6,20 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/dhowden/tag"
 )
 
-// serveMedia handles /music/ (audio files) and /cover/ (embedded cover art)
-// requests. It is shared by the Wails asset Handler (FileLoader) and the
-// loopback media server below, so both expose identical, access-checked
-// endpoints. Returns true when the request was a media request (handled).
+// serveMedia handles /music/ (audio) and /cover/ (embedded art) requests,
+// shared by the Wails asset Handler and the loopback server. Returns true when
+// the request was handled.
 func serveMedia(a *App, w http.ResponseWriter, r *http.Request) bool {
 	path := r.URL.Path
 
-	// Allow the WebKit media player / fetch to read these cross-origin
-	// (the loopback server's origin differs from the app's asset origin,
-	// and lite.html's <audio crossorigin="anonymous"> requires CORS).
+	// CORS: loopback origin differs from the app origin; lite.html's
+	// <audio crossorigin> needs it.
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	if strings.HasPrefix(path, "/music/") {
@@ -74,12 +73,15 @@ func serveMedia(a *App, w http.ResponseWriter, r *http.Request) bool {
 }
 
 // startMediaServer starts a loopback HTTP server for audio/cover delivery.
-// WebKitGTK refuses to play media from the Wails custom asset scheme
-// (FormatError at prepareToPlay) and mis-seeks blob: URLs (audio jumps around),
-// so the frontend instead points <audio> at real http://127.0.0.1:<port>/music/
-// URLs, which the GStreamer media player streams correctly with proper
-// byte-range / seek support.
+// Linux/WebKitGTK only: there the media player can't play from the Wails asset
+// scheme, so the frontend points <audio> at http://127.0.0.1:<port>/music/...
+// Windows (WebView2) uses the same-origin asset scheme (keeps Web Audio
+// working), so leave mediaBaseURL empty there.
 func (a *App) startMediaServer() {
+	if runtime.GOOS != "linux" {
+		return
+	}
+
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		return
@@ -89,11 +91,9 @@ func (a *App) startMediaServer() {
 	a.mediaBaseURL = fmt.Sprintf("http://%s", ln.Addr().String())
 	a.mu.Unlock()
 
-	// Use a bare HandlerFunc, NOT http.ServeMux: the frontend builds URLs as
-	// "/music/" + an absolute file path, producing a double slash
-	// ("/music//home/..."). ServeMux would 301-redirect that to the cleaned
-	// "/music/home/..." and the leading slash of the file path would be lost,
-	// breaking the access check. A bare handler preserves r.URL.Path verbatim.
+	// Bare HandlerFunc, not ServeMux: ServeMux would 301-clean the
+	// "/music//home/..." double slash and drop the path's leading slash. This
+	// keeps r.URL.Path verbatim.
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !serveMedia(a, w, r) {
 			w.WriteHeader(http.StatusNotFound)
@@ -103,9 +103,8 @@ func (a *App) startMediaServer() {
 	go srv.Serve(ln)
 }
 
-// GetMediaBaseURL returns the loopback base URL (e.g. http://127.0.0.1:45678)
-// the frontend prefixes onto /music/ and /cover/ paths. Empty if the server
-// failed to start (frontend then falls back to relative asset-scheme URLs).
+// GetMediaBaseURL returns the loopback base URL the frontend prefixes onto
+// /music/ and /cover/ paths. Empty on Windows or if the server didn't start.
 func (a *App) GetMediaBaseURL() string {
 	a.mu.Lock()
 	defer a.mu.Unlock()

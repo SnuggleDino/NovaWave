@@ -17,15 +17,17 @@ export class AudioExtras {
     init() {
         if (this.initialized) return;
 
-        // WebKitGTK compatibility: routing the <audio> element through a
-        // MediaElementAudioSourceNode breaks media playback on WebKitGTK
-        // (player fails at prepareToPlay with FormatError, before any data is
-        // fetched). When that Web Audio path is unavailable/broken we skip the
-        // whole chain so the element plays directly. All setX()/resume()/
-        // getContext() methods already null-check audioContext, so they become
-        // safe no-ops. Set window.__novawaveDisableWebAudio = false to re-enable.
-        if (typeof window !== 'undefined' && window.__novawaveDisableWebAudio !== false) {
-            console.warn('[AudioExtras] Web Audio chain disabled (WebKitGTK compatibility) — audio effects/normalization/visualizer inactive, direct playback only.');
+        // Web Audio (createMediaElementSource) breaks <audio> playback on
+        // WebKitGTK/Linux but works on Chromium WebView2 (Windows), so bypass it
+        // only on WebKitGTK, detected by the absence of a Chrome/Edg UA token
+        // (default to bypass if unsure, so Linux can't silently re-break).
+        // window.__novawaveDisableWebAudio forces it on (true) / off (false).
+        const ua = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+        const isChromium = /\bChrome\/|\bEdg\//.test(ua);
+        const override = (typeof window !== 'undefined') ? window.__novawaveDisableWebAudio : undefined;
+        const disableWebAudio = (override !== undefined) ? !!override : !isChromium;
+        if (disableWebAudio) {
+            console.warn('[AudioExtras] Web Audio chain disabled (WebKitGTK/Linux compatibility) — effects/normalization/visualizer inactive, direct playback only.');
             return;
         }
 

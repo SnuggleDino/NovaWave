@@ -632,18 +632,8 @@ function showResumeToast(position) {
     resumeToastTimeout = setTimeout(dismissResumeToast, 8000);
 }
 
-// WebKitGTK refuses to load media from the Wails custom asset scheme into an
-// <audio> element (player fails at prepareToPlay with FormatError, before it
-// ever fetches the bytes). Fetch the file via the asset handler (a plain fetch,
-// which the scheme DOES allow) and play it from an in-memory blob: URL, which
-// the GStreamer media player accepts. Old blob URLs are revoked per element.
-// Audio (and cover) are served from a loopback HTTP server started by the Go
-// backend (see media_server.go / App.GetMediaBaseURL), e.g.
-// http://127.0.0.1:45678. This is required on Linux/WebKitGTK: the WebKit media
-// player refuses to play media from the Wails custom asset scheme (fails at
-// prepareToPlay with FormatError) and mis-seeks blob: URLs (audio jumps around
-// mid-track even though the timeline is linear). A real loopback HTTP URL is
-// streamed correctly by GStreamer with proper byte-range / seek support.
+// On Linux, audio is served from a loopback HTTP server (App.GetMediaBaseURL),
+// since WebKitGTK can't play media from the Wails asset scheme. Empty on Windows.
 let _mediaBasePromise = null;
 function getMediaBase() {
     if (_mediaBasePromise === null) {
@@ -652,9 +642,8 @@ function getMediaBase() {
     return _mediaBasePromise;
 }
 
-// Sets audioEl.src to the loopback URL for serverUrl (e.g. "/music/...").
-// A load token guards against a rapid second call superseding this one; returns
-// the final URL, or null if superseded (callers must not play() on null).
+// Set audioEl.src for serverUrl ("/music/..."). The load token drops a stale
+// call when a newer one supersedes it; returns the URL, or null if superseded.
 function setAudioSrcViaBlob(audioEl, serverUrl) {
     const token = (audioEl._novawaveLoadToken || 0) + 1;
     audioEl._novawaveLoadToken = token;

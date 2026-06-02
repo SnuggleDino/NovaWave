@@ -139,14 +139,8 @@ function toggleLoop() {
     }
 }
 
-// WebKitGTK refuses to load media from the Wails custom asset scheme into an
-// <audio> element (FormatError at prepareToPlay, before any fetch). Fetch the
-// bytes (a plain fetch IS allowed on the scheme) and play from an in-memory
-// blob: URL, which the GStreamer media player accepts.
-// Audio is served from a loopback HTTP server (Go: App.GetMediaBaseURL /
-// media_server.go). On Linux/WebKitGTK the media player can't play the Wails
-// asset scheme (FormatError) and mis-seeks blob: URLs (audio jumps around); a
-// real http://127.0.0.1:<port>/ URL streams correctly with range/seek support.
+// On Linux, audio is served from a loopback HTTP server (App.GetMediaBaseURL),
+// since WebKitGTK can't play media from the Wails asset scheme. Empty on Windows.
 let _mediaBasePromise = null;
 function getMediaBase() {
     if (_mediaBasePromise === null) {
