@@ -1,0 +1,85 @@
+# Builds the Windows version of NovaWave (portable .exe + NSIS installer) on a
+# GitHub-hosted Windows machine and attaches both to the matching GitHub
+# release. (Linux is built separately / locally with -tags webkit2_41.)
+name: Windows Build
+
+# --- When does this run? ---
+on:
+  push:
+    tags:
+      - 'v*'            # any version tag (e.g. v3.0.4) pushed to GitHub
+  workflow_dispatch:    # ...plus a manual "Run workflow" button in the Actions tab
+    inputs:
+      tag:
+        description: 'Existing release tag to attach the build to'
+        required: true
+        default: 'v3.0.4'
+
+# Let the built-in GITHUB_TOKEN upload files to releases.
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest        # a real Windows machine provided by GitHub
+    steps:
+      # 1. Fresh clone of the repo (includes the bin/*.exe helpers that get embedded)
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Install Go — version is read from go.mod so it always matches the project
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      # 3. Install Node.js — Wails uses it to install/build the frontend
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 4. Install NSIS so Wails can produce the installer
+      - name: Install NSIS
+        run: choco install nsis -y
+
+      # 5. Install the Wails CLI (pinned to go.mod's version) and put Go's bin
+      #    folder on PATH so the `wails` command is found in the next step
+      - name: Install Wails CLI
+        shell: bash
+        run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      # 6. Build — produces build/bin/novawave.exe AND the NSIS installer.
+      #    Wails installs + builds the frontend automatically (see wails.json).
+      - name: Build (.exe + installer)
+        run: wails build -platform windows/amd64 -nsis
+
+      # 7. Figure out which release tag to attach to: the pushed tag, or the
+      #    tag typed into the manual "Run workflow" form
+      - name: Resolve release tag
+        id: rel
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # 8. Keep the builds on the workflow run itself (downloadable from the
+      #    Actions page even without a release)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: novawave-windows
+          path: build/bin/*.exe
+
+      # 9. Attach the .exe + installer to the GitHub release for that tag
+      #    (--clobber overwrites if a file with the same name is already there)
+      - name: Attach to release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ steps.rel.outputs.tag }}" build/bin/*.exe --clobber
