@@ -34,6 +34,10 @@ export function GetLyrics(arg1) {
   return window['go']['main']['App']['GetLyrics'](arg1);
 }
 
+export function GetMediaBaseURL() {
+  return window['go']['main']['App']['GetMediaBaseURL']();
+}
+
 export function GetSettings() {
   return window['go']['main']['App']['GetSettings']();
 }

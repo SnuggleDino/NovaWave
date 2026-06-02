@@ -18,6 +18,8 @@ export function GetImageBase64(arg1:string):Promise<string>;
 
 export function GetLyrics(arg1:string):Promise<string>;
 
+export function GetMediaBaseURL():Promise<string>;
+
 export function GetSettings():Promise<Record<string, any>>;
 
 export function GetSpotifyPlaylistTracks(arg1:string):Promise<Array<string>>;

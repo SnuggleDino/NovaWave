@@ -1,52 +1,52 @@
 {
-    "version": "3.0.3",
-    "date": "30. Mai 2026",
+    "version": "3.0.4",
+    "date": "2. Juni 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Linux-Unterstützung & Fixes",
-        "en": "Linux Support & Fixes",
-        "tr": "Linux Desteği & Düzeltmeler",
-        "es": "Soporte para Linux y Correcciones",
-        "fr": "Support Linux & Corrections",
-        "it": "Supporto Linux & Correzioni"
+        "de": "Linux: Audio-Wiedergabe behoben",
+        "en": "Linux: Audio Playback Fixed",
+        "tr": "Linux: Ses Çalma Düzeltildi",
+        "es": "Linux: Reproducción de audio corregida",
+        "fr": "Linux : Lecture audio corrigée",
+        "it": "Linux: Riproduzione audio corretta"
     },
     "changes": [
         {
-            "icon": "🐧",
+            "icon": "🔊",
             "title": {
-                "de": "Linux-Unterstützung",
-                "en": "Linux Support",
-                "tr": "Linux Desteği",
-                "es": "Soporte para Linux",
-                "fr": "Support Linux",
-                "it": "Supporto Linux"
+                "de": "Audio-Wiedergabe unter Linux",
+                "en": "Audio Playback on Linux",
+                "tr": "Linux'ta Ses Çalma",
+                "es": "Reproducción de audio en Linux",
+                "fr": "Lecture audio sous Linux",
+                "it": "Riproduzione audio su Linux"
             },
             "desc": {
-                "de": "NovaWave läuft jetzt nativ unter Linux – zusätzlich zu Windows. Unter Linux werden ffmpeg, ffprobe und yt-dlp aus dem System genutzt, und die Multimedia-Tasten (Play/Pause, Vor/Zurück) funktionieren über MPRIS – kompatibel mit GNOME, KDE und Hyprland.",
-                "en": "NovaWave now runs natively on Linux, in addition to Windows. On Linux, ffmpeg, ffprobe and yt-dlp are used from the system, and the multimedia keys (play/pause, next/previous) work via MPRIS – compatible with GNOME, KDE and Hyprland.",
-                "tr": "NovaWave artık Windows'a ek olarak Linux'ta da yerel olarak çalışıyor. Linux'ta ffmpeg, ffprobe ve yt-dlp sistemden kullanılır ve multimedya tuşları (oynat/duraklat, ileri/geri) GNOME, KDE ve Hyprland ile uyumlu şekilde MPRIS üzerinden çalışır.",
-                "es": "NovaWave ahora se ejecuta de forma nativa en Linux, además de Windows. En Linux, ffmpeg, ffprobe y yt-dlp se usan desde el sistema, y las teclas multimedia (reproducir/pausar, siguiente/anterior) funcionan mediante MPRIS, compatible con GNOME, KDE y Hyprland.",
-                "fr": "NovaWave fonctionne désormais nativement sous Linux, en plus de Windows. Sous Linux, ffmpeg, ffprobe et yt-dlp sont utilisés depuis le système, et les touches multimédia (lecture/pause, suivant/précédent) fonctionnent via MPRIS, compatible avec GNOME, KDE et Hyprland.",
-                "it": "NovaWave ora funziona in modo nativo su Linux, oltre che su Windows. Su Linux, ffmpeg, ffprobe e yt-dlp vengono usati dal sistema e i tasti multimediali (riproduci/pausa, avanti/indietro) funzionano tramite MPRIS, compatibile con GNOME, KDE e Hyprland."
+                "de": "Unter Linux konnten lokale und heruntergeladene Titel nicht abgespielt werden bzw. das Audio sprang mitten im Lied hin und her. Die Wiedergabe läuft jetzt über einen internen lokalen Media-Stream – flüssig und ohne Aussetzer.",
+                "en": "On Linux, local and downloaded tracks could not be played, or the audio jumped back and forth mid-song. Playback now runs through an internal local media stream – smooth and without glitches.",
+                "tr": "Linux'ta yerel ve indirilen parçalar çalınamıyordu ya da ses şarkının ortasında ileri geri atlıyordu. Çalma artık dahili yerel bir medya akışı üzerinden gerçekleşiyor – akıcı ve kesintisiz.",
+                "es": "En Linux, las pistas locales y descargadas no se reproducían o el audio saltaba de un lado a otro a mitad de la canción. La reproducción ahora se realiza mediante un flujo multimedia local interno: fluida y sin cortes.",
+                "fr": "Sous Linux, les pistes locales et téléchargées ne pouvaient pas être lues ou l'audio sautait d'avant en arrière en plein morceau. La lecture passe désormais par un flux multimédia local interne – fluide et sans interruption.",
+                "it": "Su Linux, i brani locali e scaricati non venivano riprodotti oppure l'audio saltava avanti e indietro a metà canzone. La riproduzione ora avviene tramite un flusso multimediale locale interno – fluida e senza interruzioni."
             }
         },
         {
-            "icon": "🎨",
+            "icon": "▶️",
             "title": {
-                "de": "Dropdown-Darstellung unter Linux",
-                "en": "Dropdown Rendering on Linux",
-                "tr": "Linux'ta Açılır Menü Görünümü",
-                "es": "Visualización de Menús en Linux",
-                "fr": "Affichage des Menus sous Linux",
-                "it": "Visualizzazione dei Menu su Linux"
+                "de": "Play-Button beim Start",
+                "en": "Play Button on Startup",
+                "tr": "Başlangıçta Oynat Düğmesi",
+                "es": "Botón de reproducción al iniciar",
+                "fr": "Bouton lecture au démarrage",
+                "it": "Pulsante riproduzione all'avvio"
             },
             "desc": {
-                "de": "Auswahlmenüs (Sprache, Sortierung und alle Einstellungen) wurden unter Linux als weiße Felder angezeigt. Sie passen sich jetzt korrekt dem dunklen Theme an.",
-                "en": "Dropdown menus (language, sorting and all settings) appeared as blank white boxes on Linux. They now correctly match the dark theme.",
-                "tr": "Açılır menüler (dil, sıralama ve tüm ayarlar) Linux'ta beyaz kutular olarak görünüyordu. Artık koyu temayla doğru şekilde uyumlu görünüyor.",
-                "es": "Los menús desplegables (idioma, orden y todos los ajustes) aparecían como cuadros blancos en Linux. Ahora coinciden correctamente con el tema oscuro.",
-                "fr": "Les menus déroulants (langue, tri et tous les paramètres) apparaissaient comme des cases blanches sous Linux. Ils correspondent maintenant correctement au thème sombre.",
-                "it": "I menu a discesa (lingua, ordinamento e tutte le impostazioni) apparivano come riquadri bianchi su Linux. Ora corrispondono correttamente al tema scuro."
+                "de": "Der Play-Button startet jetzt zuverlässig den zuletzt gewählten Titel direkt nach dem Start, ohne dass man den Titel zuvor erneut anklicken muss.",
+                "en": "The play button now reliably starts the last selected track right after launch, without having to click the track again first.",
+                "tr": "Oynat düğmesi artık başlatmanın hemen ardından, parçaya tekrar tıklamaya gerek kalmadan son seçilen parçayı güvenilir şekilde başlatıyor.",
+                "es": "El botón de reproducción ahora inicia de forma fiable la última pista seleccionada justo después de abrir la app, sin tener que volver a hacer clic en la pista.",
+                "fr": "Le bouton lecture démarre désormais de manière fiable la dernière piste sélectionnée juste après le lancement, sans devoir cliquer à nouveau sur la piste.",
+                "it": "Il pulsante di riproduzione ora avvia in modo affidabile l'ultimo brano selezionato subito dopo l'avvio, senza dover fare di nuovo clic sul brano."
             }
         }
     ]

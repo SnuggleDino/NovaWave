@@ -139,6 +139,34 @@ function toggleLoop() {
     }
 }
 
+// WebKitGTK refuses to load media from the Wails custom asset scheme into an
+// <audio> element (FormatError at prepareToPlay, before any fetch). Fetch the
+// bytes (a plain fetch IS allowed on the scheme) and play from an in-memory
+// blob: URL, which the GStreamer media player accepts.
+// Audio is served from a loopback HTTP server (Go: App.GetMediaBaseURL /
+// media_server.go). On Linux/WebKitGTK the media player can't play the Wails
+// asset scheme (FormatError) and mis-seeks blob: URLs (audio jumps around); a
+// real http://127.0.0.1:<port>/ URL streams correctly with range/seek support.
+let _mediaBasePromise = null;
+function getMediaBase() {
+    if (_mediaBasePromise === null) {
+        _mediaBasePromise = App.GetMediaBaseURL().then(u => u || '').catch(() => '');
+    }
+    return _mediaBasePromise;
+}
+
+function setAudioSrcViaBlob(audioEl, serverUrl) {
+    const token = (audioEl._novawaveLoadToken || 0) + 1;
+    audioEl._novawaveLoadToken = token;
+    try { audioEl.pause(); } catch (e) {}
+    return getMediaBase().then(base => {
+        if (audioEl._novawaveLoadToken !== token) return null;
+        const url = (base || '') + serverUrl;
+        audioEl.src = url;
+        return url;
+    });
+}
+
 function loadTrack(index) {
     if (index < 0 || index >= playlist.length) return;
     currentIndex = index;
@@ -149,17 +177,16 @@ function loadTrack(index) {
 
     const rawPath = track.path.replace(/\\/g, '/');
     const safeUrl = '/music/' + encodeURI(rawPath).replace(/#/g, '%23');
-    audio.src = safeUrl;
     audio.volume = currentVolume;
     audio.loop = (loopMode === 2);
+    setAudioSrcViaBlob(audio, safeUrl).then((url) => {
+        if (url && isPlaying) return audio.play();
+    }).catch(e => console.error("[LiteUI] Load error:", e));
 
     elCover.classList.add('hidden');
     elFallback.classList.remove('hidden');
 
     updateTrackListHighlight();
-    if (isPlaying) {
-        audio.play().catch(e => console.error("[LiteUI] Play error:", e));
-    }
 }
 
 function updatePlayPauseUI() {

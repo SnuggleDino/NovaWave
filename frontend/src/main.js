@@ -569,18 +569,19 @@ function _startCrossfade(nextIdx) {
     }
     const nextTrack = playlist[nextIdx];
     const safeUrl = encodeURI('/music/' + nextTrack.path.replace(/\\/g, '/')).replace(/#/g, '%23');
-    audioNext.src = safeUrl;
-    if (audioNextGain) audioNextGain.gain.value = 0;
-    else audioNext.volume = 0;
-    audioNext.playbackRate = settings.playbackSpeed || 1.0;
-    audioNext.play().catch(() => {});
-
     const seekPos = (nextTrack.lastPosition || 0);
-    if (seekPos > 0.5) {
-        audioNext.addEventListener('loadedmetadata', function onNextMeta() {
-            if (audioNext && seekPos < audioNext.duration) audioNext.currentTime = seekPos;
-        }, { once: true });
-    }
+    setAudioSrcViaBlob(audioNext, safeUrl).then((url) => {
+        if (!url || !audioNext) return; // superseded by a newer load
+        if (audioNextGain) audioNextGain.gain.value = 0;
+        else audioNext.volume = 0;
+        audioNext.playbackRate = settings.playbackSpeed || 1.0;
+        if (seekPos > 0.5) {
+            audioNext.addEventListener('loadedmetadata', function onNextMeta() {
+                if (audioNext && seekPos < audioNext.duration) audioNext.currentTime = seekPos;
+            }, { once: true });
+        }
+        return audioNext.play();
+    }).catch(() => {});
 
     const fadeDuration = crossfadeSeconds * 1000;
     const startVol = currentVolume;
@@ -631,6 +632,41 @@ function showResumeToast(position) {
     resumeToastTimeout = setTimeout(dismissResumeToast, 8000);
 }
 
+// WebKitGTK refuses to load media from the Wails custom asset scheme into an
+// <audio> element (player fails at prepareToPlay with FormatError, before it
+// ever fetches the bytes). Fetch the file via the asset handler (a plain fetch,
+// which the scheme DOES allow) and play it from an in-memory blob: URL, which
+// the GStreamer media player accepts. Old blob URLs are revoked per element.
+// Audio (and cover) are served from a loopback HTTP server started by the Go
+// backend (see media_server.go / App.GetMediaBaseURL), e.g.
+// http://127.0.0.1:45678. This is required on Linux/WebKitGTK: the WebKit media
+// player refuses to play media from the Wails custom asset scheme (fails at
+// prepareToPlay with FormatError) and mis-seeks blob: URLs (audio jumps around
+// mid-track even though the timeline is linear). A real loopback HTTP URL is
+// streamed correctly by GStreamer with proper byte-range / seek support.
+let _mediaBasePromise = null;
+function getMediaBase() {
+    if (_mediaBasePromise === null) {
+        _mediaBasePromise = App.GetMediaBaseURL().then(u => u || '').catch(() => '');
+    }
+    return _mediaBasePromise;
+}
+
+// Sets audioEl.src to the loopback URL for serverUrl (e.g. "/music/...").
+// A load token guards against a rapid second call superseding this one; returns
+// the final URL, or null if superseded (callers must not play() on null).
+function setAudioSrcViaBlob(audioEl, serverUrl) {
+    const token = (audioEl._novawaveLoadToken || 0) + 1;
+    audioEl._novawaveLoadToken = token;
+    try { audioEl.pause(); } catch (e) {}
+    return getMediaBase().then(base => {
+        if (audioEl._novawaveLoadToken !== token) return null;
+        const url = (base || '') + serverUrl;
+        audioEl.src = url;
+        return url;
+    });
+}
+
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
     _cancelCrossfade();
@@ -643,15 +679,14 @@ function playTrack(index) {
     let serverPath = '/music/' + rawPath;
     let safeUrl = encodeURI(serverPath).replace(/#/g, '%23');
 
-    audio.src = safeUrl;
-
     const speed = settings.playbackSpeed || 1.0;
-    audio.defaultPlaybackRate = speed;
-    audio.playbackRate = speed;
-
-    if (audioExtras) { audioExtras.resume(); audioExtras.resetNormGain(); }
-
-    audio.play().catch(e => console.error("Error playing audio:", e));
+    setAudioSrcViaBlob(audio, safeUrl).then((url) => {
+        if (!url) return; // superseded by a newer load
+        audio.defaultPlaybackRate = speed;
+        audio.playbackRate = speed;
+        if (audioExtras) { audioExtras.resume(); audioExtras.resetNormGain(); }
+        return audio.play();
+    }).catch(e => console.error("Error playing audio:", e));
     isPlaying = true;
     updateUIForCurrentTrack();
 
@@ -1783,7 +1818,7 @@ function setupEventListeners() {
     initUIHelpers();
 
     const bind = (el, ev, h) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, h); };
-    bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) audio.pause(); else (currentIndex === -1) ? playTrack(0) : audio.play(); });
+    bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) { audio.pause(); return; } if (currentIndex === -1 || !audio.src) playTrack(currentIndex < 0 ? 0 : currentIndex); else audio.play(); });
     bind(nextBtn, 'click', playNext); bind(prevBtn, 'click', playPrev);
     bind(shuffleBtn, 'click', () => {
         shuffleOn = !shuffleOn;

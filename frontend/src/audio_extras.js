@@ -17,6 +17,18 @@ export class AudioExtras {
     init() {
         if (this.initialized) return;
 
+        // WebKitGTK compatibility: routing the <audio> element through a
+        // MediaElementAudioSourceNode breaks media playback on WebKitGTK
+        // (player fails at prepareToPlay with FormatError, before any data is
+        // fetched). When that Web Audio path is unavailable/broken we skip the
+        // whole chain so the element plays directly. All setX()/resume()/
+        // getContext() methods already null-check audioContext, so they become
+        // safe no-ops. Set window.__novawaveDisableWebAudio = false to re-enable.
+        if (typeof window !== 'undefined' && window.__novawaveDisableWebAudio !== false) {
+            console.warn('[AudioExtras] Web Audio chain disabled (WebKitGTK compatibility) — audio effects/normalization/visualizer inactive, direct playback only.');
+            return;
+        }
+
         try {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             this.audioContext = new AudioContext();

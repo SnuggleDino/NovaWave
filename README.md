@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v3.0.3` 
+# 🎵 NovaWave `v3.0.4` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > - Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source -
 
-![Version](https://img.shields.io/badge/Version-3.0.3-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.4-38bdf8?style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Platforms-Windows_·_Linux-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
@@ -19,10 +19,18 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v3.0.3
+## ✨ What's New in v3.0.4
+
+- **Audio Playback on Linux** - Local and downloaded tracks now play reliably on Linux. Audio is streamed to the WebKit media player over a small loopback HTTP server instead of the Wails asset scheme (which WebKitGTK refused to decode), fixing both the "Playback error" and the mid-track audio jumping.
+- **Play Button on Startup** - The play button now starts the restored last track right after launch, instead of doing nothing until the track is clicked again.
+
+<details>
+<summary>Previous release — v3.0.3</summary>
 
 - **Linux Support** - NovaWave now runs natively on Linux in addition to Windows. Platform-specific code is separated via Go build tags; on Linux, `ffmpeg`/`ffprobe`/`yt-dlp` are used from the system and the multimedia keys work through an MPRIS D-Bus service (GNOME, KDE, Hyprland/`playerctl`).
 - **Dropdown Rendering on Linux** - Legacy-UI dropdowns (language, sort, settings) no longer appear as blank white boxes under WebKitGTK; they now match the dark theme.
+
+</details>
 
 <details>
 <summary>Previous release — v3.0.2</summary>

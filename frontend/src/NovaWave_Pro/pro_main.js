@@ -341,6 +341,34 @@ function _computeNextCfIdx() {
     return next;
 }
 
+// WebKitGTK refuses to load media from the Wails custom asset scheme into an
+// <audio> element (FormatError at prepareToPlay, before any fetch). Fetch the
+// bytes (a plain fetch IS allowed on the scheme) and play from an in-memory
+// blob: URL, which the GStreamer media player accepts.
+// Audio is served from a loopback HTTP server (Go: App.GetMediaBaseURL /
+// media_server.go). On Linux/WebKitGTK the media player can't play the Wails
+// asset scheme (FormatError) and mis-seeks blob: URLs (audio jumps around); a
+// real http://127.0.0.1:<port>/ URL streams correctly with range/seek support.
+let _mediaBasePromise = null;
+function getMediaBase() {
+    if (_mediaBasePromise === null) {
+        _mediaBasePromise = App.GetMediaBaseURL().then(u => u || '').catch(() => '');
+    }
+    return _mediaBasePromise;
+}
+
+function setAudioSrcViaBlob(audioEl, serverUrl) {
+    const token = (audioEl._novawaveLoadToken || 0) + 1;
+    audioEl._novawaveLoadToken = token;
+    try { audioEl.pause(); } catch (e) {}
+    return getMediaBase().then(base => {
+        if (audioEl._novawaveLoadToken !== token) return null;
+        const url = (base || '') + serverUrl;
+        audioEl.src = url;
+        return url;
+    });
+}
+
 function _startCrossfade() {
     const nextIdx = _computeNextCfIdx();
     if(nextIdx === -1) return;
@@ -351,8 +379,8 @@ function _startCrossfade() {
     const t = state.tracks[nextIdx];
     state.audioNext = new Audio();
     state.audioNext.volume = 0;
-    state.audioNext.src = "/music/" + encodeURIComponent(t.path.replace(/\\/g, '/'));
-    state.audioNext.play().catch(() => {});
+    setAudioSrcViaBlob(state.audioNext, "/music/" + encodeURIComponent(t.path.replace(/\\/g, '/')))
+        .then((url) => { if (url && state.audioNext) return state.audioNext.play(); }).catch(() => {});
 
     const duration = state.crossfadeSeconds * 1000;
     const startTime = performance.now();
@@ -647,8 +675,9 @@ function play(i) {
     state.idx = i;
     const t = state.tracks[i];
     logPro("LOAD: " + (t.title || t.path.split(/[\\/]/).pop()));
-    state.audio.src = "/music/" + encodeURIComponent(t.path.replace(/\\/g, '/'));
-    state.audio.play().catch(err => logPro(`PLAY_ERROR: ${err.message}`, 'err'));
+    setAudioSrcViaBlob(state.audio, "/music/" + encodeURIComponent(t.path.replace(/\\/g, '/')))
+        .then((url) => { if (url) return state.audio.play(); })
+        .catch(err => logPro(`PLAY_ERROR: ${err.message}`, 'err'));
 
     _updatePlayUI(t);
 

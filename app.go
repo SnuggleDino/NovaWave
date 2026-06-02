@@ -39,6 +39,7 @@ type App struct {
 	mediaKeyTID     uint32
 	cacheWriteTimer *time.Timer
 	cacheTimerMu    sync.Mutex
+	mediaBaseURL    string
 }
 
 type Config struct {
@@ -132,6 +133,7 @@ func NewApp() *App {
 
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	a.startMediaServer()
 	a.ensureBinaries()
 	a.loadTrackCache()
 	a.setupMediaKeys()
