@@ -39,9 +39,12 @@ jobs:
         with:
           node-version: '20'
 
-      # 4. Install NSIS so Wails can produce the installer
+      # 4. Install NSIS and put its folder on PATH so Wails (makensis) finds it
       - name: Install NSIS
-        run: choco install nsis -y
+        shell: bash
+        run: |
+          choco install nsis -y
+          echo "C:\Program Files (x86)\NSIS" >> "$GITHUB_PATH"
 
       # 5. Install the Wails CLI (pinned to go.mod's version) and put Go's bin
       #    folder on PATH so the `wails` command is found in the next step
