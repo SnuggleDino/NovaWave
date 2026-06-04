@@ -83,9 +83,15 @@ jobs:
           name: novawave-linux
           path: build/bin/novawave-linux-amd64
 
-      # 10. Attach the binary to the GitHub release for that tag
-      #     (--clobber overwrites if a file with the same name is already there)
+      # 10. Attach the binary to the GitHub release for that tag.
+      #     Create the release first if it doesn't exist yet (a pushed tag does
+      #     NOT create a release on its own). The create is idempotent: if the
+      #     other build job already created it, `|| true` swallows the error so
+      #     both parallel jobs can run safely. --clobber overwrites same-name files.
       - name: Attach to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "${{ steps.rel.outputs.tag }}" build/bin/novawave-linux-amd64 --clobber
+        run: |
+          TAG="${{ steps.rel.outputs.tag }}"
+          gh release create "$TAG" --title "NovaWave $TAG" --notes "Automated build for $TAG." 2>/dev/null || true
+          gh release upload "$TAG" build/bin/novawave-linux-amd64 --clobber
