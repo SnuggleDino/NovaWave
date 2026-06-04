@@ -346,10 +346,7 @@ export const es_ES = {
     sortNewest: 'Lo m\u00E1s nuevo',
     designLegacyLabel: 'Legacy UI',
     designLegacyDesc: 'La interfaz cl\u00E1sica de NovaWave.',
-    designV2Label: 'NW-V2.PRO',
-    designV2Desc: 'Redise\u00F1o profesional con PRO Engine.',
     designLegacyBadge: 'ESTABLE',
-    designV2Badge: 'V2-PRO',
     designActiveBadge: 'ACTIVO',
 
     // --- Player Button Tooltips ---

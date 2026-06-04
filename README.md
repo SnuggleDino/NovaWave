@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v3.0.6` 
+# 🎵 NovaWave `v3.0.8` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > - Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source -
 
-![Version](https://img.shields.io/badge/Version-3.0.6-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.8-38bdf8?style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Platforms-Windows_·_Linux-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
@@ -19,11 +19,19 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v3.0.6
+## ✨ What's New in v3.0.8
+
+- **Redesigned Downloader** - The downloader is now a slide-in side panel with source buttons for YouTube, YT Music and Spotify, a live terminal that streams the real download output, and a queue that updates in place (no more flicker).
+- **Streamlined Interface Options** - The experimental "V2 PRO" interface has been removed. NovaWave now ships with the Legacy and Lite interfaces; if you had V2 selected, you are moved to Legacy automatically.
+
+<details>
+<summary>Previous release — v3.0.6</summary>
 
 - **Spacebar Starts Playback** - Right after launch, pressing the spacebar now reliably starts the last selected track, instead of doing nothing until you click it.
 - **Redesigned "NovaWave 95" Intro** - A fresh sky-themed startup intro with gently drifting clouds, a bold wordmark, and a classic loading bar.
 - **Vinyl Drop Intro Fix** - The record label now shows the app icon again instead of a broken image.
+
+</details>
 
 <details>
 <summary>Previous release — v3.0.5</summary>

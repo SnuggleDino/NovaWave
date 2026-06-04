@@ -18,14 +18,6 @@ const LEGACY_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="
     <path d="M9 21V9"/>
 </svg>`;
 
-const V2_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
-    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
-    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
-    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
-    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
-</svg>`;
-
 // --- NEU: Lite UI Icon ---
 const LITE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="12" r="10"/>
@@ -37,9 +29,8 @@ export function renderDesignCards() {
     const container = document.getElementById('design-ui-cards');
     if (!container) return;
 
-    const isV2 = window.location.pathname.includes('v2.html');
     const isLite = window.location.pathname.includes('lite.html');
-    const activeUi = isV2 ? 'v2' : isLite ? 'lite' : 'legacy';
+    const activeUi = isLite ? 'lite' : 'legacy';
 
     const cards = [
         {
@@ -49,14 +40,6 @@ export function renderDesignCards() {
             desc: tr('designLegacyDesc'),
             icon: LEGACY_ICON,
             target: 'index.html'
-        },
-        {
-            key: 'v2',
-            label: tr('designV2Label'),
-            badge: 'V2-PRO',
-            desc: tr('designV2Desc'),
-            icon: V2_ICON,
-            target: 'v2.html'
         },
         {
             key: 'lite',
@@ -73,7 +56,7 @@ export function renderDesignCards() {
         <style>
             .nw-design-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-columns: 1fr 1fr;
                 gap: 2.5px;
                 width: 100%;
                 margin-top: 10px;

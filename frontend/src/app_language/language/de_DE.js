@@ -346,10 +346,7 @@ export const de_DE = {
     sortNewest: 'Zuletzt geändert',
     designLegacyLabel: 'Legacy UI',
     designLegacyDesc: 'Das klassische NovaWave Interface.',
-    designV2Label: 'NW-V2.PRO',
-    designV2Desc: 'Professionelles Redesign mit PRO Engine.',
     designLegacyBadge: 'STABIL',
-    designV2Badge: 'V2-PRO',
     designActiveBadge: 'AKTIV',
 
     // --- Player Button Tooltips ---

@@ -346,10 +346,7 @@ export const tr_TR = {
     sortNewest: 'En yeni',
     designLegacyLabel: 'Legacy UI',
     designLegacyDesc: 'Klasik NovaWave aray\u00FCz\u00FC.',
-    designV2Label: 'NW-V2.PRO',
-    designV2Desc: 'PRO Engine ile profesyonel tasar\u0131m.',
     designLegacyBadge: 'KARARLI',
-    designV2Badge: 'V2-PRO',
     designActiveBadge: 'AKT\u0130F',
 
     // --- Player Button Tooltips ---

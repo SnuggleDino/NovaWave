@@ -67,11 +67,9 @@ window.api = windowApi;
 
 //--- Global UI Switcher ---------------
 window.switchUI = async function (key, target) {
-    console.log(`[Global] switchUI called: key=${key}, target=${target}`);
     try {
         if (window.api && window.api.setSetting) {
             await window.api.setSetting('uiVersion', key);
-            console.log('[Global] UI setting saved');
         } else {
             localStorage.setItem('uiVersion', key);
         }
@@ -80,7 +78,6 @@ window.switchUI = async function (key, target) {
     }
 
     setTimeout(() => {
-        console.log(`[Global] Navigating to ${target}`);
         try {
             window.location.href = target;
         } catch (e) {
@@ -94,27 +91,18 @@ document.addEventListener('keydown', (e) => {
 
     if (e.ctrlKey && e.key.toLowerCase() === 'u') {
         window.__uiHotkeyStage = true;
-        console.log('[Hotkeys] UI Switch Stage 1 Activated (Waiting for 1 or 2)');
-
         if (window.__uiHotkeyTimeout) clearTimeout(window.__uiHotkeyTimeout);
         window.__uiHotkeyTimeout = setTimeout(() => {
             window.__uiHotkeyStage = false;
-            console.log('[Hotkeys] UI Switch Timeout');
         }, 1000);
         return;
     }
 
     if (window.__uiHotkeyStage) {
         if (e.key === '1') {
-            console.log('[Hotkeys] Triggering Legacy UI');
             window.switchUI('legacy', 'index.html');
             window.__uiHotkeyStage = false;
-        } else if (e.key === '2') {
-            console.log('[Hotkeys] Triggering V2 UI');
-            window.switchUI('v2', 'v2.html');
-            window.__uiHotkeyStage = false;
         } else if (e.key === '3') {
-            console.log('[Hotkeys] Triggering Lite UI');
             window.switchUI('lite', 'lite.html');
             window.__uiHotkeyStage = false;
         }
@@ -1185,7 +1173,7 @@ function setDownloaderState(state, message) {
     }
 }
 
-//--- Queue & Terminal Views ---------------
+// ---- QUEUE & TERMINAL VIEWS --------------------
 function setupQueueUI() {
     const clearTerminalBtn = document.getElementById('clear-terminal-btn');
     const clearBtn = document.getElementById('clear-history-btn');
@@ -1207,7 +1195,6 @@ function setupQueueUI() {
         };
     }
 
-    // Umschalter Queue <-> Terminal
     document.querySelectorAll('.dl-view-btn').forEach(b => {
         b.onclick = () => {
             document.querySelectorAll('.dl-view-btn').forEach(x => x.classList.toggle('active', x === b));
@@ -1275,7 +1262,7 @@ function updateQueueRow(entry, item) {
     entry.el.onclick = item.status === 'error' ? () => showErrorModal(item.error) : null;
 }
 
-// In-Place-Reconciliation: Karten werden nur einmal gebaut und danach aktualisiert (kein Neu-Rendern).
+// ---- QUEUE RENDERING (in-place, no full re-render) --------------------
 function renderQueueModal() {
     const container = document.getElementById('queue-list-container');
     if (!container || !downloadManager) return;
@@ -1316,7 +1303,6 @@ function renderQueueModal() {
     });
 }
 
-// Live-Fortschritt aus der yt-dlp-Terminalzeile in die passende Queue-Karte schreiben.
 function updateQueueProgress(id, pct) {
     if (!downloadManager) return;
     const { queue, history } = downloadManager.getAllItems();
@@ -1994,7 +1980,6 @@ function setupEventListeners() {
             const type = /error/i.test(line) ? 'error' : 'info';
             logToTerminal(line, type);
 
-            // Live-Fortschritt in die Queue-Karte spiegeln
             if (data && data.id) {
                 const m = line.match(/(\d{1,3}(?:\.\d+)?)%/);
                 if (m) updateQueueProgress(data.id, Math.round(parseFloat(m[1])));
@@ -2924,8 +2909,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderQueueModal();
                 },
                 onLog: (key, type, args) => {
-                    // Terminal-Ausgabe kommt live vom Backend (download-terminal-log).
-                    // Hier nur noch den sichtbaren Fehler-Status setzen.
                     if (type === 'error') {
                         const msg = (typeof key === 'string' && (key.startsWith('log') || key.startsWith('status')))
                             ? tr(key, args) : key;

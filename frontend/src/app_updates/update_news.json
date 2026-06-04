@@ -1,71 +1,52 @@
 {
-    "version": "3.0.6",
+    "version": "3.0.8",
     "date": "4. Juni 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Fehlerbehebungen & neues Intro",
-        "en": "Bug Fixes & a New Intro",
-        "tr": "Hata Düzeltmeleri ve Yeni Giriş",
-        "es": "Correcciones y nueva intro",
-        "fr": "Corrections et nouvelle intro",
-        "it": "Correzioni e nuova intro"
+        "de": "Neuer Downloader & aufgeräumte App",
+        "en": "A New Downloader & a Tidier App",
+        "tr": "Yeni İndirici ve Daha Düzenli Uygulama",
+        "es": "Nuevo descargador y una app más ordenada",
+        "fr": "Nouveau téléchargeur et une app plus épurée",
+        "it": "Nuovo downloader e un'app più ordinata"
     },
     "changes": [
         {
-            "icon": "⏯️",
+            "icon": "📥",
             "title": {
-                "de": "Leertaste startet sofort",
-                "en": "Spacebar Starts Playback",
-                "tr": "Boşluk Tuşu Hemen Başlatır",
-                "es": "La barra espaciadora inicia la reproducción",
-                "fr": "La barre d'espace lance la lecture",
-                "it": "La barra spaziatrice avvia la riproduzione"
+                "de": "Neuer Downloader",
+                "en": "Redesigned Downloader",
+                "tr": "Yeniden Tasarlanan İndirici",
+                "es": "Descargador rediseñado",
+                "fr": "Téléchargeur repensé",
+                "it": "Downloader ridisegnato"
             },
             "desc": {
-                "de": "Direkt nach dem Start ließ sich der zuletzt gewählte Titel per Leertaste nicht abspielen. Die Leertaste startet die Wiedergabe jetzt zuverlässig – genau wie der Play-Button.",
-                "en": "Right after launch, the last selected track couldn't be started with the spacebar. The spacebar now reliably starts playback – just like the play button.",
-                "tr": "Başlatmanın hemen ardından son seçilen parça boşluk tuşuyla çalınamıyordu. Boşluk tuşu artık tıpkı oynat düğmesi gibi oynatmayı güvenilir şekilde başlatıyor.",
-                "es": "Justo después de abrir la app, la última pista seleccionada no se iniciaba con la barra espaciadora. Ahora la barra espaciadora inicia la reproducción de forma fiable, igual que el botón de reproducción.",
-                "fr": "Juste après le lancement, la dernière piste sélectionnée ne démarrait pas avec la barre d'espace. La barre d'espace lance désormais la lecture de manière fiable, comme le bouton lecture.",
-                "it": "Subito dopo l'avvio, l'ultimo brano selezionato non partiva con la barra spaziatrice. Ora la barra spaziatrice avvia la riproduzione in modo affidabile, proprio come il pulsante di riproduzione."
+                "de": "Der Downloader ist jetzt ein seitliches Panel mit Quellen-Buttons für YouTube, YT Music und Spotify, einem Live-Terminal mit echter Download-Ausgabe und einer Warteschlange, die sich ohne Flackern aktualisiert.",
+                "en": "The downloader is now a slide-in side panel with source buttons for YouTube, YT Music and Spotify, a live terminal that streams the real download output, and a queue that updates in place without flicker.",
+                "tr": "İndirici artık YouTube, YT Music ve Spotify kaynak düğmeleri, gerçek indirme çıktısını gösteren canlı bir terminal ve titremeden güncellenen bir kuyruk içeren yandan açılan bir panel.",
+                "es": "El descargador ahora es un panel lateral con botones de origen para YouTube, YT Music y Spotify, una terminal en vivo que muestra la salida real de la descarga y una cola que se actualiza sin parpadeos.",
+                "fr": "Le téléchargeur est désormais un panneau latéral avec des boutons de source pour YouTube, YT Music et Spotify, un terminal en direct qui affiche la vraie sortie de téléchargement et une file d'attente qui se met à jour sans scintillement.",
+                "it": "Il downloader è ora un pannello laterale con pulsanti sorgente per YouTube, YT Music e Spotify, un terminale dal vivo che mostra l'output reale del download e una coda che si aggiorna senza sfarfallio."
             }
         },
         {
-            "icon": "☁️",
+            "icon": "🧹",
             "title": {
-                "de": "Neues „NovaWave 95\"-Intro",
-                "en": "Redesigned \"NovaWave 95\" Intro",
-                "tr": "Yeniden Tasarlanan \"NovaWave 95\" Girişi",
-                "es": "Intro \"NovaWave 95\" rediseñada",
-                "fr": "Intro « NovaWave 95 » repensée",
-                "it": "Intro \"NovaWave 95\" ridisegnata"
+                "de": "Aufgeräumte Oberflächen",
+                "en": "Streamlined Interfaces",
+                "tr": "Sadeleştirilmiş Arayüzler",
+                "es": "Interfaces simplificadas",
+                "fr": "Interfaces simplifiées",
+                "it": "Interfacce semplificate"
             },
             "desc": {
-                "de": "Das „NovaWave 95\"-Startintro wurde komplett neu gestaltet: ein luftiger Himmel mit sanft schwebenden Wolken, großem Schriftzug und klassischem Ladebalken.",
-                "en": "The \"NovaWave 95\" startup intro has been completely redesigned: an airy sky with gently drifting clouds, a bold wordmark, and a classic loading bar.",
-                "tr": "\"NovaWave 95\" başlangıç girişi tamamen yeniden tasarlandı: hafifçe süzülen bulutlarla ferah bir gökyüzü, iri bir yazı ve klasik bir yükleme çubuğu.",
-                "es": "La intro de inicio \"NovaWave 95\" se ha rediseñado por completo: un cielo despejado con nubes que se desplazan suavemente, un logotipo destacado y una barra de carga clásica.",
-                "fr": "L'intro de démarrage « NovaWave 95 » a été entièrement repensée : un ciel aéré avec des nuages qui dérivent doucement, un logo affirmé et une barre de chargement classique.",
-                "it": "L'intro di avvio \"NovaWave 95\" è stata completamente ridisegnata: un cielo arioso con nuvole che fluttuano dolcemente, un logo deciso e una classica barra di caricamento."
-            }
-        },
-        {
-            "icon": "💿",
-            "title": {
-                "de": "Vinyl-Drop-Intro: Icon repariert",
-                "en": "Vinyl Drop Intro: Icon Fixed",
-                "tr": "Vinyl Drop Girişi: Simge Düzeltildi",
-                "es": "Intro Vinyl Drop: icono corregido",
-                "fr": "Intro Vinyl Drop : icône corrigée",
-                "it": "Intro Vinyl Drop: icona corretta"
-            },
-            "desc": {
-                "de": "Im „Vinyl Drop\"-Intro wurde statt des App-Icons ein kaputtes Bild angezeigt. Das Plattenlabel zeigt jetzt wieder das NovaWave-Icon.",
-                "en": "The \"Vinyl Drop\" intro showed a broken image instead of the app icon. The record label now shows the NovaWave icon again.",
-                "tr": "\"Vinyl Drop\" girişinde uygulama simgesi yerine bozuk bir görsel görünüyordu. Plak etiketi artık yeniden NovaWave simgesini gösteriyor.",
-                "es": "La intro \"Vinyl Drop\" mostraba una imagen rota en lugar del icono de la app. La etiqueta del disco vuelve a mostrar el icono de NovaWave.",
-                "fr": "L'intro « Vinyl Drop » affichait une image cassée au lieu de l'icône de l'app. L'étiquette du disque affiche de nouveau l'icône NovaWave.",
-                "it": "L'intro \"Vinyl Drop\" mostrava un'immagine rotta invece dell'icona dell'app. L'etichetta del disco mostra di nuovo l'icona di NovaWave."
+                "de": "Die experimentelle „V2 PRO\"-Oberfläche wurde entfernt. NovaWave kommt jetzt mit der Legacy- und der Lite-Oberfläche; wer V2 ausgewählt hatte, wird automatisch auf Legacy umgestellt.",
+                "en": "The experimental \"V2 PRO\" interface has been removed. NovaWave now ships with the Legacy and Lite interfaces; if you had V2 selected, you are moved to Legacy automatically.",
+                "tr": "Deneysel \"V2 PRO\" arayüzü kaldırıldı. NovaWave artık Legacy ve Lite arayüzleriyle geliyor; V2 seçiliyse otomatik olarak Legacy'ye geçirilirsiniz.",
+                "es": "Se ha eliminado la interfaz experimental \"V2 PRO\". NovaWave ahora incluye las interfaces Legacy y Lite; si tenías V2 seleccionada, pasas a Legacy automáticamente.",
+                "fr": "L'interface expérimentale « V2 PRO » a été supprimée. NovaWave propose désormais les interfaces Legacy et Lite ; si V2 était sélectionnée, vous passez automatiquement à Legacy.",
+                "it": "L'interfaccia sperimentale \"V2 PRO\" è stata rimossa. NovaWave ora include le interfacce Legacy e Lite; se avevi selezionato V2, passi automaticamente a Legacy."
             }
         }
     ]

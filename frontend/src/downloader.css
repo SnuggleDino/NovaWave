@@ -7,7 +7,7 @@
     --st-error: #ef4444;
 }
 
-/* ================= BACKDROP + DRAWER ================= */
+/* ---- BACKDROP + DRAWER -------------------- */
 #downloader-overlay.overlay-container {
     position: fixed;
     inset: 0;
@@ -60,7 +60,7 @@
     transform: translateX(0);
 }
 
-/* Header (.drawer-header / .drawer-title-group stammen aus style.css) */
+/* ---- HEADER (.drawer-header / .drawer-title-group from style.css) -------------------- */
 .dl-header-right {
     display: flex;
     align-items: center;
@@ -137,7 +137,7 @@
     border-radius: 10px;
 }
 
-/* ================= QUELLE ================= */
+/* ---- SOURCE SELECTOR -------------------- */
 .dl-source-row {
     display: flex;
     gap: 6px;
@@ -181,7 +181,7 @@
     box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
 }
 
-/* ================= EINGABE ================= */
+/* ---- INPUT FIELDS -------------------- */
 .dl-field {
     display: flex;
     flex-direction: column;
@@ -233,7 +233,7 @@
     color: var(--accent);
 }
 
-/* ================= AKTION ================= */
+/* ---- PRIMARY ACTION -------------------- */
 .dl-primary-btn {
     position: relative;
     overflow: hidden;
@@ -293,7 +293,7 @@
     }
 }
 
-/* ================= STATUS-ZEILE ================= */
+/* ---- STATUS ROW -------------------- */
 .dl-status-row {
     display: flex;
     align-items: center;
@@ -343,7 +343,7 @@
     50% { opacity: 1; transform: scale(1.1); }
 }
 
-/* ================= VIEW-UMSCHALTER + LEGENDE ================= */
+/* ---- VIEW SWITCH + LEGEND -------------------- */
 .dl-view-switch-row {
     display: flex;
     align-items: center;
@@ -461,7 +461,7 @@
     animation: none;
 }
 
-/* ================= VIEW-PANES ================= */
+/* ---- VIEW PANES -------------------- */
 .dl-pane {
     display: none;
     flex-direction: column;
@@ -517,7 +517,7 @@
     cursor: not-allowed;
 }
 
-/* ================= QUEUE-LISTE ================= */
+/* ---- QUEUE LIST -------------------- */
 .dl-queue-list {
     display: flex;
     flex-direction: column;
@@ -604,7 +604,7 @@
     font-size: 0.85rem;
 }
 
-/* ================= TERMINAL ================= */
+/* ---- TERMINAL -------------------- */
 .dl-terminal {
     height: 240px;
     overflow-y: auto;
@@ -644,7 +644,7 @@
 .log-success { color: #4ade80; }
 .log-info { color: #8b93a7; }
 
-/* Danger-Button (auch in der Danger Zone genutzt - NICHT entfernen) */
+/* ---- DANGER BUTTON (shared with Danger Zone - keep) -------------------- */
 .danger-btn {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);

@@ -14,7 +14,10 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (window.go && window.go.main && window.go.main.App) {
                 window.go.main.App.GetSettings().then(function (s) {
-                    if (s && s.uiVersion === 'v2') window.location.replace('v2.html');
+                    // V2 PRO UI removed: migrate stored 'v2' setting back to Legacy
+                    if (s && s.uiVersion === 'v2') {
+                        window.go.main.App.SetSetting('uiVersion', 'legacy').catch(function () { });
+                    }
                     if (s && s.uiVersion === 'lite') window.location.replace('lite.html');
                 }).catch(function () { });
             }
