@@ -1,52 +1,52 @@
 {
-    "version": "3.0.4",
-    "date": "2. Juni 2026",
+    "version": "3.0.5",
+    "date": "4. Juni 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Linux: Audio-Wiedergabe behoben",
-        "en": "Linux: Audio Playback Fixed",
-        "tr": "Linux: Ses Çalma Düzeltildi",
-        "es": "Linux: Reproducción de audio corregida",
-        "fr": "Linux : Lecture audio corrigée",
-        "it": "Linux: Riproduzione audio corretta"
+        "de": "Weiterhören-Funktion verbessert",
+        "en": "Resume Feature Improved",
+        "tr": "Devam Etme Özelliği İyileştirildi",
+        "es": "Función de reanudación mejorada",
+        "fr": "Fonction de reprise améliorée",
+        "it": "Funzione di ripresa migliorata"
     },
     "changes": [
         {
-            "icon": "🔊",
+            "icon": "⏯️",
             "title": {
-                "de": "Audio-Wiedergabe unter Linux",
-                "en": "Audio Playback on Linux",
-                "tr": "Linux'ta Ses Çalma",
-                "es": "Reproducción de audio en Linux",
-                "fr": "Lecture audio sous Linux",
-                "it": "Riproduzione audio su Linux"
+                "de": "Weiterhören schon ab 5 Minuten",
+                "en": "Resume from 5 Minutes",
+                "tr": "5 Dakikadan İtibaren Devam",
+                "es": "Reanudar desde 5 minutos",
+                "fr": "Reprise dès 5 minutes",
+                "it": "Ripresa da 5 minuti"
             },
             "desc": {
-                "de": "Unter Linux konnten lokale und heruntergeladene Titel nicht abgespielt werden bzw. das Audio sprang mitten im Lied hin und her. Die Wiedergabe läuft jetzt über einen internen lokalen Media-Stream – flüssig und ohne Aussetzer.",
-                "en": "On Linux, local and downloaded tracks could not be played, or the audio jumped back and forth mid-song. Playback now runs through an internal local media stream – smooth and without glitches.",
-                "tr": "Linux'ta yerel ve indirilen parçalar çalınamıyordu ya da ses şarkının ortasında ileri geri atlıyordu. Çalma artık dahili yerel bir medya akışı üzerinden gerçekleşiyor – akıcı ve kesintisiz.",
-                "es": "En Linux, las pistas locales y descargadas no se reproducían o el audio saltaba de un lado a otro a mitad de la canción. La reproducción ahora se realiza mediante un flujo multimedia local interno: fluida y sin cortes.",
-                "fr": "Sous Linux, les pistes locales et téléchargées ne pouvaient pas être lues ou l'audio sautait d'avant en arrière en plein morceau. La lecture passe désormais par un flux multimédia local interne – fluide et sans interruption.",
-                "it": "Su Linux, i brani locali e scaricati non venivano riprodotti oppure l'audio saltava avanti e indietro a metà canzone. La riproduzione ora avviene tramite un flusso multimediale locale interno – fluida e senza interruzioni."
+                "de": "Der „Weitermachen bei …?\"-Hinweis erscheint jetzt schon bei Titeln ab 5 Minuten (vorher ab 10 Minuten), sodass du bei mehr Titeln dort weiterhörst, wo du aufgehört hast.",
+                "en": "The \"Continue at …?\" prompt now appears for tracks from 5 minutes (previously 10), so you can pick up where you left off on more of your tracks.",
+                "tr": "\"… konumundan devam edilsin mi?\" bildirimi artık 5 dakikadan (önceden 10 dakika) uzun parçalarda görünüyor; böylece daha fazla parçada kaldığın yerden devam edebilirsin.",
+                "es": "El aviso «¿Continuar desde …?» ahora aparece en pistas a partir de 5 minutos (antes 10), para que retomes donde lo dejaste en más de tus pistas.",
+                "fr": "L'invite « Reprendre à …? » apparaît désormais pour les pistes à partir de 5 minutes (au lieu de 10), pour reprendre là où vous vous êtes arrêté sur davantage de pistes.",
+                "it": "L'avviso «Riprendere da …?» ora compare per i brani da 5 minuti (prima 10), così riprendi da dove avevi interrotto su un numero maggiore di brani."
             }
         },
         {
-            "icon": "▶️",
+            "icon": "🪟",
             "title": {
-                "de": "Play-Button beim Start",
-                "en": "Play Button on Startup",
-                "tr": "Başlangıçta Oynat Düğmesi",
-                "es": "Botón de reproducción al iniciar",
-                "fr": "Bouton lecture au démarrage",
-                "it": "Pulsante riproduzione all'avvio"
+                "de": "Hinweis bricht sauber um",
+                "en": "Prompt Wraps Cleanly",
+                "tr": "Bildirim Düzgün Sarmalanıyor",
+                "es": "El aviso se ajusta correctamente",
+                "fr": "L'invite se replie proprement",
+                "it": "L'avviso va a capo correttamente"
             },
             "desc": {
-                "de": "Der Play-Button startet jetzt zuverlässig den zuletzt gewählten Titel direkt nach dem Start, ohne dass man den Titel zuvor erneut anklicken muss.",
-                "en": "The play button now reliably starts the last selected track right after launch, without having to click the track again first.",
-                "tr": "Oynat düğmesi artık başlatmanın hemen ardından, parçaya tekrar tıklamaya gerek kalmadan son seçilen parçayı güvenilir şekilde başlatıyor.",
-                "es": "El botón de reproducción ahora inicia de forma fiable la última pista seleccionada justo después de abrir la app, sin tener que volver a hacer clic en la pista.",
-                "fr": "Le bouton lecture démarre désormais de manière fiable la dernière piste sélectionnée juste après le lancement, sans devoir cliquer à nouveau sur la piste.",
-                "it": "Il pulsante di riproduzione ora avvia in modo affidabile l'ultimo brano selezionato subito dopo l'avvio, senza dover fare di nuovo clic sul brano."
+                "de": "Der Weiterhören-Hinweis wird jetzt auch in schmalen Fenstern vollständig angezeigt und nicht mehr an den Rändern abgeschnitten.",
+                "en": "The resume prompt is now shown in full even in narrow windows and is no longer cut off at the edges.",
+                "tr": "Devam etme bildirimi artık dar pencerelerde bile tam olarak gösteriliyor ve kenarlardan kesilmiyor.",
+                "es": "El aviso de reanudación ahora se muestra completo incluso en ventanas estrechas y ya no se corta en los bordes.",
+                "fr": "L'invite de reprise s'affiche désormais entièrement même dans les fenêtres étroites et n'est plus coupée sur les bords.",
+                "it": "L'avviso di ripresa ora viene mostrato per intero anche nelle finestre strette e non viene più tagliato ai bordi."
             }
         }
     ]

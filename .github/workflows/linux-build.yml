@@ -1,0 +1,91 @@
+# Builds the Linux (amd64) version of NovaWave on a GitHub-hosted Ubuntu machine
+# and attaches the binary to the matching GitHub release.
+# (Windows is built by windows-build.yml.)
+name: Linux Build
+
+# --- When does this run? ---
+on:
+  push:
+    tags:
+      - 'v*'            # any version tag (e.g. v3.0.4) pushed to GitHub
+  workflow_dispatch:    # ...plus a manual "Run workflow" button in the Actions tab
+    inputs:
+      tag:
+        description: 'Existing release tag to attach the build to'
+        required: true
+        default: 'v3.0.4'
+
+# Let the built-in GITHUB_TOKEN upload files to releases.
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest         # a real Ubuntu machine provided by GitHub
+    steps:
+      # 1. Fresh clone of the repo
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Install Go — version is read from go.mod so it always matches the project
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+
+      # 3. Install Node.js — Wails uses it to install/build the frontend
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 4. WebKitGTK 4.1 + GTK3 dev headers. This mirrors the local VM build,
+      #    which uses the webkit2_41 build tag for distros shipping webkit2gtk-4.1.
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      # 5. Install the Wails CLI (pinned to go.mod's version) and put Go's bin
+      #    folder on PATH so the `wails` command is found in the next step
+      - name: Install Wails CLI
+        run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      # 6. Build — produces build/bin/novawave (no extension). The webkit2_41 tag
+      #    matches the 4.1 dev headers installed above. Wails installs + builds the
+      #    frontend automatically (see wails.json). Windows .exe helpers are NOT
+      #    embedded on Linux (platform_windows.go is excluded by its build tag).
+      - name: Build (linux/amd64)
+        run: wails build -platform linux/amd64 -tags webkit2_41
+
+      # 7. Rename so the release asset clearly identifies the platform/arch
+      - name: Rename binary
+        run: mv build/bin/novawave build/bin/novawave-linux-amd64
+
+      # 8. Figure out which release tag to attach to: the pushed tag, or the
+      #    tag typed into the manual "Run workflow" form
+      - name: Resolve release tag
+        id: rel
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${{ github.event.inputs.tag }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      # 9. Keep the build on the workflow run itself (downloadable from the
+      #    Actions page even without a release)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: novawave-linux
+          path: build/bin/novawave-linux-amd64
+
+      # 10. Attach the binary to the GitHub release for that tag
+      #     (--clobber overwrites if a file with the same name is already there)
+      - name: Attach to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ steps.rel.outputs.tag }}" build/bin/novawave-linux-amd64 --clobber

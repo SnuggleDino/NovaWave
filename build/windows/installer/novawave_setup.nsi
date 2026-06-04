@@ -8,7 +8,7 @@ Unicode true
 
 ; ---- App Info ----
 !define APP_NAME        "NovaWave"
-!define APP_VERSION     "3.0.3"
+!define APP_VERSION     "3.0.5"
 !define APP_PUBLISHER   "SnuggleDino"
 !define APP_EXE         "novawave.exe"
 !define UNINST_KEY      "Software\Microsoft\Windows\CurrentVersion\Uninstall\SnuggleDinoNovaWave"
@@ -67,8 +67,8 @@ RequestExecutionLevel admin
 ManifestDPIAware    true
 
 ; ---- Version resource ----
-VIProductVersion    "3.0.3.0"
-VIFileVersion       "3.0.3.0"
+VIProductVersion    "3.0.5.0"
+VIFileVersion       "3.0.5.0"
 VIAddVersionKey     "ProductName"     "${APP_NAME}"
 VIAddVersionKey     "CompanyName"     "${APP_PUBLISHER}"
 VIAddVersionKey     "FileDescription" "${APP_NAME} Installer"

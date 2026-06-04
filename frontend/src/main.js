@@ -680,7 +680,7 @@ function playTrack(index) {
     updateUIForCurrentTrack();
 
     const savedPos = track.lastPosition || 0;
-    if (track.duration > 600 && savedPos > 30) {
+    if (track.duration > 300 && savedPos > 30) {
         showResumeToast(savedPos);
     }
 }
@@ -1426,7 +1426,7 @@ function setupAudioEvents() {
         document.body.classList.remove('is-playing');
         updatePlayPauseUI();
         if (visualizer) visualizer.stop();
-        if (currentTrackPath && !isNaN(audio.duration) && audio.duration > 600 && audio.currentTime > 30) {
+        if (currentTrackPath && !isNaN(audio.duration) && audio.duration > 300 && audio.currentTime > 30) {
             const pos = audio.currentTime;
             const track = playlist[currentIndex];
             if (track) track.lastPosition = pos;
