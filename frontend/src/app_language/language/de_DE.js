@@ -193,7 +193,7 @@ export const de_DE = {
     reset: 'Reset',
     resetDesc: 'Löscht alle Einstellungen dauerhaft. Kann nicht rückgängig gemacht werden.',
     quit: 'Beenden',
-    quitDesc: 'Schließt NovaWave sofort.',
+    quitDesc: 'Schließt NovaWave.',
     warningTitle: 'Warnung',
     resetWarning: 'Dieser Vorgang kann nicht rückgängig gemacht werden. App wird neu gestartet.',
     exportPlaylist: 'Exportieren',

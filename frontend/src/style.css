@@ -1237,6 +1237,10 @@ body.gradient-title-active .app-title-text p {
     transform: rotate(10deg);
 }
 
+/* NEW-UI badge intentionally hidden (kept in markup/JS/CSS for later reuse).
+   To show it again, remove this rule. */
+#snuggle-new-badge { display: none !important; }
+
 
 
 .track-title-large.animating {

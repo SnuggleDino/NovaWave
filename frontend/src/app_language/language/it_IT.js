@@ -193,7 +193,7 @@ export const it_IT = {
     reset: 'Ripristina',
     resetDesc: 'Elimina tutte le impostazioni in modo permanente. Irreversibile.',
     quit: 'Esci',
-    quitDesc: 'Chiude NovaWave immediatamente.',
+    quitDesc: 'Chiude NovaWave.',
     warningTitle: 'Avvertimento',
     resetWarning: 'Questa azione non pu\u00F2 essere annullata. L\'app verr\u00E0 riavviata.',
     exportPlaylist: 'Esporta playlist',

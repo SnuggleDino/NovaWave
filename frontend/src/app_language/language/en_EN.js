@@ -193,7 +193,7 @@ export const en_EN = {
     reset: 'Reset',
     resetDesc: 'Clears all settings permanently. Cannot be undone.',
     quit: 'Quit',
-    quitDesc: 'Closes NovaWave immediately.',
+    quitDesc: 'Closes NovaWave.',
     warningTitle: 'Warning',
     resetWarning: 'This action cannot be undone. Application will restart.',
     exportPlaylist: 'Export Playlist',

@@ -193,7 +193,7 @@ export const tr_TR = {
     reset: 'S\u0131f\u0131rla',
     resetDesc: 'T\u00FCm ayarlar\u0131 kal\u0131c\u0131 olarak siler. Geri al\u0131namaz.',
     quit: 'Kapat',
-    quitDesc: 'NovaWave\'i hemen kapat\u0131r.',
+    quitDesc: 'NovaWave\'i kapat\u0131r.',
     warningTitle: 'Uyar\u0131',
     resetWarning: 'Bu i\u015Flem geri al\u0131namaz. Uygulama yeniden ba\u015Flat\u0131lacak.',
     exportPlaylist: 'Listeyi D\u0131\u015Fa Aktar',

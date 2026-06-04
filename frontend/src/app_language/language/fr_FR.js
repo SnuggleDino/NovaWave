@@ -193,7 +193,7 @@ export const fr_FR = {
     reset: 'R\u00E9initialiser',
     resetDesc: 'Supprime tous les param\u00E8tres d\u00E9finitivement. Irr\u00E9versible.',
     quit: 'Quitter',
-    quitDesc: 'Ferme NovaWave imm\u00E9diatement.',
+    quitDesc: 'Ferme NovaWave.',
     warningTitle: 'Avertissement',
     resetWarning: 'Cette action est irr\u00E9versible. L\'application va red\u00E9marrer.',
     exportPlaylist: 'Exporter la playlist',

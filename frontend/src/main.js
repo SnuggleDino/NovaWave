@@ -656,6 +656,17 @@ function setAudioSrcViaBlob(audioEl, serverUrl) {
     });
 }
 
+// Shared play/pause toggle for the play button AND the Space key, so the
+// "no audio.src yet on startup" guard (restored last track) can't drift apart
+// between the two entry points. Without this guard, pressing Space right after
+// launch called audio.play() on an element with no source — nothing happened.
+function togglePlayPause() {
+    if (playlist.length === 0) return;
+    if (isPlaying) { audio.pause(); return; }
+    if (currentIndex === -1 || !audio.src) playTrack(currentIndex < 0 ? 0 : currentIndex);
+    else audio.play();
+}
+
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
     _cancelCrossfade();
@@ -1807,7 +1818,7 @@ function setupEventListeners() {
     initUIHelpers();
 
     const bind = (el, ev, h) => { if (el && typeof el.addEventListener === 'function') el.addEventListener(ev, h); };
-    bind(playBtn, 'click', () => { if (playlist.length === 0) return; if (isPlaying) { audio.pause(); return; } if (currentIndex === -1 || !audio.src) playTrack(currentIndex < 0 ? 0 : currentIndex); else audio.play(); });
+    bind(playBtn, 'click', togglePlayPause);
     bind(nextBtn, 'click', playNext); bind(prevBtn, 'click', playPrev);
     bind(shuffleBtn, 'click', () => {
         shuffleOn = !shuffleOn;
@@ -1906,7 +1917,7 @@ function setupEventListeners() {
         }
         if (e.target.closest('input, textarea')) return;
         switch (e.code) {
-            case 'Space': e.preventDefault(); if (isPlaying) audio.pause(); else audio.play(); break;
+            case 'Space': e.preventDefault(); togglePlayPause(); break;
             case 'ArrowRight': if (e.shiftKey) { if (!isNaN(audio.duration)) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); } else playNext(); break;
             case 'ArrowLeft': if (e.shiftKey) { if (!isNaN(audio.duration)) audio.currentTime = Math.max(0, audio.currentTime - 5); } else playPrev(); break;
             case 'ArrowUp': e.preventDefault(); setVolume(currentVolume + 0.01); break;

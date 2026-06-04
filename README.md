@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v3.0.5` 
+# 🎵 NovaWave `v3.0.6` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > - Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source -
 
-![Version](https://img.shields.io/badge/Version-3.0.5-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.6-38bdf8?style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Platforms-Windows_·_Linux-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
@@ -19,10 +19,19 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v3.0.5
+## ✨ What's New in v3.0.6
+
+- **Spacebar Starts Playback** - Right after launch, pressing the spacebar now reliably starts the last selected track, instead of doing nothing until you click it.
+- **Redesigned "NovaWave 95" Intro** - A fresh sky-themed startup intro with gently drifting clouds, a bold wordmark, and a classic loading bar.
+- **Vinyl Drop Intro Fix** - The record label now shows the app icon again instead of a broken image.
+
+<details>
+<summary>Previous release — v3.0.5</summary>
 
 - **Resume from 5 Minutes** - The "Continue at ...?" prompt now appears for tracks from 5 minutes (previously 10), so you can pick up where you left off on more of your tracks.
 - **Cleaner Resume Prompt** - The resume prompt now wraps and stays fully visible even in narrow windows, instead of being cut off at the edges.
+
+</details>
 
 <details>
 <summary>Previous release — v3.0.4</summary>

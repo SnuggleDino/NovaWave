@@ -1,4 +1,5 @@
 import { Intro } from './intro_base.js';
+import iconPng from '../assets/icon.png';
 
 export class VinylDropIntro extends Intro {
     constructor() {
@@ -18,7 +19,7 @@ export class VinylDropIntro extends Intro {
                 <div class="vd-vinyl">
                     <div class="vd-grooves"></div>
                     <div class="vd-label">
-                        <img src="/src/assets/icon.png" class="vd-label-icon" alt="NW" />
+                        <img src="${iconPng}" class="vd-label-icon" alt="NW" />
                     </div>
                 </div>
                 <div class="vd-title">NovaWave</div>

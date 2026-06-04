@@ -1,52 +1,71 @@
 {
-    "version": "3.0.5",
+    "version": "3.0.6",
     "date": "4. Juni 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Weiterhören-Funktion verbessert",
-        "en": "Resume Feature Improved",
-        "tr": "Devam Etme Özelliği İyileştirildi",
-        "es": "Función de reanudación mejorada",
-        "fr": "Fonction de reprise améliorée",
-        "it": "Funzione di ripresa migliorata"
+        "de": "Fehlerbehebungen & neues Intro",
+        "en": "Bug Fixes & a New Intro",
+        "tr": "Hata Düzeltmeleri ve Yeni Giriş",
+        "es": "Correcciones y nueva intro",
+        "fr": "Corrections et nouvelle intro",
+        "it": "Correzioni e nuova intro"
     },
     "changes": [
         {
             "icon": "⏯️",
             "title": {
-                "de": "Weiterhören schon ab 5 Minuten",
-                "en": "Resume from 5 Minutes",
-                "tr": "5 Dakikadan İtibaren Devam",
-                "es": "Reanudar desde 5 minutos",
-                "fr": "Reprise dès 5 minutes",
-                "it": "Ripresa da 5 minuti"
+                "de": "Leertaste startet sofort",
+                "en": "Spacebar Starts Playback",
+                "tr": "Boşluk Tuşu Hemen Başlatır",
+                "es": "La barra espaciadora inicia la reproducción",
+                "fr": "La barre d'espace lance la lecture",
+                "it": "La barra spaziatrice avvia la riproduzione"
             },
             "desc": {
-                "de": "Der „Weitermachen bei …?\"-Hinweis erscheint jetzt schon bei Titeln ab 5 Minuten (vorher ab 10 Minuten), sodass du bei mehr Titeln dort weiterhörst, wo du aufgehört hast.",
-                "en": "The \"Continue at …?\" prompt now appears for tracks from 5 minutes (previously 10), so you can pick up where you left off on more of your tracks.",
-                "tr": "\"… konumundan devam edilsin mi?\" bildirimi artık 5 dakikadan (önceden 10 dakika) uzun parçalarda görünüyor; böylece daha fazla parçada kaldığın yerden devam edebilirsin.",
-                "es": "El aviso «¿Continuar desde …?» ahora aparece en pistas a partir de 5 minutos (antes 10), para que retomes donde lo dejaste en más de tus pistas.",
-                "fr": "L'invite « Reprendre à …? » apparaît désormais pour les pistes à partir de 5 minutes (au lieu de 10), pour reprendre là où vous vous êtes arrêté sur davantage de pistes.",
-                "it": "L'avviso «Riprendere da …?» ora compare per i brani da 5 minuti (prima 10), così riprendi da dove avevi interrotto su un numero maggiore di brani."
+                "de": "Direkt nach dem Start ließ sich der zuletzt gewählte Titel per Leertaste nicht abspielen. Die Leertaste startet die Wiedergabe jetzt zuverlässig – genau wie der Play-Button.",
+                "en": "Right after launch, the last selected track couldn't be started with the spacebar. The spacebar now reliably starts playback – just like the play button.",
+                "tr": "Başlatmanın hemen ardından son seçilen parça boşluk tuşuyla çalınamıyordu. Boşluk tuşu artık tıpkı oynat düğmesi gibi oynatmayı güvenilir şekilde başlatıyor.",
+                "es": "Justo después de abrir la app, la última pista seleccionada no se iniciaba con la barra espaciadora. Ahora la barra espaciadora inicia la reproducción de forma fiable, igual que el botón de reproducción.",
+                "fr": "Juste après le lancement, la dernière piste sélectionnée ne démarrait pas avec la barre d'espace. La barre d'espace lance désormais la lecture de manière fiable, comme le bouton lecture.",
+                "it": "Subito dopo l'avvio, l'ultimo brano selezionato non partiva con la barra spaziatrice. Ora la barra spaziatrice avvia la riproduzione in modo affidabile, proprio come il pulsante di riproduzione."
             }
         },
         {
-            "icon": "🪟",
+            "icon": "☁️",
             "title": {
-                "de": "Hinweis bricht sauber um",
-                "en": "Prompt Wraps Cleanly",
-                "tr": "Bildirim Düzgün Sarmalanıyor",
-                "es": "El aviso se ajusta correctamente",
-                "fr": "L'invite se replie proprement",
-                "it": "L'avviso va a capo correttamente"
+                "de": "Neues „NovaWave 95\"-Intro",
+                "en": "Redesigned \"NovaWave 95\" Intro",
+                "tr": "Yeniden Tasarlanan \"NovaWave 95\" Girişi",
+                "es": "Intro \"NovaWave 95\" rediseñada",
+                "fr": "Intro « NovaWave 95 » repensée",
+                "it": "Intro \"NovaWave 95\" ridisegnata"
             },
             "desc": {
-                "de": "Der Weiterhören-Hinweis wird jetzt auch in schmalen Fenstern vollständig angezeigt und nicht mehr an den Rändern abgeschnitten.",
-                "en": "The resume prompt is now shown in full even in narrow windows and is no longer cut off at the edges.",
-                "tr": "Devam etme bildirimi artık dar pencerelerde bile tam olarak gösteriliyor ve kenarlardan kesilmiyor.",
-                "es": "El aviso de reanudación ahora se muestra completo incluso en ventanas estrechas y ya no se corta en los bordes.",
-                "fr": "L'invite de reprise s'affiche désormais entièrement même dans les fenêtres étroites et n'est plus coupée sur les bords.",
-                "it": "L'avviso di ripresa ora viene mostrato per intero anche nelle finestre strette e non viene più tagliato ai bordi."
+                "de": "Das „NovaWave 95\"-Startintro wurde komplett neu gestaltet: ein luftiger Himmel mit sanft schwebenden Wolken, großem Schriftzug und klassischem Ladebalken.",
+                "en": "The \"NovaWave 95\" startup intro has been completely redesigned: an airy sky with gently drifting clouds, a bold wordmark, and a classic loading bar.",
+                "tr": "\"NovaWave 95\" başlangıç girişi tamamen yeniden tasarlandı: hafifçe süzülen bulutlarla ferah bir gökyüzü, iri bir yazı ve klasik bir yükleme çubuğu.",
+                "es": "La intro de inicio \"NovaWave 95\" se ha rediseñado por completo: un cielo despejado con nubes que se desplazan suavemente, un logotipo destacado y una barra de carga clásica.",
+                "fr": "L'intro de démarrage « NovaWave 95 » a été entièrement repensée : un ciel aéré avec des nuages qui dérivent doucement, un logo affirmé et une barre de chargement classique.",
+                "it": "L'intro di avvio \"NovaWave 95\" è stata completamente ridisegnata: un cielo arioso con nuvole che fluttuano dolcemente, un logo deciso e una classica barra di caricamento."
+            }
+        },
+        {
+            "icon": "💿",
+            "title": {
+                "de": "Vinyl-Drop-Intro: Icon repariert",
+                "en": "Vinyl Drop Intro: Icon Fixed",
+                "tr": "Vinyl Drop Girişi: Simge Düzeltildi",
+                "es": "Intro Vinyl Drop: icono corregido",
+                "fr": "Intro Vinyl Drop : icône corrigée",
+                "it": "Intro Vinyl Drop: icona corretta"
+            },
+            "desc": {
+                "de": "Im „Vinyl Drop\"-Intro wurde statt des App-Icons ein kaputtes Bild angezeigt. Das Plattenlabel zeigt jetzt wieder das NovaWave-Icon.",
+                "en": "The \"Vinyl Drop\" intro showed a broken image instead of the app icon. The record label now shows the NovaWave icon again.",
+                "tr": "\"Vinyl Drop\" girişinde uygulama simgesi yerine bozuk bir görsel görünüyordu. Plak etiketi artık yeniden NovaWave simgesini gösteriyor.",
+                "es": "La intro \"Vinyl Drop\" mostraba una imagen rota en lugar del icono de la app. La etiqueta del disco vuelve a mostrar el icono de NovaWave.",
+                "fr": "L'intro « Vinyl Drop » affichait une image cassée au lieu de l'icône de l'app. L'étiquette du disque affiche de nouveau l'icône NovaWave.",
+                "it": "L'intro \"Vinyl Drop\" mostrava un'immagine rotta invece dell'icona dell'app. L'etichetta del disco mostra di nuovo l'icona di NovaWave."
             }
         }
     ]

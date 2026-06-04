@@ -193,7 +193,7 @@ export const es_ES = {
     reset: 'Restablecer',
     resetDesc: 'Borra todos los ajustes permanentemente. No se puede deshacer.',
     quit: 'Salir',
-    quitDesc: 'Cierra NovaWave inmediatamente.',
+    quitDesc: 'Cierra NovaWave.',
     warningTitle: 'Advertencia',
     resetWarning: 'Esta acci\u00F3n no se puede deshacer. La aplicaci\u00F3n se reiniciar\u00E1.',
     exportPlaylist: 'Exportar lista',
