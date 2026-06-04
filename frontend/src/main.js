@@ -169,6 +169,8 @@ let $, trackTitleEl, trackArtistEl, musicEmojiEl, currentTimeEl, durationEl, pro
 
 let spotifyUrlInput, tabYtBtn, tabSpotifyBtn, viewYt, viewSpotify;
 let musicUrlInput, musicNameInput, tabMusicBtn, viewMusic;
+let dlUrlInput, dlNameInput, dlNameField, dlSpotifyHint, dlUrlLabel;
+const queueRows = new Map();
 let favorites = [];
 let favoritesSet = new Set();
 let isFavoritesFilterActive = false;
@@ -1123,13 +1125,16 @@ function renderEmoji(emojiType, customEmoji) {
 
 //--- Downloader UI Utilities ---------------
 function updateQueueStatsUI(stats) {
-    const pEl = document.getElementById('qs-pending');
-    const rEl = document.getElementById('qs-processing');
-    const sEl = document.getElementById('qs-success');
+    const activeEl = document.getElementById('chip-active');
+    const doneEl = document.getElementById('chip-done');
+    const countEl = document.getElementById('queue-count');
 
-    if (pEl) pEl.textContent = stats.pending;
-    if (rEl) rEl.textContent = stats.processing;
-    if (sEl) sEl.textContent = stats.success;
+    if (activeEl) activeEl.textContent = stats.processing;
+    if (doneEl) doneEl.textContent = stats.success;
+    if (countEl) countEl.textContent = stats.pending + stats.processing + stats.success + stats.failed;
+
+    const clearBtn = document.getElementById('clear-history-btn');
+    if (clearBtn) clearBtn.disabled = (stats.success + stats.failed) === 0;
 
     if (stats.processing > 0) {
         setDownloaderState('processing', `${tr('statusProgress')}: ${stats.processing}`);
@@ -1180,22 +1185,15 @@ function setDownloaderState(state, message) {
     }
 }
 
-//--- Queue Modal ---------------
+//--- Queue & Terminal Views ---------------
 function setupQueueUI() {
-    const queueOverlay = document.getElementById('queue-overlay');
-    const openBtn = document.getElementById('open-queue-btn');
-    const clearBtn = document.getElementById('clear-history-btn');
-
     const clearTerminalBtn = document.getElementById('clear-terminal-btn');
-
-    if (openBtn) openBtn.onclick = toggleQueuePanel;
+    const clearBtn = document.getElementById('clear-history-btn');
 
     if (clearTerminalBtn) {
         clearTerminalBtn.onclick = () => {
             const term = document.getElementById('terminal-view');
-            const logSection = document.getElementById('dl-log-section');
             if (term) term.innerHTML = '';
-            if (logSection) logSection.style.display = 'none';
         };
     }
 
@@ -1208,33 +1206,18 @@ function setupQueueUI() {
             }
         };
     }
-}
 
-function toggleQueuePanel() {
-    const queuePanel = document.getElementById('queue-panel');
-    const downOverlay = document.getElementById('downloader-overlay');
-
-    if (queuePanel) {
-        if (queuePanel.style.display === 'none') {
-            queuePanel.style.display = 'flex';
-            isQueueModalOpen = true;
-            renderQueueModal();
-            if (downOverlay) downOverlay.classList.add('with-queue');
-        } else {
-            closeQueuePanel();
-        }
-    }
-}
-
-function closeQueuePanel() {
-    const queuePanel = document.getElementById('queue-panel');
-    const downOverlay = document.getElementById('downloader-overlay');
-
-    if (queuePanel) {
-        queuePanel.style.display = 'none';
-        isQueueModalOpen = false;
-        if (downOverlay) downOverlay.classList.remove('with-queue');
-    }
+    // Umschalter Queue <-> Terminal
+    document.querySelectorAll('.dl-view-btn').forEach(b => {
+        b.onclick = () => {
+            document.querySelectorAll('.dl-view-btn').forEach(x => x.classList.toggle('active', x === b));
+            const paneQ = document.getElementById('pane-queue');
+            const paneT = document.getElementById('pane-terminal');
+            if (paneQ) paneQ.classList.toggle('active', b.dataset.dlView === 'queue');
+            if (paneT) paneT.classList.toggle('active', b.dataset.dlView === 'terminal');
+            if (b.dataset.dlView === 'queue') renderQueueModal();
+        };
+    });
 }
 
 
@@ -1247,6 +1230,52 @@ function showErrorModal(errorText) {
     }
 }
 
+const QUEUE_ICONS = {
+    youtube: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>`,
+    spotify: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" /></svg>`,
+};
+
+function queueStatusText(status) {
+    if (status === 'processing') return tr('legendWorking');
+    if (status === 'success') return tr('legendFinished');
+    if (status === 'error') return tr('statusError');
+    return tr('legendReady');
+}
+
+function buildQueueRow(item) {
+    const row = document.createElement('div');
+    row.className = 'q-item s-' + item.status;
+    row.innerHTML = `
+        <div class="q-item-icon">${QUEUE_ICONS[item.type] || QUEUE_ICONS.youtube}</div>
+        <div class="q-item-info">
+            <div class="q-item-title"></div>
+            <div class="q-item-meta">
+                <span class="q-status ${item.status}"></span>
+                <span class="q-pct"></span>
+            </div>
+        </div>`;
+    const entry = {
+        el: row,
+        titleEl: row.querySelector('.q-item-title'),
+        badgeEl: row.querySelector('.q-status'),
+        pctEl: row.querySelector('.q-pct'),
+    };
+    updateQueueRow(entry, item);
+    return entry;
+}
+
+function updateQueueRow(entry, item) {
+    entry.el.className = 'q-item s-' + item.status;
+    const displayName = item.customName || (item.url.length > 40 ? item.url.substring(0, 37) + '...' : item.url);
+    entry.titleEl.textContent = displayName;
+    entry.titleEl.title = item.url;
+    entry.badgeEl.className = 'q-status ' + item.status;
+    entry.badgeEl.textContent = queueStatusText(item.status);
+    entry.pctEl.textContent = (item.status === 'processing' && item.pct != null) ? item.pct + '%' : '';
+    entry.el.onclick = item.status === 'error' ? () => showErrorModal(item.error) : null;
+}
+
+// In-Place-Reconciliation: Karten werden nur einmal gebaut und danach aktualisiert (kein Neu-Rendern).
 function renderQueueModal() {
     const container = document.getElementById('queue-list-container');
     if (!container || !downloadManager) return;
@@ -1254,60 +1283,56 @@ function renderQueueModal() {
     const { queue, history } = downloadManager.getAllItems();
     const allItems = [...queue, ...history].sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
 
+    const countEl = document.getElementById('queue-count');
+    if (countEl) countEl.textContent = allItems.length;
+
     if (allItems.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="padding:20px; text-align:center; color:var(--text-muted);">No downloads in current session.</div>';
+        container.innerHTML = `<div class="dl-empty">${tr('queueEmpty')}</div>`;
+        queueRows.clear();
         return;
     }
 
-    container.innerHTML = '';
+    const empty = container.querySelector('.dl-empty');
+    if (empty) empty.remove();
 
+    const seen = new Set();
+    let prev = null;
     allItems.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'q-item';
-        if (item.status === 'error') {
-            div.classList.add('has-error');
-            div.style.cursor = 'pointer';
-            div.title = 'Click for details';
-            div.onclick = () => showErrorModal(item.error);
+        seen.add(item.id);
+        let entry = queueRows.get(item.id);
+        if (!entry) {
+            entry = buildQueueRow(item);
+            queueRows.set(item.id, entry);
+        } else {
+            updateQueueRow(entry, item);
         }
-
-        let icon = '🎵';
-        if (item.type === 'youtube') icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>`;
-        else if (item.type === 'spotify') icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" /></svg>`;
-
-        let statusClass = item.status;
-        let pText = tr('statusReady');
-        if (item.status === 'processing') pText = tr('statusStarting');
-        else if (item.status === 'success') pText = tr('statusSuccess');
-        else if (item.status === 'error') pText = tr('statusError');
-
-        const timeStr = item.finishedAt
-            ? tr('finishedAt', new Date(item.finishedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
-            : new Date(item.addedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        const displayName = item.customName || (item.url.length > 40 ? item.url.substring(0, 37) + '...' : item.url);
-
-        div.innerHTML = `
-            <div class="q-item-icon">${icon}</div>
-            <div class="q-item-info">
-                <div class="q-item-title" title="${item.url}">${displayName}</div>
-                <div class="q-item-meta">
-                    <span class="q-status ${statusClass}">${pText}</span>
-                    <span class="q-time">${timeStr}</span>
-                </div>
-            </div>
-            ${item.status === 'error' ? `<div style="color:var(--clean-danger); font-size:11px; font-weight: bold; margin-left: 10px;">VIEW ERROR</div>` : ''}
-        `;
-        container.appendChild(div);
+        const ref = prev ? prev.el.nextSibling : container.firstChild;
+        if (ref !== entry.el) container.insertBefore(entry.el, ref);
+        prev = entry;
     });
 
-    const summary = document.querySelector('.queue-summary');
-    if (summary) summary.textContent = `${tr('queueTotal')} ${allItems.length}`;
+    queueRows.forEach((entry, id) => {
+        if (!seen.has(id)) { entry.el.remove(); queueRows.delete(id); }
+    });
+}
+
+// Live-Fortschritt aus der yt-dlp-Terminalzeile in die passende Queue-Karte schreiben.
+function updateQueueProgress(id, pct) {
+    if (!downloadManager) return;
+    const { queue, history } = downloadManager.getAllItems();
+    const task = [...queue, ...history].find(t => t.id === id);
+    if (!task) return;
+    task.pct = pct;
+    const entry = queueRows.get(id);
+    if (entry && task.status === 'processing') entry.pctEl.textContent = pct + '%';
 }
 
 function logToTerminal(msg, type = 'info') {
     const terminal = document.getElementById('terminal-view');
     if (!terminal) return;
+
+    if (msg && typeof msg === 'object') msg = msg.line || '';
+    if (typeof msg !== 'string') msg = String(msg);
 
     const lines = msg.split(/\r?\n/);
 
@@ -1330,14 +1355,9 @@ async function handleDownload() {
     let url = '';
     let name = '';
 
-    if (activeDownloaderMode === 'spotify') {
-        url = spotifyUrlInput.value.trim();
-    } else if (activeDownloaderMode === 'music') {
-        url = musicUrlInput.value.trim();
-        name = musicNameInput.value.trim();
-    } else {
-        url = ytUrlInput.value.trim();
-        name = ytNameInput.value.trim();
+    url = dlUrlInput ? dlUrlInput.value.trim() : '';
+    if (activeDownloaderMode !== 'spotify') {
+        name = dlNameInput ? dlNameInput.value.trim() : '';
     }
 
     if (!url) {
@@ -1398,15 +1418,8 @@ async function handleDownload() {
         downloadManager.add(url, type, name, settings.audioQuality || 'best');
     }
 
-    if (activeDownloaderMode === 'youtube') {
-        ytUrlInput.value = '';
-        ytNameInput.value = '';
-    } else if (activeDownloaderMode === 'music') {
-        musicUrlInput.value = '';
-        musicNameInput.value = '';
-    } else {
-        spotifyUrlInput.value = '';
-    }
+    if (dlUrlInput) dlUrlInput.value = '';
+    if (dlNameInput) dlNameInput.value = '';
 }
 
 function setupAudioEvents() {
@@ -1977,7 +1990,15 @@ function setupEventListeners() {
         });
 
         window.runtime.EventsOn("download-terminal-log", (data) => {
-            logToTerminal(data, 'info');
+            const line = (data && typeof data === 'object') ? (data.line || '') : String(data || '');
+            const type = /error/i.test(line) ? 'error' : 'info';
+            logToTerminal(line, type);
+
+            // Live-Fortschritt in die Queue-Karte spiegeln
+            if (data && data.id) {
+                const m = line.match(/(\d{1,3}(?:\.\d+)?)%/);
+                if (m) updateQueueProgress(data.id, Math.round(parseFloat(m[1])));
+            }
         });
 
         window.runtime.EventsOn("download-title-update", (data) => {
@@ -1986,7 +2007,7 @@ function setupEventListeners() {
                 const task = [...items.queue, ...items.history].find(t => t.id === data.id);
                 if (task && !task.customName) {
                     task.customName = data.title;
-                    if (isQueueModalOpen) renderQueueModal();
+                    renderQueueModal();
                 }
             }
         });
@@ -2132,12 +2153,16 @@ function setupEventListeners() {
 
     bind(toggleDownloaderBtn, 'click', () => {
         downloaderOverlay.classList.add('visible');
+        renderQueueModal();
     });
 
     const toggleLegendBtn = document.getElementById('toggle-legend-btn');
     bind(toggleLegendBtn, 'click', () => {
         const legend = document.getElementById('clean-legend');
-        if (legend) legend.classList.toggle('collapsed');
+        if (legend) {
+            const collapsed = legend.classList.toggle('collapsed');
+            toggleLegendBtn.classList.toggle('active', !collapsed);
+        }
     });
 
     const infoBtn = document.getElementById('project-info-btn');
@@ -2149,8 +2174,8 @@ function setupEventListeners() {
     bind(infoOverlay, 'click', (e) => { if (e.target === infoOverlay) infoOverlay.classList.remove('visible'); });
 
     function resetDownloaderUI() {
-        if (ytUrlInput) ytUrlInput.value = '';
-        if (ytNameInput) ytNameInput.value = '';
+        if (dlUrlInput) dlUrlInput.value = '';
+        if (dlNameInput) dlNameInput.value = '';
         if (downloadStatusEl) downloadStatusEl.textContent = tr('statusReady');
         if (downloadBtn) {
             downloadBtn.disabled = false;
@@ -2595,11 +2620,9 @@ document.addEventListener('DOMContentLoaded', () => {
     playlistRefreshBtn = $('#playlist-refresh-btn');
     searchInput = $('.playlist-search-input');
     sortSelect = $('#sort-select');
-    ytUrlInput = $('#yt-url-input'); ytNameInput = $('#yt-name-input'); downloadBtn = $('#download-btn');
-    musicUrlInput = $('#music-url-input'); musicNameInput = $('#music-name-input');
-    spotifyUrlInput = $('#spotify-url-input');
+    dlUrlInput = $('#dl-url-input'); dlNameInput = $('#dl-name-input'); downloadBtn = $('#download-btn');
+    dlNameField = $('#dl-name-field'); dlSpotifyHint = $('#dl-spotify-hint'); dlUrlLabel = $('#dl-url-label');
     tabYtBtn = $('#tab-yt-btn'); tabMusicBtn = $('#tab-music-btn'); tabSpotifyBtn = $('#tab-spotify-btn');
-    viewYt = $('#view-youtube'); viewMusic = $('#view-music'); viewSpotify = $('#view-spotify');
 
     downloaderOverlay = $('#downloader-overlay'); downloaderCloseBtn = $('#downloader-close-btn'); downloadStatusEl = $('#info-status-text');
     downloadProgressFill = $('.yt-progress-fill'); visualizerCanvas = $('#visualizer-canvas'); visualizerContainer = $('.visualizer-container');
@@ -2761,15 +2784,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (tabYtBtn && tabSpotifyBtn && tabMusicBtn) {
+        const SRC_META = {
+            youtube: { label: 'ytUrlLabel', ph: 'ytUrlPlaceholder' },
+            music: { label: 'musicUrlLabel', ph: 'musicUrlPlaceholder' },
+            spotify: { label: 'spotifyUrlLabel', ph: 'spotifyUrlPlaceholder' },
+        };
         const setTab = (mode) => {
             activeDownloaderMode = mode;
             tabYtBtn.classList.toggle('active', mode === 'youtube');
             tabMusicBtn.classList.toggle('active', mode === 'music');
             tabSpotifyBtn.classList.toggle('active', mode === 'spotify');
 
-            viewYt.style.display = mode === 'youtube' ? 'block' : 'none';
-            viewMusic.style.display = mode === 'music' ? 'block' : 'none';
-            viewSpotify.style.display = mode === 'spotify' ? 'block' : 'none';
+            const meta = SRC_META[mode] || SRC_META.youtube;
+            if (dlUrlLabel) {
+                dlUrlLabel.setAttribute('data-lang-key', meta.label);
+                dlUrlLabel.textContent = tr(meta.label);
+            }
+            if (dlUrlInput) {
+                dlUrlInput.setAttribute('data-lang-placeholder', meta.ph);
+                dlUrlInput.placeholder = tr(meta.ph);
+            }
+            const isSpotify = mode === 'spotify';
+            if (dlNameField) dlNameField.style.display = isSpotify ? 'none' : 'flex';
+            if (dlSpotifyHint) dlSpotifyHint.style.display = isSpotify ? 'flex' : 'none';
         };
 
         if (activeDownloaderMode) setTab(activeDownloaderMode);
@@ -2783,7 +2820,7 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadBtn.addEventListener('click', handleDownload);
     }
 
-    const inputs = [ytUrlInput, ytNameInput, spotifyUrlInput];
+    const inputs = [dlUrlInput, dlNameInput];
     inputs.forEach(input => {
         if (input) {
             input.addEventListener('keydown', (e) => {
@@ -2884,16 +2921,14 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadManager = new DownloadManager({
                 onStatsUpdate: (stats) => {
                     updateQueueStatsUI(stats);
-                    if (isQueueModalOpen) renderQueueModal();
+                    renderQueueModal();
                 },
                 onLog: (key, type, args) => {
-                    let msg = key;
-                    if (typeof key === 'string' && (key.startsWith('log') || key.startsWith('status'))) {
-                        msg = tr(key, args);
-                    }
-                    logToTerminal(msg, type);
-
+                    // Terminal-Ausgabe kommt live vom Backend (download-terminal-log).
+                    // Hier nur noch den sichtbaren Fehler-Status setzen.
                     if (type === 'error') {
+                        const msg = (typeof key === 'string' && (key.startsWith('log') || key.startsWith('status')))
+                            ? tr(key, args) : key;
                         setDownloaderState('error', msg);
                     }
                 }

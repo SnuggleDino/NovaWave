@@ -37,10 +37,6 @@ export class DownloadManager {
         this.activeDownloads++;
         this._notifyStats();
 
-        if (this.callbacks.onLog) {
-            this.callbacks.onLog('logStartingDownload', 'info', nextTask.url);
-        }
-
         try {
             let result;
             if (nextTask.type === 'youtube') {
@@ -57,9 +53,6 @@ export class DownloadManager {
             if (result && result.success) {
                 nextTask.status = 'success';
                 nextTask.finishedAt = new Date();
-                if (this.callbacks.onLog) {
-                    this.callbacks.onLog('logDownloadComplete', 'success', nextTask.url);
-                }
             } else {
                 throw new Error(result ? result.error : 'Unknown error');
             }
