@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v3.0.8` 
+# 🎵 NovaWave `v3.1.0` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > - Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source -
 
-![Version](https://img.shields.io/badge/Version-3.0.8-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.1.0-38bdf8?style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Platforms-Windows_·_Linux-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
@@ -19,10 +19,14 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v3.0.8
+## ✨ What's New in v3.1.0
 
-- **Redesigned Downloader** - The downloader is now a slide-in side panel with source buttons for YouTube, YT Music and Spotify, a live terminal that streams the real download output, and a queue that updates in place (no more flicker).
+- **Redesigned Downloader** - A slide-in side panel with source buttons for YouTube, YT Music and Spotify, a live terminal that streams the real download output, and a queue that updates in place (no more flicker).
+- **Pride & Custom Title Gradient** - The title gradient now has modes: NovaWave, Pride (rainbow flag) and Custom (2-5 colors), with adjustable speed and strength and a smooth one-direction loop.
 - **Streamlined Interface Options** - The experimental "V2 PRO" interface has been removed. NovaWave now ships with the Legacy and Lite interfaces; if you had V2 selected, you are moved to Legacy automatically.
+- **Clearer Reset Dialog** - Resetting now shows exactly what will be cleared (settings, favorites, folders/playlists and play counts) in a proper dialog. Your music files stay untouched.
+- **Refreshed "What's New" Screen** - A two-column layout with the NovaWave dinos on the left and tidy change cards on the right.
+- **Fixes** - The saved background animation now starts right away on launch instead of only after switching it.
 
 <details>
 <summary>Previous release — v3.0.6</summary>

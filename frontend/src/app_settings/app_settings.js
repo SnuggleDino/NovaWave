@@ -248,13 +248,6 @@ export const AppSettings = {
             });
         }
 
-        const toggleGradientTitle = $('toggle-gradient-title');
-        if (toggleGradientTitle) {
-            toggleGradientTitle.addEventListener('change', (e) => {
-                this.saveSetting('gradientTitleEnabled', e.target.checked);
-                document.body.classList.toggle('gradient-title-active', e.target.checked);
-            });
-        }
 
         const animationSelect = $('animation-select');
         if (animationSelect) {
@@ -735,17 +728,26 @@ export const AppSettings = {
         }
 
         const btnResetApp = $('btn-reset-app');
-        if (btnResetApp) {
-            btnResetApp.addEventListener('click', async () => {
-                const confirmMsg = LangHandler.tr('resetWarning');
-                if (confirm(confirmMsg)) {
-                    if (this.api && this.api.resetConfig) {
-                        const res = await this.api.resetConfig();
-                        if (res.success) {
-                            localStorage.clear();
-                            location.reload();
-                        }
-                    }
+        const resetOverlay = $('reset-confirm-overlay');
+        const resetCancel = $('reset-confirm-cancel');
+        const resetOk = $('reset-confirm-ok');
+        const closeResetModal = () => { if (resetOverlay) resetOverlay.classList.remove('visible'); };
+
+        if (btnResetApp && resetOverlay) {
+            btnResetApp.addEventListener('click', () => resetOverlay.classList.add('visible'));
+        }
+        if (resetCancel) resetCancel.addEventListener('click', closeResetModal);
+        if (resetOverlay) resetOverlay.addEventListener('click', (e) => { if (e.target === resetOverlay) closeResetModal(); });
+        if (resetOk) {
+            resetOk.addEventListener('click', async () => {
+                if (!this.api || !this.api.resetConfig) return;
+                const res = await this.api.resetConfig();
+                if (this.api.clearTrackCache) {
+                    try { await this.api.clearTrackCache(); } catch (e) { /* ignore */ }
+                }
+                if (res && res.success) {
+                    localStorage.clear();
+                    location.reload();
                 }
             });
         }
@@ -787,9 +789,6 @@ export const AppSettings = {
 
         const accentColorPicker = $('accent-color-picker');
         if (accentColorPicker && s.customAccentColor) accentColorPicker.value = s.customAccentColor;
-
-        const toggleGradientTitle = $('toggle-gradient-title');
-        if (toggleGradientTitle) toggleGradientTitle.checked = !!s.gradientTitleEnabled;
 
         const animationSelect = $('animation-select');
         if (animationSelect && s.animationMode) {

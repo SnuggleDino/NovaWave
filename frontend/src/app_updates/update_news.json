@@ -1,14 +1,14 @@
 {
-    "version": "3.0.8",
+    "version": "3.1.0",
     "date": "4. Juni 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Neuer Downloader & aufgeräumte App",
-        "en": "A New Downloader & a Tidier App",
-        "tr": "Yeni İndirici ve Daha Düzenli Uygulama",
-        "es": "Nuevo descargador y una app más ordenada",
-        "fr": "Nouveau téléchargeur et une app plus épurée",
-        "it": "Nuovo downloader e un'app più ordinata"
+        "de": "Ein großes Update",
+        "en": "A Big Update",
+        "tr": "Büyük Bir Güncelleme",
+        "es": "Una gran actualización",
+        "fr": "Une grosse mise à jour",
+        "it": "Un grande aggiornamento"
     },
     "changes": [
         {
@@ -22,12 +22,31 @@
                 "it": "Downloader ridisegnato"
             },
             "desc": {
-                "de": "Der Downloader ist jetzt ein seitliches Panel mit Quellen-Buttons für YouTube, YT Music und Spotify, einem Live-Terminal mit echter Download-Ausgabe und einer Warteschlange, die sich ohne Flackern aktualisiert.",
-                "en": "The downloader is now a slide-in side panel with source buttons for YouTube, YT Music and Spotify, a live terminal that streams the real download output, and a queue that updates in place without flicker.",
-                "tr": "İndirici artık YouTube, YT Music ve Spotify kaynak düğmeleri, gerçek indirme çıktısını gösteren canlı bir terminal ve titremeden güncellenen bir kuyruk içeren yandan açılan bir panel.",
-                "es": "El descargador ahora es un panel lateral con botones de origen para YouTube, YT Music y Spotify, una terminal en vivo que muestra la salida real de la descarga y una cola que se actualiza sin parpadeos.",
-                "fr": "Le téléchargeur est désormais un panneau latéral avec des boutons de source pour YouTube, YT Music et Spotify, un terminal en direct qui affiche la vraie sortie de téléchargement et une file d'attente qui se met à jour sans scintillement.",
-                "it": "Il downloader è ora un pannello laterale con pulsanti sorgente per YouTube, YT Music e Spotify, un terminale dal vivo che mostra l'output reale del download e una coda che si aggiorna senza sfarfallio."
+                "de": "Seitliches Panel mit Quellen-Buttons (YouTube, YT Music, Spotify), echtem Live-Terminal und einer Warteschlange, die sich ohne Flackern aktualisiert.",
+                "en": "A slide-in side panel with source buttons (YouTube, YT Music, Spotify), a live terminal and a queue that updates without flicker.",
+                "tr": "Kaynak düğmeleri (YouTube, YT Music, Spotify), canlı terminal ve titremeden güncellenen bir kuyruk içeren yandan açılan panel.",
+                "es": "Un panel lateral con botones de origen (YouTube, YT Music, Spotify), una terminal en vivo y una cola que se actualiza sin parpadeos.",
+                "fr": "Un panneau latéral avec boutons de source (YouTube, YT Music, Spotify), un terminal en direct et une file d'attente qui se met à jour sans scintillement.",
+                "it": "Un pannello laterale con pulsanti sorgente (YouTube, YT Music, Spotify), un terminale dal vivo e una coda che si aggiorna senza sfarfallio."
+            }
+        },
+        {
+            "icon": "🌈",
+            "title": {
+                "de": "Pride- & Custom-Gradient",
+                "en": "Pride & Custom Title Gradient",
+                "tr": "Pride ve Özel Gradyan",
+                "es": "Degradado Pride y personalizado",
+                "fr": "Dégradé Pride et personnalisé",
+                "it": "Gradiente Pride e personalizzato"
+            },
+            "desc": {
+                "de": "Der Titel-Verlauf hat jetzt Modi: NovaWave, Pride (Regenbogen) und Custom (2–5 Farben) – mit Tempo & Stärke und einem sauberen Endlos-Loop.",
+                "en": "The title gradient now has modes: NovaWave, Pride (rainbow) and Custom (2-5 colors), with speed & strength and a smooth one-direction loop.",
+                "tr": "Başlık gradyanında artık modlar var: NovaWave, Pride (gökkuşağı) ve Özel (2-5 renk); hız ve yoğunluk ayarı ve akıcı tek yönlü döngü ile.",
+                "es": "El degradado del título ahora tiene modos: NovaWave, Pride (arcoíris) y personalizado (2-5 colores), con velocidad e intensidad y un bucle continuo suave.",
+                "fr": "Le dégradé du titre propose désormais des modes : NovaWave, Pride (arc-en-ciel) et personnalisé (2 à 5 couleurs), avec vitesse et intensité et une boucle fluide.",
+                "it": "Il gradiente del titolo ora ha modalità: NovaWave, Pride (arcobaleno) e personalizzato (2-5 colori), con velocità e intensità e un loop fluido."
             }
         },
         {
@@ -41,12 +60,50 @@
                 "it": "Interfacce semplificate"
             },
             "desc": {
-                "de": "Die experimentelle „V2 PRO\"-Oberfläche wurde entfernt. NovaWave kommt jetzt mit der Legacy- und der Lite-Oberfläche; wer V2 ausgewählt hatte, wird automatisch auf Legacy umgestellt.",
-                "en": "The experimental \"V2 PRO\" interface has been removed. NovaWave now ships with the Legacy and Lite interfaces; if you had V2 selected, you are moved to Legacy automatically.",
-                "tr": "Deneysel \"V2 PRO\" arayüzü kaldırıldı. NovaWave artık Legacy ve Lite arayüzleriyle geliyor; V2 seçiliyse otomatik olarak Legacy'ye geçirilirsiniz.",
-                "es": "Se ha eliminado la interfaz experimental \"V2 PRO\". NovaWave ahora incluye las interfaces Legacy y Lite; si tenías V2 seleccionada, pasas a Legacy automáticamente.",
-                "fr": "L'interface expérimentale « V2 PRO » a été supprimée. NovaWave propose désormais les interfaces Legacy et Lite ; si V2 était sélectionnée, vous passez automatiquement à Legacy.",
-                "it": "L'interfaccia sperimentale \"V2 PRO\" è stata rimossa. NovaWave ora include le interfacce Legacy e Lite; se avevi selezionato V2, passi automaticamente a Legacy."
+                "de": "Die experimentelle „V2 PRO\"-Oberfläche wurde entfernt. Es bleiben Legacy und Lite; eine alte V2-Auswahl wird automatisch auf Legacy umgestellt.",
+                "en": "The experimental \"V2 PRO\" interface was removed. Legacy and Lite remain; a previous V2 selection switches to Legacy automatically.",
+                "tr": "Deneysel \"V2 PRO\" arayüzü kaldırıldı. Legacy ve Lite kaldı; eski bir V2 seçimi otomatik olarak Legacy'ye geçer.",
+                "es": "Se eliminó la interfaz experimental \"V2 PRO\". Quedan Legacy y Lite; una selección previa de V2 cambia a Legacy automáticamente.",
+                "fr": "L'interface expérimentale « V2 PRO » a été supprimée. Legacy et Lite restent ; une ancienne sélection V2 passe automatiquement à Legacy.",
+                "it": "L'interfaccia sperimentale \"V2 PRO\" è stata rimossa. Restano Legacy e Lite; una precedente selezione V2 passa automaticamente a Legacy."
+            }
+        },
+        {
+            "icon": "♻️",
+            "title": {
+                "de": "Klarerer Reset-Dialog",
+                "en": "Clearer Reset Dialog",
+                "tr": "Daha Net Sıfırlama Penceresi",
+                "es": "Diálogo de reinicio más claro",
+                "fr": "Dialogue de réinitialisation plus clair",
+                "it": "Finestra di reset più chiara"
+            },
+            "desc": {
+                "de": "Der Zurücksetzen-Dialog zeigt jetzt genau, was gelöscht wird – inklusive Wiedergabe-Zähler. Deine Musikdateien bleiben unberührt.",
+                "en": "Resetting now shows exactly what gets cleared, including play counts. Your music files stay untouched.",
+                "tr": "Sıfırlama artık nelerin silineceğini tam olarak gösteriyor – çalma sayıları dahil. Müzik dosyalarına dokunulmaz.",
+                "es": "Al restablecer ahora se muestra exactamente qué se borra, incluidas las reproducciones. Tus archivos de música no se tocan.",
+                "fr": "La réinitialisation indique désormais exactement ce qui est effacé, y compris les compteurs de lecture. Vos fichiers musicaux restent intacts.",
+                "it": "Il reset ora mostra esattamente cosa viene cancellato, inclusi i conteggi di riproduzione. I tuoi file musicali restano intatti."
+            }
+        },
+        {
+            "icon": "🐛",
+            "title": {
+                "de": "Fixes & Feinschliff",
+                "en": "Fixes & Polish",
+                "tr": "Düzeltmeler ve İyileştirmeler",
+                "es": "Correcciones y mejoras",
+                "fr": "Corrections et finitions",
+                "it": "Correzioni e rifiniture"
+            },
+            "desc": {
+                "de": "Die gespeicherte Hintergrund-Animation startet jetzt sofort beim Öffnen, und das „What's New\"-Fenster wurde neu gestaltet (Dino + Karten).",
+                "en": "The saved background animation now starts right away on launch, and the \"What's New\" screen was redesigned (dino + cards).",
+                "tr": "Kaydedilen arka plan animasyonu artık açılışta hemen başlıyor ve \"What's New\" penceresi yeniden tasarlandı (dino + kartlar).",
+                "es": "La animación de fondo guardada ahora se inicia de inmediato al abrir, y la pantalla \"What's New\" se rediseñó (dino + tarjetas).",
+                "fr": "L'animation d'arrière-plan enregistrée démarre désormais immédiatement au lancement, et l'écran « What's New » a été repensé (dino + cartes).",
+                "it": "L'animazione di sfondo salvata ora parte subito all'avvio e la schermata \"What's New\" è stata ridisegnata (dino + schede)."
             }
         }
     ]

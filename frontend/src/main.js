@@ -56,6 +56,7 @@ const windowApi = {
     moveFile: App.MoveFile,
     setWindowSize: App.SetWindowSize,
     resetConfig: App.ResetConfig,
+    clearTrackCache: App.ClearTrackCache,
     restartApp: App.RestartApp,
     checkForUpdate: App.CheckForUpdate,
     openURL: App.OpenURL,
@@ -1511,6 +1512,101 @@ async function performFolderRefresh() {
     isRefreshing = false;
 }
 
+// ---- TITLE GRADIENT (F4) --------------------
+const TITLE_GRADIENTS = {
+    novawave: ['#6366f1', '#a855f7', '#ef4444', '#a855f7', '#6366f1'],
+    pride: ['#e40303', '#ff8c00', '#ffed00', '#008026', '#004dff', '#750787'],
+};
+const TITLE_GRADIENT_DEFAULT = ['#38bdf8', '#a855f7', '#ef4444'];
+
+function titleGradientCss(colors) {
+    const cyclic = [...colors, colors[0]]; // first color appended -> seamless one-direction loop
+    return `linear-gradient(90deg, ${cyclic.join(', ')})`;
+}
+
+function titleGradientMode() {
+    if (settings.titleGradientMode) return settings.titleGradientMode;
+    return settings.gradientTitleEnabled ? 'novawave' : 'off'; // migrate old boolean
+}
+
+function titleGradientColors() {
+    const c = settings.titleGradientColors;
+    return (Array.isArray(c) && c.length >= 2) ? c : TITLE_GRADIENT_DEFAULT;
+}
+
+function applyTitleGradient() {
+    const mode = titleGradientMode();
+    const body = document.body;
+    if (mode === 'off') {
+        body.classList.remove('title-gradient-on');
+        return;
+    }
+    const colors = mode === 'custom' ? titleGradientColors() : (TITLE_GRADIENTS[mode] || TITLE_GRADIENTS.novawave);
+    const speed = settings.titleGradientSpeed || 5;
+    const strength = settings.titleGradientStrength || 13;
+    body.style.setProperty('--tg', titleGradientCss(colors));
+    body.style.setProperty('--tg-speed', (12 - speed) + 's');
+    body.style.setProperty('--tg-strength', (strength / 10));
+    body.classList.add('title-gradient-on');
+}
+
+let _titleGradientWired = false;
+function setupTitleGradient() {
+    if (_titleGradientWired) return;
+    const modesEl = document.getElementById('tg-modes');
+    if (!modesEl) return;
+    _titleGradientWired = true;
+
+    const slidersEl = document.getElementById('tg-sliders');
+    const customEl = document.getElementById('tg-custom');
+    const stopsEl = document.getElementById('tg-stops');
+    const addBtn = document.getElementById('tg-add');
+    const speedEl = document.getElementById('tg-speed');
+    const strengthEl = document.getElementById('tg-strength');
+
+    let mode = titleGradientMode();
+    let colors = [...titleGradientColors()];
+    if (speedEl) speedEl.value = settings.titleGradientSpeed || 5;
+    if (strengthEl) strengthEl.value = settings.titleGradientStrength || 13;
+
+    const syncUI = () => {
+        modesEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.tgMode === mode));
+        if (slidersEl) slidersEl.style.display = mode === 'off' ? 'none' : 'flex';
+        if (customEl) customEl.style.display = mode === 'custom' ? 'flex' : 'none';
+    };
+
+    const renderStops = () => {
+        if (!stopsEl) return;
+        stopsEl.innerHTML = '';
+        colors.forEach((c, i) => {
+            const wrap = document.createElement('div');
+            wrap.className = 'tg-stop';
+            wrap.innerHTML = `<input type="color" value="${c}">` + (colors.length > 2 ? `<button type="button" class="tg-rm" title="Remove">&times;</button>` : '');
+            wrap.querySelector('input').oninput = (e) => { colors[i] = e.target.value; saveSetting('titleGradientColors', colors); applyTitleGradient(); };
+            const rm = wrap.querySelector('.tg-rm');
+            if (rm) rm.onclick = () => { colors.splice(i, 1); saveSetting('titleGradientColors', colors); renderStops(); applyTitleGradient(); };
+            stopsEl.appendChild(wrap);
+        });
+        if (addBtn) addBtn.disabled = colors.length >= 5;
+    };
+
+    modesEl.addEventListener('click', (e) => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        mode = b.dataset.tgMode;
+        saveSetting('titleGradientMode', mode);
+        if (mode === 'custom') saveSetting('titleGradientColors', colors);
+        syncUI();
+        applyTitleGradient();
+    });
+    if (addBtn) addBtn.onclick = () => { if (colors.length < 5) { colors.push('#10b981'); saveSetting('titleGradientColors', colors); renderStops(); applyTitleGradient(); } };
+    if (speedEl) speedEl.oninput = () => { saveSetting('titleGradientSpeed', parseInt(speedEl.value, 10)); applyTitleGradient(); };
+    if (strengthEl) strengthEl.oninput = () => { saveSetting('titleGradientStrength', parseInt(strengthEl.value, 10)); applyTitleGradient(); };
+
+    renderStops();
+    syncUI();
+}
+
 async function loadSettings() {
     const s = await windowApi.getSettings();
     if (s) settings = s;
@@ -1562,9 +1658,7 @@ async function loadSettings() {
         document.documentElement.style.setProperty('--accent', settings.customAccentColor || '#38bdf8');
     }
 
-    if (settings.gradientTitleEnabled) {
-        document.body.classList.add('gradient-title-active');
-    }
+    applyTitleGradient();
 
     if (settings.cinemaMode) {
         document.body.classList.add('cinema-mode');
@@ -2732,7 +2826,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     accentColorPicker = $('#accent-color-picker');
     dropZone = $('#drop-zone'); toggleEnableDrag = $('#toggle-enable-drag'); toggleUseCustomColor = $('#toggle-use-custom-color');
-    toggleGradientTitle = $('#toggle-gradient-title');
     accentColorContainer = $('#accent-color-container');
     toggleEnableFocus = $('#toggle-enable-focus'); toggleFocusModeBtn = $('#toggle-focus-mode-btn');
     speedSlider = $('#speed-slider'); speedValue = $('#speed-value');
@@ -2924,6 +3017,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (audioFeaturesPanel) audioFeaturesPanel.syncSpeed(settings.playbackSpeed || 1.0);
 
             initSettingsLogic();
+            setupTitleGradient();
 
             if (toggleFavoritesBtn) {
                 toggleFavoritesBtn.style.display = settings.enableFavoritesPlaylist ? 'flex' : 'none';
@@ -2943,6 +3037,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (settings.theme) localStorage.setItem('theme', settings.theme);
 
             if (animationSelect) animationSelect.value = settings.animationMode || 'flow';
+            applyAnimationSetting(settings.animationMode || 'flow'); // apply saved animation on startup
 
             ThemePackListener.init({
                 visualizer,
