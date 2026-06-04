@@ -87,29 +87,26 @@ export const UpdateManager = {
         const lang = LangHandler.currentLang || 'de';
         const getLocalized = (obj) => obj[lang] || obj['en'] || obj['de'] || '';
 
-        let listItems = '';
+        let cards = '';
         if (updateData.changes && Array.isArray(updateData.changes)) {
-            listItems = updateData.changes.map(change => {
-                return `
-                <li>
-                    <div class="feature-title">${change.icon} ${getLocalized(change.title)}</div>
-                    <div class="feature-desc">${getLocalized(change.desc)}</div>
-                </li>`;
-            }).join('');
+            cards = updateData.changes.map(change => `
+                <div class="change-card">
+                    <div class="change-icon">${change.icon}</div>
+                    <div class="change-text">
+                        <div class="change-title">${getLocalized(change.title)}</div>
+                        <div class="change-desc">${getLocalized(change.desc)}</div>
+                    </div>
+                </div>`).join('');
         }
 
-        container.innerHTML = `
-            <div class="changelog-entry">
-                <ul class="changelog-list">${listItems}</ul>
-            </div>`;
+        container.innerHTML = cards;
 
         const titleVer = document.getElementById('update-modal-version');
         if (titleVer) titleVer.textContent = `v${this.currentVersion}`;
 
         const iconContainer = document.querySelector('.rocket-icon');
         if (iconContainer) {
-            iconContainer.innerHTML = `<img src="${dinoImg}" alt="Update Icon" style="width: 120px; height: auto; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));">`;
-            iconContainer.style.animation = 'none';
+            iconContainer.innerHTML = `<img src="${dinoImg}" alt="NovaWave">`;
         }
 
         const subText = document.querySelector('.update-title-box p');

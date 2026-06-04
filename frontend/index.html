@@ -492,28 +492,28 @@
 
     <!-- ================= UPDATE INFO MODAL ================= -->
     <div id="update-info-overlay" class="overlay-container">
-        <div class="glass-panel settings-modal update-modal">
-            <div class="update-header-bg"></div>
-            <div class="settings-header" style="z-index: 2;">
-                <h3><span data-lang-key="updateTitle">What's New</span></h3>
-                <button id="update-info-close-btn" class="close-modal-btn">&times;</button>
+        <div class="update-modal">
+            <!-- Left: Dino -->
+            <div class="update-dino">
+                <div class="rocket-icon"></div>
             </div>
-            <div class="settings-content update-content-wrapper">
-                <div class="rocket-icon">🚀</div>
-                <div class="update-title-box">
+            <!-- Right: Content -->
+            <div class="update-body">
+                <div class="update-top">
+                    <span class="update-eyebrow" data-lang-key="updateTitle">What's New</span>
+                    <button id="update-info-close-btn" class="update-close" data-lang-title="close">&times;</button>
+                </div>
+                <div class="update-titlerow">
                     <h2>NovaWave</h2>
-                    <div class="update-version-badge"><span id="update-modal-version">...</span></div>
+                    <span class="update-version-badge"><span id="update-modal-version">...</span></span>
+                </div>
+                <div class="update-title-box">
                     <p>Ready for takeoff!</p>
                 </div>
-
-                <div id="changelog-content" class="changelog-container">
-                    <!-- Dynamic Content via JS -->
+                <div id="changelog-content" class="update-cards">
+                    <!-- Cards via JS -->
                 </div>
-
-                <button id="update-info-ok-btn" class="settings-button primary-btn" style="width: 100%; padding: 12px;"
-                    data-lang-key="updateOkBtn">
-                    Kuschelig!
-                </button>
+                <button id="update-info-ok-btn" class="update-ok" data-lang-key="updateOkBtn">Kuschelig!</button>
             </div>
         </div>
     </div>
