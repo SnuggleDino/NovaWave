@@ -31,15 +31,19 @@ func isAllowedPath(path string, allowedBases []string) bool {
 }
 
 type App struct {
-	ctx             context.Context
-	mu              sync.Mutex
-	spotifyService  *SpotifyService
-	trackCache      map[string]Track
-	cacheMu         sync.RWMutex
-	mediaKeyTID     uint32
-	cacheWriteTimer *time.Timer
-	cacheTimerMu    sync.Mutex
-	mediaBaseURL    string
+	ctx              context.Context
+	mu               sync.Mutex
+	spotifyService   *SpotifyService
+	trackCache       map[string]Track
+	cacheMu          sync.RWMutex
+	cacheWriteMu     sync.Mutex
+	mediaKeyTID      uint32
+	cacheWriteTimer  *time.Timer
+	cacheTimerMu     sync.Mutex
+	mediaBaseURL     string
+	allowedDirs      []string
+	allowedDirsMu    sync.RWMutex
+	allowedDirsValid bool
 }
 
 type Config struct {
@@ -195,9 +199,17 @@ func (a *App) saveTrackCache() {
 	if err != nil {
 		return
 	}
+	// Serialize writers and write atomically (temp + rename) so two overlapping
+	// saves can't interleave and corrupt the cache file.
+	a.cacheWriteMu.Lock()
+	defer a.cacheWriteMu.Unlock()
 	path := getCachePath()
 	os.MkdirAll(filepath.Dir(path), 0755)
-	os.WriteFile(path, data, 0644)
+	tmp := path + ".tmp"
+	if err := os.WriteFile(tmp, data, 0644); err != nil {
+		return
+	}
+	os.Rename(tmp, path)
 }
 
 func (a *App) SaveLastPosition(path string, position float64) {
@@ -234,37 +246,48 @@ func (a *App) ClearTrackCache() {
 }
 
 func (a *App) getAllowedDirs() []string {
-	a.mu.Lock()
-	data, err := os.ReadFile(getConfigPath())
-	a.mu.Unlock()
-
-	dirs := make([]string, 0, 4)
-	if err != nil {
+	a.allowedDirsMu.RLock()
+	if a.allowedDirsValid {
+		dirs := append([]string(nil), a.allowedDirs...)
+		a.allowedDirsMu.RUnlock()
 		return dirs
 	}
+	a.allowedDirsMu.RUnlock()
 
-	var cfg Config
-	if json.Unmarshal(data, &cfg) == nil {
-		if cfg.DownloadFolder != "" {
-			dirs = append(dirs, cfg.DownloadFolder)
-		}
-		if cfg.CurrentFolderPath != "" {
-			dirs = append(dirs, cfg.CurrentFolderPath)
-		}
-	}
-
-	// Pro UI stores multiple folders as a JSON array string in v2_folders
-	var raw map[string]interface{}
-	if json.Unmarshal(data, &raw) == nil {
-		if v2f, ok := raw["v2_folders"].(string); ok && v2f != "" {
-			var folders []string
-			if json.Unmarshal([]byte(v2f), &folders) == nil {
-				dirs = append(dirs, folders...)
+	// Cache miss: read + parse the config once, then memoize. Refreshed lazily
+	// after a config change (invalidateAllowedDirs) instead of on every media
+	// request, which previously hit the disk under a.mu for each range read.
+	dirs := make([]string, 0, 4)
+	if data, err := os.ReadFile(getConfigPath()); err == nil {
+		var raw map[string]interface{}
+		if json.Unmarshal(data, &raw) == nil {
+			if s, ok := raw["downloadFolder"].(string); ok && s != "" {
+				dirs = append(dirs, s)
+			}
+			if s, ok := raw["currentFolderPath"].(string); ok && s != "" {
+				dirs = append(dirs, s)
+			}
+			// Pro UI stored multiple folders as a JSON array string in v2_folders
+			if v2f, ok := raw["v2_folders"].(string); ok && v2f != "" {
+				var folders []string
+				if json.Unmarshal([]byte(v2f), &folders) == nil {
+					dirs = append(dirs, folders...)
+				}
 			}
 		}
 	}
 
-	return dirs
+	a.allowedDirsMu.Lock()
+	a.allowedDirs = dirs
+	a.allowedDirsValid = true
+	a.allowedDirsMu.Unlock()
+	return append([]string(nil), dirs...)
+}
+
+func (a *App) invalidateAllowedDirs() {
+	a.allowedDirsMu.Lock()
+	a.allowedDirsValid = false
+	a.allowedDirsMu.Unlock()
 }
 
 func (a *App) GetAppMeta() AppMeta {
@@ -360,6 +383,7 @@ func (a *App) ResetConfig() SimpleResult {
 	if err != nil {
 		return SimpleResult{Success: false, Error: "Reset failed: " + err.Error()}
 	}
+	a.invalidateAllowedDirs()
 	return SimpleResult{Success: true}
 }
 
@@ -388,6 +412,7 @@ func (a *App) SaveConfig(config Config) string {
 	if err := os.WriteFile(path, newData, 0644); err != nil {
 		return "Save error: " + err.Error()
 	}
+	a.invalidateAllowedDirs()
 	return "OK"
 }
 
@@ -410,6 +435,9 @@ func (a *App) SetSetting(key string, value interface{}) {
 	os.MkdirAll(filepath.Dir(path), 0755)
 	newData, _ := json.MarshalIndent(configMap, "", "  ")
 	os.WriteFile(path, newData, 0644)
+	if key == "downloadFolder" || key == "currentFolderPath" || key == "v2_folders" {
+		a.invalidateAllowedDirs()
+	}
 }
 
 func (a *App) GetSettings() map[string]interface{} {
@@ -875,8 +903,14 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	cmd := exec.Command(ytPath, args...)
 	configureCmd(cmd)
 
-	stdout, _ := cmd.StdoutPipe()
-	stderr, _ := cmd.StderrPipe()
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return SimpleResult{Success: false, Error: "stdout pipe: " + err.Error()}, nil
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return SimpleResult{Success: false, Error: "stderr pipe: " + err.Error()}, nil
+	}
 
 	if err := cmd.Start(); err != nil {
 		return SimpleResult{Success: false, Error: err.Error()}, nil
@@ -935,7 +969,7 @@ func (a *App) DownloadFromYouTube(opts DownloadOptions) (SimpleResult, error) {
 	go processPipe(stdout)
 	go processPipe(stderr)
 
-	err := cmd.Wait()
+	err = cmd.Wait()
 	if err != nil {
 		wailsRuntime.EventsEmit(a.ctx, "download-terminal-log", map[string]string{
 			"id":   opts.Id,

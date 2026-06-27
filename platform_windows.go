@@ -47,28 +47,40 @@ func (a *App) ensureBinaries() {
 	destDir := filepath.Join(configDir, "NovaWave", "bin")
 	os.MkdirAll(destDir, 0755)
 
+	// Re-extract whenever the app version changes so a yt-dlp/ffmpeg frozen from
+	// an older build can't silently rot - the embedded copies ship with the app.
+	versionFile := filepath.Join(destDir, ".bin-version")
+	stamped, _ := os.ReadFile(versionFile)
+	reExtract := string(stamped) != CurrentMeta.Version
+
 	files := []string{"ffmpeg.exe", "ffprobe.exe", "yt-dlp.exe"}
 
 	for _, name := range files {
 		destPath := filepath.Join(destDir, name)
 
-		if _, err := os.Stat(destPath); err != nil {
-			srcFile, err := embeddedBinaries.Open("bin/" + name)
-			if err != nil {
-				continue
-			}
-
-			dstFile, err := os.Create(destPath)
-			if err != nil {
-				srcFile.Close()
-				continue
-			}
-
-			io.Copy(dstFile, srcFile)
-			dstFile.Close()
-			srcFile.Close()
-			os.Chmod(destPath, 0755)
+		if _, err := os.Stat(destPath); err == nil && !reExtract {
+			continue
 		}
+
+		srcFile, err := embeddedBinaries.Open("bin/" + name)
+		if err != nil {
+			continue
+		}
+
+		dstFile, err := os.Create(destPath)
+		if err != nil {
+			srcFile.Close()
+			continue
+		}
+
+		io.Copy(dstFile, srcFile)
+		dstFile.Close()
+		srcFile.Close()
+		os.Chmod(destPath, 0755)
+	}
+
+	if reExtract {
+		os.WriteFile(versionFile, []byte(CurrentMeta.Version), 0644)
 	}
 }
 
