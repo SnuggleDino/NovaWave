@@ -1,109 +1,71 @@
 {
-    "version": "3.1.0",
-    "date": "4. Juni 2026",
+    "version": "3.1.1",
+    "date": "27. Juni 2026",
     "headerImage": "/src/assets/Two_Loving_Cute_Dinos.png",
     "subTitle": {
-        "de": "Ein großes Update",
-        "en": "A Big Update",
-        "tr": "Büyük Bir Güncelleme",
-        "es": "Una gran actualización",
-        "fr": "Une grosse mise à jour",
-        "it": "Un grande aggiornamento"
+        "de": "Feinschliff & Performance",
+        "en": "Polish & Performance",
+        "tr": "Cila ve Performans",
+        "es": "Pulido y rendimiento",
+        "fr": "Finitions et performances",
+        "it": "Rifiniture e prestazioni"
     },
     "changes": [
         {
-            "icon": "📥",
+            "icon": "🎛️",
             "title": {
-                "de": "Neuer Downloader",
-                "en": "Redesigned Downloader",
-                "tr": "Yeniden Tasarlanan İndirici",
-                "es": "Descargador rediseñado",
-                "fr": "Téléchargeur repensé",
-                "it": "Downloader ridisegnato"
+                "de": "Audio-Extras-Panel",
+                "en": "Audio Extras Quick Panel",
+                "tr": "Ses Ekstraları Paneli",
+                "es": "Panel rápido de audio",
+                "fr": "Panneau audio rapide",
+                "it": "Pannello audio rapido"
             },
             "desc": {
-                "de": "Seitliches Panel mit Quellen-Buttons (YouTube, YT Music, Spotify), echtem Live-Terminal und einer Warteschlange, die sich ohne Flackern aktualisiert.",
-                "en": "A slide-in side panel with source buttons (YouTube, YT Music, Spotify), a live terminal and a queue that updates without flicker.",
-                "tr": "Kaynak düğmeleri (YouTube, YT Music, Spotify), canlı terminal ve titremeden güncellenen bir kuyruk içeren yandan açılan panel.",
-                "es": "Un panel lateral con botones de origen (YouTube, YT Music, Spotify), una terminal en vivo y una cola que se actualiza sin parpadeos.",
-                "fr": "Un panneau latéral avec boutons de source (YouTube, YT Music, Spotify), un terminal en direct et une file d'attente qui se met à jour sans scintillement.",
-                "it": "Un pannello laterale con pulsanti sorgente (YouTube, YT Music, Spotify), un terminale dal vivo e una coda che si aggiorna senza sfarfallio."
+                "de": "Bass, Crystalizer, Reverb und EQ sind jetzt Live-Schalter in einem schwebenden Panel – mit ziehbarem 5-Band-EQ, Reverb-Wet/Dry und Tempo-Presets, synchron mit den Einstellungen.",
+                "en": "Bass, Crystalizer, Reverb and the Equalizer are now live controls in a floating panel – with a draggable 5-band EQ, reverb wet/dry and speed presets, kept in sync with Settings.",
+                "tr": "Bas, Crystalizer, Reverb ve Ekolayzer artık yüzen bir panelde canlı kontroller – sürüklenebilir 5 bantlı EQ, reverb wet/dry ve hız ön ayarlarıyla, Ayarlarla senkron.",
+                "es": "Bass, Crystalizer, Reverb y el ecualizador ahora son controles en vivo en un panel flotante: EQ de 5 bandas arrastrable, wet/dry del reverb y ajustes de velocidad, sincronizados con Ajustes.",
+                "fr": "Basses, Crystalizer, réverbe et égaliseur sont désormais des commandes en direct dans un panneau flottant – EQ 5 bandes ajustable, wet/dry de la réverbe et préréglages de vitesse, synchronisés avec les Réglages.",
+                "it": "Bassi, Crystalizer, riverbero ed equalizzatore sono ora controlli dal vivo in un pannello fluttuante – EQ a 5 bande trascinabile, wet/dry del riverbero e preset di velocità, sincronizzati con le Impostazioni."
             }
         },
         {
-            "icon": "🌈",
+            "icon": "⚡",
             "title": {
-                "de": "Pride- & Custom-Gradient",
-                "en": "Pride & Custom Title Gradient",
-                "tr": "Pride ve Özel Gradyan",
-                "es": "Degradado Pride y personalizado",
-                "fr": "Dégradé Pride et personnalisé",
-                "it": "Gradiente Pride e personalizzato"
+                "de": "Flüssigere Animationen",
+                "en": "Smoother Animations",
+                "tr": "Daha Akıcı Animasyonlar",
+                "es": "Animaciones más fluidas",
+                "fr": "Animations plus fluides",
+                "it": "Animazioni più fluide"
             },
             "desc": {
-                "de": "Der Titel-Verlauf hat jetzt Modi: NovaWave, Pride (Regenbogen) und Custom (2–5 Farben) – mit Tempo & Stärke und einem sauberen Endlos-Loop.",
-                "en": "The title gradient now has modes: NovaWave, Pride (rainbow) and Custom (2-5 colors), with speed & strength and a smooth one-direction loop.",
-                "tr": "Başlık gradyanında artık modlar var: NovaWave, Pride (gökkuşağı) ve Özel (2-5 renk); hız ve yoğunluk ayarı ve akıcı tek yönlü döngü ile.",
-                "es": "El degradado del título ahora tiene modos: NovaWave, Pride (arcoíris) y personalizado (2-5 colores), con velocidad e intensidad y un bucle continuo suave.",
-                "fr": "Le dégradé du titre propose désormais des modes : NovaWave, Pride (arc-en-ciel) et personnalisé (2 à 5 couleurs), avec vitesse et intensité et une boucle fluide.",
-                "it": "Il gradiente del titolo ora ha modalità: NovaWave, Pride (arcobaleno) e personalizzato (2-5 colori), con velocità e intensità e un loop fluido."
-            }
-        },
-        {
-            "icon": "🧹",
-            "title": {
-                "de": "Aufgeräumte Oberflächen",
-                "en": "Streamlined Interfaces",
-                "tr": "Sadeleştirilmiş Arayüzler",
-                "es": "Interfaces simplificadas",
-                "fr": "Interfaces simplifiées",
-                "it": "Interfacce semplificate"
-            },
-            "desc": {
-                "de": "Die experimentelle „V2 PRO\"-Oberfläche wurde entfernt. Es bleiben Legacy und Lite; eine alte V2-Auswahl wird automatisch auf Legacy umgestellt.",
-                "en": "The experimental \"V2 PRO\" interface was removed. Legacy and Lite remain; a previous V2 selection switches to Legacy automatically.",
-                "tr": "Deneysel \"V2 PRO\" arayüzü kaldırıldı. Legacy ve Lite kaldı; eski bir V2 seçimi otomatik olarak Legacy'ye geçer.",
-                "es": "Se eliminó la interfaz experimental \"V2 PRO\". Quedan Legacy y Lite; una selección previa de V2 cambia a Legacy automáticamente.",
-                "fr": "L'interface expérimentale « V2 PRO » a été supprimée. Legacy et Lite restent ; une ancienne sélection V2 passe automatiquement à Legacy.",
-                "it": "L'interfaccia sperimentale \"V2 PRO\" è stata rimossa. Restano Legacy e Lite; una precedente selezione V2 passa automaticamente a Legacy."
-            }
-        },
-        {
-            "icon": "♻️",
-            "title": {
-                "de": "Klarerer Reset-Dialog",
-                "en": "Clearer Reset Dialog",
-                "tr": "Daha Net Sıfırlama Penceresi",
-                "es": "Diálogo de reinicio más claro",
-                "fr": "Dialogue de réinitialisation plus clair",
-                "it": "Finestra di reset più chiara"
-            },
-            "desc": {
-                "de": "Der Zurücksetzen-Dialog zeigt jetzt genau, was gelöscht wird – inklusive Wiedergabe-Zähler. Deine Musikdateien bleiben unberührt.",
-                "en": "Resetting now shows exactly what gets cleared, including play counts. Your music files stay untouched.",
-                "tr": "Sıfırlama artık nelerin silineceğini tam olarak gösteriyor – çalma sayıları dahil. Müzik dosyalarına dokunulmaz.",
-                "es": "Al restablecer ahora se muestra exactamente qué se borra, incluidas las reproducciones. Tus archivos de música no se tocan.",
-                "fr": "La réinitialisation indique désormais exactement ce qui est effacé, y compris les compteurs de lecture. Vos fichiers musicaux restent intacts.",
-                "it": "Il reset ora mostra esattamente cosa viene cancellato, inclusi i conteggi di riproduzione. I tuoi file musicali restano intatti."
+                "de": "Schnee, Regen und Matrix laufen jetzt auf einem einzigen Canvas, Animationen pausieren bei minimiertem Fenster und laufen nahtlos weiter, und Standard-Effekte rendern GPU-beschleunigt.",
+                "en": "Snow, rain and matrix now run on a single canvas, animations pause while the window is minimized and continue seamlessly, and the default effects composite on the GPU.",
+                "tr": "Kar, yağmur ve matrix artık tek bir canvas üzerinde çalışıyor, pencere küçültüldüğünde animasyonlar duraklıyor ve kesintisiz devam ediyor, varsayılan efektler GPU'da işleniyor.",
+                "es": "Nieve, lluvia y matrix ahora se ejecutan en un solo canvas, las animaciones se pausan al minimizar la ventana y continúan sin cortes, y los efectos por defecto se componen en la GPU.",
+                "fr": "Neige, pluie et matrix tournent désormais sur un seul canvas, les animations se mettent en pause quand la fenêtre est réduite et reprennent sans coupure, et les effets par défaut sont composés sur le GPU.",
+                "it": "Neve, pioggia e matrix ora girano su un unico canvas, le animazioni si mettono in pausa quando la finestra è ridotta a icona e riprendono senza interruzioni, e gli effetti predefiniti vengono composti sulla GPU."
             }
         },
         {
             "icon": "🐛",
             "title": {
-                "de": "Fixes & Feinschliff",
-                "en": "Fixes & Polish",
-                "tr": "Düzeltmeler ve İyileştirmeler",
-                "es": "Correcciones y mejoras",
-                "fr": "Corrections et finitions",
-                "it": "Correzioni e rifiniture"
+                "de": "Stabilität & Fixes",
+                "en": "Stability & Fixes",
+                "tr": "Kararlılık ve Düzeltmeler",
+                "es": "Estabilidad y correcciones",
+                "fr": "Stabilité et corrections",
+                "it": "Stabilità e correzioni"
             },
             "desc": {
-                "de": "Die gespeicherte Hintergrund-Animation startet jetzt sofort beim Öffnen, und das „What's New\"-Fenster wurde neu gestaltet (Dino + Karten).",
-                "en": "The saved background animation now starts right away on launch, and the \"What's New\" screen was redesigned (dino + cards).",
-                "tr": "Kaydedilen arka plan animasyonu artık açılışta hemen başlıyor ve \"What's New\" penceresi yeniden tasarlandı (dino + kartlar).",
-                "es": "La animación de fondo guardada ahora se inicia de inmediato al abrir, y la pantalla \"What's New\" se rediseñó (dino + tarjetas).",
-                "fr": "L'animation d'arrière-plan enregistrée démarre désormais immédiatement au lancement, et l'écran « What's New » a été repensé (dino + cartes).",
-                "it": "L'animazione di sfondo salvata ora parte subito all'avvio e la schermata \"What's New\" è stata ridisegnata (dino + schede)."
+                "de": "Behoben: doppelte Downloads bei einem Klick, Resume-Position auf dem falschen Track, hängende Ordner-Aktualisierung und Einfrieren bei defekten Dateien (wird jetzt übersprungen) – plus Backend-Härtung (Medien-Serving, atomarer Cache, aktuelles yt-dlp).",
+                "en": "Fixed double downloads on one click, the resume position landing on the wrong track, a stuck folder refresh, and freezing on a broken file (now skipped) – plus backend hardening (media serving, atomic cache, fresh yt-dlp).",
+                "tr": "Düzeltildi: tek tıklamada çift indirme, yanlış parçaya düşen kaldığın yer, takılan klasör yenileme ve bozuk dosyada donma (artık atlanıyor) – ayrıca arka uç sağlamlaştırması (medya sunumu, atomik önbellek, güncel yt-dlp).",
+                "es": "Corregido: descargas dobles con un clic, la posición de reanudación en la pista equivocada, una actualización de carpeta atascada y el bloqueo con archivos dañados (ahora se omiten), además de refuerzos del backend (servicio multimedia, caché atómica, yt-dlp actualizado).",
+                "fr": "Corrigés : téléchargements en double sur un clic, la reprise au mauvais morceau, une actualisation de dossier bloquée et le gel sur un fichier corrompu (désormais ignoré), plus un renforcement du backend (service multimédia, cache atomique, yt-dlp à jour).",
+                "it": "Corretti: download doppi con un clic, la posizione di ripresa sul brano sbagliato, un aggiornamento cartella bloccato e il blocco su file danneggiati (ora saltati), oltre al rafforzamento del backend (servizio multimediale, cache atomica, yt-dlp aggiornato)."
             }
         }
     ]

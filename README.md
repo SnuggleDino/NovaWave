@@ -1,10 +1,10 @@
-# 🎵 NovaWave `v3.1.0` 
+# 🎵 NovaWave `v3.1.1` 
 
 > **Your Music · Your Style · Your Rules**
 > No ads, no clutter. Just your music, beautifully presented.  
 > - Built with ❤️ in **Go (Wails v2)** + Vanilla JS · Free & Open Source -
 
-![Version](https://img.shields.io/badge/Version-3.1.0-38bdf8?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.1.1-38bdf8?style=for-the-badge)
 ![Platforms](https://img.shields.io/badge/Platforms-Windows_·_Linux-38bdf8?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Open--Source-4ade80?style=for-the-badge)
 ![Made with Love](https://img.shields.io/badge/Made_with-Love-ff69b4?style=for-the-badge)
@@ -19,7 +19,15 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## ✨ What's New in v3.1.0
+## ✨ What's New in v3.1.1
+
+- **Audio Extras Quick Panel** - Bass, Crystalizer, Reverb and the Equalizer are now live controls in a floating panel - toggle them on the fly, drag the 5-band EQ, dial reverb wet/dry and set the playback speed, all kept in sync with the Settings page.
+- **Smoother Background Animations** - Snowfall, rain and matrix now render on a single canvas instead of dozens of DOM nodes, animations pause while the window is minimized (and continue where they left off), and the default effects composite on the GPU.
+- **Stability Fixes** - Fixed double downloads on a single click, the resume position landing on the wrong track when switching tracks, a folder refresh that could get stuck for the session, and playback now skips past a missing or broken file instead of freezing.
+- **Backend Hardening** - Lock-free media serving, atomic track-cache writes, a refreshed yt-dlp/ffmpeg on every update, and downloads that no longer crash on a failed pipe.
+
+<details>
+<summary>Previous release — v3.1.0</summary>
 
 - **Redesigned Downloader** - A slide-in side panel with source buttons for YouTube, YT Music and Spotify, a live terminal that streams the real download output, and a queue that updates in place (no more flicker).
 - **Pride & Custom Title Gradient** - The title gradient now has modes: NovaWave, Pride (rainbow flag) and Custom (2-5 colors), with adjustable speed and strength and a smooth one-direction loop.
@@ -27,6 +35,8 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 - **Clearer Reset Dialog** - Resetting now shows exactly what will be cleared (settings, favorites, folders/playlists and play counts) in a proper dialog. Your music files stay untouched.
 - **Refreshed "What's New" Screen** - A two-column layout with the NovaWave dinos on the left and tidy change cards on the right.
 - **Fixes** - The saved background animation now starts right away on launch instead of only after switching it.
+
+</details>
 
 <details>
 <summary>Previous release — v3.0.6</summary>
