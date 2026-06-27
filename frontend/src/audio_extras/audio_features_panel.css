@@ -1,204 +1,243 @@
-.audio-features-panel {
+/* ============================================================
+   AUDIO EXTRAS - Floating FAB + Control Surface (V3)
+   ============================================================ */
+
+/* ---- FAB TRIGGER -------------------- */
+.audio-fab {
     position: fixed;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%) translateX(-110%);
-    opacity: 0;
-    pointer-events: none;
-    width: 60px;
+    left: 16px;
+    top: 90px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     background: var(--bg-card);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border-soft);
-    border-left: none;
-    border-radius: 0 12px 12px 0;
-    padding: 15px 0;
+    color: var(--text-muted);
+    cursor: pointer;
+    z-index: 150;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-soft);
+    transition: color var(--transition-med), background var(--transition-med),
+        border-color var(--transition-med), transform 0.12s ease,
+        box-shadow var(--transition-med), opacity 0.4s ease;
+}
+
+.audio-fab::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: 0 0 0 0 var(--accent-soft);
+    animation: audio-fab-breathe 3.6s ease-in-out infinite;
+}
+
+@keyframes audio-fab-breathe {
+    50% { box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
+}
+
+.audio-fab svg { width: 22px; height: 22px; }
+.audio-fab:hover { color: var(--accent); background: var(--accent-soft); border-color: var(--accent); }
+.audio-fab:active { transform: scale(0.93); }
+
+body.audio-panel-open .audio-fab {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    box-shadow: 0 0 24px rgba(56, 189, 248, 0.32), var(--shadow-soft);
+}
+body.audio-panel-open .audio-fab::before { animation: none; box-shadow: none; }
+
+/* ---- CONTROL CARD -------------------- */
+.audio-features-panel {
+    position: fixed;
+    left: 78px;
+    top: 90px;
+    transform: translateY(-10px) scale(0.96);
+    transform-origin: left top;
+    opacity: 0;
+    pointer-events: none;
+    width: 286px;
+    max-height: calc(66vh - 80px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: rgba(18, 18, 36, 0.92);
+    backdrop-filter: blur(22px);
+    border: 1px solid var(--border-soft);
+    border-radius: 18px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
-    z-index: 100;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+    gap: 2px;
+    box-shadow: 6px 0 30px rgba(0, 0, 0, 0.45);
+    transition: transform 0.45s cubic-bezier(0.34, 1.45, 0.5, 1), opacity 0.38s ease;
+    z-index: 140;
 }
 
 .audio-features-panel.visible {
-    transform: translateY(-50%) translateX(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
     pointer-events: auto;
 }
 
-.audio-feature-item {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+/* scrollbar */
+.audio-features-panel::-webkit-scrollbar { width: 7px; }
+.audio-features-panel::-webkit-scrollbar-thumb { background: var(--border-soft); border-radius: 4px; }
+
+/* ---- HEADER -------------------- */
+.afp-head {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 2px 4px 10px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.afp-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-main);
+}
+.afp-count { font-size: 10px; color: var(--text-muted); }
+
+/* ---- ROW -------------------- */
+.afp-group {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+    transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.audio-features-panel.visible .afp-group { opacity: 1; transform: translateY(0) scale(1); }
+.audio-features-panel.visible .afp-group:nth-child(2) { transition-delay: 0.05s; }
+.audio-features-panel.visible .afp-group:nth-child(3) { transition-delay: 0.10s; }
+.audio-features-panel.visible .afp-group:nth-child(4) { transition-delay: 0.15s; }
+.audio-features-panel.visible .afp-group:nth-child(5) { transition-delay: 0.20s; }
+.audio-features-panel.visible .afp-group:nth-child(6) { transition-delay: 0.25s; }
+
+.afp-row { display: flex; align-items: center; gap: 11px; padding: 9px 4px; }
+.afp-icon {
+    width: 34px; height: 34px; flex: none;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-muted);
-    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, filter 0.3s ease;
     border: 1px solid transparent;
+    transition: background 0.25s, color 0.25s, border-color 0.25s, filter 0.25s;
 }
-
-.audio-feature-item.active {
+.afp-icon svg { width: 18px; height: 18px; }
+.afp-row.on .afp-icon {
     color: var(--accent);
     background: var(--accent-soft);
     border-color: var(--accent);
     filter: drop-shadow(0 0 5px var(--accent-soft));
 }
+.afp-meta { flex: 1; min-width: 0; }
+.afp-meta b { display: block; font-size: 13px; font-weight: 600; color: var(--text-main); }
+.afp-meta small { font-size: 10.5px; color: var(--text-muted); }
+.afp-row.on .afp-meta small { color: var(--accent); }
 
-.audio-feature-item svg {
-    width: 18px;
-    height: 18px;
-}
-
-.audio-feature-item--clickable {
-    cursor: pointer;
-}
-
-.audio-feature-item--clickable:hover {
+/* ---- TOGGLE SWITCH -------------------- */
+.afp-sw {
+    position: relative;
+    width: 40px; height: 23px; flex: none;
+    border-radius: 999px;
     background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-}
-
-.audio-extras-toggle-btn {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.6;
-    transition: opacity 0.3s;
-}
-
-.audio-extras-toggle-btn:hover {
-    opacity: 1;
-}
-
-/* ── Speed Sub-Panel ─────────────────────────────────────────── */
-
-.audio-speed-panel {
-    position: fixed;
-    left: 64px;
-    top: 50%;
-    transform: translateY(-50%) translateX(-14px);
-    opacity: 0;
-    pointer-events: none;
-    width: 260px;
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
     border: 1px solid var(--border-soft);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
-    z-index: 99;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    transition: background 0.25s, border-color 0.25s;
 }
-
-.audio-speed-panel.visible {
-    transform: translateY(-50%) translateX(0);
-    opacity: 1;
-    pointer-events: auto;
+.afp-sw::after {
+    content: "";
+    position: absolute; top: 2px; left: 2px;
+    width: 17px; height: 17px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s;
 }
+.afp-sw.on { background: var(--accent-soft); border-color: var(--accent); }
+.afp-sw.on::after { transform: translateX(17px); background: var(--accent); }
+.afp-sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.asp-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+/* ---- EXPANDABLE SUB-CONTROL -------------------- */
+.afp-sub {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin: 0 4px;
+    transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
 }
+.afp-group.expanded .afp-sub { max-height: 96px; opacity: 1; margin: 0 4px 8px; }
 
-.asp-title {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    text-transform: uppercase;
+/* reverb wet/dry */
+.afp-slider-row { display: flex; align-items: center; gap: 9px; padding: 4px 0; }
+.afp-slider-row .lab { font-size: 10px; color: var(--text-muted); white-space: nowrap; flex: none; }
+.afp-range {
+    flex: 1;
+    -webkit-appearance: none; appearance: none;
+    height: 4px; border-radius: 2px;
+    background: var(--border-soft);
+    outline: none; cursor: pointer;
 }
-
-.asp-value {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--accent);
+.afp-range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
 }
+.afp-range::-webkit-slider-thumb:hover { transform: scale(1.25); box-shadow: 0 0 7px var(--accent-soft); }
+.afp-range::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: none; cursor: pointer; }
 
-.asp-presets {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    justify-content: center;
+/* ---- EQ STRIP -------------------- */
+.afp-eq {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 7px; height: 60px; padding: 6px 2px 0;
+    touch-action: none;
 }
+.afp-band { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: ns-resize; }
+.afp-track {
+    position: relative;
+    width: 5px; height: 44px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    display: flex; align-items: flex-end;
+}
+.afp-fill {
+    width: 100%;
+    background: linear-gradient(180deg, var(--accent), #a855f7);
+    transition: height 0.12s ease;
+}
+.afp-band small { font-size: 8.5px; color: var(--text-muted); }
 
-.asp-preset {
-    padding: 6px 11px;
-    font-size: 11px;
-    font-weight: 500;
-    border-radius: 6px;
+/* ---- SPEED -------------------- */
+.afp-speed { display: flex; flex-wrap: wrap; gap: 5px; padding: 4px 0; }
+.afp-chip {
+    padding: 5px 10px;
+    font-size: 11px; font-weight: 500;
+    border-radius: 7px;
     border: 1px solid var(--border-soft);
     background: rgba(255, 255, 255, 0.04);
     color: var(--text-muted);
     cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
+.afp-chip:hover { background: rgba(255, 255, 255, 0.09); color: var(--text-main); }
+.afp-chip.active { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
 
-.asp-preset:hover {
-    background: rgba(255, 255, 255, 0.09);
-    color: var(--text-primary);
+/* ---- PLAYLIST-LEFT MIRROR (id selector beats the legacy style.css rule) ---- */
+body.playlist-left .audio-fab { left: auto; right: 16px; }
+body.playlist-left #audio-features-panel {
+    left: auto; right: 78px;
+    transform-origin: right top;
+    transform: translateY(-10px) scale(0.96);
 }
+body.playlist-left #audio-features-panel.visible { transform: translateY(0) scale(1); }
 
-.asp-preset.active {
-    background: var(--accent-soft);
-    color: var(--accent);
-    border-color: var(--accent);
-}
-
-.asp-slider-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.asp-range-label {
-    font-size: 10px;
-    color: var(--text-muted);
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.asp-slider {
-    flex: 1;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px;
-    border-radius: 2px;
-    background: var(--border-soft);
-    outline: none;
-    cursor: pointer;
-}
-
-.asp-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.asp-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.25);
-    box-shadow: 0 0 7px var(--accent-soft);
-}
-
-.asp-slider::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    border: none;
+/* ---- REDUCED MOTION -------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .audio-fab::before { animation: none; }
 }

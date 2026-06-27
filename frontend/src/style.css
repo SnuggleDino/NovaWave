@@ -88,6 +88,20 @@ body.is-mini #audio-speed-panel {
     display: none !important;
 }
 
+/* Audio Extras FAB hide gate lives here (head-loaded style.css) so it applies on
+   the first paint - the panel's own CSS is JS-imported and loads a beat later,
+   which let the unstyled button flash top-left during the loader/intro. */
+#audio-extras-toggle-btn {
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.ready #audio-extras-toggle-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 /* Theme Pack styles are now self-contained in each pack's theme.css */
 
 .side-toggle-btn {

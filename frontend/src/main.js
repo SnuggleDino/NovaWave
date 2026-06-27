@@ -2781,16 +2781,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     audioFeaturesPanel = new AudioFeaturesPanel();
     audioFeaturesPanel.init();
+    // Panel changes go through the same path as the Settings page: persist the
+    // setting, re-apply the audio chain (which also refreshes the panel) and sync
+    // the Settings UI so both stay in agreement.
+    const applyAudioFromPanel = (key, value) => {
+        saveSetting(key, value);
+        updateAudioEffects();
+        if (AppSettings.syncAudioControls) AppSettings.syncAudioControls();
+    };
+    audioFeaturesPanel.onToggle = (key, enabled) => applyAudioFromPanel(key, enabled);
+    audioFeaturesPanel.onParam = (key, value) => applyAudioFromPanel(key, value);
     audioFeaturesPanel.onSpeedChange = (rate) => {
         audio.defaultPlaybackRate = rate;
         audio.playbackRate = rate;
-        settings.playbackSpeed = rate;
-        AppSettings.saveSetting('playbackSpeed', rate);
-        showNotification(tr('playbackSpeed') + ': ' + rate + 'x', 'info', 1500);
+        saveSetting('playbackSpeed', rate);
     };
 
     if (audioExtrasToggleBtn) {
         audioExtrasToggleBtn.addEventListener('click', () => {
+            audioFeaturesPanel.updateStatus(settings);
             audioFeaturesPanel.toggle();
         });
     }

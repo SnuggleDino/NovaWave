@@ -767,6 +767,64 @@ export const AppSettings = {
         }
     },
 
+    syncAudioControls: function () {
+        const s = this.settings;
+        const $ = (id) => document.getElementById(id);
+        if (!s) return;
+
+        const restoreAudio = (toggleId, containerId, sliderId, displayId, enabledKey, valueKey, suffix) => {
+            const toggle = $(toggleId);
+            const container = $(containerId);
+            const slider = $(sliderId);
+            const display = $(displayId);
+            if (toggle) toggle.checked = !!s[enabledKey];
+            if (container) container.style.display = s[enabledKey] ? 'flex' : 'none';
+            if (slider && s[valueKey] !== undefined) slider.value = s[valueKey];
+            if (display && s[valueKey] !== undefined) display.textContent = s[valueKey] + suffix;
+        };
+
+        restoreAudio('toggle-bass-boost', 'bass-boost-slider-container', 'bass-boost-slider', 'bass-boost-value', 'bassBoostEnabled', 'bassBoostValue', 'dB');
+        restoreAudio('toggle-treble-boost', 'treble-boost-slider-container', 'treble-boost-slider', 'treble-boost-value', 'trebleBoostEnabled', 'trebleBoostValue', 'dB');
+        restoreAudio('toggle-reverb', 'reverb-slider-container', 'reverb-slider', 'reverb-value', 'reverbEnabled', 'reverbValue', '%');
+
+        const cfToggle = $('toggle-crossfade');
+        const cfContainer = $('crossfade-slider-container');
+        const cfSlider = $('crossfade-slider');
+        const cfValue = $('crossfade-value');
+        if (cfToggle) cfToggle.checked = !!s.crossfadeEnabled;
+        if (cfContainer) cfContainer.style.display = s.crossfadeEnabled ? 'flex' : 'none';
+        if (cfSlider && s.crossfadeSeconds) cfSlider.value = s.crossfadeSeconds;
+        if (cfValue && s.crossfadeSeconds) cfValue.textContent = s.crossfadeSeconds + 's';
+
+        const vnToggle = $('toggle-vol-norm');
+        if (vnToggle) vnToggle.checked = !!s.volNormEnabled;
+
+        const vlSlider = $('vol-limit-slider');
+        const vlDisplay = $('vol-limit-display');
+        const vlPct = Math.round((s.volumeLimit !== undefined ? s.volumeLimit : 1.0) * 100);
+        if (vlSlider) vlSlider.value = vlPct;
+        if (vlDisplay) vlDisplay.textContent = vlPct + '%';
+
+        const toggleEq = $('toggle-equalizer');
+        const eqContainer = $('eq-sliders-container');
+        if (toggleEq) {
+            toggleEq.checked = !!s.eqEnabled;
+            if (eqContainer) eqContainer.style.display = s.eqEnabled ? 'flex' : 'none';
+        }
+        if (s.eqValues) {
+            const eqSliders = document.querySelectorAll('.eq-slider');
+            eqSliders.forEach((slider, i) => {
+                const val = s.eqValues[i] || 0;
+                slider.value = val;
+                const valDisp = slider.parentElement.querySelector('.eq-value');
+                if (valDisp) valDisp.textContent = val + 'dB';
+            });
+            this._updateEqPresetChips(s.eqValues);
+        }
+
+        this._updateAudioPresetChips(this._findActiveAudioPreset());
+    },
+
     restoreUIState: function () {
         const s = this.settings;
         const $ = (id) => document.getElementById(id);
@@ -845,59 +903,7 @@ export const AppSettings = {
         const autoLoadLastFolderToggle = $('toggle-auto-load-last-folder');
         if (autoLoadLastFolderToggle) autoLoadLastFolderToggle.checked = s.autoLoadLastFolder !== false;
 
-        const restoreAudio = (toggleId, containerId, sliderId, displayId, enabledKey, valueKey, suffix) => {
-            const toggle = $(toggleId);
-            const container = $(containerId);
-            const slider = $(sliderId);
-            const display = $(displayId);
-
-            if (toggle) toggle.checked = !!s[enabledKey];
-            if (container) container.style.display = s[enabledKey] ? 'flex' : 'none';
-            if (slider && s[valueKey] !== undefined) slider.value = s[valueKey];
-            if (display && s[valueKey] !== undefined) display.textContent = s[valueKey] + suffix;
-        };
-
-        restoreAudio('toggle-bass-boost', 'bass-boost-slider-container', 'bass-boost-slider', 'bass-boost-value', 'bassBoostEnabled', 'bassBoostValue', 'dB');
-        restoreAudio('toggle-treble-boost', 'treble-boost-slider-container', 'treble-boost-slider', 'treble-boost-value', 'trebleBoostEnabled', 'trebleBoostValue', 'dB');
-        restoreAudio('toggle-reverb', 'reverb-slider-container', 'reverb-slider', 'reverb-value', 'reverbEnabled', 'reverbValue', '%');
-
-        const cfToggle = $('toggle-crossfade');
-        const cfContainer = $('crossfade-slider-container');
-        const cfSlider = $('crossfade-slider');
-        const cfValue = $('crossfade-value');
-        if (cfToggle) cfToggle.checked = !!s.crossfadeEnabled;
-        if (cfContainer) cfContainer.style.display = s.crossfadeEnabled ? 'flex' : 'none';
-        if (cfSlider && s.crossfadeSeconds) cfSlider.value = s.crossfadeSeconds;
-        if (cfValue && s.crossfadeSeconds) cfValue.textContent = s.crossfadeSeconds + 's';
-
-        const vnToggle = $('toggle-vol-norm');
-        if (vnToggle) vnToggle.checked = !!s.volNormEnabled;
-
-        const vlSlider = $('vol-limit-slider');
-        const vlDisplay = $('vol-limit-display');
-        const vlPct = Math.round((s.volumeLimit !== undefined ? s.volumeLimit : 1.0) * 100);
-        if (vlSlider) vlSlider.value = vlPct;
-        if (vlDisplay) vlDisplay.textContent = vlPct + '%';
-
-        //--- Equalizer ---------------
-        const toggleEq = $('toggle-equalizer');
-        const eqContainer = $('eq-sliders-container');
-        if (toggleEq) {
-            toggleEq.checked = !!s.eqEnabled;
-            if (eqContainer) eqContainer.style.display = s.eqEnabled ? 'flex' : 'none';
-        }
-        if (s.eqValues) {
-            const eqSliders = document.querySelectorAll('.eq-slider');
-            eqSliders.forEach((slider, i) => {
-                const val = s.eqValues[i] || 0;
-                slider.value = val;
-                const valDisp = slider.parentElement.querySelector('.eq-value');
-                if (valDisp) valDisp.textContent = val + 'dB';
-            });
-            this._updateEqPresetChips(s.eqValues);
-        }
-
-        this._updateAudioPresetChips(this._findActiveAudioPreset());
+        this.syncAudioControls();
 
         if (s.activeIntro) {
             const introCards = document.querySelectorAll('.intro-card');
