@@ -165,6 +165,7 @@ export const tr_TR = {
     libAdditional: 'Ek klas\u00F6rler',
     folderLoaded: 'Klas\u00F6r y\u00FCklendi: {}',
     folderRefreshed: 'Klas\u00F6r yenilendi',
+    folderRefreshFailed: 'Yenileme ba\u015Far\u0131s\u0131z',
     folderDeleted: 'Klas\u00F6r silindi',
     songDeleted: '\u015Eark\u0131 silindi',
 

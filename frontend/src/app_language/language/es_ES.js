@@ -165,6 +165,7 @@ export const es_ES = {
     libAdditional: 'Carpetas adicionales',
     folderLoaded: 'Carpeta cargada: {}',
     folderRefreshed: 'Carpeta actualizada',
+    folderRefreshFailed: 'Error al actualizar',
     folderDeleted: 'Carpeta eliminada',
     songDeleted: 'Canci\u00F3n eliminada',
 

@@ -165,6 +165,7 @@ export const en_EN = {
     libAdditional: 'Additional Folders',
     folderLoaded: 'Folder loaded: {}',
     folderRefreshed: 'Folder refreshed',
+    folderRefreshFailed: 'Refresh failed',
     folderDeleted: 'Folder deleted',
     songDeleted: 'Song deleted',
 

@@ -165,6 +165,7 @@ export const it_IT = {
     libAdditional: 'Cartelle aggiuntive',
     folderLoaded: 'Cartella caricata: {}',
     folderRefreshed: 'Cartella aggiornata',
+    folderRefreshFailed: 'Aggiornamento non riuscito',
     folderDeleted: 'Cartella eliminata',
     songDeleted: 'Brano eliminato',
 

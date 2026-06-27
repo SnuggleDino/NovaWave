@@ -658,8 +658,29 @@ function togglePlayPause() {
     else audio.play();
 }
 
+// ---- PLAYBACK POSITION PERSISTENCE --------------------
+let suppressPauseSave = false;
+let trackJustEnded = false;
+
+// setAudioSrcViaBlob() pauses the element while switching tracks, which fires a
+// spurious 'pause'. suppressPauseSave stops that event from writing the outgoing
+// position onto the new track's path; the outgoing position is saved explicitly
+// at the top of playTrack instead (skipped on natural end / crossfade, which
+// reset the position to 0 themselves).
+function savePlaybackPosition() {
+    if (currentTrackPath && !isNaN(audio.duration) && audio.duration > 300 && audio.currentTime > 30) {
+        const pos = audio.currentTime;
+        const track = playlist[currentIndex];
+        if (track) track.lastPosition = pos;
+        windowApi.saveLastPosition(currentTrackPath, pos).catch(() => {});
+    }
+}
+
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
+    if (!trackJustEnded && !isCrossfading) savePlaybackPosition();
+    trackJustEnded = false;
+    suppressPauseSave = true;
     _cancelCrossfade();
     dismissResumeToast();
     currentIndex = index;
@@ -677,7 +698,7 @@ function playTrack(index) {
         audio.playbackRate = speed;
         if (audioExtras) { audioExtras.resume(); audioExtras.resetNormGain(); }
         return audio.play();
-    }).catch(e => console.error("Error playing audio:", e));
+    }).catch(e => { console.error("Error playing audio:", e); suppressPauseSave = false; });
     isPlaying = true;
     updateUIForCurrentTrack();
 
@@ -1426,6 +1447,7 @@ function setupAudioEvents() {
     });
     audio.addEventListener('durationchange', () => { if (durationEl) durationEl.textContent = isNaN(audio.duration) ? '0:00' : formatTime(audio.duration); });
     audio.addEventListener('play', () => {
+        suppressPauseSave = false;
         isPlaying = true;
         document.body.classList.add('is-playing');
         updatePlayPauseUI();
@@ -1437,12 +1459,7 @@ function setupAudioEvents() {
         document.body.classList.remove('is-playing');
         updatePlayPauseUI();
         if (visualizer) visualizer.stop();
-        if (currentTrackPath && !isNaN(audio.duration) && audio.duration > 300 && audio.currentTime > 30) {
-            const pos = audio.currentTime;
-            const track = playlist[currentIndex];
-            if (track) track.lastPosition = pos;
-            windowApi.saveLastPosition(currentTrackPath, pos).catch(() => {});
-        }
+        if (!suppressPauseSave) savePlaybackPosition();
     });
     audio.addEventListener('ended', () => {
         if (crossfadeJustCompleted) { crossfadeJustCompleted = false; return; }
@@ -1461,9 +1478,10 @@ function setupAudioEvents() {
             }
             windowApi.saveLastPosition(currentTrackPath, 0).catch(() => {});
         }
+        trackJustEnded = true;
         playNext();
     });
-    audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); crossfadeJustCompleted = false; });
+    audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); crossfadeJustCompleted = false; suppressPauseSave = false; });
     audio.addEventListener('volumechange', () => { if (isCrossfading) return; currentVolume = volumeLimit > 0 ? audio.volume / volumeLimit : 0; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
 }
 
@@ -1478,8 +1496,12 @@ async function performFolderRefresh() {
     showNotification(tr('refreshFolder'), 'loading', 0);
     const startTime = performance.now();
 
-    const r = await windowApi.refreshMusicFolder(path);
-    if (r && r.tracks) {
+    try {
+        const r = await windowApi.refreshMusicFolder(path);
+        if (!r || !r.tracks) {
+            showNotification(tr('folderRefreshFailed'), 'error', 3000);
+            return;
+        }
         const duration = Math.round(performance.now() - startTime);
 
         currentFolderPath = r.folderPath;
@@ -1508,8 +1530,12 @@ async function performFolderRefresh() {
         renderPlaylist();
 
         showNotification(`${tr('folderRefreshed')} (${duration}ms)`, 'success', 3000);
+    } catch (e) {
+        console.error('[Refresh] failed:', e);
+        showNotification(tr('folderRefreshFailed'), 'error', 3000);
+    } finally {
+        isRefreshing = false;
     }
-    isRefreshing = false;
 }
 
 // ---- TITLE GRADIENT (F4) --------------------
@@ -2892,10 +2918,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tabYtBtn.addEventListener('click', () => setTab('youtube'));
         tabMusicBtn.addEventListener('click', () => setTab('music'));
         tabSpotifyBtn.addEventListener('click', () => setTab('spotify'));
-    }
-
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', handleDownload);
     }
 
     const inputs = [dlUrlInput, dlNameInput];

@@ -165,6 +165,7 @@ export const fr_FR = {
     libAdditional: 'Dossiers supplémentaires',
     folderLoaded: 'Dossier charg\u00E9 : {}',
     folderRefreshed: 'Dossier actualis\u00E9',
+    folderRefreshFailed: 'Actualisation \u00E9chou\u00E9e',
     folderDeleted: 'Dossier supprim\u00E9',
     songDeleted: 'Chanson supprim\u00E9e',
 

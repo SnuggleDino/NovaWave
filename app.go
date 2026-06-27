@@ -370,9 +370,22 @@ func (a *App) SaveConfig(config Config) string {
 	path := getConfigPath()
 	os.MkdirAll(filepath.Dir(path), 0755)
 
-	data, _ := json.MarshalIndent(config, "", "  ")
-	err := os.WriteFile(path, data, 0644)
-	if err != nil {
+	// Merge into the existing file so keys not present on the Config struct
+	// (written via SetSetting, e.g. v2_folders) are preserved instead of wiped.
+	existing := make(map[string]interface{})
+	if data, err := os.ReadFile(path); err == nil {
+		json.Unmarshal(data, &existing)
+	}
+
+	incoming := make(map[string]interface{})
+	cfgData, _ := json.Marshal(config)
+	json.Unmarshal(cfgData, &incoming)
+	for k, v := range incoming {
+		existing[k] = v
+	}
+
+	newData, _ := json.MarshalIndent(existing, "", "  ")
+	if err := os.WriteFile(path, newData, 0644); err != nil {
 		return "Save error: " + err.Error()
 	}
 	return "OK"

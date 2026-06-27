@@ -165,6 +165,7 @@ export const de_DE = {
     libAdditional: 'Weitere Ordner',
     folderLoaded: 'Ordner geladen: {}',
     folderRefreshed: 'Ordner aktualisiert',
+    folderRefreshFailed: 'Aktualisierung fehlgeschlagen',
     folderDeleted: 'Ordner gelöscht',
     songDeleted: 'Song gelöscht',
 
