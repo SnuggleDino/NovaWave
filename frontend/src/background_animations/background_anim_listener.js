@@ -7,6 +7,7 @@ const animModules = import.meta.glob('./*/anim.js', { eager: true });
 
 let activeAnimId = null;
 let currentModule = null;
+let _pausedForHidden = false;
 
 export const BackgroundAnimListener = {
 
@@ -47,6 +48,11 @@ export const BackgroundAnimListener = {
         }
 
         this.setAnimation(select.value);
+
+        if (!this._visWired) {
+            this._visWired = true;
+            document.addEventListener('visibilitychange', () => this._handleVisibility());
+        }
     },
 
     setAnimation: function (id) {
@@ -85,6 +91,29 @@ export const BackgroundAnimListener = {
                 } catch (e) {
                     console.error(`Error starting animation ${id}:`, e);
                 }
+            }
+        }
+    },
+
+    // ---- VISIBILITY PAUSE --------------------
+    // Stop spawners and pause CSS keyframes while the window is hidden/minimized,
+    // then rebuild on return - background animations shouldn't burn CPU offscreen.
+    _handleVisibility: function () {
+        const container = document.querySelector('.background-animation');
+        if (!container || !activeAnimId || activeAnimId === 'off') return;
+        if (document.hidden) {
+            if (_pausedForHidden) return;
+            _pausedForHidden = true;
+            container.classList.add('anim-paused');
+            if (currentModule && currentModule.pause) {
+                try { currentModule.pause(); } catch (e) {}
+            }
+        } else {
+            if (!_pausedForHidden) return;
+            _pausedForHidden = false;
+            container.classList.remove('anim-paused');
+            if (currentModule && currentModule.resume) {
+                try { currentModule.resume(); } catch (e) {}
             }
         }
     }

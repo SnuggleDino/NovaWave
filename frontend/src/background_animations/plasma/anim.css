@@ -19,7 +19,8 @@
     );
     animation: plasma-spin 20s linear infinite;
     opacity: 0.4;
-    filter: blur(100px);
+    filter: blur(60px);
+    will-change: transform;
 }
 
 .background-animation.type-plasma::after {

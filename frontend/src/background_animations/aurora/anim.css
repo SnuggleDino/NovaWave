@@ -11,9 +11,10 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    filter: blur(80px);
+    filter: blur(50px);
     opacity: 0.4;
     border-radius: 40%;
+    will-change: transform;
 }
 
 .background-animation.type-aurora::before {

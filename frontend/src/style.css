@@ -485,6 +485,15 @@ textarea {
     z-index: -1;
     pointer-events: none;
     backface-visibility: hidden;
+    contain: layout paint style;
+}
+
+/* Paused while the window is hidden/minimized (toggled by background_anim_listener) */
+.background-animation.anim-paused,
+.background-animation.anim-paused *,
+.background-animation.anim-paused::before,
+.background-animation.anim-paused::after {
+    animation-play-state: paused !important;
 }
 
 .hidden {

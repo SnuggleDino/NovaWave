@@ -1,27 +1,29 @@
+import { createParticleAnim } from '../particle_canvas.js';
 
-let rainInterval;
-
-export default {
-    start: () => {
-        const container = document.querySelector('.background-animation');
-        if (!container) return;
-
-        const createRain = () => {
-            if (!container.classList.contains('type-rain')) return;
-            const drop = document.createElement('div');
-            drop.className = 'raindrop';
-            drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
-            drop.style.opacity = Math.random() * 0.5;
-            container.appendChild(drop);
-            setTimeout(() => { drop.remove(); }, 1000);
+export default createParticleAnim({
+    spawnPerSec: 22,
+    max: 40,
+    spawn: (w, h) => {
+        const dur = Math.random() * 0.5 + 0.5;
+        return {
+            x: Math.random() * w,
+            y: -60,
+            len: 60,
+            vy: (h + 120) / dur,
+            opacity: Math.random() * 0.45 + 0.08
         };
-        
-        rainInterval = setInterval(createRain, 50);
     },
-    stop: () => {
-        if (rainInterval) clearInterval(rainInterval);
-        const container = document.querySelector('.background-animation');
-        if (container) container.innerHTML = '';
+    update: (p, dt, w, h) => {
+        p.y += p.vy * dt;
+        return p.y - p.len < h;
+    },
+    draw: (ctx, p) => {
+        ctx.globalAlpha = p.opacity;
+        ctx.strokeStyle = 'rgba(220, 235, 255, 0.6)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y - p.len);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
     }
-};
+});
