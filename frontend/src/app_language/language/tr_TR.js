@@ -402,6 +402,8 @@ export const tr_TR = {
     logDownloadComplete: 'İndirme tamamlandı.',
     logDownloadFailed: 'İndirme başarısız oldu.',
     focusMode: 'Odak Modu',
+    dropFiles: 'Dosyaları buraya bırakın',
+    focusActiveNotify: 'Odak modu etkin',
 
     // --- Lite Ui ---
     designLiteLabel: 'Lite UI',

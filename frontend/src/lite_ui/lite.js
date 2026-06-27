@@ -319,6 +319,9 @@ function renderTrackList(isReshuffle = false) {
 function updateTrackListHighlight() {
     const items = elTrackList.children;
     for (let i = 0; i < items.length; i++) {
+        const el = items[i];
+        const idx = parseInt(el.dataset.liteDragIdx, 10);
+        el.classList.toggle('active', idx === currentIndex);
     }
 }
 

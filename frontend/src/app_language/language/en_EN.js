@@ -402,6 +402,8 @@ export const en_EN = {
     logDownloadComplete: 'Download complete.',
     logDownloadFailed: 'Download failed.',
     focusMode: 'Focus Mode',
+    dropFiles: 'Drop files here',
+    focusActiveNotify: 'Focus mode active',
 
     // --- Lite Ui ---
     designLiteLabel: 'Lite UI',

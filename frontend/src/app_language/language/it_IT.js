@@ -402,6 +402,8 @@ export const it_IT = {
     logDownloadComplete: 'Download completato.',
     logDownloadFailed: 'Download fallito.',
     focusMode: 'Modalità Focus',
+    dropFiles: 'Trascina i file qui',
+    focusActiveNotify: 'Modalità Focus attiva',
 
     // --- Lite Ui ---
     designLiteLabel: 'Lite UI',

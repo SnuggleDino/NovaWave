@@ -661,6 +661,7 @@ function togglePlayPause() {
 // ---- PLAYBACK POSITION PERSISTENCE --------------------
 let suppressPauseSave = false;
 let trackJustEnded = false;
+let playbackErrorCount = 0;
 
 // setAudioSrcViaBlob() pauses the element while switching tracks, which fires a
 // spurious 'pause'. suppressPauseSave stops that event from writing the outgoing
@@ -897,6 +898,7 @@ function renderPlaylist() {
         }
     }
 
+    const idxByPath = new Map(playlist.map((t, i) => [t.path, i]));
     let renderIndex = 0; const CHUNK_SIZE = 50;
 
     function renderChunk() {
@@ -934,7 +936,7 @@ function renderPlaylist() {
 
             } else {
                 const track = item.data;
-                const globalIndex = playlist.findIndex(t => t.path === track.path);
+                const globalIndex = idxByPath.has(track.path) ? idxByPath.get(track.path) : -1;
 
                 const row = document.createElement('div');
                 row.className = 'track-row';
@@ -1150,7 +1152,9 @@ function updateQueueStatsUI(stats) {
         setDownloaderState('processing', `${tr('statusProgress')}: ${stats.processing}`);
     } else if (stats.pending > 0) {
         setDownloaderState('info', `${tr('queueTitle')}: ${stats.pending}`);
-    } else if (stats.success > 0 || stats.failed > 0) {
+    } else if (stats.failed > 0) {
+        setDownloaderState('error', tr('legendError'));
+    } else if (stats.success > 0) {
         setDownloaderState('success', tr('legendFinished'));
     } else {
         setDownloaderState('idle');
@@ -1448,6 +1452,7 @@ function setupAudioEvents() {
     audio.addEventListener('durationchange', () => { if (durationEl) durationEl.textContent = isNaN(audio.duration) ? '0:00' : formatTime(audio.duration); });
     audio.addEventListener('play', () => {
         suppressPauseSave = false;
+        playbackErrorCount = 0;
         isPlaying = true;
         document.body.classList.add('is-playing');
         updatePlayPauseUI();
@@ -1481,8 +1486,18 @@ function setupAudioEvents() {
         trackJustEnded = true;
         playNext();
     });
-    audio.addEventListener('error', (e) => { console.error("Audio playback error:", e); showNotification(tr('statusPlaybackError')); isPlaying = false; updatePlayPauseUI(); crossfadeJustCompleted = false; suppressPauseSave = false; });
-    audio.addEventListener('volumechange', () => { if (isCrossfading) return; currentVolume = volumeLimit > 0 ? audio.volume / volumeLimit : 0; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
+    audio.addEventListener('error', (e) => {
+        console.error("Audio playback error:", e);
+        isPlaying = false; updatePlayPauseUI(); crossfadeJustCompleted = false; suppressPauseSave = false;
+        showNotification(tr('statusPlaybackError'), 'error', 2500);
+        // Skip past a broken/missing file instead of freezing; capped to avoid
+        // an endless loop when every remaining track is unplayable.
+        if (playlist.length > 1 && playbackErrorCount < 5) {
+            playbackErrorCount++;
+            playNext();
+        }
+    });
+    audio.addEventListener('volumechange', () => { if (isCrossfading || sleepFadeId) return; currentVolume = volumeLimit > 0 ? audio.volume / volumeLimit : 0; if (volumeSlider) volumeSlider.value = currentVolume; if (volumeIcon) volumeIcon.innerHTML = getVolumeIcon(currentVolume); clearTimeout(window.volumeSaveTimeout); window.volumeSaveTimeout = setTimeout(() => { saveSetting('volume', currentVolume); }, 500); });
 }
 
 let isRefreshing = false;
