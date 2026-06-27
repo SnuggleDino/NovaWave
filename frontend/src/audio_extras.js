@@ -193,25 +193,6 @@ export class AudioExtras {
         }
     }
 
-    bindVisibilityResume() {
-        this._visibilityHandler = () => {
-            if (!document.hidden) this.resume();
-        };
-        document.addEventListener('visibilitychange', this._visibilityHandler);
-    }
-
-    destroy() {
-        if (this._normInterval) { clearInterval(this._normInterval); this._normInterval = null; }
-        if (this._visibilityHandler) {
-            document.removeEventListener('visibilitychange', this._visibilityHandler);
-            this._visibilityHandler = null;
-        }
-        if (this.audioContext) {
-            this.audioContext.close().catch(() => {});
-            this.audioContext = null;
-        }
-    }
-
     getAnalyser() {
         return this.analyser;
     }

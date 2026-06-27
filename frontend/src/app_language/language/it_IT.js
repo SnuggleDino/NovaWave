@@ -2,14 +2,8 @@ export const it_IT = {
     // --- Global / Common ---
     appTitle: 'NovaWave',
     appSubtitle: 'Your Music • Your Style • Your Rules',
-    v2Subtitle: 'Vivi il flusso',
-    whatsNew: 'Cosa c\'\u00E8 di nuovo?',
-    home: 'Home',
-    playlist: 'Libreria',
     downloader: 'Download',
     settings: 'Impostazioni',
-    history: 'Cronologia',
-    lang: 'Lingua',
     nothingPlaying: 'Nulla in riproduzione',
     track: 'Brano',
     tracks: 'Brani',
@@ -19,7 +13,6 @@ export const it_IT = {
     cancelBtn: 'Annulla',
     close: 'Chiudi',
     changeButton: 'Modifica',
-    newBadge: 'NUOVO',
 
     // --- Sidebar / Navigation ---
     navDesign: 'Interfaccia utente',
@@ -75,11 +68,8 @@ export const it_IT = {
     emojiLovingDinos: 'Dino innamorati',
     emojiGift: 'Regalo',
     emojiCustom: 'Personalizzato',
-    emojiVinyl: 'Disco in vinile',
-    emojiCompact: 'Compact Disc',
     customEmoji: 'Emoji personalizzata',
     customEmojiDescription: 'Inserisci qualsiasi emoji o carattere.',
-    pickFile: 'Scegli file',
 
     // --- Visualizer Tab ---
     visualizer: 'Visualizzatore',
@@ -92,7 +82,6 @@ export const it_IT = {
     visGlitch: 'Glitch',
     visZen: 'Zen',
     visRetro: 'Retro',
-    visRetroCircle: 'Cerchio Retro (V2)',
     visualizerBars: 'Barre visualizzatore',
     visualizerBarsDesc: 'Numero di barre (Classiche e Retro).',
     visSensitivity: 'Sensibilit\u00E0',
@@ -107,7 +96,6 @@ export const it_IT = {
     dry: 'Asciutto',
     wet: 'Bagnato',
     playbackSpeedDesc: 'Regola la velocit\u00E0 (0.5x - 2.0x).',
-    speedPanelLabel: 'VELOCIT\u00C0',
     speedUltraSlow: 'Molto Lento',
     speedSlow: 'Lento',
     speedNormal: 'Normale',
@@ -146,8 +134,6 @@ export const it_IT = {
     equalizer: 'Equalizzatore',
     equalizerDesc: 'Regola il suono in dettaglio.',
     eqPresetsLabel: 'Presets',
-    bass: 'Bassi',
-    treble: 'Alti',
 
     // --- Downloads / Library ---
     refreshFolder: 'Aggiorna cartella',
@@ -166,7 +152,6 @@ export const it_IT = {
     addFolder: 'Aggiungi cartella',
     libNoFolder: 'Nessuna cartella caricata',
     libAdditional: 'Cartelle aggiuntive',
-    folderLoaded: 'Cartella caricata: {}',
     folderRefreshed: 'Cartella aggiornata',
     folderRefreshFailed: 'Aggiornamento non riuscito',
     folderDeleted: 'Cartella eliminata',
@@ -188,7 +173,6 @@ export const it_IT = {
     introActiveBtn: 'Attivo',
 
     // --- System / Performance ---
-    system: 'Sistema',
     backToLegacy: 'TORNA A LEGACY UI',
     fpsLimitLabel: 'Limite FPS',
     fpsLimitDesc: 'Limita la frequenza dei fotogrammi (15 - 120).',
@@ -214,7 +198,6 @@ export const it_IT = {
     resetDesc: 'Elimina tutte le impostazioni in modo permanente. Irreversibile.',
     quit: 'Esci',
     quitDesc: 'Chiude NovaWave.',
-    warningTitle: 'Avvertimento',
     resetWarning: 'Questa azione non pu\u00F2 essere annullata. L\'app verr\u00E0 riavviata.',
     exportPlaylist: 'Esporta playlist',
     exportPlaylistDesc: 'Salva la playlist come file.',
@@ -282,7 +265,6 @@ export const it_IT = {
     legendFinished: 'Completato',
     legendWorking: 'In corso',
     legendError: 'Errore',
-    legendInfo: 'Informazione',
     legendReady: 'Pronto',
     legendTitle: 'Legenda',
     chipActive: 'attivi',
@@ -291,14 +273,11 @@ export const it_IT = {
     clearFinished: 'Rimuovi completati',
     clearLog: 'Pulisci',
     queueEmpty: 'Nessun download in questa sessione.',
-    finishedAt: 'Finito alle {}',
     queueTitle: 'Coda',
-    queueTotal: 'Totale:',
     downloadErrorTitle: 'Errore di download',
     errorModalClose: 'Chiudi',
 
     // --- Help Modal ---
-    helpTitle: 'Aiuto e utilizzo',
     helpPlayback: 'Riproduzione',
     helpPlayLong: 'Usa SPAZIO o i pulsanti qui sotto.',
     helpNavTitle: 'Navigazione',
@@ -311,7 +290,6 @@ export const it_IT = {
 
     // --- Developer Toolkit ---
     openDownloader: 'Apri Downloader',
-    devTitle: 'Developer Toolkit',
     devStandardHotkeys: 'Scorciatoie standard',
     devPlayPause: 'Riproduci/Pausa',
     devNavTitle: 'Successivo/Precedente',
@@ -325,9 +303,6 @@ export const it_IT = {
     // --- Updates ---
     updateTitle: 'Novità',
     updateOkBtn: 'Capito!',
-    updateLatestVersion: 'Ultima versione',
-    updateReleaseDate: 'Data di rilascio',
-    updateChangesTitle: 'Cosa c\'è di nuovo?',
     sectionUpdates: 'Aggiornamenti',
     checkUpdateLabel: 'Verifica aggiornamenti',
     checkUpdateDesc: 'Controlla se è disponibile una nuova versione.',

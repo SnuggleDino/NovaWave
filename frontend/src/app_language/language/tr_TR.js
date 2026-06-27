@@ -2,14 +2,8 @@ export const tr_TR = {
     // --- Global / Common ---
     appTitle: 'NovaWave',
     appSubtitle: 'Your Music • Your Style • Your Rules',
-    v2Subtitle: 'Ak\u0131\u015F\u0131 Hissedin',
-    whatsNew: 'Yenilikler Neler?',
-    home: 'Ana Sayfa',
-    playlist: 'K\u00FCt\u00FCphane',
     downloader: '\u0130ndirmeler',
     settings: 'Ayarlar',
-    history: 'Ge\u00E7mi\u015F',
-    lang: 'Dil',
     nothingPlaying: '\u00C7al\u0131nan Bir \u015Eey Yok',
     track: '\u015Eark\u0131',
     tracks: '\u015Eark\u0131',
@@ -19,7 +13,6 @@ export const tr_TR = {
     cancelBtn: '\u0130ptal',
     close: 'Kapat',
     changeButton: 'De\u011Fi\u015Ftir',
-    newBadge: 'YEN\u0130',
 
     // --- Sidebar / Navigation ---
     navDesign: 'Kullan\u0131c\u0131 Aray\u00FCz\u00FC',
@@ -75,11 +68,8 @@ export const tr_TR = {
     emojiLovingDinos: 'Seven Dinolar',
     emojiGift: 'Hediye',
     emojiCustom: '\u00D6zel',
-    emojiVinyl: 'Plak Kayd\u0131',
-    emojiCompact: 'Kompakt Disk',
     customEmoji: '\u00D6zel Emoji',
     customEmojiDescription: 'Herhangi bir emoji veya karakter girin.',
-    pickFile: 'Dosya Se\u00E7',
 
     // --- Visualizer Tab ---
     visualizer: 'G\u00F6rselle\u015Ftirici',
@@ -92,7 +82,6 @@ export const tr_TR = {
     visGlitch: 'Glitch',
     visZen: 'Zen',
     visRetro: 'Retro',
-    visRetroCircle: 'Retro Circle (V2)',
     visualizerBars: 'G\u00F6rselle\u015Ftirici \u00C7ubuklar\u0131',
     visualizerBarsDesc: '\u00C7ubuk say\u0131s\u0131 (Klasik ve Retro).',
     visSensitivity: 'Hassasiyet',
@@ -107,7 +96,6 @@ export const tr_TR = {
     dry: 'Kuru',
     wet: 'Islak',
     playbackSpeedDesc: 'Oynatma h\u0131z\u0131n\u0131 ayarla (0.5x - 2.0x).',
-    speedPanelLabel: 'HIZ',
     speedUltraSlow: '\u00c7ok Yava\u015f',
     speedSlow: 'Yava\u015f',
     speedNormal: 'Normal',
@@ -146,8 +134,6 @@ export const tr_TR = {
     equalizer: 'Ekolayz\u0131r',
     equalizerDesc: 'Sesi detayl\u0131 bir \u015Fekilde ayarlay\u0131n.',
     eqPresetsLabel: 'Önayarlar',
-    bass: 'Bas',
-    treble: 'Tiz',
 
     // --- Downloads / Library ---
     refreshFolder: 'Klas\u00F6r\u00FC Yenile',
@@ -166,7 +152,6 @@ export const tr_TR = {
     addFolder: 'Klas\u00F6r ekle',
     libNoFolder: 'Klas\u00F6r y\u00FCklenmedi',
     libAdditional: 'Ek klas\u00F6rler',
-    folderLoaded: 'Klas\u00F6r y\u00FCklendi: {}',
     folderRefreshed: 'Klas\u00F6r yenilendi',
     folderRefreshFailed: 'Yenileme ba\u015Far\u0131s\u0131z',
     folderDeleted: 'Klas\u00F6r silindi',
@@ -188,7 +173,6 @@ export const tr_TR = {
     introActiveBtn: 'Aktif',
 
     // --- System / Performance ---
-    system: 'Sistem',
     backToLegacy: 'LEGACY UI\u0027YA D\u00D6N',
     fpsLimitLabel: 'FPS S\u0131n\u0131r\u0131',
     fpsLimitDesc: 'Kare h\u0131z\u0131n\u0131 s\u0131n\u0131rla (15 - 120).',
@@ -214,7 +198,6 @@ export const tr_TR = {
     resetDesc: 'T\u00FCm ayarlar\u0131 kal\u0131c\u0131 olarak siler. Geri al\u0131namaz.',
     quit: 'Kapat',
     quitDesc: 'NovaWave\'i kapat\u0131r.',
-    warningTitle: 'Uyar\u0131',
     resetWarning: 'Bu i\u015Flem geri al\u0131namaz. Uygulama yeniden ba\u015Flat\u0131lacak.',
     exportPlaylist: 'Listeyi D\u0131\u015Fa Aktar',
     exportPlaylistDesc: '\u00C7alma listesini dosya olarak kaydet.',
@@ -282,7 +265,6 @@ export const tr_TR = {
     legendFinished: 'Ba\u015Far\u0131l\u0131',
     legendWorking: 'Devam ediyor',
     legendError: 'Hata',
-    legendInfo: 'Bilgi',
     legendReady: 'Haz\u0131r',
     legendTitle: 'G\u00F6sterge',
     chipActive: 'etkin',
@@ -291,14 +273,11 @@ export const tr_TR = {
     clearFinished: 'Bitenleri temizle',
     clearLog: 'Temizle',
     queueEmpty: 'Bu oturumda indirme yok.',
-    finishedAt: '{} saatinde bitti',
     queueTitle: 'Sıra',
-    queueTotal: 'Toplam:',
     downloadErrorTitle: '\u0130ndirme Hatas\u0131',
     errorModalClose: 'Kapat',
 
     // --- Help Modal ---
-    helpTitle: 'Yard\u0131m ve Kullan\u0131m',
     helpPlayback: 'Oynatma',
     helpPlayLong: 'BO\u015ELUK tu\u015Funu veya a\u015Fa\u011F\u0131daki butonlar\u0131 kullan\u0131n.',
     helpNavTitle: 'Gezinme',
@@ -311,7 +290,6 @@ export const tr_TR = {
 
     // --- Developer Toolkit ---
     openDownloader: 'İndiriciyi Aç',
-    devTitle: 'Developer Toolkit',
     devStandardHotkeys: 'Standart K\u0131sayollar',
     devPlayPause: 'Oynat/Duraklat',
     devNavTitle: 'Sonraki/\u00D6nceki',
@@ -325,9 +303,6 @@ export const tr_TR = {
     // --- Updates ---
     updateTitle: 'Haberler',
     updateOkBtn: 'Anlad\u0131m!',
-    updateLatestVersion: 'Son Versiyon',
-    updateReleaseDate: 'Yay\u0131nlanma Tarihi',
-    updateChangesTitle: 'Yenilikler Neler?',
     sectionUpdates: 'G\u00fcncellemeler',
     checkUpdateLabel: 'G\u00fcncellemeleri Kontrol Et',
     checkUpdateDesc: 'Yeni bir s\u00fcr\u00fcm olup olmad\u0131\u011f\u0131n\u0131 kontrol et.',

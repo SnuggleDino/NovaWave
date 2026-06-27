@@ -2,14 +2,8 @@ export const en_EN = {
     // --- Global / Common ---
     appTitle: 'NovaWave',
     appSubtitle: 'Your Music • Your Style • Your Rules',
-    v2Subtitle: 'Experience the Flow',
-    whatsNew: "What's New?",
-    home: 'Home',
-    playlist: 'Library',
     downloader: 'Downloads',
     settings: 'Settings',
-    history: 'History',
-    lang: 'Language',
     nothingPlaying: 'Nothing Playing',
     track: 'Track',
     tracks: 'Tracks',
@@ -19,7 +13,6 @@ export const en_EN = {
     cancelBtn: 'Cancel',
     close: 'Close',
     changeButton: 'Change',
-    newBadge: 'NEW',
 
     // --- Sidebar / Navigation ---
     navDesign: 'User Interface',
@@ -75,11 +68,8 @@ export const en_EN = {
     emojiLovingDinos: 'Loving Dinos',
     emojiGift: 'Gift',
     emojiCustom: 'Custom',
-    emojiVinyl: 'Vinyl Record',
-    emojiCompact: 'Compact Disc',
     customEmoji: 'Custom Emoji',
     customEmojiDescription: 'Enter any emoji or character.',
-    pickFile: 'Pick File',
 
     // --- Visualizer Tab ---
     visualizer: 'Visualizer',
@@ -92,7 +82,6 @@ export const en_EN = {
     visGlitch: 'Glitch',
     visZen: 'Zen',
     visRetro: 'Retro',
-    visRetroCircle: 'Retro Circle (V2)',
     visualizerBars: 'Visualizer Bars',
     visualizerBarsDesc: 'Number of bars (Classic & Retro).',
     visSensitivity: 'Sensitivity',
@@ -107,7 +96,6 @@ export const en_EN = {
     dry: 'Dry',
     wet: 'Wet',
     playbackSpeedDesc: 'Adjust playback rate (0.5x - 2.0x).',
-    speedPanelLabel: 'SPEED',
     speedUltraSlow: 'Ultra Slow',
     speedSlow: 'Slow',
     speedNormal: 'Normal',
@@ -146,8 +134,6 @@ export const en_EN = {
     equalizer: 'Equalizer',
     equalizerDesc: 'Adjust the sound in detail.',
     eqPresetsLabel: 'Presets',
-    bass: 'Bass',
-    treble: 'Treble',
 
     // --- Downloads / Library ---
     refreshFolder: 'Refresh Folder',
@@ -166,7 +152,6 @@ export const en_EN = {
     addFolder: 'Add Folder',
     libNoFolder: 'No folder loaded',
     libAdditional: 'Additional Folders',
-    folderLoaded: 'Folder loaded: {}',
     folderRefreshed: 'Folder refreshed',
     folderRefreshFailed: 'Refresh failed',
     folderDeleted: 'Folder deleted',
@@ -188,7 +173,6 @@ export const en_EN = {
     introActiveBtn: 'Active',
 
     // --- System / Performance ---
-    system: 'System',
     backToLegacy: 'BACK TO LEGACY UI',
     fpsLimitLabel: 'FPS Limit',
     fpsLimitDesc: 'Limit frame rate (15 - 120).',
@@ -214,7 +198,6 @@ export const en_EN = {
     resetDesc: 'Clears all settings permanently. Cannot be undone.',
     quit: 'Quit',
     quitDesc: 'Closes NovaWave.',
-    warningTitle: 'Warning',
     resetWarning: 'This action cannot be undone. Application will restart.',
     exportPlaylist: 'Export Playlist',
     exportPlaylistDesc: 'Save playlist as a file.',
@@ -282,7 +265,6 @@ export const en_EN = {
     legendFinished: 'Success',
     legendWorking: 'In progress',
     legendError: 'Error',
-    legendInfo: 'Information',
     legendReady: 'Ready',
     legendTitle: 'Legend',
     chipActive: 'active',
@@ -291,14 +273,11 @@ export const en_EN = {
     clearFinished: 'Clear finished',
     clearLog: 'Clear',
     queueEmpty: 'No downloads in this session.',
-    finishedAt: 'Finished at {}',
     queueTitle: 'Queue',
-    queueTotal: 'Total:',
     downloadErrorTitle: 'Download Error',
     errorModalClose: 'Close',
 
     // --- Help Modal ---
-    helpTitle: 'Help & Operation',
     helpPlayback: 'Playback',
     helpPlayLong: 'Use SPACE or the buttons below.',
     helpNavTitle: 'Navigation',
@@ -311,7 +290,6 @@ export const en_EN = {
 
     // --- Developer Toolkit ---
     openDownloader: 'Open Downloader',
-    devTitle: 'Developer Toolkit',
     devStandardHotkeys: 'Standard Hotkeys',
     devPlayPause: 'Play/Pause',
     devNavTitle: 'Next/Previous',
@@ -325,9 +303,6 @@ export const en_EN = {
     // --- Updates ---
     updateTitle: 'Update News',
     updateOkBtn: 'Got it!',
-    updateLatestVersion: 'Latest Version',
-    updateReleaseDate: 'Release Date',
-    updateChangesTitle: "What's New?",
     sectionUpdates: 'Updates',
     checkUpdateLabel: 'Check for Updates',
     checkUpdateDesc: 'Check if a new version is available.',

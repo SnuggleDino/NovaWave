@@ -2293,17 +2293,6 @@ function setupEventListeners() {
     bind(infoCloseBtn, 'click', () => infoOverlay.classList.remove('visible'));
     bind(infoOverlay, 'click', (e) => { if (e.target === infoOverlay) infoOverlay.classList.remove('visible'); });
 
-    function resetDownloaderUI() {
-        if (dlUrlInput) dlUrlInput.value = '';
-        if (dlNameInput) dlNameInput.value = '';
-        if (downloadStatusEl) downloadStatusEl.textContent = tr('statusReady');
-        if (downloadBtn) {
-            downloadBtn.disabled = false;
-            downloadBtn.style.opacity = '1';
-        }
-    }
-
-
     bind(toggleFavoritesBtn, 'click', () => {
         isFavoritesFilterActive = !isFavoritesFilterActive;
         toggleFavoritesBtn.classList.toggle('active', isFavoritesFilterActive);
@@ -2627,22 +2616,6 @@ function initSettingsLogic() {
             a.click();
             URL.revokeObjectURL(url);
             showNotification(tr('exportSuccess'), 'success', 2000);
-        },
-        onResetApp: async () => {
-            if (confirm(tr('resetWarning'))) {
-                try {
-                    const res = await windowApi.resetConfig();
-                    if (res.success) {
-                        localStorage.clear();
-                        showNotification("Reset complete. Restarting...", "success");
-                        setTimeout(() => windowApi.restartApp(), 1500);
-                    } else {
-                        showNotification("Reset failed: " + res.error, "error");
-                    }
-                } catch (e) {
-                    console.error("Reset error:", e);
-                }
-            }
         },
         onRestartApp: () => {
             windowApi.restartApp();

@@ -84,32 +84,18 @@ Built from the ground up with **Go (Wails v2)** as the backend and a fully custo
 
 ---
 
-## 🖥️ Three UIs - One Player
+## 🖥️ Two UIs - One Player
 
-NovaWave ships with **three completely different interfaces**, each designed for a different kind of user:
+NovaWave ships with **two completely different interfaces**, each designed for a different kind of user:
 
-| | 🎨 Legacy UI | 🚀 V2 PRO UI | 📱 Lite UI |
-|---|---|---|---|
-| **Philosophy** | Vibes & Aesthetics | Workflow & Power | Speed & Simplicity |
-| **Best for** | Theme lovers, casual listening | Large libraries, power users | Minimalists, low-end PCs |
-| **Highlights** | Theme Packs, animations, visualizer | Grid layout, sorting, logs | Ultra-fast, minimal footprint |
-| **Switch with** | `CTRL + U + 1` | `CTRL + U + 2` | `CTRL + U + 3` |
+| | 🎨 Legacy UI | 📱 Lite UI |
+|---|---|---|
+| **Philosophy** | Vibes & Aesthetics | Speed & Simplicity |
+| **Best for** | Theme lovers, casual listening | Minimalists, low-end PCs |
+| **Highlights** | Theme Packs, animations, visualizer | Ultra-fast, minimal footprint |
+| **Switch with** | `CTRL + U + 1` | `CTRL + U + 3` |
 
-Switch between all UIs at any time using the **Design Switcher** in Settings → UI.
-
----
-
-## 🚀 V2 PRO UI
-
-A ground-up redesign built for modern screens and larger libraries:
-
-- **Sidebar Navigation** - Fluid transitions between Library, Downloader, and Settings
-- **Library Sorting** - Sort tracks by A–Z, Z–A, or Recently Added
-- **Multi-Folder Support** - Manage multiple music directories
-- **Virtual Folders** - Organize tracks into custom groups with color labels
-- **Favorites System** - One-click ❤️ to mark favorite tracks
-- **LRC Lyrics** - Synchronized lyrics overlay with `.lrc` file support
-- **PRO Console** - Built-in terminal-style log panel (`CTRL + 1`)
+Switch between both UIs at any time using the **Design switcher** in Settings → User Interface.
 
 ---
 
@@ -164,9 +150,9 @@ Handcrafted **Theme Packs** transform the entire look and feel, each with a uniq
 
 ---
 
-## 🎨 V2 PRO - Built-in Themes
+## 🎨 Built-in Color Themes
 
-The V2 PRO UI ships with **10 built-in color themes**:
+The Legacy UI ships with **10 built-in color themes**:
 
 **Dark:** Midnight · Cherry · Coffee · Electric Violet · Forest · Gold · Ocean · Slate  
 **Light:** Glacier · Lavender
@@ -316,7 +302,6 @@ wails build
 | `↑ / ↓` | Volume +1% / -1% |
 | `L` | Open Lyrics |
 | `CTRL + U + 1` | Switch to Legacy UI |
-| `CTRL + U + 2` | Switch to V2 PRO UI |
 | `CTRL + U + 3` | Switch to Lite UI |
 
 ---

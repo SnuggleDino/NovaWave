@@ -2,14 +2,8 @@ export const fr_FR = {
     // --- Global / Common ---
     appTitle: 'NovaWave',
     appSubtitle: 'Your Music • Your Style • Your Rules',
-    v2Subtitle: 'Vivez le flux',
-    whatsNew: 'Quoi de neuf ?',
-    home: 'Accueil',
-    playlist: 'Biblioth\u00E8que',
     downloader: 'T\u00E9l\u00E9chargements',
     settings: 'Param\u00E8tres',
-    history: 'Historique',
-    lang: 'Langue',
     nothingPlaying: 'Rien n\'est \u00E9cout\u00E9',
     track: 'Piste',
     tracks: 'Pistes',
@@ -19,7 +13,6 @@ export const fr_FR = {
     cancelBtn: 'Annuler',
     close: 'Fermer',
     changeButton: 'Modifier',
-    newBadge: 'NOUVEAU',
 
     // --- Sidebar / Navigation ---
     navDesign: 'Interface utilisateur',
@@ -75,11 +68,8 @@ export const fr_FR = {
     emojiLovingDinos: 'Dinos amoureux',
     emojiGift: 'Cadeau',
     emojiCustom: 'Personnalisé',
-    emojiVinyl: 'Disque vinyle',
-    emojiCompact: 'Disque compact',
     customEmoji: 'Emoji personnalisé',
     customEmojiDescription: 'Entrez n\'importe quel emoji ou caractère.',
-    pickFile: 'Choisir un fichier',
 
     // --- Visualizer Tab ---
     visualizer: 'Visualiseur',
@@ -92,7 +82,6 @@ export const fr_FR = {
     visGlitch: 'Glitch',
     visZen: 'Zen',
     visRetro: 'R\u00E9tro',
-    visRetroCircle: 'Cercle R\u00E9tro (V2)',
     visualizerBars: 'Barres du visualiseur',
     visualizerBarsDesc: 'Nombre de barres (Classique & R\u00E9tro).',
     visSensitivity: 'Sensibilit\u00E9',
@@ -107,7 +96,6 @@ export const fr_FR = {
     dry: 'Sec',
     wet: 'Humide',
     playbackSpeedDesc: 'Ajustez la vitesse (0.5x - 2.0x).',
-    speedPanelLabel: 'VITESSE',
     speedUltraSlow: 'Très Lent',
     speedSlow: 'Lent',
     speedNormal: 'Normal',
@@ -146,8 +134,6 @@ export const fr_FR = {
     equalizer: '\u00C9galiseur',
     equalizerDesc: 'Ajustez le son en d\u00E9tail.',
     eqPresetsLabel: 'Pr\u00E9r\u00E9glages',
-    bass: 'Basses',
-    treble: 'Aigus',
 
     // --- Downloads / Library ---
     refreshFolder: 'Actualiser le dossier',
@@ -166,7 +152,6 @@ export const fr_FR = {
     addFolder: 'Ajouter un dossier',
     libNoFolder: 'Aucun dossier chargé',
     libAdditional: 'Dossiers supplémentaires',
-    folderLoaded: 'Dossier charg\u00E9 : {}',
     folderRefreshed: 'Dossier actualis\u00E9',
     folderRefreshFailed: 'Actualisation \u00E9chou\u00E9e',
     folderDeleted: 'Dossier supprim\u00E9',
@@ -188,7 +173,6 @@ export const fr_FR = {
     introActiveBtn: 'Actif',
 
     // --- System / Performance ---
-    system: 'Syst\u00E8me',
     backToLegacy: 'RETOUR \u00C0 LEGACY UI',
     fpsLimitLabel: 'Limite de FPS',
     fpsLimitDesc: 'Limiter la fr\u00E9quence d\'images (15 - 120).',
@@ -214,7 +198,6 @@ export const fr_FR = {
     resetDesc: 'Supprime tous les param\u00E8tres d\u00E9finitivement. Irr\u00E9versible.',
     quit: 'Quitter',
     quitDesc: 'Ferme NovaWave.',
-    warningTitle: 'Avertissement',
     resetWarning: 'Cette action est irr\u00E9versible. L\'application va red\u00E9marrer.',
     exportPlaylist: 'Exporter la playlist',
     exportPlaylistDesc: 'Enregistrer la playlist dans un fichier.',
@@ -282,7 +265,6 @@ export const fr_FR = {
     legendFinished: 'R\u00E9ussi',
     legendWorking: 'En cours',
     legendError: 'Erreur',
-    legendInfo: 'Information',
     legendReady: 'Pr\u00EAt',
     legendTitle: 'L\u00E9gende',
     chipActive: 'actifs',
@@ -291,14 +273,11 @@ export const fr_FR = {
     clearFinished: 'Effacer termin\u00E9s',
     clearLog: 'Effacer',
     queueEmpty: 'Aucun t\u00E9l\u00E9chargement dans cette session.',
-    finishedAt: 'Terminé à {}',
     queueTitle: 'File d\'attente',
-    queueTotal: 'Total:',
     downloadErrorTitle: 'Erreur de t\u00E9l\u00E9chargement',
     errorModalClose: 'Fermer',
 
     // --- Help Modal ---
-    helpTitle: 'Aide & Utilisation',
     helpPlayback: 'Lecture',
     helpPlayLong: 'Utilisez ESPACE ou les boutons ci-dessous.',
     helpNavTitle: 'Navigation',
@@ -311,7 +290,6 @@ export const fr_FR = {
 
     // --- Developer Toolkit ---
     openDownloader: 'Ouvrir le téléchargeur',
-    devTitle: 'Developer Toolkit',
     devStandardHotkeys: 'Raccourcis standard',
     devPlayPause: 'Lecture/Pause',
     devNavTitle: 'Suivant/Pr\u00E9c\u00E9dent',
@@ -325,9 +303,6 @@ export const fr_FR = {
     // --- Updates ---
     updateTitle: 'Nouvelles',
     updateOkBtn: 'Compris !',
-    updateLatestVersion: 'Derni\u00E8re version',
-    updateReleaseDate: 'Date de sortie',
-    updateChangesTitle: 'Quoi de neuf ?',
     sectionUpdates: 'Mises \u00E0 jour',
     checkUpdateLabel: 'Rechercher des mises \u00E0 jour',
     checkUpdateDesc: 'V\u00E9rifier si une nouvelle version est disponible.',

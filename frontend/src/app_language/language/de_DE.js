@@ -2,14 +2,8 @@ export const de_DE = {
     // --- Global / Common ---
     appTitle: 'NovaWave',
     appSubtitle: 'Your Music • Your Style • Your Rules',
-    v2Subtitle: 'Erlebe den Flow',
-    whatsNew: 'Was ist neu?',
-    home: 'Home',
-    playlist: 'Mediathek',
     downloader: 'Downloads',
     settings: 'Einstellungen',
-    history: 'Verlauf',
-    lang: 'Sprache',
     nothingPlaying: 'Nichts wird abgespielt',
     track: 'Titel',
     tracks: 'Titel',
@@ -19,7 +13,6 @@ export const de_DE = {
     cancelBtn: 'Abbrechen',
     close: 'Schließen',
     changeButton: 'Ändern',
-    newBadge: 'NEU',
 
     // --- Sidebar / Navigation ---
     navDesign: 'Benutzeroberfläche',
@@ -75,11 +68,8 @@ export const de_DE = {
     emojiLovingDinos: 'Loving Dinos',
     emojiGift: 'Geschenk',
     emojiCustom: 'Eigenes',
-    emojiVinyl: 'Vinyl-Platte',
-    emojiCompact: 'Compact Disc',
     customEmoji: 'Eigenes Emoji',
     customEmojiDescription: 'Gib ein beliebiges Emoji oder Zeichen ein.',
-    pickFile: 'Datei wählen',
 
     // --- Visualizer Tab ---
     visualizer: 'Visualizer',
@@ -92,7 +82,6 @@ export const de_DE = {
     visGlitch: 'Glitch',
     visZen: 'Zen',
     visRetro: 'Retro',
-    visRetroCircle: 'Retro Circle (V2)',
     visualizerBars: 'Balken-Anzahl',
     visualizerBarsDesc: 'Anzahl der Segmente (Classic & Retro).',
     visSensitivity: 'Empfindlichkeit',
@@ -107,7 +96,6 @@ export const de_DE = {
     dry: 'Trocken',
     wet: 'Nass',
     playbackSpeedDesc: 'Passe die Abspielrate an (0.5x - 2.0x).',
-    speedPanelLabel: 'TEMPO',
     speedUltraSlow: 'Ultra Langsam',
     speedSlow: 'Langsam',
     speedNormal: 'Normal',
@@ -146,8 +134,6 @@ export const de_DE = {
     equalizer: 'Equalizer',
     equalizerDesc: 'Passe den Klang detailliert an.',
     eqPresetsLabel: 'Presets',
-    bass: 'Bass',
-    treble: 'Treble',
 
     // --- Downloads / Library ---
     refreshFolder: 'Ordner aktualisieren',
@@ -166,7 +152,6 @@ export const de_DE = {
     addFolder: 'Ordner hinzufügen',
     libNoFolder: 'Kein Ordner geladen',
     libAdditional: 'Weitere Ordner',
-    folderLoaded: 'Ordner geladen: {}',
     folderRefreshed: 'Ordner aktualisiert',
     folderRefreshFailed: 'Aktualisierung fehlgeschlagen',
     folderDeleted: 'Ordner gelöscht',
@@ -188,7 +173,6 @@ export const de_DE = {
     introActiveBtn: 'Aktiv',
 
     // --- System / Performance ---
-    system: 'System',
     backToLegacy: 'ZURÜCK ZUM LEGACY UI',
     fpsLimitLabel: 'FPS Limit',
     fpsLimitDesc: 'Begrenze die Bildrate (15 - 120).',
@@ -214,7 +198,6 @@ export const de_DE = {
     resetDesc: 'Löscht alle Einstellungen dauerhaft. Kann nicht rückgängig gemacht werden.',
     quit: 'Beenden',
     quitDesc: 'Schließt NovaWave.',
-    warningTitle: 'Warnung',
     resetWarning: 'Dieser Vorgang kann nicht rückgängig gemacht werden. App wird neu gestartet.',
     exportPlaylist: 'Exportieren',
     exportPlaylistDesc: 'Speichere Playlist als Datei.',
@@ -282,7 +265,6 @@ export const de_DE = {
     legendFinished: 'Erfolg',
     legendWorking: 'In Bearbeitung',
     legendError: 'Fehler',
-    legendInfo: 'Information',
     legendReady: 'Bereit',
     legendTitle: 'Legende',
     chipActive: 'aktiv',
@@ -291,14 +273,11 @@ export const de_DE = {
     clearFinished: 'Fertige entfernen',
     clearLog: 'Leeren',
     queueEmpty: 'Keine Downloads in dieser Sitzung.',
-    finishedAt: 'Fertig um {}',
     queueTitle: 'Warteschlange',
-    queueTotal: 'Gesamt:',
     downloadErrorTitle: 'Download Fehler',
     errorModalClose: 'Schließen',
 
     // --- Help Modal ---
-    helpTitle: 'Hilfe & Bedienung',
     helpPlayback: 'Wiedergabe',
     helpPlayLong: 'Nutze SPACE oder die Buttons unten.',
     helpNavTitle: 'Navigation',
@@ -311,7 +290,6 @@ export const de_DE = {
 
     // --- Developer Toolkit ---
     openDownloader: 'Downloader öffnen',
-    devTitle: 'Developer Toolkit',
     devStandardHotkeys: 'Standard Hotkeys',
     devPlayPause: 'Wiedergabe',
     devNavTitle: 'Nächster/Vorheriger',
@@ -325,9 +303,6 @@ export const de_DE = {
     // --- Updates ---
     updateTitle: 'Neuigkeiten',
     updateOkBtn: 'Verstanden',
-    updateLatestVersion: 'Aktuelle Version',
-    updateReleaseDate: 'Veröffentlichungsdatum',
-    updateChangesTitle: 'Was ist neu?',
     sectionUpdates: 'Updates',
     checkUpdateLabel: 'Auf Updates prüfen',
     checkUpdateDesc: 'Prüfe ob eine neue Version verfügbar ist.',
