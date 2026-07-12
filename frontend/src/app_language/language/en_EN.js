@@ -183,7 +183,6 @@ export const en_EN = {
     perfModeLabel: 'Performance Mode',
     perfModeDesc: 'Disable visualizer and animations for CPU saving.',
     perfModeOn: 'Performance Mode Enabled',
-    perfModeBanner: 'Performance Mode on - some features are disabled by the player.',
     statFrame: 'Frame',
     statStatus: 'Status',
     statStable: 'Stable',

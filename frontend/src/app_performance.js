@@ -17,28 +17,6 @@ export const AppPerformance = {
     _timeEl: null,
     _lagEl: null,
     _perfInfoEl: null,
-    _perfBannerEls: [],
-
-    //--- Performance Gating ---------------
-    // Controls disabled + greyed while Performance Mode is active.
-    _gatedControlIds: [
-        // Style tab
-        'animation-select',
-        'toggle-cinema-mode',
-        'toggle-visualizer',
-        'visualizer-style-select',
-        'visualizer-bars-select',
-        'visualizer-bars-reset-btn',
-        'visualizer-sensitivity',
-        'visualizer-sensitivity-reset-btn',
-        // Player tab
-        'toggle-crossfade',
-        'crossfade-slider',
-        'crossfade-reset-btn',
-        'toggle-vol-norm',
-    ],
-    // Whole tabs greyed + click-locked (every control there is performance-heavy).
-    _gatedTabIds: ['tab-audio', 'tab-themepacks'],
 
     //--- External Refs ---------------
     visualizer: null,
@@ -47,7 +25,6 @@ export const AppPerformance = {
     saveSetting: () => { },
     applyAnimation: () => { },
     showNotification: () => { },
-    onPerfModeChange: () => { },
 
     init(options = {}) {
         this.visualizer = options.visualizer;
@@ -56,7 +33,6 @@ export const AppPerformance = {
         this.saveSetting = options.saveSetting || this.saveSetting;
         this.applyAnimation = options.applyAnimation || this.applyAnimation;
         this.showNotification = options.showNotification || this.showNotification;
-        this.onPerfModeChange = options.onPerfModeChange || this.onPerfModeChange;
         this.targetFps = this.settings.targetFps || 60;
         this.showStatsOverlay = !!this.settings.showStatsOverlay;
         this.performanceMode = !!this.settings.performanceMode;
@@ -67,7 +43,6 @@ export const AppPerformance = {
         this._timeEl = document.getElementById('stat-time');
         this._lagEl = document.getElementById('stat-lag');
         this._perfInfoEl = document.getElementById('stat-perf-info');
-        this._perfBannerEls = Array.from(document.querySelectorAll('.perf-mode-banner'));
 
         if (this.performanceMode) {
             this.setPerformanceMode(true, true);
@@ -199,39 +174,15 @@ export const AppPerformance = {
         if (toggle) toggle.checked = enabled;
 
         if (enabled) {
+            if (this.visualizer) this.visualizer.stop();
             this.applyAnimation('off');
             document.body.classList.add('perf-mode-active');
             if (!silent) this.showNotification(this.tr('perfModeOn'));
         } else {
+            if (this.visualizer) this.visualizer.start?.();
             this.applyAnimation(this.settings.animationMode || 'flow');
             document.body.classList.remove('perf-mode-active');
         }
-
-        this._applyGating(enabled);
-        this.onPerfModeChange(enabled);
-    },
-
-    // ---- PERFORMANCE GATING --------------------
-    _applyGating(enabled) {
-        this._gatedControlIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            const item = el.closest('.setting-item');
-            if (enabled) {
-                el.disabled = true;
-                item?.classList.add('perf-locked');
-            } else {
-                // Never re-enable a control a theme pack still holds locked.
-                if (item?.classList.contains('tp-locked')) return;
-                el.disabled = false;
-                item?.classList.remove('perf-locked');
-            }
-        });
-        this._gatedTabIds.forEach(id => {
-            const tab = document.getElementById(id);
-            if (tab) tab.classList.toggle('perf-tab-locked', enabled);
-        });
-        this._perfBannerEls.forEach(el => el.classList.toggle('visible', enabled));
     },
 
     triggerPerformanceHint(force = false) {
