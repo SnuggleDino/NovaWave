@@ -460,7 +460,54 @@ func (a *App) GetSettings() map[string]interface{} {
 
 	var configMap map[string]interface{}
 	json.Unmarshal(data, &configMap)
-	return configMap
+
+	migrated, changed := migrateConfig(configMap)
+	if changed {
+		if newData, e := json.MarshalIndent(migrated, "", "  "); e == nil {
+			os.WriteFile(path, newData, 0644)
+		}
+	}
+	return migrated
+}
+
+// ---- CONFIG MIGRATION ----------------------------------------------------
+// migrateConfig upgrades a raw settings map to the current schema: it maps
+// renamed keys, then fills any missing key with its default. Unknown/removed
+// keys are left untouched (the app ignores them). Returns the possibly-updated
+// map and whether anything changed.
+func migrateConfig(raw map[string]interface{}) (map[string]interface{}, bool) {
+	if raw == nil {
+		raw = make(map[string]interface{})
+	}
+	changed := false
+
+	// --- Renames / transforms: read an old key, write the new one if absent ---
+	// gradientTitleEnabled (bool) -> titleGradientMode (string)
+	if _, hasNew := raw["titleGradientMode"]; !hasNew {
+		if old, ok := raw["gradientTitleEnabled"].(bool); ok {
+			if old {
+				raw["titleGradientMode"] = "novawave"
+			} else {
+				raw["titleGradientMode"] = "off"
+			}
+			changed = true
+		}
+	}
+	// (3.2.0 adds here: performanceMode (bool) -> performanceTier (string).)
+
+	// --- Fill missing keys from defaults ---
+	defaults := make(map[string]interface{})
+	if b, err := json.Marshal(getDefaultConfig()); err == nil {
+		json.Unmarshal(b, &defaults)
+	}
+	for k, v := range defaults {
+		if _, exists := raw[k]; !exists {
+			raw[k] = v
+			changed = true
+		}
+	}
+
+	return raw, changed
 }
 
 func (a *App) SelectFolder() string {
