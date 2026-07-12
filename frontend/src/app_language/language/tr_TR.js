@@ -183,6 +183,7 @@ export const tr_TR = {
     perfModeLabel: 'Performans Modu',
     perfModeDesc: 'CPU tasarrufu i\u00E7in g\u00F6rselle\u015Ftiriciyi ve animasyonlar\u0131 kapat\u0131r.',
     perfModeOn: 'Performans Modu Etkinle\u015Ftirildi',
+    perfModeBanner: 'Performans Modu a\u00E7\u0131k \u2014 baz\u0131 \u00F6zellikler oynat\u0131c\u0131 taraf\u0131ndan devre d\u0131\u015F\u0131 b\u0131rak\u0131ld\u0131.',
     statFrame: 'Kare',
     statStatus: 'Durum',
     statStable: 'Stabil',

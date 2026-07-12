@@ -183,6 +183,7 @@ export const es_ES = {
     perfModeLabel: 'Modo de rendimiento',
     perfModeDesc: 'Desactiva el visualizador y las animaciones para ahorrar CPU.',
     perfModeOn: 'Modo de rendimiento activado',
+    perfModeBanner: 'Modo rendimiento activado - algunas funciones están desactivadas por el reproductor.',
     statFrame: 'Cuadro',
     statStatus: 'Estado',
     statStable: 'Estable',

@@ -183,6 +183,7 @@ export const fr_FR = {
     perfModeLabel: 'Mode Performance',
     perfModeDesc: 'D\u00E9sactive le visualiseur et les animations pour \u00E9conomiser le CPU.',
     perfModeOn: 'Mode Performance activ\u00E9',
+    perfModeBanner: 'Mode performance activ\u00E9 \u2014 certaines fonctions sont d\u00E9sactiv\u00E9es par le lecteur.',
     statFrame: 'Cadre',
     statStatus: 'Statut',
     statStable: 'Stable',
