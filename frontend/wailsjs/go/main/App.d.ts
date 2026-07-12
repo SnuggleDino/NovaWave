@@ -12,6 +12,8 @@ export function DownloadFromSpotify(arg1:string,arg2:string,arg3:string):Promise
 
 export function DownloadFromYouTube(arg1:main.DownloadOptions):Promise<main.SimpleResult>;
 
+export function ExportDebugLog(arg1:string):Promise<main.SimpleResult>;
+
 export function GetAppMeta():Promise<main.AppMeta>;
 
 export function GetImageBase64(arg1:string):Promise<string>;

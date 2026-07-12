@@ -20,6 +20,7 @@ import { PlaylistManager } from './playlist/playlist_manager.js';
 import { DownloadManager } from './downloader/download_manager.js';
 import { LyricsManager } from './lyrics/lyrics_manager.js';
 import { AppPerformance } from './app_performance.js';
+import { AppLog } from './app_log.js';
 import { AudioFeaturesPanel } from './audio_extras/audio_features_panel.js';
 import './audio_extras/audio_features_panel.css';
 
@@ -47,6 +48,7 @@ const windowApi = {
     downloadFromSpotify: App.DownloadFromSpotify,
     isSpotifyUrl: App.IsSpotifyUrl,
     deleteTrack: App.DeleteTrack,
+    exportDebugLog: App.ExportDebugLog,
     updateTitle: App.UpdateTitle,
     updateMetadata: App.UpdateMetadata,
     selectImage: App.SelectImage,
@@ -403,6 +405,7 @@ function initVisualizerEngine() {
     }
 
     if (miniPlayer) miniPlayer.setVisualizer(visualizer);
+    AppPerformance.visualizer = visualizer;
 }
 
 function updateAudioEffects() {
@@ -688,6 +691,7 @@ function savePlaybackPosition() {
 
 function playTrack(index) {
     if (index < 0 || index >= playlist.length) { isPlaying = false; updatePlayPauseUI(); return; }
+    AppLog.record('info', 'Play track:', (playlist[index] && (playlist[index].title || playlist[index].path)) || index);
     if (!trackJustEnded && !isCrossfading) savePlaybackPosition();
     trackJustEnded = false;
     suppressPauseSave = true;
@@ -1499,7 +1503,7 @@ function setupAudioEvents() {
         // Ignore teardown 'errors' when the element has no source (e.g. right after
         // deleting the current track); only genuinely broken/missing files reach here.
         if (!audio.getAttribute('src')) return;
-        console.error("Audio playback error:", e);
+        console.error("Audio playback error on", currentTrackPath, e);
         isPlaying = false; updatePlayPauseUI(); crossfadeJustCompleted = false; suppressPauseSave = false;
         showNotification(tr('statusPlaybackError'), 'error', 2500);
         // Skip past a broken/missing file instead of freezing; capped to avoid
@@ -2887,6 +2891,18 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleCinemaMode = $('#toggle-cinema-mode');
     btnExportPlaylist = $('#btn-export-playlist');
     playlistPositionSelect = $('#playlist-position-select');
+
+    const exportLogsBtn = document.getElementById('btn-export-logs');
+    if (exportLogsBtn) {
+        exportLogsBtn.addEventListener('click', async () => {
+            try {
+                const r = await windowApi.exportDebugLog(AppLog.dump());
+                showNotification(r && r.success ? tr('logsExported') : tr('logsExportFailed'), r && r.success ? 'success' : 'error', 2000);
+            } catch (e) {
+                showNotification(tr('logsExportFailed'), 'error', 2000);
+            }
+        });
+    }
 
     if (playlistPositionSelect) {
         playlistPositionSelect.addEventListener('change', (e) => {

@@ -161,7 +161,11 @@ export const AppPerformance = {
         }
 
         if (visFpsEl) {
-            visFpsEl.textContent = this.visFps > 0 ? this.visFps : '--';
+            let visText;
+            if (this.visFps > 0) visText = this.visFps;
+            else if (this.performanceMode || !this.settings.visualizerEnabled) visText = 'Off';
+            else visText = 'Idle';
+            visFpsEl.textContent = visText;
             visFpsEl.style.color = this.visFps > 0 ? '#94a3b8' : '#475569';
         }
 
@@ -185,10 +189,15 @@ export const AppPerformance = {
         }
 
         if (perfInfoEl) {
-            perfInfoEl.textContent = this.performanceMode
-                ? 'Active'
-                : `${Math.min(100, Math.round((this.avgFps / this.targetFps) * 100))}%`;
+            perfInfoEl.textContent = this.performanceMode ? 'On' : 'Off';
+            perfInfoEl.style.color = this.performanceMode ? '#38bdf8' : '#475569';
         }
+    },
+
+    // ---- STATS: immediate refresh using the last known values ----
+    refreshStats() {
+        const ft = this.avgFps > 0 ? Math.round(1000 / this.avgFps) : 0;
+        this.updateUI(this.avgFps, ft);
     },
 
     setPerformanceMode(enabled, silent = false) {
@@ -252,5 +261,6 @@ export const AppPerformance = {
 
     setShowStats(enabled) {
         this.showStatsOverlay = enabled;
+        if (enabled) this.refreshStats();
     }
 };

@@ -527,6 +527,22 @@ func (a *App) SelectImage() string {
 	return selection
 }
 
+// ExportDebugLog writes the in-app debug log to a user-chosen text file.
+func (a *App) ExportDebugLog(content string) SimpleResult {
+	name := "novawave-debug-log-" + time.Now().Format("2006-01-02") + ".txt"
+	path, err := wailsRuntime.SaveFileDialog(a.ctx, wailsRuntime.SaveDialogOptions{
+		Title:           "Export Debug Log",
+		DefaultFilename: name,
+	})
+	if err != nil || path == "" {
+		return SimpleResult{Success: false, Error: "cancelled"}
+	}
+	if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+		return SimpleResult{Success: false, Error: err.Error()}
+	}
+	return SimpleResult{Success: true, NewPath: path}
+}
+
 func (a *App) GetImageBase64(path string) string {
 	data, err := os.ReadFile(path)
 	if err != nil {

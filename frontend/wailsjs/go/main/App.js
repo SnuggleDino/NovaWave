@@ -22,6 +22,10 @@ export function DownloadFromYouTube(arg1) {
   return window['go']['main']['App']['DownloadFromYouTube'](arg1);
 }
 
+export function ExportDebugLog(arg1) {
+  return window['go']['main']['App']['ExportDebugLog'](arg1);
+}
+
 export function GetAppMeta() {
   return window['go']['main']['App']['GetAppMeta']();
 }
