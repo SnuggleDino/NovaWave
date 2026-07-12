@@ -1496,6 +1496,9 @@ function setupAudioEvents() {
         playNext();
     });
     audio.addEventListener('error', (e) => {
+        // Ignore teardown 'errors' when the element has no source (e.g. right after
+        // deleting the current track); only genuinely broken/missing files reach here.
+        if (!audio.getAttribute('src')) return;
         console.error("Audio playback error:", e);
         isPlaying = false; updatePlayPauseUI(); crossfadeJustCompleted = false; suppressPauseSave = false;
         showNotification(tr('statusPlaybackError'), 'error', 2500);
@@ -2363,11 +2366,15 @@ function setupEventListeners() {
 
         const ctp = (currentIndex !== -1 && playlist[currentIndex]) ? playlist[currentIndex].path : null;
 
-        if (trackToDeletePath === ctp) {
+        if (trackToDeletePath === ctp || trackToDeletePath === currentTrackPath) {
+            // Auto-brake: stop the deleted track cleanly. removeAttribute('src')
+            // empties the element WITHOUT firing a spurious 'error' event (setting
+            // src to an empty string would resolve to the page and decode-fail).
             audio.pause();
-            audio.src = '';
+            audio.removeAttribute('src');
             audio.load();
             currentIndex = -1;
+            currentTrackPath = null;
             updatePlayPauseUI();
         }
 
