@@ -3,5 +3,5 @@ node_modules
 frontend/dist
 repo.xml
 novawave.exe
-NW_STATUS.md
 _prototypes/
+docs/
