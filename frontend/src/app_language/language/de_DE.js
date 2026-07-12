@@ -183,6 +183,7 @@ export const de_DE = {
     perfModeLabel: 'Performance Mode',
     perfModeDesc: 'Deaktiviert Visualizer und Animationen für CPU-Schonung.',
     perfModeOn: 'Performance-Modus Aktiviert',
+    perfModeBanner: 'Performance-Modus aktiv - einige Funktionen sind vom Player deaktiviert.',
     statFrame: 'Frame',
     statStatus: 'Status',
     statStable: 'Stabil',

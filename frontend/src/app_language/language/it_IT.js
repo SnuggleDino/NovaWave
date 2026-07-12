@@ -183,6 +183,7 @@ export const it_IT = {
     perfModeLabel: 'Modalit\u00E0 prestazioni',
     perfModeDesc: 'Disattiva il visualizzatore e le animazioni per risparmiare CPU.',
     perfModeOn: 'Modalit\u00E0 prestazioni attivata',
+    perfModeBanner: 'Modalit\u00E0 prestazioni attiva \u2014 alcune funzioni sono disattivate dal player.',
     statFrame: 'Frame',
     statStatus: 'Stato',
     statStable: 'Stabile',

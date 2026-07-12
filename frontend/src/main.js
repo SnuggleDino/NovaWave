@@ -407,13 +407,22 @@ function initVisualizerEngine() {
 
 function updateAudioEffects() {
     if (audioExtras) {
-        audioExtras.setBass(settings.bassBoostValue, settings.bassBoostEnabled);
-        audioExtras.setTreble(settings.trebleBoostValue, settings.trebleBoostEnabled);
-        audioExtras.setReverb(settings.reverbValue, settings.reverbEnabled);
-        if (settings.eqValues) {
-            audioExtras.setEq(settings.eqValues, settings.eqEnabled);
+        if (AppPerformance.performanceMode) {
+            // Performance Mode forces every audio effect off, no matter who calls this.
+            audioExtras.setBass(0, false);
+            audioExtras.setTreble(0, false);
+            audioExtras.setReverb(0, false);
+            audioExtras.setEq(settings.eqValues || [], false);
+            audioExtras.setNormalization(false);
+        } else {
+            audioExtras.setBass(settings.bassBoostValue, settings.bassBoostEnabled);
+            audioExtras.setTreble(settings.trebleBoostValue, settings.trebleBoostEnabled);
+            audioExtras.setReverb(settings.reverbValue, settings.reverbEnabled);
+            if (settings.eqValues) {
+                audioExtras.setEq(settings.eqValues, settings.eqEnabled);
+            }
+            audioExtras.setNormalization(!!settings.volNormEnabled);
         }
-        audioExtras.setNormalization(!!settings.volNormEnabled);
     }
     updateActiveFeaturesIndicator();
 }
@@ -1457,7 +1466,7 @@ function setupAudioEvents() {
         document.body.classList.add('is-playing');
         updatePlayPauseUI();
         updateUIForCurrentTrack();
-        if (visualizer) visualizer.start();
+        if (visualizer && !AppPerformance.performanceMode) visualizer.start();
     });
     audio.addEventListener('pause', () => {
         isPlaying = false;
@@ -2473,7 +2482,7 @@ function setupEventListeners() {
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) {
             if (audioExtras) audioExtras.resume();
-            if (isPlaying && visualizer) visualizer.start();
+            if (isPlaying && visualizer && !AppPerformance.performanceMode) visualizer.start();
         }
     });
 }
@@ -3048,7 +3057,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr,
                 saveSetting,
                 applyAnimation: applyAnimationSetting,
-                showNotification: window.showNotification
+                showNotification: window.showNotification,
+                onPerfModeChange: (enabled) => {
+                    // updateAudioEffects() is perf-mode-aware: it forces the effects off
+                    // while Performance Mode is on and restores them from settings when off.
+                    updateAudioEffects();
+                    document.body.classList.toggle('cinema-mode', !enabled && !!settings.cinemaMode);
+                    crossfadeEnabled = enabled ? false : !!settings.crossfadeEnabled;
+                    // Visualizer: restore via the exact path the manual toggle uses,
+                    // so it renders again after Performance Mode is switched off.
+                    if (visualizer) {
+                        if (enabled) {
+                            visualizer.stop();
+                        } else {
+                            visualizer.updateSettings({ enabled: visualizerEnabled });
+                            if (visualizerEnabled) visualizer.start(); else visualizer.stop();
+                        }
+                    }
+                }
             });
 
             AppLoader.update(70, tr('loaderApplying'));
